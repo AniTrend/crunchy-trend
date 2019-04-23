@@ -60,6 +60,12 @@ dependencies {
     implementation project(":support-core")
     implementation project(":support-ext")
 
+    /** Koin AndroidX Dependency Injection */
+    implementation "org.koin:koin-core:$koin"
+    implementation "org.koin:koin-core-ext:$koin"
+    implementation "org.koin:koin-androidx-scope:$koin"
+    implementation "org.koin:koin-androidx-viewmodel:$koin"
+
     /** Kotlin Libraries */
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesCore"
