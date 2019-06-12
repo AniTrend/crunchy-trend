@@ -1,3 +1,4 @@
-include ':app', ':support-ext', ':support-core', ':core'
+include ':app', ':support-ext', ':support-core', ':support-data', ':core', ':data'
 project(':support-ext').projectDir = new File('support-app/support-ext')
 project(':support-core').projectDir = new File('support-app/support-core')
+project(':support-data').projectDir = new File('support-app/support-data')
