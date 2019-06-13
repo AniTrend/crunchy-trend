@@ -1,14 +1,37 @@
+/*
+ *    Copyright 2019 AniTrend
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package co.anitrend.support.crunchyroll.data.auth
 
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchySessionWithAuthenticatedUserDao
+import co.anitrend.support.crunchyroll.data.auth.model.CrunchySession
+import co.anitrend.support.crunchyroll.data.dao.query.CrunchyLoginDao
+import co.anitrend.support.crunchyroll.data.dao.query.CrunchySessionCoreDao
+import co.anitrend.support.crunchyroll.data.dao.query.CrunchySessionDao
+import co.anitrend.support.crunchyroll.data.dao.query.CrunchyUserDao
 import co.anitrend.support.crunchyroll.data.util.CrunchySettings
 import io.wax911.support.data.auth.SupportAuthentication
 import io.wax911.support.extension.util.SupportConnectivityHelper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import okhttp3.Request
 import timber.log.Timber
 
 class CrunchyAuthenticationHelper(
-    private val sessionWithAuthenticatedUser: CrunchySessionWithAuthenticatedUserDao,
+    private val sessionDao: CrunchySessionDao,
     private val connectivityHelper: SupportConnectivityHelper,
     private val settings: CrunchySettings,
     private val deviceToken: String
@@ -25,7 +48,10 @@ class CrunchyAuthenticationHelper(
      * Checks if the data source that contains the token is valid
      */
     override fun isTokenValid(): Boolean {
-        val token = sessionWithAuthenticatedUser.findLatest()
+        var token: CrunchySession? = null
+        runBlocking {
+            token = sessionDao.findLatest()
+        }
 
         return when (token != null) {
             true -> {
@@ -76,11 +102,13 @@ class CrunchyAuthenticationHelper(
             urlBuilder.addEncodedQueryParameter(ACCESS_TOKEN, deviceToken)
                 .addEncodedQueryParameter(LOCALE, "enUS")
 
-            sessionWithAuthenticatedUser.findLatest()?.also {
-                urlBuilder
-                    .addEncodedQueryParameter(DEVICE_ID, it.device_id )
-                    .addEncodedQueryParameter(DEVICE_TYPE, it.device_type)
-                    .addEncodedQueryParameter(SESSION_ID, it.session_id)
+            runBlocking {
+                sessionDao.findLatest()?.also {
+                    urlBuilder
+                        .addEncodedQueryParameter(DEVICE_ID, it.device_id )
+                        .addEncodedQueryParameter(DEVICE_TYPE, it.device_type)
+                        .addEncodedQueryParameter(SESSION_ID, it.session_id)
+                }
             }
 
         }
@@ -109,13 +137,28 @@ class CrunchyAuthenticationHelper(
      * the user locally if the token cannot be refreshed
      */
     override fun onInvalidToken() {
-        // TODO("Implement token retry count threshold for each authentication attempt")
         if (connectivityHelper.isConnected) {
             settings.authenticatedUserId = CrunchySettings.INVALID_USER_ID
             settings.isAuthenticated = false
-            sessionWithAuthenticatedUser.clearTable()
             Timber.tag(moduleTag).e("Authentication token is null, application is logging user out!")
         }
+    }
+
+    /**
+     * Handle invalid token state by either renewing it or un-authenticates
+     * the user locally if the token cannot be refreshed
+     */
+    suspend fun onInvalidToken(
+        userDao: CrunchyUserDao,
+        loginDao: CrunchyLoginDao,
+        sessionCoreDao: CrunchySessionCoreDao
+    ) {
+        withContext(Dispatchers.Main) { onInvalidToken() }
+
+        userDao.clearTable()
+        loginDao.clearTable()
+        sessionDao.clearTable()
+        sessionCoreDao.clearTable()
     }
 
     companion object {

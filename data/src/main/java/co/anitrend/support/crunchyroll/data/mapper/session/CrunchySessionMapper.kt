@@ -1,29 +1,32 @@
+/*
+ *    Copyright 2019 AniTrend
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package co.anitrend.support.crunchyroll.data.mapper.session
 
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchySession
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchyAuthenticationWithUserDao
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchySessionWithAuthenticatedUserDao
+import co.anitrend.support.crunchyroll.data.dao.query.CrunchySessionDao
 import co.anitrend.support.crunchyroll.data.dao.query.CrunchyUserDao
-import co.anitrend.support.crunchyroll.data.entity.auth.CrunchyAuthenticationWithUser
-import co.anitrend.support.crunchyroll.data.entity.session.CrunchySessionWithAuthenticatedUser
 import kotlinx.coroutines.Job
 
 class CrunchySessionMapper(
     parentJob: Job,
-    private val authenticationWithUserDao: CrunchyAuthenticationWithUserDao,
-    private val sessionWithAuthenticatedUserDao: CrunchySessionWithAuthenticatedUserDao
-) : CrunchyMapper<CrunchySession, CrunchySessionWithAuthenticatedUser>(parentJob) {
-
-    private suspend fun persistAuthenticationWith(source: CrunchySession): Long {
-        val authenticationWithUser = CrunchyAuthenticationWithUser(
-            userId = source.user.user_id,
-            auth = source.auth,
-            expires = source.expires
-        )
-        return authenticationWithUserDao.insertOrUpdate(authenticationWithUser)
-    }
-
+    private val userDao: CrunchyUserDao,
+    private val sessionDao: CrunchySessionDao
+) : CrunchyMapper<CrunchySession, CrunchySession>(parentJob) {
 
     /**
      * Creates mapped objects and handles the database operations which may be required to map various objects,
@@ -33,19 +36,8 @@ class CrunchySessionMapper(
      * @param source the incoming data source type
      * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
      */
-    override suspend fun onResponseMapFrom(source: CrunchySession): CrunchySessionWithAuthenticatedUser {
-        val authId = persistAuthenticationWith(source)
-
-        return CrunchySessionWithAuthenticatedUser(
-            session_id = source.session_id,
-            country_code = source.country_code,
-            device_type = source.device_type,
-            device_id = source.device_id,
-            version = source.version,
-            authenticationId = authId,
-            expires = source.expires,
-            userId = source.user.user_id
-        )
+    override suspend fun onResponseMapFrom(source: CrunchySession): CrunchySession {
+        return source
     }
 
     /**
@@ -55,7 +47,7 @@ class CrunchySessionMapper(
      *
      * @param mappedData mapped object from [onResponseMapFrom] to insert into the database
      */
-    override suspend fun onResponseDatabaseInsert(mappedData: CrunchySessionWithAuthenticatedUser) {
-        sessionWithAuthenticatedUserDao.upsert(mappedData)
+    override suspend fun onResponseDatabaseInsert(mappedData: CrunchySession) {
+        sessionDao.insertSessionAndUser(mappedData, userDao)
     }
 }

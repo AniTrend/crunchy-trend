@@ -1,14 +1,31 @@
+/*
+ *    Copyright 2019 AniTrend
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package co.anitrend.support.crunchyroll.data.source.session
 
 import android.os.Bundle
 import androidx.lifecycle.LiveData
 import co.anitrend.support.crunchyroll.data.api.endpoint.CrunchyAuthEndpoint
 import co.anitrend.support.crunchyroll.data.api.endpoint.CrunchySessionEndpoint
+import co.anitrend.support.crunchyroll.data.auth.model.CrunchySession
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchySessionCore
 import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
-import co.anitrend.support.crunchyroll.data.entity.session.CrunchySessionWithAuthenticatedUser
 import co.anitrend.support.crunchyroll.data.mapper.session.CrunchySessionCoreMapper
 import co.anitrend.support.crunchyroll.data.mapper.session.CrunchySessionMapper
+import co.anitrend.support.crunchyroll.data.repository.session.SessionRequestType
 import io.wax911.support.data.source.SupportDataSource
 import io.wax911.support.data.source.contract.ISourceObservable
 import io.wax911.support.extension.util.SupportExtKeyStore
@@ -62,18 +79,18 @@ class CrunchySessionDataSource(
      */
     private fun startNormalSession() {
         val futureResponse = async {
-            val authUser = databaseHelper.crunchyAuthenticationWithUserDao().findLatest()
+            val login = databaseHelper.crunchyLoginDao().findLatest()
             val sessionCore = databaseHelper.crunchySessionDao().findLatest()
             authEndpoint.startNormalSession(
                 device_id = sessionCore?.device_id,
-                auth = authUser?.auth
+                auth = login?.auth
             )
         }
 
         val mapper = CrunchySessionMapper(
             parentJob = supervisorJob,
-            authenticationWithUserDao = databaseHelper.crunchyAuthenticationWithUserDao(),
-            sessionWithAuthenticatedUserDao = databaseHelper.crunchySessionDao()
+            userDao = databaseHelper.crunchyUserDao(),
+            sessionDao = databaseHelper.crunchySessionDao()
         )
 
         launch {
@@ -87,18 +104,18 @@ class CrunchySessionDataSource(
      */
     private fun startUnblockedSession() {
         val futureResponse = async {
-            val authUser = databaseHelper.crunchyAuthenticationWithUserDao().findLatest()
+            val login = databaseHelper.crunchyLoginDao().findLatest()
             sessionEndpoint.startUnblockedSession(
-                auth = authUser?.auth,
-                userId = authUser?.userId
+                auth = login?.auth,
+                userId = login?.user?.user_id
             )
         }
 
 
         val mapper = CrunchySessionMapper(
             parentJob = supervisorJob,
-            authenticationWithUserDao = databaseHelper.crunchyAuthenticationWithUserDao(),
-            sessionWithAuthenticatedUserDao = databaseHelper.crunchySessionDao()
+            userDao= databaseHelper.crunchyUserDao(),
+            sessionDao = databaseHelper.crunchySessionDao()
         )
 
         launch {
@@ -123,11 +140,11 @@ class CrunchySessionDataSource(
          */
         override fun observerOnLiveDataWith(bundle: Bundle): LiveData<CrunchySessionCore?> {
             val coreDao = databaseHelper.crunchySessionCoreDao()
-            return coreDao.findLatestLiveData()
+            return coreDao.findLatestX()
         }
     }
 
-    val session = object : ISourceObservable<CrunchySessionWithAuthenticatedUser?> {
+    val session = object : ISourceObservable<CrunchySession?> {
 
         /**
          * Returns the appropriate observable which we will monitor for updates,
@@ -136,9 +153,9 @@ class CrunchySessionDataSource(
          *
          * @param bundle request params, implementation is up to the developer
          */
-        override fun observerOnLiveDataWith(bundle: Bundle): LiveData<CrunchySessionWithAuthenticatedUser?> {
+        override fun observerOnLiveDataWith(bundle: Bundle): LiveData<CrunchySession?> {
             val sessionDao = databaseHelper.crunchySessionDao()
-            return sessionDao.findLatestLiveData()
+            return sessionDao.findLatestX()
         }
     }
 

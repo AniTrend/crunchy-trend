@@ -1,11 +1,30 @@
+/*
+ *    Copyright 2019 AniTrend
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package co.anitrend.support.crunchyroll.data.source.auth
 
 import android.os.Bundle
 import androidx.lifecycle.LiveData
 import co.anitrend.support.crunchyroll.data.api.endpoint.CrunchyAuthEndpoint
+import co.anitrend.support.crunchyroll.data.auth.CrunchyAuthenticationHelper
+import co.anitrend.support.crunchyroll.data.auth.model.CrunchyLogin
 import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
-import co.anitrend.support.crunchyroll.data.mapper.auth.CrunchyAuthenticationMapper
+import co.anitrend.support.crunchyroll.data.mapper.auth.CrunchyLoginMapper
 import co.anitrend.support.crunchyroll.data.model.user.CrunchyUser
+import co.anitrend.support.crunchyroll.data.repository.auth.AuthRequestType
 import co.anitrend.support.crunchyroll.data.util.CrunchySettings
 import io.wax911.support.data.source.SupportDataSource
 import io.wax911.support.data.source.contract.ISourceObservable
@@ -14,13 +33,13 @@ import kotlinx.coroutines.*
 import org.koin.core.inject
 import timber.log.Timber
 
-class CrunchyAuthenticationDataSource(
+class CrunchyAuthDataSource(
     parentCoroutineJob: Job? = null,
     private val authEndpoint: CrunchyAuthEndpoint
 ) : SupportDataSource(parentCoroutineJob) {
 
     override val databaseHelper by inject<CrunchyDatabase>()
-    private val settings by inject<CrunchySettings>()
+    private val  authenticationHelper by inject<CrunchyAuthenticationHelper>()
 
     /**
      * Handles the requesting data from a the network source and informs the
@@ -48,10 +67,10 @@ class CrunchyAuthenticationDataSource(
             )
         }
 
-        val mapper = CrunchyAuthenticationMapper(
+        val mapper = CrunchyLoginMapper(
             parentJob = supervisorJob,
-            authenticationWithUserDao = databaseHelper.crunchyAuthenticationWithUserDao(),
-            authenticatedUserDao = databaseHelper.crunchyUserDao()
+            loginDao = databaseHelper.crunchyLoginDao(),
+            userDao = databaseHelper.crunchyUserDao()
         )
 
         launch {
@@ -67,14 +86,21 @@ class CrunchyAuthenticationDataSource(
             )
         }
 
-        val mapper = CrunchyAuthenticationMapper(
+        val mapper = CrunchyLoginMapper(
             parentJob = supervisorJob,
-            authenticationWithUserDao = databaseHelper.crunchyAuthenticationWithUserDao(),
-            authenticatedUserDao = databaseHelper.crunchyUserDao()
+            loginDao = databaseHelper.crunchyLoginDao(),
+            userDao = databaseHelper.crunchyUserDao()
         )
 
         launch {
-            mapper.handleResponse(futureResponse, networkState)
+            val resultState = mapper.handleResponse(futureResponse)
+            if (resultState.isLoaded())
+                authenticationHelper.onInvalidToken(
+                    databaseHelper.crunchyUserDao(),
+                    databaseHelper.crunchyLoginDao(),
+                    databaseHelper.crunchySessionCoreDao()
+                )
+            networkState.postValue(resultState)
         }
     }
 
@@ -84,12 +110,12 @@ class CrunchyAuthenticationDataSource(
      */
     override fun refreshOrInvalidate() {
         launch {
-            databaseHelper.crunchyAuthenticationWithUserDao().clearTable()
+            databaseHelper.crunchyLoginDao().clearTable()
         }
         super.refreshOrInvalidate()
     }
 
-    val authenticatedUserLiveData = object : ISourceObservable<CrunchyUser?> {
+    val authenticatedUserLiveData = object : ISourceObservable<CrunchyLogin?> {
 
         /**
          * Returns the appropriate observable which we will monitor for updates,
@@ -98,11 +124,9 @@ class CrunchyAuthenticationDataSource(
          *
          * @param bundle request params, implementation is up to the developer
          */
-        override fun observerOnLiveDataWith(bundle: Bundle): LiveData<CrunchyUser?> {
-            val authUserDao = databaseHelper.crunchyUserDao()
-            return authUserDao.findSingleLiveData(
-                userId = settings.authenticatedUserId
-            )
+        override fun observerOnLiveDataWith(bundle: Bundle): LiveData<CrunchyLogin?> {
+            val loginDao = databaseHelper.crunchyLoginDao()
+            return loginDao.findLatestX()
         }
     }
 }
