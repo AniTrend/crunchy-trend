@@ -47,13 +47,15 @@ android {
                 stream -> secretsProps.load(stream)
             }
             it.buildConfigField("String", "clientToken", secretsProps['clientToken'])
+            it.buildConfigField("String", "apiAuthUrl", secretsProps['apiAuthUrl'])
+            it.buildConfigField("String", "apiUrl", secretsProps['apiUrl'])
 
             def configProps = new Properties()
             file(".config/configuration.properties").withInputStream {
                 stream -> configProps.load(stream)
             }
-            it.buildConfigField("String", "apiUrl", configProps['apiUrl'])
-            it.buildConfigField("String", "apiAuthUrl", configProps['apiAuthUrl'])
+            it.buildConfigField("String", "apiFeed", configProps['apiFeed'])
+            it.buildConfigField("String", "crunchyUrl", configProps['crunchyUrl'])
             it.buildConfigField("String", "apiVersion", configProps['apiVersion'])
             it.buildConfigField("String", "apiExtension", configProps['apiExtension'])
 
@@ -104,6 +106,11 @@ dependencies {
 
     /** Retrofit Libraries */
     implementation "com.squareup.retrofit2:retrofit:$retrofit"
+    implementation("com.squareup.retrofit2:converter-simplexml:$retrofit") {
+        exclude group: 'xpp3', module: 'xpp3'
+        exclude group: 'stax', module: 'stax-api'
+        exclude group: 'stax', module: 'stax'
+    }
 
     /** Timber */
     implementation "com.jakewharton.timber:timber:$timber"

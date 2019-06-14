@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.api.endpoint
+package co.anitrend.support.crunchyroll.data.api.endpoint.json
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.endpoint.contract.EndpointFactory
@@ -48,8 +48,8 @@ interface CrunchyAuthEndpoint {
     ): Response<CrunchyContainer<CrunchySession>>
 
     companion object : EndpointFactory<CrunchySessionEndpoint>(
-        BuildConfig.apiUrl,
-        CrunchySessionEndpoint::class.java,
-        false
+        endpoint = CrunchySessionEndpoint::class,
+        injectInterceptor = false,
+        url = BuildConfig.apiUrl
     )
 }

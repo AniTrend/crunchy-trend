@@ -25,32 +25,27 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.KoinComponent
 import org.koin.core.inject
+import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import kotlin.reflect.KClass
 
 
 /**
  * Generates retrofit service classes
  *
  * @param url The url to use when create a service endpoint
- * @param serviceClass The interface class method representing your request to use
+ * @param endpoint The interface class method representing your request to use
  */
-abstract class EndpointFactory<S>(
-    url: String,
-    private val serviceClass: Class<S>,
-    private val injectInterceptor: Boolean = true
+abstract class EndpointFactory<S: Any>(
+    private val url: String,
+    private val endpoint: KClass<S>,
+    private val injectInterceptor: Boolean = true,
+    private val converterFactory: Converter.Factory = GsonConverterFactory.create(gson)
 ) : KoinComponent {
 
     private val clientInterceptor by inject<Interceptor>()
-
-    private val gson: Gson by lazy {
-        GsonBuilder()
-            .generateNonExecutableJson()
-            .serializeNulls()
-            .setLenient()
-            .create()
-    }
 
     private val retrofit: Retrofit by lazy {
         val httpClient = OkHttpClient.Builder()
@@ -70,15 +65,19 @@ abstract class EndpointFactory<S>(
             }.build()
 
         Retrofit.Builder().client(httpClient).apply {
-            addConverterFactory(
-                GsonConverterFactory.create(
-                    gson
-                )
-            ).baseUrl(
-                url
-            )
+            addConverterFactory(converterFactory).baseUrl(url)
         }.build()
     }
 
-    fun createService(): S = retrofit.create(serviceClass)
+    fun createService(): S = retrofit.create(endpoint.java)
+
+    companion object {
+        private val gson: Gson by lazy {
+            GsonBuilder()
+                .generateNonExecutableJson()
+                .serializeNulls()
+                .setLenient()
+                .create()
+        }
+    }
 }

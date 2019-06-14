@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.api.endpoint
+package co.anitrend.support.crunchyroll.data.api.endpoint.json
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.endpoint.contract.EndpointFactory
@@ -23,9 +23,6 @@ import co.anitrend.support.crunchyroll.data.model.core.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
 import co.anitrend.support.crunchyroll.data.model.stream.CrunchyStreamInfo
 import io.wax911.support.extension.util.SupportExtKeyStore
-import okhttp3.Interceptor
-import org.koin.core.KoinComponent
-import org.koin.core.inject
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -57,7 +54,7 @@ interface CrunchyMediaEndpoint {
 
 
     companion object : EndpointFactory<CrunchyMediaEndpoint>(
-        BuildConfig.apiUrl,
-        CrunchyMediaEndpoint::class.java
+        endpoint = CrunchyMediaEndpoint::class,
+        url = BuildConfig.apiUrl
     )
 }

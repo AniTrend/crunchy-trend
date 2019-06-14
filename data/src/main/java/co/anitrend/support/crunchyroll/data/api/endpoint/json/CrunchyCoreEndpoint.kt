@@ -14,31 +14,24 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.api.endpoint
+package co.anitrend.support.crunchyroll.data.api.endpoint.json
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.endpoint.contract.EndpointFactory
-import co.anitrend.support.crunchyroll.data.model.collection.CrunchyCollection
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyContainer
-import io.wax911.support.extension.util.SupportExtKeyStore
-import okhttp3.Interceptor
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import co.anitrend.support.crunchyroll.data.model.core.CrunchyLocale
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.Query
 
-interface CrunchyCollectionEndpoint {
+interface CrunchyCoreEndpoint {
 
-    @GET("/list_collections.${BuildConfig.apiVersion}.json")
-    suspend fun getCollections(
-        @Query("series_id") seriesId: Long,
-        @Query("offset") offset: Int,
-        @Query("limit") limit: Int = SupportExtKeyStore.pagingLimit
-    ) : Response<CrunchyContainer<List<CrunchyCollection>>>
+    @GET("/list_locales.${BuildConfig.apiExtension}.json")
+    suspend fun fetchLocales(
 
-    companion object : EndpointFactory<CrunchyCollectionEndpoint>(
-        BuildConfig.apiUrl,
-        CrunchyCollectionEndpoint::class.java
+    ) : Response<CrunchyContainer<List<CrunchyLocale>>>
+
+    companion object : EndpointFactory<CrunchyCoreEndpoint>(
+        endpoint = CrunchyCoreEndpoint::class,
+        url = BuildConfig.apiUrl
     )
 }

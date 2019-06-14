@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.data.repository.series
 
 import android.os.Bundle
 import androidx.paging.PagedList
-import co.anitrend.support.crunchyroll.data.api.endpoint.CrunchySeriesEndpoint
+import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchySeriesEndpoint
 import co.anitrend.support.crunchyroll.data.model.series.CrunchySeries
 import io.wax911.support.data.model.UiModel
 import io.wax911.support.data.repository.SupportRepository

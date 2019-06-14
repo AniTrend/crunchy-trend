@@ -14,27 +14,34 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.api.endpoint
+package co.anitrend.support.crunchyroll.data.api.endpoint.json
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.endpoint.contract.EndpointFactory
+import co.anitrend.support.crunchyroll.data.auth.model.CrunchySession
+import co.anitrend.support.crunchyroll.data.auth.model.CrunchySessionCore
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyContainer
-import co.anitrend.support.crunchyroll.data.model.core.CrunchyLocale
-import okhttp3.Interceptor
-import org.koin.core.KoinComponent
-import org.koin.core.inject
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Query
 
-interface CrunchyCoreEndpoint {
+interface CrunchySessionEndpoint {
 
-    @GET("/list_locales.${BuildConfig.apiExtension}.json")
-    suspend fun fetchLocales(
+    @GET("/start_session")
+    suspend fun startUnblockedSession(
+        @Query("auth") auth: String?,
+        @Query("user_id") userId: Int?,
+        @Query("version") version: String = BuildConfig.apiVersion
+    ): Response<CrunchyContainer<CrunchySession>>
 
-    ) : Response<CrunchyContainer<List<CrunchyLocale>>>
+    @GET("/start_session")
+    suspend fun startSession(
 
-    companion object : EndpointFactory<CrunchyCoreEndpoint>(
-        BuildConfig.apiUrl,
-        CrunchyCoreEndpoint::class.java
+    ): Response<CrunchyContainer<CrunchySessionCore>>
+
+    companion object : EndpointFactory<CrunchySessionEndpoint>(
+        endpoint = CrunchySessionEndpoint::class,
+        url = BuildConfig.apiAuthUrl,
+        injectInterceptor = false
     )
 }

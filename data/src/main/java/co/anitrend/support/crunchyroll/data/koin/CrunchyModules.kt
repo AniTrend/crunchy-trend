@@ -19,7 +19,7 @@ package co.anitrend.support.crunchyroll.data.koin
 import android.content.Context
 import android.net.ConnectivityManager
 import co.anitrend.support.crunchyroll.data.BuildConfig
-import co.anitrend.support.crunchyroll.data.api.endpoint.*
+import co.anitrend.support.crunchyroll.data.api.endpoint.json.*
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyInterceptor
 import co.anitrend.support.crunchyroll.data.auth.CrunchyAuthenticationHelper
 import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase

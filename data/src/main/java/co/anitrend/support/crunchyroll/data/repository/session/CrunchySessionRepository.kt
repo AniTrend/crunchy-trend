@@ -19,8 +19,8 @@ package co.anitrend.support.crunchyroll.data.repository.session
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import co.anitrend.support.crunchyroll.data.api.endpoint.CrunchyAuthEndpoint
-import co.anitrend.support.crunchyroll.data.api.endpoint.CrunchySessionEndpoint
+import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyAuthEndpoint
+import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchySessionEndpoint
 import co.anitrend.support.crunchyroll.data.auth.model.contract.ICrunchySession
 import co.anitrend.support.crunchyroll.data.source.session.CrunchySessionDataSource
 import io.wax911.support.data.model.NetworkState

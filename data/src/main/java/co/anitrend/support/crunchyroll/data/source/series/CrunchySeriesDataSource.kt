@@ -17,7 +17,7 @@
 package co.anitrend.support.crunchyroll.data.source.series
 
 import android.os.Bundle
-import co.anitrend.support.crunchyroll.data.api.endpoint.CrunchySeriesEndpoint
+import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchySeriesEndpoint
 import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
 import io.wax911.support.data.source.SupportDataSource
 import kotlinx.coroutines.Job

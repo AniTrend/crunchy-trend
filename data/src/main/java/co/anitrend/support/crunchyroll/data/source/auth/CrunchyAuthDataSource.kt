@@ -18,14 +18,12 @@ package co.anitrend.support.crunchyroll.data.source.auth
 
 import android.os.Bundle
 import androidx.lifecycle.LiveData
-import co.anitrend.support.crunchyroll.data.api.endpoint.CrunchyAuthEndpoint
+import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyAuthEndpoint
 import co.anitrend.support.crunchyroll.data.auth.CrunchyAuthenticationHelper
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchyLogin
 import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
 import co.anitrend.support.crunchyroll.data.mapper.auth.CrunchyLoginMapper
-import co.anitrend.support.crunchyroll.data.model.user.CrunchyUser
 import co.anitrend.support.crunchyroll.data.repository.auth.AuthRequestType
-import co.anitrend.support.crunchyroll.data.util.CrunchySettings
 import io.wax911.support.data.source.SupportDataSource
 import io.wax911.support.data.source.contract.ISourceObservable
 import io.wax911.support.extension.util.SupportExtKeyStore
