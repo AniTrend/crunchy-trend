@@ -26,12 +26,15 @@ import co.anitrend.support.crunchyroll.data.auth.model.CrunchyLogin
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchySession
 import co.anitrend.support.crunchyroll.data.dao.migration.MIGRATION_1_2
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchySessionCore
-import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyDatabaseConverters
+import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyImageSetConverter
+import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyThumbnailConverter
+import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyUserConverter
 import co.anitrend.support.crunchyroll.data.dao.query.*
 import co.anitrend.support.crunchyroll.data.dao.view.collection.CollectionWithMedia
 import co.anitrend.support.crunchyroll.data.dao.view.series.SeriesWithCollection
 import co.anitrend.support.crunchyroll.data.model.collection.CrunchyCollection
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyLocale
+import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
 import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssMedia
 import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssNews
 import co.anitrend.support.crunchyroll.data.model.series.CrunchySeries
@@ -45,28 +48,32 @@ import co.anitrend.support.crunchyroll.data.model.user.CrunchyUser
         CrunchyLocale::class, CrunchyUser::class,
 
         CrunchySeries::class, CrunchyCollection::class,
+        CrunchyMedia::class,
 
         CrunchyRssNews::class, CrunchyRssMedia::class
     ],
-    /*views = [
+    views = [
         CollectionWithMedia::class,
         SeriesWithCollection::class
-    ],*/
+    ],
     version = BuildConfig.DATABASE_SCHEMA_VERSION
 )
 @TypeConverters(
     value = [
-        CrunchyDatabaseConverters.CrunchyImageSetConverter::class,
-        CrunchyDatabaseConverters.CrunchyThumbnailConverter::class,
-        CrunchyDatabaseConverters.CrunchyUserConverter::class
+        CrunchyImageSetConverter::class,
+        CrunchyThumbnailConverter::class,
+        CrunchyUserConverter::class
     ]
 )
 abstract class CrunchyDatabase: RoomDatabase() {
+
+    abstract fun crunchyLocaleDao(): CrunchyLocaleDao
 
     abstract fun crunchySessionCoreDao(): CrunchySessionCoreDao
 
     abstract fun crunchySeriesDao(): CrunchySeriesDao
     abstract fun crunchyCollectionDao(): CrunchyCollectionDao
+    abstract fun crunchyMediaDao(): CrunchyMediaDao
 
     abstract fun crunchyUserDao(): CrunchyUserDao
     abstract fun crunchyLoginDao(): CrunchyLoginDao

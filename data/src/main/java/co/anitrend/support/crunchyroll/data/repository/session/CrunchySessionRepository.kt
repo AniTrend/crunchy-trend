@@ -55,7 +55,7 @@ class CrunchySessionRepository(
         }
 
         val sourceModel = when (bundle.getString(SupportExtKeyStore.arg_request_type)) {
-            SessionRequestType.START_CORE_SESSION -> dataSource.coreSession.observerOnLiveDataWith(bundle)
+            CrunchySessionRequestType.START_CORE_SESSION -> dataSource.coreSession.observerOnLiveDataWith(bundle)
             else -> dataSource.session.observerOnLiveDataWith(bundle)
         }
 

@@ -25,7 +25,7 @@ import co.anitrend.support.crunchyroll.data.auth.model.CrunchySessionCore
 import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
 import co.anitrend.support.crunchyroll.data.mapper.session.CrunchySessionCoreMapper
 import co.anitrend.support.crunchyroll.data.mapper.session.CrunchySessionMapper
-import co.anitrend.support.crunchyroll.data.repository.session.SessionRequestType
+import co.anitrend.support.crunchyroll.data.repository.session.CrunchySessionRequestType
 import io.wax911.support.data.source.SupportDataSource
 import io.wax911.support.data.source.contract.ISourceObservable
 import io.wax911.support.extension.util.SupportExtKeyStore
@@ -50,8 +50,8 @@ class CrunchySessionDataSource(
     override fun startRequestForType(bundle: Bundle) {
         super.startRequestForType(bundle)
         when (val requestType = bundle.getString(SupportExtKeyStore.arg_request_type)) {
-            SessionRequestType.START_CORE_SESSION -> startCoreSession()
-            SessionRequestType.START_UNBLOCK_SESSION -> startUnblockedSession()
+            CrunchySessionRequestType.START_CORE_SESSION -> startCoreSession()
+            CrunchySessionRequestType.START_UNBLOCK_SESSION -> startUnblockedSession()
             else -> Timber.tag(moduleTag).w("Unable to identify requestType: $requestType")
         }
     }

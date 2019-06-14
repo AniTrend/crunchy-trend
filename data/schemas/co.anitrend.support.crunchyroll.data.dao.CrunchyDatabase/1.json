@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "8eea5f406ed2a30c1cda9f0eeb87d6a0",
+    "identityHash": "eb0fc69a5e9f097baf77be61b11094c8",
     "entities": [
       {
         "tableName": "CrunchySession",
@@ -472,6 +472,193 @@
         "foreignKeys": []
       },
       {
+        "tableName": "CrunchyMedia",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`media_id` INTEGER NOT NULL, `collection_id` INTEGER NOT NULL, `collection_etp_guid` TEXT NOT NULL, `series_id` INTEGER NOT NULL, `series_name` TEXT NOT NULL, `series_etp_guid` TEXT NOT NULL, `media_type` TEXT NOT NULL, `episode_number` TEXT NOT NULL, `duration` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `bif_url` TEXT NOT NULL, `url` TEXT NOT NULL, `clip` INTEGER NOT NULL, `available` INTEGER NOT NULL, `premium_available` INTEGER NOT NULL, `free_available` INTEGER NOT NULL, `availability_notes` TEXT NOT NULL, `available_time` TEXT NOT NULL, `premium_available_time` TEXT NOT NULL, `free_available_time` TEXT NOT NULL, `created` TEXT NOT NULL, `playhead` INTEGER NOT NULL, `large` TEXT NOT NULL, `full_url` TEXT NOT NULL, `fwide_url` TEXT, PRIMARY KEY(`collection_id`))",
+        "fields": [
+          {
+            "fieldPath": "media_id",
+            "columnName": "media_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "collection_id",
+            "columnName": "collection_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "collection_etp_guid",
+            "columnName": "collection_etp_guid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "series_id",
+            "columnName": "series_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "series_name",
+            "columnName": "series_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "series_etp_guid",
+            "columnName": "series_etp_guid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "media_type",
+            "columnName": "media_type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "episode_number",
+            "columnName": "episode_number",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "duration",
+            "columnName": "duration",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bif_url",
+            "columnName": "bif_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "clip",
+            "columnName": "clip",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "available",
+            "columnName": "available",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "premium_available",
+            "columnName": "premium_available",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "free_available",
+            "columnName": "free_available",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "availability_notes",
+            "columnName": "availability_notes",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "available_time",
+            "columnName": "available_time",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "premium_available_time",
+            "columnName": "premium_available_time",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "free_available_time",
+            "columnName": "free_available_time",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "created",
+            "columnName": "created",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playhead",
+            "columnName": "playhead",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "screenshot_image.large",
+            "columnName": "large",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "screenshot_image.full_url",
+            "columnName": "full_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "screenshot_image.fwide_url",
+            "columnName": "fwide_url",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "collection_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_CrunchyMedia_series_id",
+            "unique": false,
+            "columnNames": [
+              "series_id"
+            ],
+            "createSql": "CREATE  INDEX `index_CrunchyMedia_series_id` ON `${TABLE_NAME}` (`series_id`)"
+          },
+          {
+            "name": "index_CrunchyMedia_collection_id",
+            "unique": false,
+            "columnNames": [
+              "collection_id"
+            ],
+            "createSql": "CREATE  INDEX `index_CrunchyMedia_collection_id` ON `${TABLE_NAME}` (`collection_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
         "tableName": "CrunchyRssNews",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`title` TEXT NOT NULL, `author` TEXT NOT NULL, `description` TEXT NOT NULL, `encoded` TEXT NOT NULL, `publishedOn` TEXT NOT NULL, `referenceLink` TEXT NOT NULL, `guid` TEXT NOT NULL, PRIMARY KEY(`guid`))",
         "fields": [
@@ -614,10 +801,19 @@
         "foreignKeys": []
       }
     ],
-    "views": [],
+    "views": [
+      {
+        "viewName": "CollectionWithMedia",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS select c.*, c.collection_id as collectionId\n    from CrunchyCollection c\n    join CrunchyMedia m on (c.collection_id = m.collection_id)"
+      },
+      {
+        "viewName": "SeriesWithCollection",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS select s.*, c.*, s.series_id as seriesId\n    from CrunchySeries s\n    join CrunchyCollection c on (s.series_id = c.series_id)"
+      }
+    ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8eea5f406ed2a30c1cda9f0eeb87d6a0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'eb0fc69a5e9f097baf77be61b11094c8')"
     ]
   }
 }

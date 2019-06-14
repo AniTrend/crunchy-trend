@@ -30,7 +30,7 @@ interface CrunchySeriesEndpoint {
 
     @GET("/info.${BuildConfig.apiVersion}.json")
     suspend fun getSeriesInfo(
-        @Query("series_id") seriesId: Long
+        @Query("series_id") seriesId: Int?
     ) : Response<CrunchyContainer<CrunchySeries>>
 
     @GET("/autocomplete.${BuildConfig.apiVersion}.json")

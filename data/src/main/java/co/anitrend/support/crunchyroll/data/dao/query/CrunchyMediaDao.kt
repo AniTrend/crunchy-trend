@@ -38,7 +38,7 @@ interface CrunchyMediaDao : ISupportQuery<CrunchyMedia> {
     @Query("select * from CrunchyMedia where media_id = :mediaId")
     fun findByMediaIdX(
         mediaId: Long
-    ): LiveData<CrunchyMediaDao?>
+    ): LiveData<CrunchyMedia?>
 
 
 
@@ -55,5 +55,5 @@ interface CrunchyMediaDao : ISupportQuery<CrunchyMedia> {
     @Query("select * from CrunchyMedia where collection_id = :collectionId order by media_id desc")
     fun findByCollectionIdFactory(
         collectionId: Int
-    ): DataSource.Factory<Int, CrunchyMediaDao>
+    ): DataSource.Factory<Int, CrunchyMedia>
 }

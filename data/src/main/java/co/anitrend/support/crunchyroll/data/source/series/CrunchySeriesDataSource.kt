@@ -18,16 +18,22 @@ package co.anitrend.support.crunchyroll.data.source.series
 
 import android.os.Bundle
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchySeriesEndpoint
+import co.anitrend.support.crunchyroll.data.arch.source.CrunchyWorkerDataSource
 import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
-import io.wax911.support.data.source.SupportDataSource
+import co.anitrend.support.crunchyroll.data.mapper.series.CrunchySeriesMapper
+import co.anitrend.support.crunchyroll.data.mapper.series.CrunchySeriesSearchMapper
+import co.anitrend.support.crunchyroll.data.repository.series.CrunchySeriesRequestType
+import io.wax911.support.data.model.NetworkState
+import io.wax911.support.extension.util.SupportExtKeyStore
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
 import org.koin.core.inject
+import timber.log.Timber
 
 class CrunchySeriesDataSource(
     parentCoroutineJob: Job? = null,
     private val seriesEndpoint: CrunchySeriesEndpoint
-) : SupportDataSource(parentCoroutineJob) {
+) : CrunchyWorkerDataSource(parentCoroutineJob) {
 
     override val databaseHelper by inject<CrunchyDatabase>()
 
@@ -37,18 +43,58 @@ class CrunchySeriesDataSource(
      *
      * @param bundle request parameters or more
      */
-    override fun startRequestForType(bundle: Bundle) {
-        super.startRequestForType(bundle)
+    override suspend fun startRequestForType(bundle: Bundle?): NetworkState {
+        return when (val requestType = bundle?.getString(SupportExtKeyStore.arg_request_type)) {
+            CrunchySeriesRequestType.SEARCH -> searchForSeries(bundle)
+            CrunchySeriesRequestType.DETAILS -> fetchSeriesDetails(bundle)
+            else -> {
+                Timber.tag(moduleTag).w("Unable to identify requestType: $requestType")
+                NetworkState.error("Unable to identify requestType: $requestType")
+            }
+        }
     }
 
     /**
      * Clears all the data in a database table which will assure that
      * and refresh the backing storage medium with new network data
+     *
+     * @param bundle the request request parameters to use
      */
-    override fun refreshOrInvalidate() {
-        launch {
-            databaseHelper.crunchySeriesDao().clearTable()
+    override suspend fun refreshOrInvalidate(bundle: Bundle?): NetworkState {
+        databaseHelper.crunchySeriesDao().clearTable()
+        return startRequestForType(bundle)
+    }
+
+    private suspend fun searchForSeries(bundle: Bundle): NetworkState {
+        val futureResponse  = async {
+            seriesEndpoint.getSeriesAutoComplete(
+                offset = 0,
+                limit = 100,
+                query = bundle.getString(CrunchySeriesRequestType.seriesSearchQuery)
+            )
         }
-        super.refreshOrInvalidate()
+
+        val mapper = CrunchySeriesSearchMapper(
+            parentJob = supervisorJob,
+            seriesDao = databaseHelper.crunchySeriesDao()
+        )
+
+        return mapper.handleResponse(futureResponse)
+
+    }
+
+    private suspend fun fetchSeriesDetails(bundle: Bundle): NetworkState {
+        val futureResponse  = async {
+            seriesEndpoint.getSeriesInfo(
+                bundle.getInt(CrunchySeriesRequestType.seriesId)
+            )
+        }
+
+        val mapper = CrunchySeriesMapper(
+            parentJob = supervisorJob,
+            seriesDao = databaseHelper.crunchySeriesDao()
+        )
+
+        return mapper.handleResponse(futureResponse)
     }
 }

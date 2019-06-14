@@ -20,6 +20,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.*
+import co.anitrend.support.crunchyroll.data.api.endpoint.xml.CrunchyEndpoint
+import co.anitrend.support.crunchyroll.data.api.endpoint.xml.CrunchyFeedEndpoint
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyInterceptor
 import co.anitrend.support.crunchyroll.data.auth.CrunchyAuthenticationHelper
 import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
@@ -81,6 +83,15 @@ val crunchyEndpointModules = module {
     }
     factory {
         CrunchySessionEndpoint.createService()
+    }
+    factory {
+        CrunchyCoreEndpoint.createService()
+    }
+    factory {
+        CrunchyFeedEndpoint.createService()
+    }
+    factory {
+        CrunchyEndpoint.createService()
     }
 }
 

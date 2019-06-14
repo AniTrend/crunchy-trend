@@ -19,11 +19,14 @@ package co.anitrend.support.crunchyroll.data.arch.source
 import android.os.Bundle
 import io.wax911.support.data.model.NetworkState
 import io.wax911.support.data.source.SupportDataSource
+import kotlinx.coroutines.Job
 
 /**
  * A type of data source that should be be used by coroutine workers/objects
  */
-abstract class CrunchyWorkerDataSource : SupportDataSource() {
+abstract class CrunchyWorkerDataSource(
+    parentCoroutineJob: Job? = null
+) : SupportDataSource(parentCoroutineJob) {
 
     /**
      * Handles the requesting data from a the network source and informs the

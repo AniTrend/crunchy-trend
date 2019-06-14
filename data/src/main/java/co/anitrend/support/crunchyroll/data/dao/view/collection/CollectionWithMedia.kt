@@ -23,18 +23,18 @@ import co.anitrend.support.crunchyroll.data.model.collection.CrunchyCollection
 import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
 
 @DatabaseView("""
-    select CrunchyCollection.*, collection_id as collectionId
-    from CrunchyCollection
+    select c.*, c.collection_id as collectionId
+    from CrunchyCollection c
+    join CrunchyMedia m on (c.collection_id = m.collection_id)
 """)
 data class CollectionWithMedia(
     val collectionId: Int,
     @Embedded
-    val crunchyCollection: CrunchyCollection
-) {
-
+    val crunchyCollection: CrunchyCollection,
     @Relation(
         entityColumn = "collection_id",
-        parentColumn = "collectionId"
+        parentColumn = "collectionId",
+        entity = CrunchyMedia::class
     )
     var crunchyMedia: List<CrunchyMedia> = emptyList()
-}
+)

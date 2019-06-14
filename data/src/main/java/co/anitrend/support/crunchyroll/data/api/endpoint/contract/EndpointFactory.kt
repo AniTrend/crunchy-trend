@@ -72,7 +72,7 @@ abstract class EndpointFactory<S: Any>(
     fun createService(): S = retrofit.create(endpoint.java)
 
     companion object {
-        private val gson: Gson by lazy {
+        val gson: Gson by lazy {
             GsonBuilder()
                 .generateNonExecutableJson()
                 .serializeNulls()
