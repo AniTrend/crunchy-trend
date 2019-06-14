@@ -18,17 +18,23 @@ package co.anitrend.support.crunchyroll.data.dao.view.collection
 
 import androidx.room.DatabaseView
 import androidx.room.Embedded
+import androidx.room.Relation
 import co.anitrend.support.crunchyroll.data.model.collection.CrunchyCollection
 import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
 
 @DatabaseView("""
-    select c.*, m.*
-    from CrunchyCollection c
-    join CrunchyMedia m on (c.collection_id = m.collection_id)
+    select CrunchyCollection.*, collection_id as collectionId
+    from CrunchyCollection
 """)
 data class CollectionWithMedia(
+    val collectionId: Int,
     @Embedded
-    val crunchyCollection: CrunchyCollection,
-    @Embedded
-    val crunchyMedia: List<CrunchyMedia>
-)
+    val crunchyCollection: CrunchyCollection
+) {
+
+    @Relation(
+        entityColumn = "collection_id",
+        parentColumn = "collectionId"
+    )
+    var crunchyMedia: List<CrunchyMedia> = emptyList()
+}

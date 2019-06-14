@@ -16,9 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.model.series
 
-import androidx.room.Entity
-import androidx.room.Fts4
-import androidx.room.PrimaryKey
+import androidx.room.*
 import co.anitrend.support.crunchyroll.data.arch.CrunchyMediaType
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyImageSet
 import co.anitrend.support.crunchyroll.data.model.series.contract.ICrunchySeries
@@ -26,8 +24,10 @@ import co.anitrend.support.crunchyroll.data.model.series.contract.ICrunchySeries
 @Entity
 @Fts4
 data class CrunchySeries(
-    override val media_type: CrunchyMediaType,
     @PrimaryKey
+    @ColumnInfo(name = "rowid")
+    val rowId: Int,
+    override val media_type: CrunchyMediaType,
     override val series_id: Int,
     override val name: String,
     override val description: String,

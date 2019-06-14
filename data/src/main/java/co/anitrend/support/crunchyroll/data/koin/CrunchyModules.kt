@@ -56,7 +56,7 @@ val crunchyNetworkModules = module {
             connectivityHelper = get(),
             settings = get(),
             deviceToken = BuildConfig.clientToken,
-            sessionWithAuthenticatedUser = get<CrunchyDatabase>().crunchySessionDao()
+            sessionDao = get<CrunchyDatabase>().crunchySessionDao()
         )
     }
     single {

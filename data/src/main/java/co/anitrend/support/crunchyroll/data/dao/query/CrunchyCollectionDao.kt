@@ -24,36 +24,36 @@ import co.anitrend.support.crunchyroll.data.model.collection.CrunchyCollection
 import io.wax911.support.data.dao.ISupportQuery
 
 @Dao
-abstract class CrunchyCollectionDao : ISupportQuery<CrunchyCollection> {
+interface CrunchyCollectionDao : ISupportQuery<CrunchyCollection> {
 
     @Query("delete from CrunchyCollection")
-    abstract suspend fun clearTable()
+    suspend fun clearTable()
 
 
     @Query("select * from CrunchyCollection where collection_id = :collectionId")
-    abstract fun findByCollectionIdX(
+    fun findByCollectionIdX(
         collectionId: Int
     ): LiveData<CrunchyCollection?>
 
     @Query("select * from CrunchyCollection where collection_id = :collectionId")
-    abstract fun findByCollectionId(
+    fun findByCollectionId(
         collectionId: Int
     ): CrunchyCollection?
 
 
 
     @Query("select * from CrunchyCollection where series_id = :seriesId")
-    abstract suspend fun findBySeriesId(
+    suspend fun findBySeriesId(
         seriesId: Int
     ): List<CrunchyCollection>
 
     @Query("select * from CrunchyCollection where series_id = :seriesId")
-    abstract fun findBySeriesIdX(
+    fun findBySeriesIdX(
         seriesId: Int
     ): LiveData<List<CrunchyCollection>>
 
     @Query("select * from CrunchyCollection where series_id = :seriesId")
-    abstract fun findBySeriesIdFactory(
+    fun findBySeriesIdFactory(
         seriesId: Int
     ): DataSource.Factory<Int, CrunchyCollection>
 }

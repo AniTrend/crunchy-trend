@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.model.rss
 
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import co.anitrend.support.crunchyroll.data.arch.CrunchyMediaType

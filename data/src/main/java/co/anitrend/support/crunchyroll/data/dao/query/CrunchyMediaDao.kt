@@ -24,36 +24,36 @@ import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
 import io.wax911.support.data.dao.ISupportQuery
 
 @Dao
-abstract class CrunchyMediaDao : ISupportQuery<CrunchyMedia> {
+interface CrunchyMediaDao : ISupportQuery<CrunchyMedia> {
 
     @Query("delete from CrunchyMedia")
-    abstract suspend fun clearTable()
+    suspend fun clearTable()
 
 
     @Query("select * from CrunchyMedia where media_id = :mediaId")
-    abstract  suspend fun findByMediaId(
+     suspend fun findByMediaId(
         mediaId: String
     ): CrunchyMedia?
 
     @Query("select * from CrunchyMedia where media_id = :mediaId")
-    abstract fun findByMediaIdX(
+    fun findByMediaIdX(
         mediaId: Long
     ): LiveData<CrunchyMediaDao?>
 
 
 
     @Query("select * from CrunchyMedia where collection_id = :collectionId order by media_id desc")
-    abstract suspend fun findByCollectionId(
+    suspend fun findByCollectionId(
         collectionId: Int
     ): List<CrunchyMedia>
 
     @Query("select * from CrunchyMedia where collection_id = :collectionId order by media_id desc")
-    abstract fun findByCollectionIdX(
+    fun findByCollectionIdX(
         collectionId: Int
     ): LiveData<List<CrunchyMedia>>
 
     @Query("select * from CrunchyMedia where collection_id = :collectionId order by media_id desc")
-    abstract fun findByCollectionIdFactory(
+    fun findByCollectionIdFactory(
         collectionId: Int
     ): DataSource.Factory<Int, CrunchyMediaDao>
 }

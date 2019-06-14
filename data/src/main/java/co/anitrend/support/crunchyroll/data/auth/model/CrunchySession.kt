@@ -16,18 +16,24 @@
 
 package co.anitrend.support.crunchyroll.data.auth.model
 
+import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.RoomWarnings.PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED
 import co.anitrend.support.crunchyroll.data.auth.model.contract.ICrunchySession
 import co.anitrend.support.crunchyroll.data.auth.model.contract.ICrunchySessionUser
 import co.anitrend.support.crunchyroll.data.model.user.CrunchyUser
 
 @Entity
+@SuppressWarnings(PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED)
 data class CrunchySession(
+    @PrimaryKey
     override val session_id: String,
     override val country_code: String,
     override val device_type: String,
     override val device_id: String,
     override val version: String,
+    @Embedded
     override val user: CrunchyUser,
     override val auth: String,
     override val expires: String

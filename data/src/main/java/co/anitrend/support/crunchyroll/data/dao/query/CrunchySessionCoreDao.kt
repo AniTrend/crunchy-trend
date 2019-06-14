@@ -25,17 +25,17 @@ import io.wax911.support.data.dao.ISupportQuery
 import java.util.jar.Attributes
 
 @Dao
-abstract class CrunchySessionCoreDao : ISupportQuery<CrunchySessionCore> {
+interface CrunchySessionCoreDao : ISupportQuery<CrunchySessionCore> {
 
     @Query("delete from CrunchySessionCore")
-    abstract suspend fun clearTable()
+    suspend fun clearTable()
 
 
     @Query("select * from CrunchySessionCore order by sessionCoreId desc limit 1")
-    abstract suspend fun findLatest(): CrunchySessionCore?
+    suspend fun findLatest(): CrunchySessionCore?
 
     @Query("select * from CrunchySessionCore order by sessionCoreId desc limit 1")
-    abstract fun findLatestX(): LiveData<CrunchySessionCore?>
+    fun findLatestX(): LiveData<CrunchySessionCore?>
 
 
     @Transaction

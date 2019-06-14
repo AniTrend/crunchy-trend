@@ -24,47 +24,47 @@ import co.anitrend.support.crunchyroll.data.model.series.CrunchySeries
 import io.wax911.support.data.dao.ISupportQuery
 
 @Dao
-abstract class CrunchySeriesDao : ISupportQuery<CrunchySeries> {
+interface CrunchySeriesDao : ISupportQuery<CrunchySeries> {
 
     @Query("delete from CrunchySeries")
-    abstract suspend fun clearTable()
+    suspend fun clearTable()
 
 
-    @Query("select * from CrunchySeries where series_id = :seriesId")
-    abstract suspend fun findBySerieId(
+    @Query("select *, rowid from CrunchySeries where series_id = :seriesId")
+    suspend fun findBySeriesId(
         seriesId: Int
     ): CrunchySeries?
 
-    @Query("select * from CrunchySeries where series_id = :seriesId")
-    abstract fun findBySerieIdX(
+    @Query("select *, rowid from CrunchySeries where series_id = :seriesId")
+    fun findBySeriesIdX(
         seriesId: Int
     ): LiveData<CrunchySeries?>
 
 
 
-    @Query("select * from CrunchySeries where name match :seriesName order by name desc")
-    abstract suspend fun findBySeriesName(
+    @Query("select *, rowid from CrunchySeries where name match :seriesName order by name desc")
+    suspend fun findBySeriesName(
         seriesName: String
     ): List<CrunchySeries>
 
-    @Query("select * from CrunchySeries where name match :seriesName order by name desc")
-    abstract suspend fun findBySeriesNameX(
+    @Query("select *, rowid from CrunchySeries where name match :seriesName order by name desc")
+    fun findBySeriesNameX(
         seriesName: String
     ): LiveData<List<CrunchySeries>>
 
-    @Query("select * from CrunchySeries where name match :seriesName order by name desc")
-    abstract fun findBySeriesNameFactory(
+    @Query("select *, rowid from CrunchySeries where name match :seriesName order by name desc")
+    fun findBySeriesNameFactory(
         seriesName: String
     ): DataSource.Factory<Int, CrunchySeries>
 
 
 
-    @Query("select * from CrunchySeries order by name desc")
-    abstract suspend fun findAll(): List<CrunchySeries>
+    @Query("select *, rowid from CrunchySeries order by name desc")
+    suspend fun findAll(): List<CrunchySeries>
 
-    @Query("select * from CrunchySeries order by name desc")
-    abstract fun findAllX(): LiveData<List<CrunchySeries>>
+    @Query("select *, rowid from CrunchySeries order by name desc")
+    fun findAllX(): LiveData<List<CrunchySeries>>
 
-    @Query("select * from CrunchySeries order by name desc")
-    abstract fun findAllFactory(): DataSource.Factory<Int, CrunchySeries>
+    @Query("select *, rowid from CrunchySeries order by name desc")
+    fun findAllFactory(): DataSource.Factory<Int, CrunchySeries>
 }

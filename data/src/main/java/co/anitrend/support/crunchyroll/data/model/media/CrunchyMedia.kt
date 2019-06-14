@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.model.media
 
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -42,6 +43,7 @@ data class CrunchyMedia(
     override val duration: Int,
     override val name: String,
     override val description: String,
+    @Embedded
     override val screenshot_image: CrunchyImageSet,
     val bif_url: String,
     override val url: String,

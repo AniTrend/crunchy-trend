@@ -18,6 +18,7 @@ package co.anitrend.support.crunchyroll.data.dao.converter
 
 import androidx.room.TypeConverter
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyImageSet
+import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssMedia
 import co.anitrend.support.crunchyroll.data.model.user.CrunchyUser
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -32,7 +33,7 @@ object CrunchyDatabaseConverters {
             .create()
     }
 
-    val CRUNCHY_USER_CONVERTER = object : RoomConverter<CrunchyUser> {
+    class CrunchyUserConverter : RoomConverter<CrunchyUser> {
 
         /**
          * Convert database types back to the original type
@@ -59,7 +60,7 @@ object CrunchyDatabaseConverters {
         }
     }
 
-    val CRUNCHY_IMAGE_SET_CONVERTER = object : RoomConverter<CrunchyImageSet> {
+    class CrunchyImageSetConverter : RoomConverter<CrunchyImageSet> {
 
         /**
          * Convert database types back to the original type
@@ -84,5 +85,33 @@ object CrunchyDatabaseConverters {
         override fun toDatabaseValue(entity: CrunchyImageSet?): String {
             return gson.toJson(entity)
         }
+    }
+
+    class CrunchyThumbnailConverter : RoomConverter<List<CrunchyRssMedia.MediaThumbnail>> {
+
+        /**
+         * Convert database types back to the original type
+         *
+         * @see androidx.room.TypeConverter
+         * @param dbValue saved database value type
+         */
+        @TypeConverter
+        override fun fromDatabaseValue(dbValue: String): List<CrunchyRssMedia.MediaThumbnail>? {
+            val token = object : TypeToken<List<CrunchyRssMedia.MediaThumbnail>?>(){}.type
+            return gson.fromJson(dbValue, token)
+        }
+
+        /**
+         * Convert custom types to database values that room can persist,
+         * recommended persistence format is json strings.
+         *
+         * @see androidx.room.TypeConverter
+         * @param entity item which room should convert
+         */
+        @TypeConverter
+        override fun toDatabaseValue(entity: List<CrunchyRssMedia.MediaThumbnail>?): String {
+            return gson.toJson(entity)
+        }
+
     }
 }

@@ -25,17 +25,17 @@ import co.anitrend.support.crunchyroll.data.model.user.CrunchyUser
 import io.wax911.support.data.dao.ISupportQuery
 
 @Dao
-abstract class CrunchySessionDao : ISupportQuery<CrunchySession> {
+interface CrunchySessionDao : ISupportQuery<CrunchySession> {
 
     @Query("delete from CrunchySession")
-    abstract suspend fun clearTable()
+    suspend fun clearTable()
 
 
     @Query("select * from CrunchySession order by date(expires) desc limit 1")
-    abstract suspend fun findLatest(): CrunchySession?
+    suspend fun findLatest(): CrunchySession?
 
     @Query("select * from CrunchySession order by date(expires) desc limit 1")
-    abstract fun findLatestX(): LiveData<CrunchySession?>
+    fun findLatestX(): LiveData<CrunchySession?>
 
 
     @Transaction

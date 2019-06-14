@@ -31,22 +31,36 @@ import co.anitrend.support.crunchyroll.data.dao.query.*
 import co.anitrend.support.crunchyroll.data.dao.view.collection.CollectionWithMedia
 import co.anitrend.support.crunchyroll.data.dao.view.series.SeriesWithCollection
 import co.anitrend.support.crunchyroll.data.model.collection.CrunchyCollection
+import co.anitrend.support.crunchyroll.data.model.core.CrunchyLocale
+import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssMedia
+import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssNews
 import co.anitrend.support.crunchyroll.data.model.series.CrunchySeries
 import co.anitrend.support.crunchyroll.data.model.user.CrunchyUser
 
 @Database(
     entities = [
         CrunchySession::class, CrunchySessionCore::class,
-        CrunchyUser::class, CrunchySeries::class,
-        CrunchyCollection::class, CrunchyLoginDao::class
+        CrunchyLogin::class,
+
+        CrunchyLocale::class, CrunchyUser::class,
+
+        CrunchySeries::class, CrunchyCollection::class,
+
+        CrunchyRssNews::class, CrunchyRssMedia::class
     ],
-    views = [
+    /*views = [
         CollectionWithMedia::class,
         SeriesWithCollection::class
-    ],
+    ],*/
     version = BuildConfig.DATABASE_SCHEMA_VERSION
 )
-@TypeConverters(CrunchyDatabaseConverters::class)
+@TypeConverters(
+    value = [
+        CrunchyDatabaseConverters.CrunchyImageSetConverter::class,
+        CrunchyDatabaseConverters.CrunchyThumbnailConverter::class,
+        CrunchyDatabaseConverters.CrunchyUserConverter::class
+    ]
+)
 abstract class CrunchyDatabase: RoomDatabase() {
 
     abstract fun crunchySessionCoreDao(): CrunchySessionCoreDao

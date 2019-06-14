@@ -25,27 +25,27 @@ import co.anitrend.support.crunchyroll.data.model.user.CrunchyUser
 import io.wax911.support.data.dao.ISupportQuery
 
 @Dao
-abstract class CrunchyUserDao : ISupportQuery<CrunchyUser> {
+interface CrunchyUserDao : ISupportQuery<CrunchyUser> {
 
     @Query("delete from CrunchyUser")
-    abstract suspend fun clearTable()
+    suspend fun clearTable()
 
 
     @Query("select * from CrunchyUser")
-    abstract suspend fun findAll(): List<CrunchyUser>?
+    suspend fun findAll(): List<CrunchyUser>?
 
     @Query("select * from CrunchyUser")
-    abstract fun findAllX(): LiveData<List<CrunchyUser>?>
+    fun findAllX(): LiveData<List<CrunchyUser>?>
 
 
 
     @Query("select * from CrunchyUser where user_id = :userId")
-    abstract suspend fun findById(
+    suspend fun findById(
         userId: Int
     ): CrunchyUser?
 
     @Query("select * from CrunchyUser where user_id = :userId")
-    abstract fun findByIdX(
+    fun findByIdX(
         userId: Int
     ): LiveData<CrunchyUser?>
 }

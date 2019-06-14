@@ -24,7 +24,7 @@ import kotlinx.coroutines.Job
 class CrunchyCollectionMapper(
     parentJob: Job,
     private val collectionDao: CrunchyCollectionDao
-) : CrunchyMapper<CrunchyCollection, CrunchyCollection>() {
+) : CrunchyMapper<CrunchyCollection, CrunchyCollection>(parentJob) {
 
     /**
      * Creates mapped objects and handles the database operations which may be required to map various objects,
