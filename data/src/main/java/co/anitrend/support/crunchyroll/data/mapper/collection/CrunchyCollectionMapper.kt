@@ -24,7 +24,7 @@ import kotlinx.coroutines.Job
 class CrunchyCollectionMapper(
     parentJob: Job,
     private val collectionDao: CrunchyCollectionDao
-) : CrunchyMapper<CrunchyCollection, CrunchyCollection>(parentJob) {
+) : CrunchyMapper<List<CrunchyCollection>, List<CrunchyCollection>>(parentJob) {
 
     /**
      * Creates mapped objects and handles the database operations which may be required to map various objects,
@@ -34,7 +34,7 @@ class CrunchyCollectionMapper(
      * @param source the incoming data source type
      * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
      */
-    override suspend fun onResponseMapFrom(source: CrunchyCollection): CrunchyCollection {
+    override suspend fun onResponseMapFrom(source: List<CrunchyCollection>): List<CrunchyCollection> {
         return source
     }
 
@@ -45,7 +45,7 @@ class CrunchyCollectionMapper(
      *
      * @param mappedData mapped object from [onResponseMapFrom] to insert into the database
      */
-    override suspend fun onResponseDatabaseInsert(mappedData: CrunchyCollection) {
+    override suspend fun onResponseDatabaseInsert(mappedData: List<CrunchyCollection>) {
         collectionDao.upsert(mappedData)
     }
 }

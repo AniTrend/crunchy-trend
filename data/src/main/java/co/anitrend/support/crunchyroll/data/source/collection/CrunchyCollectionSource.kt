@@ -14,24 +14,23 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.source.locale
+package co.anitrend.support.crunchyroll.data.source.collection
 
 import android.os.Bundle
 import androidx.lifecycle.LiveData
-import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyCoreEndpoint
+import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyCollectionEndpoint
 import co.anitrend.support.crunchyroll.data.arch.source.CrunchyWorkerDataSource
-import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchyLocaleDao
-import co.anitrend.support.crunchyroll.data.mapper.locale.CrunchyLocaleMapper
-import co.anitrend.support.crunchyroll.data.model.core.CrunchyLocale
+import co.anitrend.support.crunchyroll.data.dao.query.CrunchyCollectionDao
+import co.anitrend.support.crunchyroll.data.mapper.collection.CrunchyCollectionMapper
+import co.anitrend.support.crunchyroll.data.model.collection.CrunchyCollection
+import co.anitrend.support.crunchyroll.data.repository.series.CrunchySeriesRequestType
 import io.wax911.support.data.model.NetworkState
 import io.wax911.support.data.source.contract.ISourceObservable
 import kotlinx.coroutines.async
-import org.koin.core.inject
 
-class CrunchyLocaleSource(
-    private val coreEndpoint: CrunchyCoreEndpoint,
-    private val localeDao: CrunchyLocaleDao
+class CrunchyCollectionSource(
+    private val collectionEndpoint: CrunchyCollectionEndpoint,
+    private val collectionDao: CrunchyCollectionDao
 ) : CrunchyWorkerDataSource() {
 
     /**
@@ -42,12 +41,16 @@ class CrunchyLocaleSource(
      */
     override suspend fun startRequestForType(bundle: Bundle?): NetworkState {
         val futureResponse = async {
-            coreEndpoint.fetchLocales()
+            collectionEndpoint.getCollections(
+                seriesId = bundle?.getInt(CrunchySeriesRequestType.seriesId),
+                offset = null,
+                limit = 50
+            )
         }
 
-        val mapper = CrunchyLocaleMapper(
+        val mapper = CrunchyCollectionMapper(
             parentJob = supervisorJob,
-            localeDao = localeDao
+            collectionDao = collectionDao
         )
 
         return mapper.handleResponse(futureResponse)
@@ -60,11 +63,11 @@ class CrunchyLocaleSource(
      * @param bundle the request request parameters to use
      */
     override suspend fun refreshOrInvalidate(bundle: Bundle?): NetworkState {
-        localeDao.clearTable()
+        collectionDao.clearTable()
         return startRequestForType(bundle)
     }
 
-    val locale = object : ISourceObservable<List<CrunchyLocale>> {
+    val collection = object : ISourceObservable<List<CrunchyCollection>> {
 
         /**
          * Returns the appropriate observable which we will monitor for updates,
@@ -73,8 +76,8 @@ class CrunchyLocaleSource(
          *
          * @param bundle request params, implementation is up to the developer
          */
-        override fun observerOnLiveDataWith(bundle: Bundle): LiveData<List<CrunchyLocale>> {
-            return localeDao.getAllX()
+        override fun observerOnLiveDataWith(bundle: Bundle): LiveData<List<CrunchyCollection>> {
+            return collectionDao.findBySeriesIdX(bundle.getInt(CrunchySeriesRequestType.seriesId))
         }
     }
 }

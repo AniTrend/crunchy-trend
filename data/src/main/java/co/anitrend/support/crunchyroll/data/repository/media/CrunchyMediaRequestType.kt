@@ -14,24 +14,9 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.dao.query
+package co.anitrend.support.crunchyroll.data.repository.media
 
-import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Query
-import co.anitrend.support.crunchyroll.data.model.core.CrunchyLocale
-import io.wax911.support.data.dao.ISupportQuery
+object CrunchyMediaRequestType {
 
-@Dao
-interface CrunchyLocaleDao : ISupportQuery<CrunchyLocale> {
-
-    @Query("delete from CrunchyLocale")
-    suspend fun clearTable()
-
-
-    @Query("select * from CrunchyLocale")
-    suspend fun getAll() : List<CrunchyLocale>
-
-    @Query("select * from CrunchyLocale")
-    fun getAllX() : LiveData<List<CrunchyLocale>>
+    const val collectionId = "collectionId"
 }

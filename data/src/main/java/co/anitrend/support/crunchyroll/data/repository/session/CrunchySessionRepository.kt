@@ -22,6 +22,10 @@ import androidx.lifecycle.Transformations
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyAuthEndpoint
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchySessionEndpoint
 import co.anitrend.support.crunchyroll.data.auth.model.contract.ICrunchySession
+import co.anitrend.support.crunchyroll.data.dao.query.CrunchyLoginDao
+import co.anitrend.support.crunchyroll.data.dao.query.CrunchySessionCoreDao
+import co.anitrend.support.crunchyroll.data.dao.query.CrunchySessionDao
+import co.anitrend.support.crunchyroll.data.dao.query.CrunchyUserDao
 import co.anitrend.support.crunchyroll.data.source.session.CrunchySessionDataSource
 import io.wax911.support.data.model.NetworkState
 import io.wax911.support.data.model.UiModel
@@ -30,7 +34,11 @@ import io.wax911.support.extension.util.SupportExtKeyStore
 
 class CrunchySessionRepository(
     private val sessionEndpoint: CrunchySessionEndpoint,
-    private val authEndpoint: CrunchyAuthEndpoint
+    private val authEndpoint: CrunchyAuthEndpoint,
+    private val sessionCoreDao: CrunchySessionCoreDao,
+    private val sessionDao: CrunchySessionDao,
+    private val loginDao: CrunchyLoginDao,
+    private val userDao: CrunchyUserDao
 ) : SupportRepository<ICrunchySession?>() {
 
 
@@ -43,7 +51,11 @@ class CrunchySessionRepository(
         val dataSource = CrunchySessionDataSource(
             parentCoroutineJob = supervisorJob,
             sessionEndpoint = sessionEndpoint,
-            authEndpoint = authEndpoint
+            authEndpoint = authEndpoint,
+            sessionCoreDao = sessionCoreDao,
+            sessionDao = sessionDao,
+            loginDao = loginDao,
+            userDao = userDao
         )
 
         // we are using a mutable live data to trigger refresh requests which eventually calls

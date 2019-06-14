@@ -20,6 +20,7 @@ import android.os.Bundle
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchySeriesEndpoint
 import co.anitrend.support.crunchyroll.data.arch.source.CrunchyWorkerDataSource
 import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
+import co.anitrend.support.crunchyroll.data.dao.query.CrunchySeriesDao
 import co.anitrend.support.crunchyroll.data.mapper.series.CrunchySeriesMapper
 import co.anitrend.support.crunchyroll.data.mapper.series.CrunchySeriesSearchMapper
 import co.anitrend.support.crunchyroll.data.repository.series.CrunchySeriesRequestType
@@ -32,10 +33,9 @@ import timber.log.Timber
 
 class CrunchySeriesDataSource(
     parentCoroutineJob: Job? = null,
-    private val seriesEndpoint: CrunchySeriesEndpoint
+    private val seriesEndpoint: CrunchySeriesEndpoint,
+    private val seriesDao: CrunchySeriesDao
 ) : CrunchyWorkerDataSource(parentCoroutineJob) {
-
-    override val databaseHelper by inject<CrunchyDatabase>()
 
     /**
      * Handles the requesting data from a the network source and informs the
@@ -61,7 +61,7 @@ class CrunchySeriesDataSource(
      * @param bundle the request request parameters to use
      */
     override suspend fun refreshOrInvalidate(bundle: Bundle?): NetworkState {
-        databaseHelper.crunchySeriesDao().clearTable()
+        seriesDao.clearTable()
         return startRequestForType(bundle)
     }
 
@@ -76,7 +76,7 @@ class CrunchySeriesDataSource(
 
         val mapper = CrunchySeriesSearchMapper(
             parentJob = supervisorJob,
-            seriesDao = databaseHelper.crunchySeriesDao()
+            seriesDao = seriesDao
         )
 
         return mapper.handleResponse(futureResponse)
@@ -92,7 +92,7 @@ class CrunchySeriesDataSource(
 
         val mapper = CrunchySeriesMapper(
             parentJob = supervisorJob,
-            seriesDao = databaseHelper.crunchySeriesDao()
+            seriesDao = seriesDao
         )
 
         return mapper.handleResponse(futureResponse)

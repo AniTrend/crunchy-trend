@@ -29,8 +29,8 @@ interface CrunchyCollectionEndpoint {
 
     @GET("/list_collections.${BuildConfig.apiVersion}.json")
     suspend fun getCollections(
-        @Query("series_id") seriesId: Long,
-        @Query("offset") offset: Int,
+        @Query("series_id") seriesId: Int?,
+        @Query("offset") offset: Int?,
         @Query("limit") limit: Int = SupportExtKeyStore.pagingLimit
     ) : Response<CrunchyContainer<List<CrunchyCollection>>>
 

@@ -31,26 +31,22 @@ interface CrunchyMediaEndpoint {
 
     @GET("/info.${BuildConfig.apiVersion}.json")
     suspend fun getMediaInfo(
-        @Query("collection_id") collectionId: Long,
-        @Query("offset") offset: Int,
-        @Query("fields") mediaFields: String = MediaFieldsContract.mediaFields,
-        @Query("limit") limit: Int = SupportExtKeyStore.pagingLimit
+        @Query("media_id") mediaId: Int,
+        @Query("fields") mediaFields: String = MediaFieldsContract.mediaFields
     ) : Response<CrunchyContainer<List<CrunchyMedia>>>
 
     @GET("/list_media.${BuildConfig.apiVersion}.json")
     suspend fun getMediaList(
-        @Query("collection_id") collectionId: Long,
+        @Query("collection_id") collectionId: Int,
         @Query("offset") offset: Int,
         @Query("limit") limit: Int = SupportExtKeyStore.pagingLimit
     ) : Response<CrunchyContainer<List<CrunchyMedia>>>
 
     @GET("/info.${BuildConfig.apiVersion}.json")
     suspend fun getStreamInfo(
-        @Query("media_id") mediaId: Long,
-        @Query("fields") mediaFields: String = MediaFieldsContract.streamFields,
-        @Query("offset") offset: Int,
-        @Query("limit") limit: Int = SupportExtKeyStore.pagingLimit
-    ) : Response<CrunchyContainer<List<CrunchyStreamInfo>>>
+        @Query("media_id") mediaId: Int,
+        @Query("fields") mediaFields: String = MediaFieldsContract.streamFields
+    ) : Response<CrunchyContainer<CrunchyStreamInfo>>
 
 
     companion object : EndpointFactory<CrunchyMediaEndpoint>(

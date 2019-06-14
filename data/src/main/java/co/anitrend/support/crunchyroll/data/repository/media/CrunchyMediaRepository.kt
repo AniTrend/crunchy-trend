@@ -14,40 +14,38 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.repository.auth
+package co.anitrend.support.crunchyroll.data.repository.media
 
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyAuthEndpoint
-import co.anitrend.support.crunchyroll.data.auth.model.CrunchyLogin
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchyLoginDao
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchySessionCoreDao
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchyUserDao
-import co.anitrend.support.crunchyroll.data.source.auth.CrunchyAuthDataSource
+import androidx.paging.PagedList
+import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyMediaEndpoint
+import co.anitrend.support.crunchyroll.data.dao.query.CrunchyMediaDao
+import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
+import co.anitrend.support.crunchyroll.data.source.media.CrunchyMediaDataSource
 import io.wax911.support.data.model.NetworkState
 import io.wax911.support.data.model.UiModel
 import io.wax911.support.data.repository.SupportRepository
 
-class CrunchyAuthRepository(
-    private val authEndpoint: CrunchyAuthEndpoint,
-    private val loginDao: CrunchyLoginDao,
-    private val userDao: CrunchyUserDao,
-    private val sessionCoreDao: CrunchySessionCoreDao
-) : SupportRepository<CrunchyLogin?>() {
+class CrunchyMediaRepository(
+    private val mediaEndpoint: CrunchyMediaEndpoint,
+    private val mediaDao: CrunchyMediaDao
+) : SupportRepository<PagedList<CrunchyMedia>>() {
 
     /**
      * Handles dispatching of network requests to a background thread
      *
      * @param bundle bundle of parameters for the request
      */
-    override fun invokeRequest(bundle: Bundle): UiModel<CrunchyLogin?> {
-        val dataSource = CrunchyAuthDataSource(
-            parentCoroutineJob = supervisorJob,
-            authEndpoint = authEndpoint,
-            loginDao = loginDao,
-            userDao = userDao,
-            sessionCoreDao = sessionCoreDao
+    override fun invokeRequest(bundle: Bundle): UiModel<PagedList<CrunchyMedia>> {
+        // create a boundary callback which will observe when the user reaches to the edges of
+        // the list and update the database with extra data.
+        val dataSource = CrunchyMediaDataSource(
+            bundle = bundle,
+            parentJob = supervisorJob,
+            mediaEndpoint = mediaEndpoint,
+            mediaDao = mediaDao
         )
 
         // we are using a mutable live data to trigger refresh requests which eventually calls
@@ -59,7 +57,7 @@ class CrunchyAuthRepository(
         }
 
         return UiModel(
-            model = dataSource.authenticatedUserLiveData.observerOnLiveDataWith(bundle),
+            model = dataSource.media.observerOnLiveDataWith(bundle),
             networkState = dataSource.networkState,
             refresh = {
                 dataSource.refreshOrInvalidate()
@@ -71,4 +69,5 @@ class CrunchyAuthRepository(
             }
         )
     }
+
 }

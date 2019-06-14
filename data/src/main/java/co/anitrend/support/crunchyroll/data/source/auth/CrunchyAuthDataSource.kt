@@ -22,6 +22,9 @@ import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyAuthEndpoin
 import co.anitrend.support.crunchyroll.data.auth.CrunchyAuthenticationHelper
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchyLogin
 import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
+import co.anitrend.support.crunchyroll.data.dao.query.CrunchyLoginDao
+import co.anitrend.support.crunchyroll.data.dao.query.CrunchySessionCoreDao
+import co.anitrend.support.crunchyroll.data.dao.query.CrunchyUserDao
 import co.anitrend.support.crunchyroll.data.mapper.auth.CrunchyLoginMapper
 import co.anitrend.support.crunchyroll.data.repository.auth.AuthRequestType
 import io.wax911.support.data.source.SupportDataSource
@@ -33,10 +36,12 @@ import timber.log.Timber
 
 class CrunchyAuthDataSource(
     parentCoroutineJob: Job? = null,
-    private val authEndpoint: CrunchyAuthEndpoint
+    private val authEndpoint: CrunchyAuthEndpoint,
+    private val loginDao: CrunchyLoginDao,
+    private val userDao: CrunchyUserDao,
+    private val sessionCoreDao: CrunchySessionCoreDao
 ) : SupportDataSource(parentCoroutineJob) {
 
-    override val databaseHelper by inject<CrunchyDatabase>()
     private val  authenticationHelper by inject<CrunchyAuthenticationHelper>()
 
     /**
@@ -57,7 +62,7 @@ class CrunchyAuthDataSource(
 
     private fun startLoginFlow(bundle: Bundle) {
         val futureResponse = async {
-            val session = databaseHelper.crunchySessionCoreDao().findLatest()
+            val session = sessionCoreDao.findLatest()
             authEndpoint.loginUser(
                 account = bundle.getString(AuthRequestType.arg_account),
                 password = bundle.getString(AuthRequestType.arg_password),
@@ -67,8 +72,8 @@ class CrunchyAuthDataSource(
 
         val mapper = CrunchyLoginMapper(
             parentJob = supervisorJob,
-            loginDao = databaseHelper.crunchyLoginDao(),
-            userDao = databaseHelper.crunchyUserDao()
+            loginDao = loginDao,
+            userDao = userDao
         )
 
         launch {
@@ -78,7 +83,7 @@ class CrunchyAuthDataSource(
 
     private fun startLogoutFlow() {
         val futureResponse = async {
-            val session = databaseHelper.crunchySessionCoreDao().findLatest()
+            val session = sessionCoreDao.findLatest()
             authEndpoint.logoutUser(
                 sessionId = session?.session_id
             )
@@ -86,17 +91,17 @@ class CrunchyAuthDataSource(
 
         val mapper = CrunchyLoginMapper(
             parentJob = supervisorJob,
-            loginDao = databaseHelper.crunchyLoginDao(),
-            userDao = databaseHelper.crunchyUserDao()
+            loginDao = loginDao,
+            userDao = userDao
         )
 
         launch {
             val resultState = mapper.handleResponse(futureResponse)
             if (resultState.isLoaded())
                 authenticationHelper.onInvalidToken(
-                    databaseHelper.crunchyUserDao(),
-                    databaseHelper.crunchyLoginDao(),
-                    databaseHelper.crunchySessionCoreDao()
+                    userDao,
+                    loginDao,
+                    sessionCoreDao
                 )
             networkState.postValue(resultState)
         }
@@ -108,7 +113,7 @@ class CrunchyAuthDataSource(
      */
     override fun refreshOrInvalidate() {
         launch {
-            databaseHelper.crunchyLoginDao().clearTable()
+            loginDao.clearTable()
         }
         super.refreshOrInvalidate()
     }
@@ -123,7 +128,7 @@ class CrunchyAuthDataSource(
          * @param bundle request params, implementation is up to the developer
          */
         override fun observerOnLiveDataWith(bundle: Bundle): LiveData<CrunchyLogin?> {
-            val loginDao = databaseHelper.crunchyLoginDao()
+            val loginDao = loginDao
             return loginDao.findLatestX()
         }
     }

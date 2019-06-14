@@ -23,6 +23,10 @@ import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchySessionEndp
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchySession
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchySessionCore
 import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
+import co.anitrend.support.crunchyroll.data.dao.query.CrunchyLoginDao
+import co.anitrend.support.crunchyroll.data.dao.query.CrunchySessionCoreDao
+import co.anitrend.support.crunchyroll.data.dao.query.CrunchySessionDao
+import co.anitrend.support.crunchyroll.data.dao.query.CrunchyUserDao
 import co.anitrend.support.crunchyroll.data.mapper.session.CrunchySessionCoreMapper
 import co.anitrend.support.crunchyroll.data.mapper.session.CrunchySessionMapper
 import co.anitrend.support.crunchyroll.data.repository.session.CrunchySessionRequestType
@@ -36,10 +40,12 @@ import timber.log.Timber
 class CrunchySessionDataSource(
     parentCoroutineJob: Job? = null,
     private val sessionEndpoint: CrunchySessionEndpoint,
-    private val authEndpoint: CrunchyAuthEndpoint
+    private val authEndpoint: CrunchyAuthEndpoint,
+    private val sessionCoreDao: CrunchySessionCoreDao,
+    private val sessionDao: CrunchySessionDao,
+    private val loginDao: CrunchyLoginDao,
+    private val userDao: CrunchyUserDao
 ) : SupportDataSource(parentCoroutineJob) {
-
-    override val databaseHelper by inject<CrunchyDatabase>()
 
     /**
      * Handles the requesting data from a the network source and informs the
@@ -66,7 +72,7 @@ class CrunchySessionDataSource(
 
         val mapper = CrunchySessionCoreMapper(
             parentJob = supervisorJob,
-            sessionCoreDao = databaseHelper.crunchySessionCoreDao()
+            sessionCoreDao = sessionCoreDao
         )
 
         launch {
@@ -79,18 +85,19 @@ class CrunchySessionDataSource(
      */
     private fun startNormalSession() {
         val futureResponse = async {
-            val login = databaseHelper.crunchyLoginDao().findLatest()
-            val sessionCore = databaseHelper.crunchySessionDao().findLatest()
+            val login = loginDao.findLatest()
+            val sessionCore = sessionDao.findLatest()
             authEndpoint.startNormalSession(
                 device_id = sessionCore?.device_id,
+                device_type = sessionCore?.device_type,
                 auth = login?.auth
             )
         }
 
         val mapper = CrunchySessionMapper(
             parentJob = supervisorJob,
-            userDao = databaseHelper.crunchyUserDao(),
-            sessionDao = databaseHelper.crunchySessionDao()
+            userDao = userDao,
+            sessionDao = sessionDao
         )
 
         launch {
@@ -104,7 +111,7 @@ class CrunchySessionDataSource(
      */
     private fun startUnblockedSession() {
         val futureResponse = async {
-            val login = databaseHelper.crunchyLoginDao().findLatest()
+            val login = loginDao.findLatest()
             sessionEndpoint.startUnblockedSession(
                 auth = login?.auth,
                 userId = login?.user?.user_id
@@ -114,8 +121,8 @@ class CrunchySessionDataSource(
 
         val mapper = CrunchySessionMapper(
             parentJob = supervisorJob,
-            userDao= databaseHelper.crunchyUserDao(),
-            sessionDao = databaseHelper.crunchySessionDao()
+            userDao= userDao,
+            sessionDao = sessionDao
         )
 
         launch {
@@ -139,7 +146,7 @@ class CrunchySessionDataSource(
          * @param bundle request params, implementation is up to the developer
          */
         override fun observerOnLiveDataWith(bundle: Bundle): LiveData<CrunchySessionCore?> {
-            val coreDao = databaseHelper.crunchySessionCoreDao()
+            val coreDao = sessionCoreDao
             return coreDao.findLatestX()
         }
     }
@@ -154,7 +161,7 @@ class CrunchySessionDataSource(
          * @param bundle request params, implementation is up to the developer
          */
         override fun observerOnLiveDataWith(bundle: Bundle): LiveData<CrunchySession?> {
-            val sessionDao = databaseHelper.crunchySessionDao()
+            val sessionDao = sessionDao
             return sessionDao.findLatestX()
         }
     }
@@ -165,8 +172,8 @@ class CrunchySessionDataSource(
      */
     override fun refreshOrInvalidate() {
         launch {
-            databaseHelper.crunchySessionDao().clearTable()
-            databaseHelper.crunchySessionCoreDao().clearTable()
+            sessionDao.clearTable()
+            sessionCoreDao.clearTable()
         }
         super.refreshOrInvalidate()
     }

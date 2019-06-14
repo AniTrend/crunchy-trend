@@ -26,6 +26,7 @@ import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyInterceptor
 import co.anitrend.support.crunchyroll.data.auth.CrunchyAuthenticationHelper
 import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
 import co.anitrend.support.crunchyroll.data.repository.auth.CrunchyAuthRepository
+import co.anitrend.support.crunchyroll.data.repository.media.CrunchyMediaRepository
 import co.anitrend.support.crunchyroll.data.repository.session.CrunchySessionRepository
 import co.anitrend.support.crunchyroll.data.util.CrunchySettings
 import io.wax911.support.extension.util.SupportConnectivityHelper
@@ -68,43 +69,29 @@ val crunchyNetworkModules = module {
     }
 }
 
-val crunchyEndpointModules = module {
-    factory {
-        CrunchyAuthEndpoint.createService()
-    }
-    factory {
-        CrunchyCollectionEndpoint.createService()
-    }
-    factory {
-        CrunchyMediaEndpoint.createService()
-    }
-    factory {
-        CrunchySeriesEndpoint.createService()
-    }
-    factory {
-        CrunchySessionEndpoint.createService()
-    }
-    factory {
-        CrunchyCoreEndpoint.createService()
-    }
-    factory {
-        CrunchyFeedEndpoint.createService()
-    }
-    factory {
-        CrunchyEndpoint.createService()
-    }
-}
-
 val crunchyRepositoryModules = module {
     factory {
         CrunchyAuthRepository(
-            authEndpoint = get()
+            authEndpoint = CrunchyAuthEndpoint.createService(),
+            userDao = get<CrunchyDatabase>().crunchyUserDao(),
+            loginDao = get<CrunchyDatabase>().crunchyLoginDao(),
+            sessionCoreDao = get<CrunchyDatabase>().crunchySessionCoreDao()
         )
     }
     factory {
         CrunchySessionRepository(
-            authEndpoint = get(),
-            sessionEndpoint = get()
+            authEndpoint = CrunchyAuthEndpoint.createService(),
+            sessionEndpoint = CrunchySessionEndpoint.createService(),
+            sessionCoreDao = get<CrunchyDatabase>().crunchySessionCoreDao(),
+            loginDao = get<CrunchyDatabase>().crunchyLoginDao(),
+            userDao = get<CrunchyDatabase>().crunchyUserDao(),
+            sessionDao = get<CrunchyDatabase>().crunchySessionDao()
+        )
+    }
+    factory {
+        CrunchyMediaRepository(
+            mediaEndpoint = CrunchyMediaEndpoint.createService(),
+            mediaDao = get<CrunchyDatabase>().crunchyMediaDao()
         )
     }
 }

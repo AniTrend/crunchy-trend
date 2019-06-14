@@ -41,14 +41,14 @@ interface CrunchyAuthEndpoint {
     @GET("/start_session.${BuildConfig.apiExtension}.json")
     suspend fun startNormalSession(
         @Query("access_token") access_token: String = BuildConfig.clientToken,
-        @Query("device_type") device_type: String = "com.crunchyroll.windows.desktop",
+        @Query("device_type") device_type: String?,
         @Query("device_id") device_id: String?,
         @Query("auth") auth: String?,
         @Query("version") version: String = BuildConfig.apiVersion
     ): Response<CrunchyContainer<CrunchySession>>
 
-    companion object : EndpointFactory<CrunchySessionEndpoint>(
-        endpoint = CrunchySessionEndpoint::class,
+    companion object : EndpointFactory<CrunchyAuthEndpoint>(
+        endpoint = CrunchyAuthEndpoint::class,
         injectInterceptor = false,
         url = BuildConfig.apiUrl
     )

@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.mapper.media
 
+import androidx.paging.PagingRequestHelper
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
 import co.anitrend.support.crunchyroll.data.dao.query.CrunchyMediaDao
 import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
@@ -23,8 +24,9 @@ import kotlinx.coroutines.Job
 
 class CrunchyMediaMapper(
     parentJob: Job,
-    private val mediaDao: CrunchyMediaDao
-) : CrunchyMapper<CrunchyMedia, CrunchyMedia>(parentJob) {
+    private val mediaDao: CrunchyMediaDao,
+    pagingRequestHelper: PagingRequestHelper.Request.Callback
+) : CrunchyMapper<List<CrunchyMedia>, List<CrunchyMedia>>(parentJob, pagingRequestHelper) {
 
     /**
      * Creates mapped objects and handles the database operations which may be required to map various objects,
@@ -34,7 +36,7 @@ class CrunchyMediaMapper(
      * @param source the incoming data source type
      * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
      */
-    override suspend fun onResponseMapFrom(source: CrunchyMedia): CrunchyMedia {
+    override suspend fun onResponseMapFrom(source: List<CrunchyMedia>): List<CrunchyMedia> {
         return source
     }
 
@@ -45,7 +47,7 @@ class CrunchyMediaMapper(
      *
      * @param mappedData mapped object from [onResponseMapFrom] to insert into the database
      */
-    override suspend fun onResponseDatabaseInsert(mappedData: CrunchyMedia) {
+    override suspend fun onResponseDatabaseInsert(mappedData: List<CrunchyMedia>) {
         mediaDao.upsert(mappedData)
     }
 }
