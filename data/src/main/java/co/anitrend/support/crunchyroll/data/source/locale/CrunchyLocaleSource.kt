@@ -16,31 +16,29 @@
 
 package co.anitrend.support.crunchyroll.data.source.locale
 
-import android.os.Bundle
 import androidx.lifecycle.LiveData
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyCoreEndpoint
-import co.anitrend.support.crunchyroll.data.arch.source.CrunchyWorkerDataSource
-import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchyLocaleDao
+import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchyLocaleDao
 import co.anitrend.support.crunchyroll.data.mapper.locale.CrunchyLocaleMapper
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyLocale
 import io.wax911.support.data.model.NetworkState
 import io.wax911.support.data.source.contract.ISourceObservable
+import io.wax911.support.data.source.coroutine.SupportCoroutineDataSource
 import kotlinx.coroutines.async
-import org.koin.core.inject
 
 class CrunchyLocaleSource(
     private val coreEndpoint: CrunchyCoreEndpoint,
     private val localeDao: CrunchyLocaleDao
-) : CrunchyWorkerDataSource() {
+) : SupportCoroutineDataSource() {
 
     /**
-     * Handles the requesting data from a the network source and informs the
-     * network state that it is in the loading state
+     * Handles the requesting data from a the network source and return
+     * [NetworkState] to the caller after execution.
      *
-     * @param bundle request parameters or more
+     * In this context the super.invoke() method will allow a retry action to be set
      */
-    override suspend fun startRequestForType(bundle: Bundle?): NetworkState {
+    override suspend fun invoke(): NetworkState {
+        super.invoke()
         val futureResponse = async {
             coreEndpoint.fetchLocales()
         }
@@ -54,26 +52,23 @@ class CrunchyLocaleSource(
     }
 
     /**
-     * Clears all the data in a database table which will assure that
-     * and refresh the backing storage medium with new network data
-     *
-     * @param bundle the request request parameters to use
+     * Clears data sources (databases, preferences, e.t.c)
      */
-    override suspend fun refreshOrInvalidate(bundle: Bundle?): NetworkState {
+    override suspend fun clearDataSource() {
         localeDao.clearTable()
-        return startRequestForType(bundle)
     }
 
-    val locale = object : ISourceObservable<List<CrunchyLocale>> {
+    val locale =
+        object : ISourceObservable<List<CrunchyLocale>, Nothing?> {
 
         /**
          * Returns the appropriate observable which we will monitor for updates,
          * common implementation may include but not limited to returning
          * data source live data for a database
          *
-         * @param bundle request params, implementation is up to the developer
+         * @param parameter parameters, implementation is up to the developer
          */
-        override fun observerOnLiveDataWith(bundle: Bundle): LiveData<List<CrunchyLocale>> {
+        override fun invoke(parameter: Nothing?): LiveData<List<CrunchyLocale>> {
             return localeDao.getAllX()
         }
     }

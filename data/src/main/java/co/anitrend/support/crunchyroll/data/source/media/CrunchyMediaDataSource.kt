@@ -16,40 +16,64 @@
 
 package co.anitrend.support.crunchyroll.data.source.media
 
-import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import androidx.paging.PagingRequestHelper
 import androidx.paging.toLiveData
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyMediaEndpoint
-import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchyMediaDao
+import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchyMediaDao
 import co.anitrend.support.crunchyroll.data.mapper.media.CrunchyMediaMapper
 import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
-import co.anitrend.support.crunchyroll.data.repository.media.CrunchyMediaRequestType
-import io.wax911.support.data.source.SupportPagingDataSource
+import co.anitrend.support.crunchyroll.data.usecase.media.CrunchyMediaUseCase
 import io.wax911.support.data.source.contract.ISourceObservable
+import io.wax911.support.data.source.paging.SupportPagingDataSource
 import io.wax911.support.data.util.SupportDataKeyStore
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import org.koin.core.inject
 
 class CrunchyMediaDataSource(
-    parentJob: Job,
+    parentCoroutineJob: Job? = null,
     private val mediaEndpoint: CrunchyMediaEndpoint,
     private val mediaDao: CrunchyMediaDao,
-    private val bundle: Bundle
-) : SupportPagingDataSource<CrunchyMedia>(parentJob) {
+    private val payload: CrunchyMediaUseCase.Payload
+) : SupportPagingDataSource<CrunchyMedia>(parentCoroutineJob) {
 
     /**
-     * Invokes dynamic requests which can be consumed which can be mapped
-     * to a destination source on success
+     * Called when zero items are returned from an initial load of the PagedList's data source.
      */
-    override fun startRequestForType(callback: PagingRequestHelper.Request.Callback) {
+    override fun onZeroItemsLoaded() {
+        pagingRequestHelper.runIfNotRunning(PagingRequestHelper.RequestType.INITIAL) {
+            invoke(it)
+        }
+    }
+
+    /**
+     * Called when the item at the end of the PagedList has been loaded, and access has
+     * occurred within [Config.prefetchDistance] of it.
+     *
+     *
+     * No more data will be appended to the PagedList after this item.
+     *
+     * @param itemAtEnd The first item of PagedList
+     */
+    override fun onItemAtEndLoaded(itemAtEnd: CrunchyMedia) {
+        pagingRequestHelper.runIfNotRunning(PagingRequestHelper.RequestType.AFTER) {
+            supportPagingHelper.onPageNext()
+            invoke(it)
+        }
+    }
+
+    /**
+     * Dispatches work for the paging data source to respective workers or mappers
+     * that publish the result to any [androidx.lifecycle.LiveData] observers
+     *
+     * @see networkState
+     */
+    override fun invoke(callback: PagingRequestHelper.Request.Callback) {
         val futureResponse = async {
             mediaEndpoint.getMediaList(
-                collectionId = bundle.getInt(CrunchyMediaRequestType.collectionId),
+                collectionId = payload.collectionId,
                 offset = supportPagingHelper.pageOffset,
                 limit = supportPagingHelper.pageSize
             )
@@ -68,53 +92,26 @@ class CrunchyMediaDataSource(
     }
 
     /**
-     * Called when zero items are returned from an initial load of the PagedList's data source.
+     * Clears data sources (databases, preferences, e.t.c)
      */
-    override fun onZeroItemsLoaded() {
-        pagingRequestHelper.runIfNotRunning(PagingRequestHelper.RequestType.INITIAL) {
-            startRequestForType(it)
-        }
-    }
-
-    /**
-     * Called when the item at the end of the PagedList has been loaded, and access has
-     * occurred within [Config.prefetchDistance] of it.
-     *
-     *
-     * No more data will be appended to the PagedList after this item.
-     *
-     * @param itemAtEnd The first item of PagedList
-     */
-    override fun onItemAtEndLoaded(itemAtEnd: CrunchyMedia) {
-        pagingRequestHelper.runIfNotRunning(PagingRequestHelper.RequestType.AFTER) {
-            supportPagingHelper.onPageNext()
-            startRequestForType(it)
-        }
-    }
-
-    /**
-     * Clears all the data in a database table which will assure that
-     * and refresh the backing storage medium with new network data
-     */
-    override fun refreshOrInvalidate() {
-        super.refreshOrInvalidate()
+    override fun clearDataSource() {
         launch {
             mediaDao.clearTable()
         }
     }
 
-    val media = object : ISourceObservable<PagedList<CrunchyMedia>> {
-
+    val media =
+        object : ISourceObservable<PagedList<CrunchyMedia>, CrunchyMediaUseCase.Payload> {
         /**
          * Returns the appropriate observable which we will monitor for updates,
          * common implementation may include but not limited to returning
          * data source live data for a database
          *
-         * @param bundle request params, implementation is up to the developer
+         * @param parameter parameters, implementation is up to the developer
          */
-        override fun observerOnLiveDataWith(bundle: Bundle): LiveData<PagedList<CrunchyMedia>> {
+        override fun invoke(parameter: CrunchyMediaUseCase.Payload): LiveData<PagedList<CrunchyMedia>> {
             val dataSource = mediaDao.findByCollectionIdFactory(
-                collectionId = bundle.getInt(CrunchyMediaRequestType.collectionId)
+                collectionId = parameter.collectionId
             )
             return dataSource.toLiveData(
                 config = SupportDataKeyStore.PAGING_CONFIGURATION,

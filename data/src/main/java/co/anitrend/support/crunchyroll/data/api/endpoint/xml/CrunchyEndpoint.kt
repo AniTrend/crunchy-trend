@@ -22,6 +22,7 @@ import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssMedia
 import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssNews
 import co.anitrend.support.crunchyroll.data.model.rss.core.CrunchyRssContainer
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -31,13 +32,13 @@ interface CrunchyEndpoint {
     @GET("/{media_slug}.rss")
     suspend fun getMediaItemsBySlug(
         @Path("media_slug") mediaSlug: String?,
-        @Query("lang") crunchyLocale: String
-    ): CrunchyRssContainer<CrunchyRssMedia>
+        @Query("locale") crunchyLocale: String
+    ): Response<CrunchyRssContainer<CrunchyRssMedia>>
 
     @GET("/newsrss")
     suspend fun getSeriesNews(
-        @Query("lang") crunchyLocale: String
-    ): CrunchyRssContainer<CrunchyRssNews>
+        @Query("locale") crunchyLocale: String
+    ): Response<CrunchyRssContainer<CrunchyRssNews>>
 
     @Suppress("DEPRECATION")
     companion object : EndpointFactory<CrunchyEndpoint>(

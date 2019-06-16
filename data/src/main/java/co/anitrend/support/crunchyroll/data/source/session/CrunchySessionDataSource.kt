@@ -16,56 +16,62 @@
 
 package co.anitrend.support.crunchyroll.data.source.session
 
-import android.os.Bundle
 import androidx.lifecycle.LiveData
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyAuthEndpoint
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchySessionEndpoint
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchySession
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchySessionCore
-import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchyLoginDao
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchySessionCoreDao
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchySessionDao
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchyUserDao
+import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchySessionCoreDao
+import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchySessionDao
 import co.anitrend.support.crunchyroll.data.mapper.session.CrunchySessionCoreMapper
 import co.anitrend.support.crunchyroll.data.mapper.session.CrunchySessionMapper
-import co.anitrend.support.crunchyroll.data.repository.session.CrunchySessionRequestType
-import io.wax911.support.data.source.SupportDataSource
+import co.anitrend.support.crunchyroll.data.usecase.session.CrunchySessionUseCase
+import io.wax911.support.data.model.NetworkState
 import io.wax911.support.data.source.contract.ISourceObservable
-import io.wax911.support.extension.util.SupportExtKeyStore
+import io.wax911.support.data.source.coroutine.SupportCoroutineDataSource
 import kotlinx.coroutines.*
-import org.koin.core.inject
 import timber.log.Timber
 
 class CrunchySessionDataSource(
-    parentCoroutineJob: Job? = null,
     private val sessionEndpoint: CrunchySessionEndpoint,
-    private val authEndpoint: CrunchyAuthEndpoint,
     private val sessionCoreDao: CrunchySessionCoreDao,
+    private val authEndpoint: CrunchyAuthEndpoint,
     private val sessionDao: CrunchySessionDao,
-    private val loginDao: CrunchyLoginDao,
-    private val userDao: CrunchyUserDao
-) : SupportDataSource(parentCoroutineJob) {
+    private val payload: CrunchySessionUseCase.Payload
+) : SupportCoroutineDataSource() {
 
     /**
-     * Handles the requesting data from a the network source and informs the
-     * network state that it is in the loading state
+     * Handles the requesting data from a the network source and return
+     * [NetworkState] to the caller after execution.
      *
-     * @param bundle request parameters or more
+     * In this context the super.invoke() method will allow a retry action to be set
      */
-    override fun startRequestForType(bundle: Bundle) {
-        super.startRequestForType(bundle)
-        when (val requestType = bundle.getString(SupportExtKeyStore.arg_request_type)) {
-            CrunchySessionRequestType.START_CORE_SESSION -> startCoreSession()
-            CrunchySessionRequestType.START_UNBLOCK_SESSION -> startUnblockedSession()
-            else -> Timber.tag(moduleTag).w("Unable to identify requestType: $requestType")
+    override suspend fun invoke(): NetworkState {
+        super.invoke()
+        return when (val requestType = payload.sessionType) {
+            CrunchySessionUseCase.Payload.RequestType.START_CORE_SESSION ->
+                startCoreSession()
+            CrunchySessionUseCase.Payload.RequestType.START_UNBLOCK_SESSION ->
+                startUnblockedSession()
+            else -> {
+                Timber.tag(moduleTag).w("Unable to identify sessionType: $requestType")
+                NetworkState.error("Unable to identify sessionType: $requestType")
+            }
         }
+    }
+
+    /**
+     * Clears data sources (databases, preferences, e.t.c)
+     */
+    override suspend fun clearDataSource() {
+        sessionDao.clearTable()
+        sessionCoreDao.clearTable()
     }
 
     /**
      * Initial session required for core library functionality
      */
-    private fun startCoreSession() {
+    private suspend fun startCoreSession() : NetworkState {
         val futureResponse = async {
             sessionEndpoint.startSession()
         }
@@ -75,106 +81,78 @@ class CrunchySessionDataSource(
             sessionCoreDao = sessionCoreDao
         )
 
-        launch {
-            mapper.handleResponse(futureResponse, networkState)
-        }
+        return mapper.handleResponse(futureResponse)
+
     }
 
     /**
      * Fallback session when [startUnblockedSession] fails
      */
-    private fun startNormalSession() {
+    private suspend fun startNormalSession() : NetworkState {
         val futureResponse = async {
-            val login = loginDao.findLatest()
-            val sessionCore = sessionDao.findLatest()
             authEndpoint.startNormalSession(
-                device_id = sessionCore?.device_id,
-                device_type = sessionCore?.device_type,
-                auth = login?.auth
+                payload = payload.onSessionFallBack().toMap()
             )
         }
 
         val mapper = CrunchySessionMapper(
             parentJob = supervisorJob,
-            userDao = userDao,
             sessionDao = sessionDao
         )
 
-        launch {
-            mapper.handleResponse(futureResponse, networkState)
-        }
+        return mapper.handleResponse(futureResponse)
     }
 
     /**
      * Authenticated session requires user to be signed in, if this sign-in method fails the we should fallback to
      * [startNormalSession]
      */
-    private fun startUnblockedSession() {
+    private suspend fun startUnblockedSession() : NetworkState {
         val futureResponse = async {
-            val login = loginDao.findLatest()
             sessionEndpoint.startUnblockedSession(
-                auth = login?.auth,
-                userId = login?.user?.user_id
+                payload = payload.toMap()
             )
         }
 
 
         val mapper = CrunchySessionMapper(
             parentJob = supervisorJob,
-            userDao= userDao,
             sessionDao = sessionDao
         )
 
-        launch {
-            val resultState = mapper.handleResponse(futureResponse)
-            withContext(Dispatchers.Main) {
-                if (!resultState.isLoaded())
-                    startNormalSession()
-                else
-                    networkState.postValue(resultState)
-            }
+        val resultState = mapper.handleResponse(futureResponse)
+
+        if (!resultState.isLoaded()) {
+            Timber.tag(moduleTag).w("Unable to create default session, trying normal session")
+            return startNormalSession()
         }
+
+        return resultState
     }
 
-    val coreSession = object : ISourceObservable<CrunchySessionCore?> {
-
+    val coreSession = object : ISourceObservable<CrunchySessionCore?, Nothing?> {
         /**
          * Returns the appropriate observable which we will monitor for updates,
          * common implementation may include but not limited to returning
          * data source live data for a database
          *
-         * @param bundle request params, implementation is up to the developer
+         * @param parameter parameters, implementation is up to the developer
          */
-        override fun observerOnLiveDataWith(bundle: Bundle): LiveData<CrunchySessionCore?> {
-            val coreDao = sessionCoreDao
-            return coreDao.findLatestX()
+        override fun invoke(parameter: Nothing?): LiveData<CrunchySessionCore?> {
+            return sessionCoreDao.findLatestX()
         }
     }
 
-    val session = object : ISourceObservable<CrunchySession?> {
-
+    val session = object : ISourceObservable<CrunchySession?, Nothing?> {
         /**
          * Returns the appropriate observable which we will monitor for updates,
          * common implementation may include but not limited to returning
          * data source live data for a database
          *
-         * @param bundle request params, implementation is up to the developer
+         * @param parameter parameters, implementation is up to the developer
          */
-        override fun observerOnLiveDataWith(bundle: Bundle): LiveData<CrunchySession?> {
-            val sessionDao = sessionDao
+        override fun invoke(parameter: Nothing?): LiveData<CrunchySession?> {
             return sessionDao.findLatestX()
         }
-    }
-
-    /**
-     * Clears all the data in a database table which will assure that
-     * and refresh the backing storage medium with new network data
-     */
-    override fun refreshOrInvalidate() {
-        launch {
-            sessionDao.clearTable()
-            sessionCoreDao.clearTable()
-        }
-        super.refreshOrInvalidate()
     }
 }

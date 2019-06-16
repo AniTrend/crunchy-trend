@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.model.rss.core
 
+import co.anitrend.support.crunchyroll.data.arch.RCF822Date
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.ElementList
 import org.simpleframework.xml.Root
@@ -29,12 +30,12 @@ data class CrunchyRssChannel<T>(
     @Element(required = false)
     val copyright: String?,
     @Element(name = "pubDate")
-    val publishedDate: String,
+    val publishedDate: RCF822Date,
     @Element
     val language: String,
     @ElementList(
         inline = true,
         required = false
     )
-    val channelItems: List<T?>?
+    val channelItems: List<T>?
 )

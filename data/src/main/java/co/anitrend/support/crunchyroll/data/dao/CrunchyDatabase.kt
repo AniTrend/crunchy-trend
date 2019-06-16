@@ -29,7 +29,9 @@ import co.anitrend.support.crunchyroll.data.auth.model.CrunchySessionCore
 import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyImageSetConverter
 import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyThumbnailConverter
 import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyUserConverter
-import co.anitrend.support.crunchyroll.data.dao.query.*
+import co.anitrend.support.crunchyroll.data.dao.query.api.*
+import co.anitrend.support.crunchyroll.data.dao.query.rss.CrunchyRssMediaDao
+import co.anitrend.support.crunchyroll.data.dao.query.rss.CrunchyRssNewsDao
 import co.anitrend.support.crunchyroll.data.dao.view.collection.CollectionWithMedia
 import co.anitrend.support.crunchyroll.data.dao.view.series.SeriesWithCollection
 import co.anitrend.support.crunchyroll.data.model.collection.CrunchyCollection
@@ -38,14 +40,13 @@ import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
 import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssMedia
 import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssNews
 import co.anitrend.support.crunchyroll.data.model.series.CrunchySeries
-import co.anitrend.support.crunchyroll.data.model.user.CrunchyUser
 
 @Database(
     entities = [
         CrunchySession::class, CrunchySessionCore::class,
         CrunchyLogin::class,
 
-        CrunchyLocale::class, CrunchyUser::class,
+        CrunchyLocale::class,
 
         CrunchySeries::class, CrunchyCollection::class,
         CrunchyMedia::class,
@@ -75,9 +76,11 @@ abstract class CrunchyDatabase: RoomDatabase() {
     abstract fun crunchyCollectionDao(): CrunchyCollectionDao
     abstract fun crunchyMediaDao(): CrunchyMediaDao
 
-    abstract fun crunchyUserDao(): CrunchyUserDao
     abstract fun crunchyLoginDao(): CrunchyLoginDao
     abstract fun crunchySessionDao(): CrunchySessionDao
+
+    abstract fun crunchyRssNewsDao(): CrunchyRssNewsDao
+    abstract fun crunchyRssMediaDao(): CrunchyRssMediaDao
 
     companion object {
         fun newInstance(context: Context): CrunchyDatabase {

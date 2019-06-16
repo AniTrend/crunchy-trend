@@ -31,6 +31,7 @@ annotation class ResponseStatusContract {
         const val BAD_REQUEST = "bad_request"
         const val BAD_SESSION = "bad_session"
         const val OBJECT_NOT_FOUND = "object_not_found"
+        const val FORBIDDEN = "forbidden"
         const val OK = "ok"
     }
 }
@@ -160,3 +161,6 @@ annotation class MediaFieldsContract {
         ).joinToString(separator = ",")
     }
 }
+
+typealias ISO8601Date = String
+typealias RCF822Date = String

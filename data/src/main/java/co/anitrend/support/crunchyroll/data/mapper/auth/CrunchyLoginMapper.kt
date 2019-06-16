@@ -18,13 +18,11 @@ package co.anitrend.support.crunchyroll.data.mapper.auth
 
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchyLogin
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchyLoginDao
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchyUserDao
+import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchyLoginDao
 import kotlinx.coroutines.Job
 
 class CrunchyLoginMapper(
     parentJob: Job,
-    private val userDao: CrunchyUserDao,
     private val loginDao: CrunchyLoginDao
 ) : CrunchyMapper<CrunchyLogin, CrunchyLogin>(parentJob) {
 
@@ -48,7 +46,6 @@ class CrunchyLoginMapper(
      * @param mappedData mapped object from [onResponseMapFrom] to insert into the database
      */
     override suspend fun onResponseDatabaseInsert(mappedData: CrunchyLogin) {
-        userDao.upsert(mappedData.user)
         loginDao.clearAndInsert(mappedData)
     }
 }

@@ -16,17 +16,18 @@
 
 package co.anitrend.support.crunchyroll.data.model.rss
 
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import co.anitrend.support.crunchyroll.data.arch.CrunchyMediaType
+import co.anitrend.support.crunchyroll.data.arch.RCF822Date
+import co.anitrend.support.crunchyroll.data.model.rss.contract.IRssCopyright
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.ElementList
 import org.simpleframework.xml.Root
 
 @Entity
 @Root(name = "item", strict = false)
-class CrunchyRssMedia(
+data class CrunchyRssMedia(
     @Element
     val title: String,
     @Element(required = false)
@@ -37,9 +38,9 @@ class CrunchyRssMedia(
     @PrimaryKey
     val mediaId: Int,
     @Element(name = "premiumPubDate")
-    val premiumAvailableDate: String,
+    val premiumAvailableDate: RCF822Date,
     @Element(name = "freePubDate")
-    val freeAvailableDate: String,
+    val freeAvailableDate: RCF822Date,
     @Element(name = "seriesTitle")
     val seriesTitle: String,
     @Element(name = "episodeTitle")
@@ -57,8 +58,9 @@ class CrunchyRssMedia(
         inline = true,
         required = false
     )
-    val thumbnail : List<MediaThumbnail>?
-) {
+    val thumbnail : List<MediaThumbnail>?,
+    override val copyright: String?
+) : IRssCopyright {
 
     @Root(name = "thumbnail", strict = false)
     data class MediaThumbnail(
@@ -91,7 +93,7 @@ class CrunchyRssMedia(
 
     override fun hashCode(): Int {
         var result = title.hashCode()
-        result = 31 * result + description.hashCode()
+        result = 31 * result + (description?.hashCode() ?: 0)
         result = 31 * result + mediaType.hashCode()
         result = 31 * result + mediaId
         result = 31 * result + premiumAvailableDate.hashCode()
@@ -100,8 +102,9 @@ class CrunchyRssMedia(
         result = 31 * result + episodeTitle.hashCode()
         result = 31 * result + episodeNumber
         result = 31 * result + duration
-        result = 31 * result + publisher.hashCode()
-        result = 31 * result + thumbnail.hashCode()
+        result = 31 * result + (publisher?.hashCode() ?: 0)
+        result = 31 * result + (thumbnail?.hashCode() ?: 0)
+        result = 31 * result + (copyright?.hashCode() ?: 0)
         return result
     }
 }

@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.data.mapper.session
 
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchySessionCore
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchySessionCoreDao
+import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchySessionCoreDao
 import kotlinx.coroutines.Job
 
 class CrunchySessionCoreMapper(

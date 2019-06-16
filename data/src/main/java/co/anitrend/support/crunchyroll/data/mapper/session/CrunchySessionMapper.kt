@@ -18,13 +18,11 @@ package co.anitrend.support.crunchyroll.data.mapper.session
 
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchySession
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchySessionDao
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchyUserDao
+import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchySessionDao
 import kotlinx.coroutines.Job
 
 class CrunchySessionMapper(
     parentJob: Job,
-    private val userDao: CrunchyUserDao,
     private val sessionDao: CrunchySessionDao
 ) : CrunchyMapper<CrunchySession, CrunchySession>(parentJob) {
 
@@ -48,6 +46,6 @@ class CrunchySessionMapper(
      * @param mappedData mapped object from [onResponseMapFrom] to insert into the database
      */
     override suspend fun onResponseDatabaseInsert(mappedData: CrunchySession) {
-        sessionDao.insertSessionAndUser(mappedData, userDao)
+        sessionDao.clearAndInsert(mappedData)
     }
 }

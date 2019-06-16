@@ -16,59 +16,21 @@
 
 package co.anitrend.support.crunchyroll.data.repository.auth
 
-import android.os.Bundle
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyAuthEndpoint
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchyLogin
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchyLoginDao
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchySessionCoreDao
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchyUserDao
-import co.anitrend.support.crunchyroll.data.source.auth.CrunchyAuthDataSource
-import io.wax911.support.data.model.NetworkState
-import io.wax911.support.data.model.UiModel
+import co.anitrend.support.crunchyroll.data.usecase.auth.CrunchyAuthenticationUseCase
 import io.wax911.support.data.repository.SupportRepository
 
 class CrunchyAuthRepository(
-    private val authEndpoint: CrunchyAuthEndpoint,
-    private val loginDao: CrunchyLoginDao,
-    private val userDao: CrunchyUserDao,
-    private val sessionCoreDao: CrunchySessionCoreDao
-) : SupportRepository<CrunchyLogin?>() {
+    private val authenticationUseCase: CrunchyAuthenticationUseCase
+) : SupportRepository<CrunchyLogin?, CrunchyAuthenticationUseCase.Payload>() {
 
     /**
      * Handles dispatching of network requests to a background thread
      *
-     * @param bundle bundle of parameters for the request
+     * @param subject subject to apply business rules
      */
-    override fun invokeRequest(bundle: Bundle): UiModel<CrunchyLogin?> {
-        val dataSource = CrunchyAuthDataSource(
-            parentCoroutineJob = supervisorJob,
-            authEndpoint = authEndpoint,
-            loginDao = loginDao,
-            userDao = userDao,
-            sessionCoreDao = sessionCoreDao
+    override fun invoke(subject: CrunchyAuthenticationUseCase.Payload) =
+        authenticationUseCase(
+            param = subject
         )
-
-        // we are using a mutable live data to trigger refresh requests which eventually calls
-        // refresh method and gets a new live data. Each refresh request by the user becomes a newly
-        // dispatched data in refreshTrigger
-        val refreshTrigger = MutableLiveData<Unit>()
-        val refreshState = Transformations.switchMap(refreshTrigger) {
-            MutableLiveData<NetworkState>()
-        }
-
-        return UiModel(
-            model = dataSource.authenticatedUserLiveData.observerOnLiveDataWith(bundle),
-            networkState = dataSource.networkState,
-            refresh = {
-                dataSource.refreshOrInvalidate()
-                refreshTrigger.value = null
-            },
-            refreshState = refreshState,
-            retry = {
-                dataSource.retryFailedRequest()
-            }
-        )
-    }
 }

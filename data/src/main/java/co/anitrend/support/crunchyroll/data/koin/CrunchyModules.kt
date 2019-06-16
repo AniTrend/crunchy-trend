@@ -19,7 +19,10 @@ package co.anitrend.support.crunchyroll.data.koin
 import android.content.Context
 import android.net.ConnectivityManager
 import co.anitrend.support.crunchyroll.data.BuildConfig
-import co.anitrend.support.crunchyroll.data.api.endpoint.json.*
+import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyAuthEndpoint
+import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyMediaEndpoint
+import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchySeriesEndpoint
+import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchySessionEndpoint
 import co.anitrend.support.crunchyroll.data.api.endpoint.xml.CrunchyEndpoint
 import co.anitrend.support.crunchyroll.data.api.endpoint.xml.CrunchyFeedEndpoint
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyInterceptor
@@ -27,13 +30,20 @@ import co.anitrend.support.crunchyroll.data.auth.CrunchyAuthenticationHelper
 import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
 import co.anitrend.support.crunchyroll.data.repository.auth.CrunchyAuthRepository
 import co.anitrend.support.crunchyroll.data.repository.media.CrunchyMediaRepository
-import co.anitrend.support.crunchyroll.data.repository.session.CrunchySessionRepository
+import co.anitrend.support.crunchyroll.data.repository.rss.CrunchyRssMediaRepository
+import co.anitrend.support.crunchyroll.data.repository.rss.CrunchyRssNewsRepository
+import co.anitrend.support.crunchyroll.data.usecase.auth.CrunchyAuthenticationUseCase
+import co.anitrend.support.crunchyroll.data.usecase.media.CrunchyMediaUseCase
+import co.anitrend.support.crunchyroll.data.usecase.rss.CrunchyRssMediaUseCase
+import co.anitrend.support.crunchyroll.data.usecase.rss.CrunchyRssNewsUseCase
+import co.anitrend.support.crunchyroll.data.usecase.series.CrunchySeriesUseCase
+import co.anitrend.support.crunchyroll.data.usecase.session.CrunchySessionUseCase
 import co.anitrend.support.crunchyroll.data.util.CrunchySettings
 import io.wax911.support.extension.util.SupportConnectivityHelper
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
-val crunchyModules = module {
+val crunchyDataModules = module {
     single {
         CrunchyDatabase.newInstance(
             context =  androidContext()
@@ -69,29 +79,68 @@ val crunchyNetworkModules = module {
     }
 }
 
-val crunchyRepositoryModules = module {
+val crunchyUseCaseModules = module {
     factory {
-        CrunchyAuthRepository(
+        CrunchyAuthenticationUseCase(
+            sessionCoreDao = get<CrunchyDatabase>().crunchySessionCoreDao(),
             authEndpoint = CrunchyAuthEndpoint.createService(),
-            userDao = get<CrunchyDatabase>().crunchyUserDao(),
-            loginDao = get<CrunchyDatabase>().crunchyLoginDao(),
-            sessionCoreDao = get<CrunchyDatabase>().crunchySessionCoreDao()
+            loginDao = get<CrunchyDatabase>().crunchyLoginDao()
         )
     }
     factory {
-        CrunchySessionRepository(
-            authEndpoint = CrunchyAuthEndpoint.createService(),
-            sessionEndpoint = CrunchySessionEndpoint.createService(),
-            sessionCoreDao = get<CrunchyDatabase>().crunchySessionCoreDao(),
-            loginDao = get<CrunchyDatabase>().crunchyLoginDao(),
-            userDao = get<CrunchyDatabase>().crunchyUserDao(),
-            sessionDao = get<CrunchyDatabase>().crunchySessionDao()
+        CrunchyMediaUseCase(
+            mediaEndpoint = CrunchyMediaEndpoint.createService(),
+            mediaDao = get<CrunchyDatabase>().crunchyMediaDao()
+        )
+    }
+    factory {
+        CrunchySeriesUseCase(
+            seriesEndpoint = CrunchySeriesEndpoint.createService(),
+            seriesDao = get<CrunchyDatabase>().crunchySeriesDao()
+        )
+    }
+    factory {
+        CrunchySessionUseCase(
+            sessionEndpoint  = CrunchySessionEndpoint.createService(),
+            sessionCoreDao  = get<CrunchyDatabase>().crunchySessionCoreDao(),
+            authEndpoint  = CrunchyAuthEndpoint.createService(),
+            sessionDao  = get<CrunchyDatabase>().crunchySessionDao()
+        )
+    }
+    factory {
+        CrunchyRssMediaUseCase(
+            rssMediaDao  = get<CrunchyDatabase>().crunchyRssMediaDao(),
+            rssCrunchyEndpoint  = CrunchyEndpoint.createService(),
+            rssFeedCrunchyEndpoint  = CrunchyFeedEndpoint.createService()
+        )
+    }
+    factory {
+        CrunchyRssNewsUseCase(
+            rssNewsDao = get<CrunchyDatabase>().crunchyRssNewsDao(),
+            rssCrunchyEndpoint = CrunchyEndpoint.createService()
+        )
+    }
+}
+
+val crunchyRepositoryModules = module {
+    factory {
+        CrunchyAuthRepository(
+            authenticationUseCase = get()
         )
     }
     factory {
         CrunchyMediaRepository(
-            mediaEndpoint = CrunchyMediaEndpoint.createService(),
-            mediaDao = get<CrunchyDatabase>().crunchyMediaDao()
+            useCase = get()
+        )
+    }
+    factory {
+        CrunchyRssMediaRepository(
+            useCase = get()
+        )
+    }
+    factory {
+        CrunchyRssNewsRepository(
+            useCase = get()
         )
     }
 }

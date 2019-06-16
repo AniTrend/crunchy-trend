@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "eb0fc69a5e9f097baf77be61b11094c8",
+    "identityHash": "0932d1b69c8c7d588ef81e6a78919237",
     "entities": [
       {
         "tableName": "CrunchySession",
@@ -246,62 +246,6 @@
         "primaryKey": {
           "columnNames": [
             "locale_id"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "CrunchyUser",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER NOT NULL, `username` TEXT NOT NULL, `email` TEXT NOT NULL, `first_name` TEXT, `last_name` TEXT, `premium` TEXT, `access_type` TEXT, PRIMARY KEY(`user_id`))",
-        "fields": [
-          {
-            "fieldPath": "user_id",
-            "columnName": "user_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "username",
-            "columnName": "username",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "email",
-            "columnName": "email",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "first_name",
-            "columnName": "first_name",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "last_name",
-            "columnName": "last_name",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "premium",
-            "columnName": "premium",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "access_type",
-            "columnName": "access_type",
-            "affinity": "TEXT",
-            "notNull": false
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "user_id"
           ],
           "autoGenerate": false
         },
@@ -660,7 +604,7 @@
       },
       {
         "tableName": "CrunchyRssNews",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`title` TEXT NOT NULL, `author` TEXT NOT NULL, `description` TEXT NOT NULL, `encoded` TEXT NOT NULL, `publishedOn` TEXT NOT NULL, `referenceLink` TEXT NOT NULL, `guid` TEXT NOT NULL, PRIMARY KEY(`guid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`title` TEXT NOT NULL, `author` TEXT NOT NULL, `description` TEXT NOT NULL, `encoded` TEXT NOT NULL, `publishedOn` TEXT NOT NULL, `referenceLink` TEXT NOT NULL, `guid` TEXT NOT NULL, `copyright` TEXT, PRIMARY KEY(`guid`))",
         "fields": [
           {
             "fieldPath": "title",
@@ -703,6 +647,12 @@
             "columnName": "guid",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "copyright",
+            "columnName": "copyright",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -716,7 +666,7 @@
       },
       {
         "tableName": "CrunchyRssMedia",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`title` TEXT NOT NULL, `description` TEXT, `mediaType` TEXT NOT NULL, `mediaId` INTEGER NOT NULL, `premiumAvailableDate` TEXT NOT NULL, `freeAvailableDate` TEXT NOT NULL, `seriesTitle` TEXT NOT NULL, `episodeTitle` TEXT NOT NULL, `episodeNumber` INTEGER NOT NULL, `duration` INTEGER NOT NULL, `publisher` TEXT, `thumbnail` TEXT, PRIMARY KEY(`mediaId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`title` TEXT NOT NULL, `description` TEXT, `mediaType` TEXT NOT NULL, `mediaId` INTEGER NOT NULL, `premiumAvailableDate` TEXT NOT NULL, `freeAvailableDate` TEXT NOT NULL, `seriesTitle` TEXT NOT NULL, `episodeTitle` TEXT NOT NULL, `episodeNumber` INTEGER NOT NULL, `duration` INTEGER NOT NULL, `publisher` TEXT, `thumbnail` TEXT, `copyright` TEXT, PRIMARY KEY(`mediaId`))",
         "fields": [
           {
             "fieldPath": "title",
@@ -789,6 +739,12 @@
             "columnName": "thumbnail",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "copyright",
+            "columnName": "copyright",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -813,7 +769,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'eb0fc69a5e9f097baf77be61b11094c8')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0932d1b69c8c7d588ef81e6a78919237')"
     ]
   }
 }

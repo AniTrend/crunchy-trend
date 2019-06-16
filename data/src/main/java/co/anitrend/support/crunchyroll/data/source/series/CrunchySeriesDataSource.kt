@@ -16,61 +16,57 @@
 
 package co.anitrend.support.crunchyroll.data.source.series
 
-import android.os.Bundle
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchySeriesEndpoint
-import co.anitrend.support.crunchyroll.data.arch.source.CrunchyWorkerDataSource
-import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchySeriesDao
+import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchySeriesDao
 import co.anitrend.support.crunchyroll.data.mapper.series.CrunchySeriesMapper
 import co.anitrend.support.crunchyroll.data.mapper.series.CrunchySeriesSearchMapper
-import co.anitrend.support.crunchyroll.data.repository.series.CrunchySeriesRequestType
+import co.anitrend.support.crunchyroll.data.usecase.series.CrunchySeriesUseCase
 import io.wax911.support.data.model.NetworkState
-import io.wax911.support.extension.util.SupportExtKeyStore
+import io.wax911.support.data.source.coroutine.SupportCoroutineDataSource
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
-import org.koin.core.inject
 import timber.log.Timber
 
 class CrunchySeriesDataSource(
     parentCoroutineJob: Job? = null,
     private val seriesEndpoint: CrunchySeriesEndpoint,
-    private val seriesDao: CrunchySeriesDao
-) : CrunchyWorkerDataSource(parentCoroutineJob) {
+    private val seriesDao: CrunchySeriesDao,
+    private val payload: CrunchySeriesUseCase.Payload
+) : SupportCoroutineDataSource(parentCoroutineJob) {
 
     /**
-     * Handles the requesting data from a the network source and informs the
-     * network state that it is in the loading state
+     * Handles the requesting data from a the network source and return
+     * [NetworkState] to the caller after execution.
      *
-     * @param bundle request parameters or more
+     * In this context the super.invoke() method will allow a retry action to be set
      */
-    override suspend fun startRequestForType(bundle: Bundle?): NetworkState {
-        return when (val requestType = bundle?.getString(SupportExtKeyStore.arg_request_type)) {
-            CrunchySeriesRequestType.SEARCH -> searchForSeries(bundle)
-            CrunchySeriesRequestType.DETAILS -> fetchSeriesDetails(bundle)
+    override suspend fun invoke(): NetworkState {
+        super.invoke()
+        return when (val requestType = payload.seriesRequestType) {
+            CrunchySeriesUseCase.Payload.RequestType.SEARCH ->
+                searchForSeries()
+            CrunchySeriesUseCase.Payload.RequestType.DETAILS ->
+                fetchSeriesDetails()
             else -> {
-                Timber.tag(moduleTag).w("Unable to identify requestType: $requestType")
-                NetworkState.error("Unable to identify requestType: $requestType")
+                Timber.tag(moduleTag).w("Unable to identify sessionType: $requestType")
+                NetworkState.error("Unable to identify sessionType: $requestType")
             }
         }
     }
 
     /**
-     * Clears all the data in a database table which will assure that
-     * and refresh the backing storage medium with new network data
-     *
-     * @param bundle the request request parameters to use
+     * Clears data sources (databases, preferences, e.t.c)
      */
-    override suspend fun refreshOrInvalidate(bundle: Bundle?): NetworkState {
+    override suspend fun clearDataSource() {
         seriesDao.clearTable()
-        return startRequestForType(bundle)
     }
 
-    private suspend fun searchForSeries(bundle: Bundle): NetworkState {
+    private suspend fun searchForSeries(): NetworkState {
         val futureResponse  = async {
             seriesEndpoint.getSeriesAutoComplete(
                 offset = 0,
                 limit = 100,
-                query = bundle.getString(CrunchySeriesRequestType.seriesSearchQuery)
+                query = payload.query
             )
         }
 
@@ -83,10 +79,10 @@ class CrunchySeriesDataSource(
 
     }
 
-    private suspend fun fetchSeriesDetails(bundle: Bundle): NetworkState {
+    private suspend fun fetchSeriesDetails(): NetworkState {
         val futureResponse  = async {
             seriesEndpoint.getSeriesInfo(
-                bundle.getInt(CrunchySeriesRequestType.seriesId)
+                seriesId = payload.seriesId
             )
         }
 

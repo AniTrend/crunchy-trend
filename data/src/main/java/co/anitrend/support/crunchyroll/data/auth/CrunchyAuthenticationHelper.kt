@@ -17,10 +17,7 @@
 package co.anitrend.support.crunchyroll.data.auth
 
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchySession
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchyLoginDao
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchySessionCoreDao
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchySessionDao
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchyUserDao
+import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchySessionDao
 import co.anitrend.support.crunchyroll.data.util.CrunchySettings
 import io.wax911.support.data.auth.SupportAuthentication
 import io.wax911.support.extension.util.SupportConnectivityHelper
@@ -31,14 +28,14 @@ import okhttp3.Request
 import timber.log.Timber
 
 class CrunchyAuthenticationHelper(
-    private val sessionDao: CrunchySessionDao,
     private val connectivityHelper: SupportConnectivityHelper,
+    private val sessionDao: CrunchySessionDao,
     private val settings: CrunchySettings,
     private val deviceToken: String
 ): SupportAuthentication<String>() {
 
     /**
-     * Facade to provide information on authentication status of the application,
+     * Facade to provide information on auth status of the application,
      * on demand
      */
     override val isAuthenticated: Boolean
@@ -74,7 +71,7 @@ class CrunchyAuthenticationHelper(
     }
 
     /**
-     * Injects authentication headers if the application was authenticated,
+     * Injects auth headers if the application was authenticated,
      * otherwise non
      *
      * @param requestBuilder
@@ -84,7 +81,7 @@ class CrunchyAuthenticationHelper(
     }
 
     /**
-     * Injects authentication headers if the application was authenticated,
+     * Injects auth headers if the application was authenticated,
      * otherwise non
      *
      * @param request
@@ -122,7 +119,7 @@ class CrunchyAuthenticationHelper(
      * included in the URL fragment will be an access_token parameter that includes the JWT access token
      * used to make requests on their behalf.
      *
-     * Otherwise this could just be an authentication result that should be handled and complete the authentication
+     * Otherwise this could just be an auth result that should be handled and complete the auth
      * process on the users behalf
      *
      * @param authPayload payload from an authenticating source
@@ -144,21 +141,12 @@ class CrunchyAuthenticationHelper(
         }
     }
 
-    /**
-     * Handle invalid token state by either renewing it or un-authenticates
-     * the user locally if the token cannot be refreshed
-     */
-    suspend fun onInvalidToken(
-        userDao: CrunchyUserDao,
-        loginDao: CrunchyLoginDao,
-        sessionCoreDao: CrunchySessionCoreDao
-    ) {
-        withContext(Dispatchers.Main) { onInvalidToken() }
-
-        userDao.clearTable()
-        loginDao.clearTable()
-        sessionDao.clearTable()
-        sessionCoreDao.clearTable()
+    suspend fun onInvalidateToken() {
+        withContext(Dispatchers.Main) {
+            onInvalidateToken()
+        }
+        if (connectivityHelper.isConnected)
+            sessionDao.clearTable()
     }
 
     companion object {

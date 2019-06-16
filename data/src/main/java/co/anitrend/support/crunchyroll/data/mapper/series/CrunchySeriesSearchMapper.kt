@@ -17,7 +17,7 @@
 package co.anitrend.support.crunchyroll.data.mapper.series
 
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchySeriesDao
+import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchySeriesDao
 import co.anitrend.support.crunchyroll.data.model.series.CrunchySeries
 import kotlinx.coroutines.Job
 

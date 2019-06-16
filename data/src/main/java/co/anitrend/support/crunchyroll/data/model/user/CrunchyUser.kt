@@ -16,13 +16,9 @@
 
 package co.anitrend.support.crunchyroll.data.model.user
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import co.anitrend.support.crunchyroll.data.arch.AccessType
 
-@Entity
 data class CrunchyUser(
-    @PrimaryKey
     val user_id: Int,
     val username: String,
     val email: String,

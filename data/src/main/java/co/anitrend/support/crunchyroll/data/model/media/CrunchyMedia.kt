@@ -21,6 +21,7 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import co.anitrend.support.crunchyroll.data.arch.CrunchyMediaType
+import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyImageSet
 import co.anitrend.support.crunchyroll.data.model.media.contract.ICrunchyMedia
 
@@ -53,8 +54,8 @@ data class CrunchyMedia(
     val free_available: Boolean,
     val availability_notes: String,
     val available_time: String,
-    val premium_available_time: String,
-    val free_available_time: String,
-    val created: String,
+    val premium_available_time: ISO8601Date,
+    val free_available_time: ISO8601Date,
+    val created: ISO8601Date,
     override val playhead: Int
 ) : ICrunchyMedia

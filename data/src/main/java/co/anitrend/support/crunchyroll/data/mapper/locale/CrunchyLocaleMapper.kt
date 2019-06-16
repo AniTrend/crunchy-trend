@@ -17,7 +17,7 @@
 package co.anitrend.support.crunchyroll.data.mapper.locale
 
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchyLocaleDao
+import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchyLocaleDao
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyLocale
 import kotlinx.coroutines.Job
 

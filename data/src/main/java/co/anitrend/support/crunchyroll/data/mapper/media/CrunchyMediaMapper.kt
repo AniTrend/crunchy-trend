@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.data.mapper.media
 
 import androidx.paging.PagingRequestHelper
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchyMediaDao
+import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchyMediaDao
 import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
 import kotlinx.coroutines.Job
 

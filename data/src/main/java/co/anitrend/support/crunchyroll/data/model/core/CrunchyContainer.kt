@@ -33,4 +33,7 @@ data class CrunchyContainer<D>(
 
     fun isObjectNotFound() =
         code == ResponseStatusContract.OBJECT_NOT_FOUND
+
+    fun isForbidden() =
+        code == ResponseStatusContract.FORBIDDEN
 }

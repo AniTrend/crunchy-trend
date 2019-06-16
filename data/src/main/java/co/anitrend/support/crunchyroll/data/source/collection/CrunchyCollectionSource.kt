@@ -16,33 +16,34 @@
 
 package co.anitrend.support.crunchyroll.data.source.collection
 
-import android.os.Bundle
 import androidx.lifecycle.LiveData
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyCollectionEndpoint
-import co.anitrend.support.crunchyroll.data.arch.source.CrunchyWorkerDataSource
-import co.anitrend.support.crunchyroll.data.dao.query.CrunchyCollectionDao
+import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchyCollectionDao
 import co.anitrend.support.crunchyroll.data.mapper.collection.CrunchyCollectionMapper
 import co.anitrend.support.crunchyroll.data.model.collection.CrunchyCollection
-import co.anitrend.support.crunchyroll.data.repository.series.CrunchySeriesRequestType
+import co.anitrend.support.crunchyroll.data.usecase.series.CrunchySeriesUseCase
 import io.wax911.support.data.model.NetworkState
 import io.wax911.support.data.source.contract.ISourceObservable
+import io.wax911.support.data.source.coroutine.SupportCoroutineDataSource
 import kotlinx.coroutines.async
 
 class CrunchyCollectionSource(
     private val collectionEndpoint: CrunchyCollectionEndpoint,
-    private val collectionDao: CrunchyCollectionDao
-) : CrunchyWorkerDataSource() {
+    private val collectionDao: CrunchyCollectionDao,
+    private val payload: CrunchySeriesUseCase.Payload
+) : SupportCoroutineDataSource() {
 
     /**
-     * Handles the requesting data from a the network source and informs the
-     * network state that it is in the loading state
+     * Handles the requesting data from a the network source and return
+     * [NetworkState] to the caller after execution.
      *
-     * @param bundle request parameters or more
+     * In this context the super.invoke() method will allow a retry action to be set
      */
-    override suspend fun startRequestForType(bundle: Bundle?): NetworkState {
+    override suspend fun invoke(): NetworkState {
+        super.invoke()
         val futureResponse = async {
             collectionEndpoint.getCollections(
-                seriesId = bundle?.getInt(CrunchySeriesRequestType.seriesId),
+                seriesId = payload.seriesId,
                 offset = null,
                 limit = 50
             )
@@ -57,27 +58,23 @@ class CrunchyCollectionSource(
     }
 
     /**
-     * Clears all the data in a database table which will assure that
-     * and refresh the backing storage medium with new network data
-     *
-     * @param bundle the request request parameters to use
+     * Clears data sources (databases, preferences, e.t.c)
      */
-    override suspend fun refreshOrInvalidate(bundle: Bundle?): NetworkState {
+    override suspend fun clearDataSource() {
         collectionDao.clearTable()
-        return startRequestForType(bundle)
     }
 
-    val collection = object : ISourceObservable<List<CrunchyCollection>> {
-
+    val collection =
+        object : ISourceObservable<List<CrunchyCollection>, CrunchySeriesUseCase.Payload> {
         /**
          * Returns the appropriate observable which we will monitor for updates,
          * common implementation may include but not limited to returning
          * data source live data for a database
          *
-         * @param bundle request params, implementation is up to the developer
+         * @param parameter parameters, implementation is up to the developer
          */
-        override fun observerOnLiveDataWith(bundle: Bundle): LiveData<List<CrunchyCollection>> {
-            return collectionDao.findBySeriesIdX(bundle.getInt(CrunchySeriesRequestType.seriesId))
+        override fun invoke(parameter: CrunchySeriesUseCase.Payload): LiveData<List<CrunchyCollection>> {
+            return collectionDao.findBySeriesIdX(payload.seriesId)
         }
     }
 }
