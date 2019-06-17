@@ -17,12 +17,12 @@
 package co.anitrend.support.crunchyroll.data.dao.converter
 
 import androidx.room.TypeConverter
-import co.anitrend.support.crunchyroll.data.api.endpoint.contract.EndpointFactory
-import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssMedia
+import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory.Companion.GSON_BUILDER
+import co.anitrend.support.crunchyroll.data.model.rss.MediaThumbnail
 import com.google.gson.reflect.TypeToken
 import io.wax911.support.data.dao.RoomConverter
 
-class CrunchyThumbnailConverter : RoomConverter<List<CrunchyRssMedia.MediaThumbnail>> {
+class CrunchyThumbnailConverter : RoomConverter<List<MediaThumbnail>> {
 
     /**
      * Convert database types back to the original type
@@ -31,9 +31,9 @@ class CrunchyThumbnailConverter : RoomConverter<List<CrunchyRssMedia.MediaThumbn
      * @param dbValue saved database value type
      */
     @TypeConverter
-    override fun fromDatabaseValue(dbValue: String): List<CrunchyRssMedia.MediaThumbnail>? {
-        val token = object : TypeToken<List<CrunchyRssMedia.MediaThumbnail>?>(){}.type
-        return EndpointFactory.gson.fromJson(dbValue, token)
+    override fun fromDatabaseValue(dbValue: String): List<MediaThumbnail>? {
+        val token = object : TypeToken<List<MediaThumbnail>?>(){}.type
+        return GSON_BUILDER.create().fromJson(dbValue, token)
     }
 
     /**
@@ -44,8 +44,8 @@ class CrunchyThumbnailConverter : RoomConverter<List<CrunchyRssMedia.MediaThumbn
      * @param entity item which room should convert
      */
     @TypeConverter
-    override fun toDatabaseValue(entity: List<CrunchyRssMedia.MediaThumbnail>?): String {
-        return EndpointFactory.gson.toJson(entity)
+    override fun toDatabaseValue(entity: List<MediaThumbnail>?): String {
+        return GSON_BUILDER.create().toJson(entity)
     }
 
 }

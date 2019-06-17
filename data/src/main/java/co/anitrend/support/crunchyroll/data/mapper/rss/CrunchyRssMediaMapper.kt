@@ -20,7 +20,7 @@ import androidx.paging.PagingRequestHelper
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyRssMapper
 import co.anitrend.support.crunchyroll.data.dao.query.rss.CrunchyRssMediaDao
 import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssMedia
-import co.anitrend.support.crunchyroll.data.model.rss.core.CrunchyRssChannel
+import co.anitrend.support.crunchyroll.data.model.rss.contract.ICrunchyRssChannel
 import kotlinx.coroutines.Job
 import timber.log.Timber
 
@@ -38,8 +38,8 @@ class CrunchyRssMediaMapper(
      * @param source the incoming data source type
      * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
      */
-    override suspend fun onResponseMapFrom(source: CrunchyRssChannel<CrunchyRssMedia>): List<CrunchyRssMedia> {
-        return source.channelItems?.map {
+    override suspend fun onResponseMapFrom(source: ICrunchyRssChannel<CrunchyRssMedia>): List<CrunchyRssMedia> {
+        return source.item?.map {
             it.copy(copyright = source.copyright)
         } ?: emptyList()
     }

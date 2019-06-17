@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.data.api.endpoint.json
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
+import co.anitrend.support.crunchyroll.data.api.contract.JSON
 import co.anitrend.support.crunchyroll.data.api.endpoint.contract.EndpointFactory
 import co.anitrend.support.crunchyroll.data.arch.MediaFieldsContract
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyContainer
@@ -29,12 +30,14 @@ import retrofit2.http.Query
 
 interface CrunchyMediaEndpoint {
 
+    @JSON
     @GET("/info.${BuildConfig.apiVersion}.json")
     suspend fun getMediaInfo(
         @Query("media_id") mediaId: Int,
         @Query("fields") mediaFields: String = MediaFieldsContract.mediaFields
     ) : Response<CrunchyContainer<List<CrunchyMedia>>>
 
+    @JSON
     @GET("/list_media.${BuildConfig.apiVersion}.json")
     suspend fun getMediaList(
         @Query("collection_id") collectionId: Int,
@@ -42,6 +45,7 @@ interface CrunchyMediaEndpoint {
         @Query("limit") limit: Int = SupportExtKeyStore.pagingLimit
     ) : Response<CrunchyContainer<List<CrunchyMedia>>>
 
+    @JSON
     @GET("/info.${BuildConfig.apiVersion}.json")
     suspend fun getStreamInfo(
         @Query("media_id") mediaId: Int,

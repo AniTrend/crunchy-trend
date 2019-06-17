@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.usecase.session
 
+import android.os.Parcelable
 import androidx.annotation.StringDef
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyAuthEndpoint
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchySessionEndpoint
@@ -26,6 +27,7 @@ import co.anitrend.support.crunchyroll.data.usecase.contract.IMappable
 import co.anitrend.support.crunchyroll.data.usecase.session.contract.ISessionUseCasePayload
 import io.wax911.support.data.model.NetworkState
 import io.wax911.support.data.usecase.coroutine.ISupportCoroutineUseCase
+import kotlinx.android.parcel.Parcelize
 
 class CrunchySessionUseCase(
     private val sessionEndpoint: CrunchySessionEndpoint,
@@ -51,6 +53,7 @@ class CrunchySessionUseCase(
         return dataSource()
     }
 
+    @Parcelize
     data class Payload(
         @RequestType
         override val sessionType: String?,
@@ -58,7 +61,7 @@ class CrunchySessionUseCase(
         override val deviceType: String?,
         val auth: String,
         val userId: Int?
-    ) : ISessionUseCasePayload {
+    ) : ISessionUseCasePayload, Parcelable {
 
         override fun toMap() = mapOf(
             "auth" to auth,

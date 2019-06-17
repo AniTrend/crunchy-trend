@@ -17,17 +17,13 @@
 package co.anitrend.support.crunchyroll.data.api.endpoint.contract
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import okhttp3.Authenticator
+import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import retrofit2.Converter
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
@@ -41,8 +37,7 @@ import kotlin.reflect.KClass
 abstract class EndpointFactory<S: Any>(
     private val url: String,
     private val endpoint: KClass<S>,
-    private val injectInterceptor: Boolean = true,
-    private val converterFactory: Converter.Factory = GsonConverterFactory.create(gson)
+    private val injectInterceptor: Boolean = true
 ) : KoinComponent {
 
     private val clientInterceptor by inject<Interceptor>()
@@ -65,19 +60,11 @@ abstract class EndpointFactory<S: Any>(
             }.build()
 
         Retrofit.Builder().client(httpClient).apply {
-            addConverterFactory(converterFactory).baseUrl(url)
+            addConverterFactory(
+                CrunchyConverterFactory.create()
+            ).baseUrl(url)
         }.build()
     }
 
-    fun createService(): S = retrofit.create(endpoint.java)
-
-    companion object {
-        val gson: Gson by lazy {
-            GsonBuilder()
-                .generateNonExecutableJson()
-                .serializeNulls()
-                .setLenient()
-                .create()
-        }
-    }
+    fun create(): S = retrofit.create(endpoint.java)
 }

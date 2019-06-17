@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.usecase.auth
 
+import android.os.Parcelable
 import androidx.annotation.StringDef
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -28,6 +29,7 @@ import co.anitrend.support.crunchyroll.data.usecase.contract.IMappable
 import io.wax911.support.data.model.NetworkState
 import io.wax911.support.data.model.UiModel
 import io.wax911.support.data.usecase.core.ISupportCoreUseCase
+import kotlinx.android.parcel.Parcelize
 
 class CrunchyAuthenticationUseCase(
     private val sessionCoreDao: CrunchySessionCoreDao,
@@ -70,13 +72,14 @@ class CrunchyAuthenticationUseCase(
         )
     }
 
+    @Parcelize
     data class Payload(
         val account: String,
         val password: String,
         val sessionId: String?,
         @RequestType
         val authenticationType: String
-    ) : IMappable {
+    ) : IMappable, Parcelable {
         override fun toMap() = mapOf(
             "account" to account,
             "password" to password,

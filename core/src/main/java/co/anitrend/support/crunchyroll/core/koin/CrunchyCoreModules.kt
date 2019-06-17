@@ -21,9 +21,11 @@ import co.anitrend.support.crunchyroll.core.util.CrunchyDateHelper
 import co.anitrend.support.crunchyroll.core.viewmodel.auth.CrunchyAuthViewModel
 import co.anitrend.support.crunchyroll.core.viewmodel.media.CrunchyMediaViewModel
 import co.anitrend.support.crunchyroll.core.viewmodel.rss.CrunchyRssMediaViewModel
+import co.anitrend.support.crunchyroll.core.viewmodel.rss.CrunchyRssNewsViewModel
 import co.anitrend.support.crunchyroll.data.repository.auth.CrunchyAuthRepository
 import co.anitrend.support.crunchyroll.data.repository.media.CrunchyMediaRepository
 import co.anitrend.support.crunchyroll.data.repository.rss.CrunchyRssMediaRepository
+import co.anitrend.support.crunchyroll.data.repository.rss.CrunchyRssNewsRepository
 import co.anitrend.support.crunchyroll.data.util.CrunchySettings
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -62,8 +64,8 @@ val crunchyCoreViewModelModules = module {
         )
     }
     viewModel {
-        CrunchyRssMediaViewModel(
-            repository = get<CrunchyRssMediaRepository>()
+        CrunchyRssNewsViewModel(
+            repository = get<CrunchyRssNewsRepository>()
         )
     }
 }

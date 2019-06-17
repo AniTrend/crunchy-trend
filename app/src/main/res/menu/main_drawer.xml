@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~    Copyright 2019 AniTrend
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:title="@string/nav_header_navigation">
+        <menu>
+            <group android:id="@+id/nav_group_navigation"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_show_latest"
+                    android:icon="@drawable/ic_live_tv_24dp"
+                    android:title="@string/nav_show_latest"
+                    app:showAsAction="ifRoom|withText"/>
+
+                <item
+                    android:id="@+id/nav_show_news"
+                    android:icon="@drawable/ic_local_movies_24dp"
+                    android:title="@string/nav_show_news"
+                    app:showAsAction="ifRoom|withText"/>
+            </group>
+        </menu>
+    </item>
+
+    <item android:title="@string/nav_header_customization">
+        <menu>
+            <group android:id="@+id/nav_group_customization">
+                <item
+                    android:id="@+id/nav_theme"
+                    android:icon="@drawable/ic_invert_colors_24dp"
+                    android:title="@string/nav_theme" />
+            </group>
+        </menu>
+    </item>
+
+    <item android:title="@string/nav_header_support">
+        <menu>
+            <group android:id="@+id/nav_group_support">
+                <item
+                    android:id="@+id/nav_about"
+                    android:icon="@drawable/ic_help_24dp"
+                    android:title="@string/nav_about" />
+                <item
+                    android:id="@+id/nav_contact"
+                    android:icon="@drawable/ic_email_24dp"
+                    android:title="@string/nav_contact" />
+            </group>
+        </menu>
+    </item>
+
+</menu>

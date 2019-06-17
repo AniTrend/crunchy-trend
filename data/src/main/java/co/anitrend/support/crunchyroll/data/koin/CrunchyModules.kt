@@ -56,7 +56,7 @@ val crunchyDataModules = module {
     }
 }
 
-val crunchyNetworkModules = module {
+val crunchyDataNetworkModules = module {
     factory {
         SupportConnectivityHelper(
             androidContext().getSystemService(
@@ -79,50 +79,50 @@ val crunchyNetworkModules = module {
     }
 }
 
-val crunchyUseCaseModules = module {
+val crunchyDataUseCaseModules = module {
     factory {
         CrunchyAuthenticationUseCase(
             sessionCoreDao = get<CrunchyDatabase>().crunchySessionCoreDao(),
-            authEndpoint = CrunchyAuthEndpoint.createService(),
+            authEndpoint = CrunchyAuthEndpoint.create(),
             loginDao = get<CrunchyDatabase>().crunchyLoginDao()
         )
     }
     factory {
         CrunchyMediaUseCase(
-            mediaEndpoint = CrunchyMediaEndpoint.createService(),
+            mediaEndpoint = CrunchyMediaEndpoint.create(),
             mediaDao = get<CrunchyDatabase>().crunchyMediaDao()
         )
     }
     factory {
         CrunchySeriesUseCase(
-            seriesEndpoint = CrunchySeriesEndpoint.createService(),
+            seriesEndpoint = CrunchySeriesEndpoint.create(),
             seriesDao = get<CrunchyDatabase>().crunchySeriesDao()
         )
     }
     factory {
         CrunchySessionUseCase(
-            sessionEndpoint  = CrunchySessionEndpoint.createService(),
+            sessionEndpoint  = CrunchySessionEndpoint.create(),
             sessionCoreDao  = get<CrunchyDatabase>().crunchySessionCoreDao(),
-            authEndpoint  = CrunchyAuthEndpoint.createService(),
+            authEndpoint  = CrunchyAuthEndpoint.create(),
             sessionDao  = get<CrunchyDatabase>().crunchySessionDao()
         )
     }
     factory {
         CrunchyRssMediaUseCase(
             rssMediaDao  = get<CrunchyDatabase>().crunchyRssMediaDao(),
-            rssCrunchyEndpoint  = CrunchyEndpoint.createService(),
-            rssFeedCrunchyEndpoint  = CrunchyFeedEndpoint.createService()
+            rssCrunchyEndpoint  = CrunchyEndpoint.create(),
+            rssFeedCrunchyEndpoint  = CrunchyFeedEndpoint.create()
         )
     }
     factory {
         CrunchyRssNewsUseCase(
             rssNewsDao = get<CrunchyDatabase>().crunchyRssNewsDao(),
-            rssCrunchyEndpoint = CrunchyEndpoint.createService()
+            rssCrunchyEndpoint = CrunchyEndpoint.create()
         )
     }
 }
 
-val crunchyRepositoryModules = module {
+val crunchyDataRepositoryModules = module {
     factory {
         CrunchyAuthRepository(
             authenticationUseCase = get()

@@ -17,31 +17,31 @@
 package co.anitrend.support.crunchyroll.data.api.endpoint.xml
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
+import co.anitrend.support.crunchyroll.data.api.contract.XML
 import co.anitrend.support.crunchyroll.data.api.endpoint.contract.EndpointFactory
 import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssMedia
-import co.anitrend.support.crunchyroll.data.model.rss.core.CrunchyRssContainer
+import co.anitrend.support.crunchyroll.data.model.rss.core.CrunchyRssMediaContainer
 import retrofit2.Response
-import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface CrunchyFeedEndpoint {
 
+    @XML
     @GET("/crunchyroll/rss/anime/popular")
     suspend fun getPopularMediaFeed(
         @Query("locale") crunchyLocale: String
-    ): Response<CrunchyRssContainer<CrunchyRssMedia>>
+    ): Response<CrunchyRssMediaContainer>
 
+    @XML
     @GET("/crunchyroll/rss/anime")
-    suspend fun getLatestMediaFedd(
+    suspend fun getLatestMediaFeed(
         @Query("locale") crunchyLocale: String
-    ): Response<CrunchyRssContainer<CrunchyRssMedia>>
+    ): Response<CrunchyRssMediaContainer>
 
-    @Suppress("DEPRECATION")
     companion object : EndpointFactory<CrunchyFeedEndpoint>(
         url = BuildConfig.apiFeed,
         injectInterceptor = false,
-        endpoint = CrunchyFeedEndpoint::class,
-        converterFactory = SimpleXmlConverterFactory.create()
+        endpoint = CrunchyFeedEndpoint::class
     )
 }

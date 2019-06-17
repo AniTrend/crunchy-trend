@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.data.api.endpoint.json
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
+import co.anitrend.support.crunchyroll.data.api.contract.JSON
 import co.anitrend.support.crunchyroll.data.api.endpoint.contract.EndpointFactory
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyLocale
@@ -25,6 +26,7 @@ import retrofit2.http.GET
 
 interface CrunchyCoreEndpoint {
 
+    @JSON
     @GET("/list_locales.${BuildConfig.apiExtension}.json")
     suspend fun fetchLocales(
 

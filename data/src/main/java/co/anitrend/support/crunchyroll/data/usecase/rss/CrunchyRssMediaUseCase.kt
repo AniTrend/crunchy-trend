@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.usecase.rss
 
+import android.os.Parcelable
 import androidx.annotation.StringDef
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -28,6 +29,7 @@ import co.anitrend.support.crunchyroll.data.source.rss.CrunchyRssMediaSource
 import co.anitrend.support.crunchyroll.data.usecase.rss.contract.IRssUseCase
 import io.wax911.support.data.model.NetworkState
 import io.wax911.support.data.model.UiModel
+import kotlinx.android.parcel.Parcelize
 
 class CrunchyRssMediaUseCase(
     private val rssMediaDao: CrunchyRssMediaDao,
@@ -70,12 +72,13 @@ class CrunchyRssMediaUseCase(
         )
     }
 
+    @Parcelize
     data class Payload(
         override val locale: String,
         val seriesSlug: String?,
         @RequestType
         val mediaRssRequestType: String
-    ) : IRssUseCase.IRssPayload {
+    ) : IRssUseCase.IRssPayload, Parcelable {
         @StringDef(
             RequestType.GET_BY_SERIES_SLUG,
             RequestType.GET_LATEST_FEED

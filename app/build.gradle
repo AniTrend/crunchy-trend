@@ -41,6 +41,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    dataBinding {
+        enabled = true
+    }
 }
 
 androidExtensions {
@@ -49,6 +52,14 @@ androidExtensions {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    /** Platform Dependencies */
+    implementation project(":support-core")
+    implementation project(":support-data")
+    implementation project(":support-ext")
+    implementation project(":support-ui")
+    implementation project(":core")
+    implementation project(":data")
 
     /** Koin AndroidX Dependency Injection */
     implementation "org.koin:koin-core:$koin"
@@ -66,13 +77,41 @@ dependencies {
 
     /** Architecture Components */
     implementation "androidx.core:core-ktx:$ktx"
-    implementation "androidx.constraintlayout:constraintlayout:$constraint"
+    implementation "androidx.paging:paging-runtime:$paging"
+    implementation "androidx.paging:paging-runtime-ktx:$pagingKtx"
+    implementation "androidx.fragment:fragment-ktx:$fragmentKtx"
+    implementation "androidx.work:work-runtime-ktx:$workerKtx"
+    implementation "androidx.lifecycle:lifecycle-extensions:$androidx"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation"
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigation"
+
+    /** Glide Libraries */
+    implementation "com.github.bumptech.glide:glide:$glide"
+    kapt "com.github.bumptech.glide:compiler:$glide"
 
     /** Timber */
     implementation "com.jakewharton.timber:timber:$timber"
 
+    /** Material Dialogs */
+    implementation "com.afollestad.material-dialogs:core:$materialDialogs"
+    implementation "com.afollestad.material-dialogs:input:$materialDialogs"
+    implementation "com.afollestad.material-dialogs:lifecycle:$materialDialogs"
+    implementation "com.afollestad.material-dialogs:bottomsheets:$materialDialogs"
+
+    /** Flex Box */
+    implementation "com.google.android:flexbox:$flexBox"
+
+    /** Smart Tab Layout */
+    implementation "com.ogaclejapan.smarttablayout:library:$smartTab"
+
+    /** Tap Target Prompt */
+    implementation "uk.co.samuelwall:material-tap-target-prompt:$tapTarget"
+
     /** Testing-only dependencies */
     testImplementation "junit:junit:$junit"
+    testImplementation "io.mockk:mockk:$mockk"
     androidTestImplementation "androidx.test:runner:$runner"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"
+
+    testImplementation "org.koin:koin-test:$koin"
 }

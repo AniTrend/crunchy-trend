@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.data.api.endpoint.json
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
+import co.anitrend.support.crunchyroll.data.api.contract.JSON
 import co.anitrend.support.crunchyroll.data.api.endpoint.contract.EndpointFactory
 import co.anitrend.support.crunchyroll.data.model.collection.CrunchyCollection
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyContainer
@@ -27,6 +28,7 @@ import retrofit2.http.Query
 
 interface CrunchyCollectionEndpoint {
 
+    @JSON
     @GET("/list_collections.${BuildConfig.apiVersion}.json")
     suspend fun getCollections(
         @Query("series_id") seriesId: Int?,

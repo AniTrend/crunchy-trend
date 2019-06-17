@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.data.api.endpoint.json
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
+import co.anitrend.support.crunchyroll.data.api.contract.JSON
 import co.anitrend.support.crunchyroll.data.api.endpoint.contract.EndpointFactory
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchyLogin
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchySession
@@ -26,16 +27,19 @@ import retrofit2.http.*
 
 interface CrunchyAuthEndpoint {
 
+    @JSON
     @POST("/login.${BuildConfig.apiExtension}.json")
     suspend fun loginUser(
         @FieldMap payload: Map<String, Any?>
     ): Response<CrunchyContainer<CrunchyLogin>>
 
+    @JSON
     @POST("/logout.${BuildConfig.apiExtension}.json")
     suspend fun logoutUser(
         @Field("session_id") sessionId: String?
     ): Response<CrunchyContainer<CrunchyLogin>>
 
+    @JSON
     @GET("/start_session.${BuildConfig.apiExtension}.json")
     suspend fun startNormalSession(
         @QueryMap payload: Map<String, Any?>

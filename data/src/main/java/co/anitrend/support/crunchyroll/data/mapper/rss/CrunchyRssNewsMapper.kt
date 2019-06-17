@@ -20,7 +20,7 @@ import androidx.paging.PagingRequestHelper
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyRssMapper
 import co.anitrend.support.crunchyroll.data.dao.query.rss.CrunchyRssNewsDao
 import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssNews
-import co.anitrend.support.crunchyroll.data.model.rss.core.CrunchyRssChannel
+import co.anitrend.support.crunchyroll.data.model.rss.contract.ICrunchyRssChannel
 import kotlinx.coroutines.Job
 import timber.log.Timber
 
@@ -30,16 +30,8 @@ class CrunchyRssNewsMapper(
     pagingRequestHelper: PagingRequestHelper.Request.Callback
 ) : CrunchyRssMapper<CrunchyRssNews>(parentJob, pagingRequestHelper) {
 
-    /**
-     * Creates mapped objects and handles the database operations which may be required to map various objects,
-     * called in [retrofit2.Callback.onResponse] after assuring that the response was a success
-     * @see [handleResponse]
-     *
-     * @param source the incoming data source type
-     * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
-     */
-    override suspend fun onResponseMapFrom(source: CrunchyRssChannel<CrunchyRssNews>): List<CrunchyRssNews> {
-        return source.channelItems?.map {
+    override suspend fun onResponseMapFrom(source: ICrunchyRssChannel<CrunchyRssNews>): List<CrunchyRssNews> {
+        return source.item?.map {
             it.copy(copyright = source.copyright)
         } ?: emptyList()
     }

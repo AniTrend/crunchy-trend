@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.usecase.rss
 
+import android.os.Parcelable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.paging.PagedList
@@ -26,6 +27,7 @@ import co.anitrend.support.crunchyroll.data.source.rss.CrunchyRssNewsSource
 import co.anitrend.support.crunchyroll.data.usecase.rss.contract.IRssUseCase
 import io.wax911.support.data.model.NetworkState
 import io.wax911.support.data.model.UiModel
+import kotlinx.android.parcel.Parcelize
 
 class CrunchyRssNewsUseCase(
     private val rssNewsDao: CrunchyRssNewsDao,
@@ -67,7 +69,8 @@ class CrunchyRssNewsUseCase(
         )
     }
 
+    @Parcelize
     data class Payload(
         override val locale: String
-    ) : IRssUseCase.IRssPayload
+    ) : IRssUseCase.IRssPayload, Parcelable
 }

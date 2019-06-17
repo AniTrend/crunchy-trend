@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.usecase.series
 
+import android.os.Parcelable
 import androidx.annotation.StringDef
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchySeriesEndpoint
 import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchySeriesDao
@@ -23,6 +24,7 @@ import co.anitrend.support.crunchyroll.data.source.series.CrunchySeriesDataSourc
 import co.anitrend.support.crunchyroll.data.usecase.contract.IMappable
 import io.wax911.support.data.model.NetworkState
 import io.wax911.support.data.usecase.coroutine.ISupportCoroutineUseCase
+import kotlinx.android.parcel.Parcelize
 
 class CrunchySeriesUseCase(
     private val seriesEndpoint: CrunchySeriesEndpoint,
@@ -43,12 +45,13 @@ class CrunchySeriesUseCase(
         return dataSource()
     }
 
+    @Parcelize
     data class Payload(
         @RequestType
         val seriesRequestType: String,
         val seriesId: Int,
         val query: String?
-    ) : IMappable {
+    ) : IMappable, Parcelable {
 
         override fun toMap() = mapOf(
             "series_id" to seriesId,

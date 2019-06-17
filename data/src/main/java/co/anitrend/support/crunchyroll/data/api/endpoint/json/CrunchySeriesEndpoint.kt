@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.data.api.endpoint.json
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
+import co.anitrend.support.crunchyroll.data.api.contract.JSON
 import co.anitrend.support.crunchyroll.data.api.endpoint.contract.EndpointFactory
 import co.anitrend.support.crunchyroll.data.arch.CrunchyMediaTypeContract
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyContainer
@@ -28,11 +29,13 @@ import retrofit2.http.Query
 
 interface CrunchySeriesEndpoint {
 
+    @JSON
     @GET("/info.${BuildConfig.apiVersion}.json")
     suspend fun getSeriesInfo(
         @Query("series_id") seriesId: Int?
     ) : Response<CrunchyContainer<CrunchySeries>>
 
+    @JSON
     @GET("/autocomplete.${BuildConfig.apiVersion}.json")
     suspend fun getSeriesAutoComplete(
         @Query("q") query: String?,

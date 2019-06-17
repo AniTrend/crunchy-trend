@@ -74,7 +74,7 @@ class CrunchyRssMediaSource(
 
 
     private fun getAllLatestAsync() = async {
-        rssFeedCrunchyEndpoint.getLatestMediaFedd(
+        rssFeedCrunchyEndpoint.getLatestMediaFeed(
             crunchyLocale = payload.locale
         )
     }
@@ -100,7 +100,7 @@ class CrunchyRssMediaSource(
         )
 
         launch {
-            mapper.handleResponse(futureResponse)
+            mapper.handleResponseMedia(futureResponse)
         }
     }
 
@@ -125,11 +125,11 @@ class CrunchyRssMediaSource(
             override fun invoke(parameter: CrunchyRssMediaUseCase.Payload): LiveData<PagedList<CrunchyRssMedia>> {
                 val dataSource = when (parameter.mediaRssRequestType) {
                     CrunchyRssMediaUseCase.Payload.RequestType.GET_BY_SERIES_SLUG ->
-                        rssMediaDao.findByAllFactory()
-                    else ->
                         rssMediaDao.findBySlugFactory(
                             seriesSlug = payload.seriesSlug
                         )
+                    else ->
+                        rssMediaDao.findByAllFactory()
                 }
                 return dataSource.toLiveData(
                     config = SupportDataKeyStore.PAGING_CONFIGURATION,

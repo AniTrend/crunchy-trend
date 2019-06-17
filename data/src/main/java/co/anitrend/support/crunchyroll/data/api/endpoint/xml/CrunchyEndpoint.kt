@@ -17,11 +17,10 @@
 package co.anitrend.support.crunchyroll.data.api.endpoint.xml
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
+import co.anitrend.support.crunchyroll.data.api.contract.XML
 import co.anitrend.support.crunchyroll.data.api.endpoint.contract.EndpointFactory
-import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssMedia
-import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssNews
-import co.anitrend.support.crunchyroll.data.model.rss.core.CrunchyRssContainer
-import retrofit2.converter.simplexml.SimpleXmlConverterFactory
+import co.anitrend.support.crunchyroll.data.model.rss.core.CrunchyRssMediaContainer
+import co.anitrend.support.crunchyroll.data.model.rss.core.CrunchyRssNewsContainer
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -29,22 +28,22 @@ import retrofit2.http.Query
 
 interface CrunchyEndpoint {
 
+    @XML
     @GET("/{media_slug}.rss")
     suspend fun getMediaItemsBySlug(
         @Path("media_slug") mediaSlug: String?,
         @Query("locale") crunchyLocale: String
-    ): Response<CrunchyRssContainer<CrunchyRssMedia>>
+    ): Response<CrunchyRssMediaContainer>
 
+    @XML
     @GET("/newsrss")
     suspend fun getSeriesNews(
         @Query("locale") crunchyLocale: String
-    ): Response<CrunchyRssContainer<CrunchyRssNews>>
+    ): Response<CrunchyRssNewsContainer>
 
-    @Suppress("DEPRECATION")
     companion object : EndpointFactory<CrunchyEndpoint>(
         url = BuildConfig.crunchyUrl,
         injectInterceptor = false,
-        endpoint = CrunchyEndpoint::class,
-        converterFactory = SimpleXmlConverterFactory.create()
+        endpoint = CrunchyEndpoint::class
     )
 }

@@ -16,23 +16,24 @@
 
 package co.anitrend.support.crunchyroll.data.arch.mapper
 
-import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingRequestHelper
-import co.anitrend.support.crunchyroll.data.model.rss.core.CrunchyRssChannel
-import co.anitrend.support.crunchyroll.data.model.rss.core.CrunchyRssContainer
+import co.anitrend.support.crunchyroll.data.model.rss.contract.ICrunchyRssChannel
+import co.anitrend.support.crunchyroll.data.model.rss.contract.IRssCopyright
+import co.anitrend.support.crunchyroll.data.model.rss.core.CrunchyRssMediaContainer
+import co.anitrend.support.crunchyroll.data.model.rss.core.CrunchyRssNewsContainer
 import io.wax911.support.data.mapper.SupportDataMapper
-import io.wax911.support.data.mapper.contract.IMapperHelper
 import io.wax911.support.data.model.NetworkState
 import io.wax911.support.data.model.contract.SupportStateContract
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import retrofit2.Response
+import timber.log.Timber
 
-abstract class CrunchyRssMapper<D> (
+@Suppress("UNCHECKED_CAST")
+abstract class CrunchyRssMapper<D : IRssCopyright> (
     parentCoroutineJob: Job? = null,
     private val pagingRequestHelper: PagingRequestHelper.Request.Callback? = null
-): SupportDataMapper<CrunchyRssChannel<D>, List<D>>(parentCoroutineJob), IMapperHelper<Response<CrunchyRssContainer<D>>> {
-
+): SupportDataMapper<ICrunchyRssChannel<D>, List<D>>(parentCoroutineJob) {
 
     /**
      * Response handler for coroutine contexts which need to observe
@@ -44,25 +45,33 @@ abstract class CrunchyRssMapper<D> (
      * @param deferred an deferred result awaiting execution
      * @return network state of the deferred result
      */
-    override suspend fun handleResponse(deferred: Deferred<Response<CrunchyRssContainer<D>>>): NetworkState {
-        val response = deferred.await()
-        if (response.isSuccessful) {
-            val responseBody = response.body()
-            if (responseBody != null) {
-                val mapped = onResponseMapFrom(responseBody.channel)
-                onResponseDatabaseInsert(mapped)
+    suspend fun handleResponse(
+        deferred: Deferred<Response<CrunchyRssNewsContainer>>
+    ): NetworkState {
+        try {
+            val response = deferred.await()
+            if (response.isSuccessful) {
+                val responseBody = response.body()
+                if (responseBody != null) {
+                    val mapped = onResponseMapFrom(responseBody.channel as ICrunchyRssChannel<D>)
+                    onResponseDatabaseInsert(mapped)
+                }
+                pagingRequestHelper?.recordSuccess()
+                return NetworkState.LOADED
+            } else {
+                pagingRequestHelper?.recordFailure(Throwable(response.message()))
+                return NetworkState(
+                    status = SupportStateContract.ERROR,
+                    message = response.message(),
+                    code = response.code()
+                )
             }
-            pagingRequestHelper?.recordSuccess()
-            return NetworkState.LOADED
-        } else {
-            pagingRequestHelper?.recordFailure(Throwable(response.message()))
-            return NetworkState(
-                status = SupportStateContract.ERROR,
-                message = response.message(),
-                code = response.code()
-            )
+        } catch (e: Exception) {
+            Timber.tag(moduleTag).e(e)
+            return NetworkState.error(e.localizedMessage)
         }
     }
+
     /**
      * Response handler for coroutine contexts which need to observe
      * the live data of [NetworkState]
@@ -73,8 +82,30 @@ abstract class CrunchyRssMapper<D> (
      * @param deferred an deferred result awaiting execution
      * @return network state of the deferred result
      */
-    suspend fun handleResponse(deferred: Deferred<Response<CrunchyRssContainer<D>>>, networkState: MutableLiveData<NetworkState>) {
-        val resultState = handleResponse(deferred)
-        networkState.postValue(resultState)
+    suspend fun handleResponseMedia(
+        deferred: Deferred<Response<CrunchyRssMediaContainer>>
+    ): NetworkState {
+        try {
+            val response = deferred.await()
+            if (response.isSuccessful) {
+                val responseBody = response.body()
+                if (responseBody != null) {
+                    val mapped = onResponseMapFrom(responseBody.channel as ICrunchyRssChannel<D>)
+                    onResponseDatabaseInsert(mapped)
+                }
+                pagingRequestHelper?.recordSuccess()
+                return NetworkState.LOADED
+            } else {
+                pagingRequestHelper?.recordFailure(Throwable(response.message()))
+                return NetworkState(
+                    status = SupportStateContract.ERROR,
+                    message = response.message(),
+                    code = response.code()
+                )
+            }
+        } catch (e: Exception) {
+            Timber.tag(moduleTag).e(e)
+            return NetworkState.error(e.localizedMessage)
+        }
     }
 }

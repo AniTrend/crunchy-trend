@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.data.dao.converter
 
 import androidx.room.TypeConverter
+import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory.Companion.GSON_BUILDER
 import co.anitrend.support.crunchyroll.data.api.endpoint.contract.EndpointFactory
 import co.anitrend.support.crunchyroll.data.model.user.CrunchyUser
 import com.google.gson.reflect.TypeToken
@@ -33,7 +34,7 @@ class CrunchyUserConverter : RoomConverter<CrunchyUser> {
     @TypeConverter
     override fun fromDatabaseValue(dbValue: String): CrunchyUser? {
         val token = object : TypeToken<CrunchyUser?>(){}.type
-        return EndpointFactory.gson.fromJson(dbValue, token)
+        return GSON_BUILDER.create().fromJson(dbValue, token)
     }
 
     /**
@@ -45,6 +46,6 @@ class CrunchyUserConverter : RoomConverter<CrunchyUser> {
      */
     @TypeConverter
     override fun toDatabaseValue(entity: CrunchyUser?): String {
-        return EndpointFactory.gson.toJson(entity)
+        return GSON_BUILDER.create().toJson(entity)
     }
 }
