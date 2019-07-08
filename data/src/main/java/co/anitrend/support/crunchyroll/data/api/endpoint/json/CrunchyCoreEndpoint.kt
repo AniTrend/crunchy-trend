@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.data.api.endpoint.json
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.contract.JSON
-import co.anitrend.support.crunchyroll.data.api.endpoint.contract.EndpointFactory
+import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpointFactory
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyLocale
 import retrofit2.Response
@@ -32,7 +32,7 @@ interface CrunchyCoreEndpoint {
 
     ) : Response<CrunchyContainer<List<CrunchyLocale>>>
 
-    companion object : EndpointFactory<CrunchyCoreEndpoint>(
+    companion object : CrunchyEndpointFactory<CrunchyCoreEndpoint>(
         endpoint = CrunchyCoreEndpoint::class,
         url = BuildConfig.apiUrl
     )

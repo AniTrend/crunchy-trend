@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.data.api.endpoint.json
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.contract.JSON
-import co.anitrend.support.crunchyroll.data.api.endpoint.contract.EndpointFactory
+import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpointFactory
 import co.anitrend.support.crunchyroll.data.arch.MediaFieldsContract
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
@@ -53,7 +53,7 @@ interface CrunchyMediaEndpoint {
     ) : Response<CrunchyContainer<CrunchyStreamInfo>>
 
 
-    companion object : EndpointFactory<CrunchyMediaEndpoint>(
+    companion object : CrunchyEndpointFactory<CrunchyMediaEndpoint>(
         endpoint = CrunchyMediaEndpoint::class,
         url = BuildConfig.apiUrl
     )

@@ -18,6 +18,7 @@ package co.anitrend.support.crunchyroll.data.api.endpoint.contract
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
+import io.wax911.support.data.factory.SupportEndpointFactory
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -34,15 +35,15 @@ import kotlin.reflect.KClass
  * @param url The url to use when create a service endpoint
  * @param endpoint The interface class method representing your request to use
  */
-abstract class EndpointFactory<S: Any>(
-    private val url: String,
-    private val endpoint: KClass<S>,
+open class CrunchyEndpointFactory<S: Any>(
+    url: String,
+    endpoint: KClass<S>,
     private val injectInterceptor: Boolean = true
-) : KoinComponent {
+) : SupportEndpointFactory<S>(url, endpoint), KoinComponent {
 
     private val clientInterceptor by inject<Interceptor>()
 
-    private val retrofit: Retrofit by lazy {
+    override val retrofit: Retrofit by lazy {
         val httpClient = OkHttpClient.Builder()
             .apply {
                 if (injectInterceptor)
@@ -65,6 +66,4 @@ abstract class EndpointFactory<S: Any>(
             ).baseUrl(url)
         }.build()
     }
-
-    fun create(): S = retrofit.create(endpoint.java)
 }

@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.data.api.endpoint.json
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.contract.JSON
-import co.anitrend.support.crunchyroll.data.api.endpoint.contract.EndpointFactory
+import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpointFactory
 import co.anitrend.support.crunchyroll.data.arch.CrunchyMediaTypeContract
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.model.series.CrunchySeries
@@ -44,7 +44,7 @@ interface CrunchySeriesEndpoint {
         @Query("limit") limit: Int = SupportExtKeyStore.pagingLimit
     ) : Response<CrunchyContainer<List<CrunchySeries>>>
 
-    companion object : EndpointFactory<CrunchySeriesEndpoint>(
+    companion object : CrunchyEndpointFactory<CrunchySeriesEndpoint>(
         endpoint = CrunchySeriesEndpoint::class,
         url = BuildConfig.apiUrl
     )

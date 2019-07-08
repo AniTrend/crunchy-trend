@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.data.api.endpoint.json
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.contract.JSON
-import co.anitrend.support.crunchyroll.data.api.endpoint.contract.EndpointFactory
+import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpointFactory
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchyLogin
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchySession
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyContainer
@@ -45,7 +45,7 @@ interface CrunchyAuthEndpoint {
         @QueryMap payload: Map<String, Any?>
     ): Response<CrunchyContainer<CrunchySession>>
 
-    companion object : EndpointFactory<CrunchyAuthEndpoint>(
+    companion object : CrunchyEndpointFactory<CrunchyAuthEndpoint>(
         endpoint = CrunchyAuthEndpoint::class,
         injectInterceptor = false,
         url = BuildConfig.apiUrl

@@ -17,13 +17,12 @@
 package co.anitrend.support.crunchyroll.data.api.endpoint.json
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
-import co.anitrend.support.crunchyroll.data.api.endpoint.contract.EndpointFactory
+import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpointFactory
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchySession
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchySessionCore
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyContainer
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.Query
 import retrofit2.http.QueryMap
 
 interface CrunchySessionEndpoint {
@@ -37,7 +36,7 @@ interface CrunchySessionEndpoint {
     suspend fun startSession()
             : Response<CrunchyContainer<CrunchySessionCore>>
 
-    companion object : EndpointFactory<CrunchySessionEndpoint>(
+    companion object : CrunchyEndpointFactory<CrunchySessionEndpoint>(
         endpoint = CrunchySessionEndpoint::class,
         url = BuildConfig.apiAuthUrl,
         injectInterceptor = false

@@ -18,7 +18,6 @@ package co.anitrend.support.crunchyroll.data.dao.converter
 
 import androidx.room.TypeConverter
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory.Companion.GSON_BUILDER
-import co.anitrend.support.crunchyroll.data.api.endpoint.contract.EndpointFactory
 import co.anitrend.support.crunchyroll.data.model.user.CrunchyUser
 import com.google.gson.reflect.TypeToken
 import io.wax911.support.data.dao.RoomConverter

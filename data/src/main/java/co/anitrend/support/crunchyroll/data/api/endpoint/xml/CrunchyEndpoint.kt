@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.data.api.endpoint.xml
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.contract.XML
-import co.anitrend.support.crunchyroll.data.api.endpoint.contract.EndpointFactory
+import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpointFactory
 import co.anitrend.support.crunchyroll.data.model.rss.core.CrunchyRssMediaContainer
 import co.anitrend.support.crunchyroll.data.model.rss.core.CrunchyRssNewsContainer
 import retrofit2.Response
@@ -41,7 +41,7 @@ interface CrunchyEndpoint {
         @Query("locale") crunchyLocale: String
     ): Response<CrunchyRssNewsContainer>
 
-    companion object : EndpointFactory<CrunchyEndpoint>(
+    companion object : CrunchyEndpointFactory<CrunchyEndpoint>(
         url = BuildConfig.crunchyUrl,
         injectInterceptor = false,
         endpoint = CrunchyEndpoint::class
