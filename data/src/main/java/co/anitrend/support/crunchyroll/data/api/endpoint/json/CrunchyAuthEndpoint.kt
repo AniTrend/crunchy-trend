@@ -28,12 +28,14 @@ import retrofit2.http.*
 interface CrunchyAuthEndpoint {
 
     @JSON
+    @FormUrlEncoded
     @POST("/login.${BuildConfig.apiExtension}.json")
     suspend fun loginUser(
-        @FieldMap payload: Map<String, Any?>
+        @FieldMap payload: Map<String, String?>
     ): Response<CrunchyContainer<CrunchyLogin>>
 
     @JSON
+    @FormUrlEncoded
     @POST("/logout.${BuildConfig.apiExtension}.json")
     suspend fun logoutUser(
         @Field("session_id") sessionId: String?
@@ -42,7 +44,7 @@ interface CrunchyAuthEndpoint {
     @JSON
     @GET("/start_session.${BuildConfig.apiExtension}.json")
     suspend fun startNormalSession(
-        @QueryMap payload: Map<String, Any?>
+        @QueryMap payload: Map<String, String?>
     ): Response<CrunchyContainer<CrunchySession>>
 
     companion object : CrunchyEndpointFactory<CrunchyAuthEndpoint>(

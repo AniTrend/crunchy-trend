@@ -181,7 +181,7 @@ class MainActivity : SupportActivity<Nothing, CrunchyCorePresenter>(), Navigatio
         bottomDrawerBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
 
         supportFragment?.apply {
-            compatView = this@apply
+            ISupportFragmentActivity = this@apply
             supportFragmentManager.commit {
                 replace(R.id.contentFrame, this@apply, tag)
             }

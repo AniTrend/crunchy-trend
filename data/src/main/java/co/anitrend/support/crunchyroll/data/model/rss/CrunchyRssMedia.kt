@@ -68,7 +68,7 @@ data class CrunchyRssMedia(
     @field:Element(
         required = false
     )
-    var episodeNumber: Int? = null,
+    var episodeNumber: String? = null,
     @field:Element(
         required = false
     )

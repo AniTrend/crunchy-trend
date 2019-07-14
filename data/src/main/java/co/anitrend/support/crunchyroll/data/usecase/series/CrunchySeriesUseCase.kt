@@ -54,7 +54,7 @@ class CrunchySeriesUseCase(
     ) : IMappable, Parcelable {
 
         override fun toMap() = mapOf(
-            "series_id" to seriesId,
+            "series_id" to seriesId.toString(),
             "q" to query
         )
 

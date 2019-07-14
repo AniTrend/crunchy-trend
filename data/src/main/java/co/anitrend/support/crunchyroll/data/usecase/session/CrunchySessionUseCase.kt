@@ -50,6 +50,9 @@ class CrunchySessionUseCase(
             payload = param
         )
 
+        if (sessionCoreDao.findLatest() != null)
+            return NetworkState.LOADED
+
         return dataSource()
     }
 
@@ -57,15 +60,15 @@ class CrunchySessionUseCase(
     data class Payload(
         @RequestType
         override val sessionType: String?,
-        override val deviceId: String?,
-        override val deviceType: String?,
+        override val deviceId: String? = null,
+        override val deviceType: String? = null,
         val auth: String,
-        val userId: Int?
+        val userId: Int? = null
     ) : ISessionUseCasePayload, Parcelable {
 
         override fun toMap() = mapOf(
             "auth" to auth,
-            "user_id" to userId,
+            "user_id" to userId.toString(),
             "version" to version
         )
 

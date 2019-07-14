@@ -41,6 +41,7 @@
     <!-- Settings for Data & Sync &amp; is the html equivalent of &-->
 
     <string name="Loading">Loading</string>
+    <string name="action_login">Login</string>
 
     <!--These are the actual value of the titles above, obviously no translation required here-->
 </resources>

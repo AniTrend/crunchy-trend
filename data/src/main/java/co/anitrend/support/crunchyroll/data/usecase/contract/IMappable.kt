@@ -18,5 +18,5 @@ package co.anitrend.support.crunchyroll.data.usecase.contract
 
 interface IMappable {
 
-    fun toMap(): Map<String, Any?>
+    fun toMap(): Map<String, String?>
 }

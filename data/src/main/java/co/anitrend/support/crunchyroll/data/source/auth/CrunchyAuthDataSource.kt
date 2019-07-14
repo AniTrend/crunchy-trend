@@ -69,7 +69,7 @@ class CrunchyAuthDataSource(
     private fun startLoginFlow() {
         val futureResponse = async {
             authEndpoint.loginUser(
-                payload = payload.toMap()
+                payload = payload.copy(sessionId = sessionCoreDao.findLatest()?.session_id).toMap()
             )
         }
 
@@ -105,7 +105,7 @@ class CrunchyAuthDataSource(
         }
     }
 
-    val authenticatedUser = object : ISourceObservable<CrunchyLogin?, Nothing?> {
+    val authenticatedUser = object : ISourceObservable<CrunchyLogin?, CrunchyAuthenticationUseCase.Payload?> {
         /**
          * Returns the appropriate observable which we will monitor for updates,
          * common implementation may include but not limited to returning
@@ -113,7 +113,8 @@ class CrunchyAuthDataSource(
          *
          * @param parameter parameters, implementation is up to the developer
          */
-        override fun invoke(parameter: Nothing?): LiveData<CrunchyLogin?> {
+        override fun invoke(parameter: CrunchyAuthenticationUseCase.Payload?): LiveData<CrunchyLogin?> {
+            invoke()
             return loginDao.findLatestX()
         }
     }

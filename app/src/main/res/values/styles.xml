@@ -16,6 +16,7 @@
 
 <resources>
     <style name="AppTheme" parent="SupportTheme.AppTheme">
+        <item name="android:colorAccent">@color/colorAccent</item>
         <item name="android:windowAnimationStyle">@style/SupportTheme.WindowAnimationStyle</item>
     </style>
 </resources>

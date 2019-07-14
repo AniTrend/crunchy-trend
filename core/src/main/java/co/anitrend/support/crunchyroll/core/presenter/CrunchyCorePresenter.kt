@@ -17,10 +17,17 @@
 package co.anitrend.support.crunchyroll.core.presenter
 
 import android.content.Context
+import co.anitrend.support.crunchyroll.data.auth.model.CrunchyLogin
 import co.anitrend.support.crunchyroll.data.util.CrunchySettings
 import io.wax911.support.core.presenter.SupportPresenter
 
 class CrunchyCorePresenter(
     context: Context,
     settings: CrunchySettings
-) : SupportPresenter<CrunchySettings>(context, settings)
+) : SupportPresenter<CrunchySettings>(context, settings) {
+
+    fun onLoginSuccess(crunchyLogin: CrunchyLogin) {
+        supportPreference.authenticatedUserId = crunchyLogin.user.user_id
+        supportPreference.isAuthenticated = true
+    }
+}

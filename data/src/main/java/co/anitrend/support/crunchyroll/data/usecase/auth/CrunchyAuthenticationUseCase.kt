@@ -59,7 +59,7 @@ class CrunchyAuthenticationUseCase(
         }
 
         return UiModel(
-            model = dataSource.authenticatedUser(null),
+            model = dataSource.authenticatedUser(param),
             networkState = dataSource.networkState,
             refresh = {
                 dataSource.invalidateAndRefresh()
@@ -76,7 +76,7 @@ class CrunchyAuthenticationUseCase(
     data class Payload(
         val account: String,
         val password: String,
-        val sessionId: String?,
+        val sessionId: String? = null,
         @RequestType
         val authenticationType: String
     ) : IMappable, Parcelable {

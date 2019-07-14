@@ -58,7 +58,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/media_duration"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/colorWhite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{entity.durationFormatted()}"
@@ -78,7 +78,7 @@
         <io.wax911.support.ui.view.text.SingleLineTextView
                 android:id="@+id/media_title"
                 android:layout_gravity="bottom|center_horizontal"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/colorWhite"
                 android:padding="@dimen/lg_margin"
                 android:ellipsize="end"
                 android:layout_width="match_parent"

@@ -33,7 +33,8 @@ val MIGRATION_1_2 by lazy {
          */
         override fun migrate(database: SupportSQLiteDatabase) {
             database.apply {
-
+                execSQL("DROP TABLE `CrunchyRssMedia`")
+                execSQL("CREATE TABLE IF NOT EXISTS `CrunchyRssMedia` (`title` TEXT NOT NULL, `description` TEXT, `mediaId` INTEGER NOT NULL, `premiumAvailableDate` TEXT NOT NULL, `freeAvailableDate` TEXT NOT NULL, `seriesTitle` TEXT NOT NULL, `episodeTitle` TEXT NOT NULL, `episodeNumber` TEXT, `duration` INTEGER, `publisher` TEXT, `thumbnail` TEXT, `copyright` TEXT NOT NULL, PRIMARY KEY(`mediaId`))")
             }
         }
     }
