@@ -15,9 +15,64 @@
   ~    limitations under the License.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
 
-</LinearLayout>
+    <data>
+        <variable
+                name="entity"
+                type="co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssNews"
+        />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?selectableItemBackground"
+            android:layout_margin="@dimen/lg_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardPreventCornerOverlap="false"
+            app:cardBackgroundColor="?cardColor"
+            app:cardElevation="@dimen/sm_margin"
+            app:cardCornerRadius="@dimen/lg_margin">
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:padding="@dimen/lg_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/media_news_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:text="@{entity.title}"
+                    tools:text="@sample/news.json/title"/>
+
+            <Space android:layout_width="wrap_content"
+                   android:layout_height="@dimen/lg_margin"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/media_news_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="@sample/news.json/description"/>
+
+            <Space android:layout_width="wrap_content"
+                   android:layout_height="@dimen/lg_margin"/>
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/media_news_publication"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{entity.publishedOn}"
+                    tools:text="@sample/news.json/publishDate"/>
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>

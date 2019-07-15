@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             app:layout_anchor="@id/bottomAppBar"
             app:backgroundTint="@color/colorAccent"
-            app:srcCompat="@drawable/ic_code_24dp"/>
+            app:srcCompat="@drawable/ic_supervisor_account_white_24dp"/>
 
     <FrameLayout
             android:id="@+id/bottomNavigationDrawer"

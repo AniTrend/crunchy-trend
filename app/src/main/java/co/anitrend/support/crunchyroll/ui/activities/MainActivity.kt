@@ -16,9 +16,11 @@
 
 package co.anitrend.support.crunchyroll.ui.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
@@ -32,6 +34,7 @@ import co.anitrend.support.crunchyroll.ui.fragments.FragmentFeedNewsList
 import co.anitrend.support.crunchyroll.ui.fragments.FragmentMediaFeedList
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.navigation.NavigationView
+import io.wax911.support.core.viewmodel.SupportViewModel
 import io.wax911.support.extension.LAZY_MODE_UNSAFE
 import io.wax911.support.ui.activity.SupportActivity
 import io.wax911.support.ui.fragment.SupportFragment
@@ -82,7 +85,7 @@ class MainActivity : SupportActivity<Nothing, CrunchyCorePresenter>(), Navigatio
             }
         }
         floatingShortcutButton.setOnClickListener {
-            Toast.makeText(this, "Fab Clicked", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, LoginActivity::class.java))
         }
         bottomNavigationView.apply {
             setNavigationItemSelectedListener(this@MainActivity)
@@ -97,12 +100,10 @@ class MainActivity : SupportActivity<Nothing, CrunchyCorePresenter>(), Navigatio
         super.onSaveInstanceState(outState)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        if (savedInstanceState != null) {
-            selectedItem = savedInstanceState.getInt(SupportUiKeyStore.key_navigation_selected)
-            selectedTitle = savedInstanceState.getInt(SupportUiKeyStore.key_navigation_title)
-        }
+        selectedItem = savedInstanceState.getInt(SupportUiKeyStore.key_navigation_selected)
+        selectedTitle = savedInstanceState.getInt(SupportUiKeyStore.key_navigation_title)
     }
 
     override fun onBackPressed() {
@@ -154,7 +155,6 @@ class MainActivity : SupportActivity<Nothing, CrunchyCorePresenter>(), Navigatio
                 }
                 recreate()
             }
-            R.id.nav_about -> Toast.makeText(this@MainActivity, "About", Toast.LENGTH_SHORT).show()
             R.id.nav_contact -> Toast.makeText(this@MainActivity, "Contact", Toast.LENGTH_SHORT).show()
             R.id.nav_show_latest -> {
                 selectedTitle = R.string.nav_show_latest

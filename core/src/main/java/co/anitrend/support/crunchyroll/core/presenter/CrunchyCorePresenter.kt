@@ -27,7 +27,12 @@ class CrunchyCorePresenter(
 ) : SupportPresenter<CrunchySettings>(context, settings) {
 
     fun onLoginSuccess(crunchyLogin: CrunchyLogin) {
-        supportPreference.authenticatedUserId = crunchyLogin.user.user_id
-        supportPreference.isAuthenticated = true
+        if (!supportPreference.isAuthenticated) {
+            supportPreference.authenticatedUserId = crunchyLogin.user.user_id
+            supportPreference.isAuthenticated = true
+        } else {
+            supportPreference.authenticatedUserId = CrunchySettings.INVALID_USER_ID
+            supportPreference.isAuthenticated = false
+        }
     }
 }

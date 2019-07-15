@@ -23,7 +23,6 @@
 
     <string name="nav_header_support">Support</string>
     <string name="nav_contact">Contact</string>
-    <string name="nav_about">About</string>
 
     <string name="nav_show_latest">Latest Shows</string>
     <string name="nav_show_news">Show News</string>
@@ -42,6 +41,7 @@
 
     <string name="Loading">Loading</string>
     <string name="action_login">Login</string>
+    <string name="action_logout">Logout</string>
 
     <!--These are the actual value of the titles above, obviously no translation required here-->
 </resources>

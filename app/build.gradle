@@ -109,6 +109,12 @@ dependencies {
     /** Tap Target Prompt */
     implementation "uk.co.samuelwall:material-tap-target-prompt:$tapTarget"
 
+    /** Markwon */
+    implementation "io.noties.markwon:core:$markwon"
+    implementation "io.noties.markwon:html:$markwon"
+    implementation "io.noties.markwon:image-glide:$markwon"
+    implementation "io.noties.markwon:linkify:$markwon"
+
     /** Testing-only dependencies */
     testImplementation "junit:junit:$junit"
     testImplementation "io.mockk:mockk:$mockk"
@@ -116,4 +122,8 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"
 
     testImplementation "org.koin:koin-test:$koin"
+}
+
+repositories {
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
 }

@@ -31,10 +31,13 @@ import co.anitrend.support.crunchyroll.core.viewmodel.auth.CrunchyAuthViewModel
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchyLogin
 import co.anitrend.support.crunchyroll.data.usecase.auth.CrunchyAuthenticationUseCase
 import co.anitrend.support.crunchyroll.data.usecase.auth.CrunchyAuthenticationUseCase.Payload.RequestType.Companion.LOG_IN
+import co.anitrend.support.crunchyroll.data.usecase.auth.CrunchyAuthenticationUseCase.Payload.RequestType.Companion.LOG_OUT
 import co.anitrend.support.crunchyroll.ui.activities.MainActivity
 import com.google.android.material.button.MaterialButton
 import io.wax911.support.data.model.NetworkState
 import io.wax911.support.data.model.extension.isSuccessful
+import io.wax911.support.extension.gone
+import io.wax911.support.extension.visible
 import io.wax911.support.ui.fragment.SupportFragment
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -120,7 +123,6 @@ class LoginFragment : SupportFragment<CrunchyLogin?, CrunchyCorePresenter, Crunc
         }
     }
 
-
     /**
      * Called immediately after [.onCreateView]
      * has returned, but before any saved state has been restored in to the view.
@@ -139,6 +141,21 @@ class LoginFragment : SupportFragment<CrunchyLogin?, CrunchyCorePresenter, Crunc
         setUpViewModelObserver()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (supportPresenter.supportPreference.isAuthenticated) {
+            buttonLogin.setText(R.string.action_logout)
+            editLoginText.apply {
+                setText(supportPresenter.supportPreference.authenticatedUserId.toString())
+                isEnabled = false
+            }
+            editPasswordText.gone()
+        } else {
+            buttonLogin.setText(R.string.action_login)
+            editPasswordText.visible()
+        }
+    }
+
     /**
      * Handles the updating of views, binding, creation or state change, depending on the context
      * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
@@ -147,6 +164,7 @@ class LoginFragment : SupportFragment<CrunchyLogin?, CrunchyCorePresenter, Crunc
      */
     override fun updateUI() {
         startActivity(Intent(activity, MainActivity::class.java))
+        activity?.finish()
     }
 
     /**
@@ -163,7 +181,7 @@ class LoginFragment : SupportFragment<CrunchyLogin?, CrunchyCorePresenter, Crunc
         supportViewModel(CrunchyAuthenticationUseCase.Payload(
             account = editLoginText.editableText.toString(),
             password = editPasswordText.editableText.toString(),
-            authenticationType = LOG_IN
+            authenticationType = if (supportPresenter.supportPreference.isAuthenticated) LOG_IN else LOG_OUT
         ))
     }
 

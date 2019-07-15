@@ -17,16 +17,19 @@
 package co.anitrend.support.crunchyroll.ui.fragments
 
 import android.os.Bundle
+import android.view.View
 import androidx.paging.PagedList
 import co.anitrend.support.crunchyroll.R
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.viewmodel.rss.CrunchyRssNewsViewModel
 import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssNews
 import co.anitrend.support.crunchyroll.data.usecase.rss.CrunchyRssNewsUseCase
+import co.anitrend.support.crunchyroll.ui.adapters.RssNewsAdapter
 import io.wax911.support.data.model.NetworkState
 import io.wax911.support.extension.LAZY_MODE_UNSAFE
 import io.wax911.support.ui.fragment.SupportFragmentList
 import io.wax911.support.ui.recycler.adapter.SupportViewAdapter
+import io.wax911.support.ui.recycler.holder.event.ItemClickListener
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -34,16 +37,6 @@ class FragmentFeedNewsList : SupportFragmentList<CrunchyRssNews, CrunchyCorePres
 
     private val payload by lazy(LAZY_MODE_UNSAFE) {
         arguments?.getParcelable<CrunchyRssNewsUseCase.Payload>(PAYLOAD)
-    }
-
-    override val supportViewAdapter: SupportViewAdapter<CrunchyRssNews>
-        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
-
-    /**
-     * Invoke view model observer to watch for changes
-     */
-    override fun setUpViewModelObserver() {
-        supportViewModel.model.observe(this, this)
     }
 
     /**
@@ -59,6 +52,40 @@ class FragmentFeedNewsList : SupportFragmentList<CrunchyRssNews, CrunchyCorePres
      * @return view model of the given type
      */
     override val supportViewModel by viewModel<CrunchyRssNewsViewModel>()
+
+    override val supportViewAdapter = RssNewsAdapter(
+        presenter = supportPresenter,
+        clickListener = object : ItemClickListener<CrunchyRssNews> {
+            /**
+             * When the target view from [View.OnClickListener]
+             * is clicked from a view holder this method will be called
+             *
+             * @param target view that has been clicked
+             * @param data the liveData that at the click index
+             */
+            override fun onItemClick(target: View, data: Pair<Int, CrunchyRssNews?>) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            /**
+             * When the target view from [View.OnLongClickListener]
+             * is clicked from a view holder this method will be called
+             *
+             * @param target view that has been long clicked
+             * @param data the liveData that at the long click index
+             */
+            override fun onItemLongClick(target: View, data: Pair<Int, CrunchyRssNews?>) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+        }
+    )
+
+    /**
+     * Invoke view model observer to watch for changes
+     */
+    override fun setUpViewModelObserver() {
+        supportViewModel.model.observe(this, this)
+    }
 
     /**
      * Additional initialization to be done in this method, if the overriding class is type of
