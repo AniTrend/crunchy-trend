@@ -18,6 +18,7 @@ package co.anitrend.support.crunchyroll.ui.fragments
 
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import co.anitrend.support.crunchyroll.R
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
@@ -84,7 +85,9 @@ class FragmentFeedNewsList : SupportFragmentList<CrunchyRssNews, CrunchyCorePres
      * Invoke view model observer to watch for changes
      */
     override fun setUpViewModelObserver() {
-        supportViewModel.model.observe(this, this)
+        supportViewModel.model.observe(this, Observer {
+            onPostModelChange(it)
+        })
     }
 
     /**
@@ -101,11 +104,11 @@ class FragmentFeedNewsList : SupportFragmentList<CrunchyRssNews, CrunchyCorePres
 
     /**
      * Handles the updating of views, binding, creation or state change, depending on the context
-     * [androidx.lifecycle.LiveData] for a given [CompatView] will be available by this point.
+     * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
      *
      * Check implementation for more details
      */
-    override fun updateUI() {
+    override fun onUpdateUserInterface() {
 
     }
 
@@ -116,9 +119,9 @@ class FragmentFeedNewsList : SupportFragmentList<CrunchyRssNews, CrunchyCorePres
      * The results of the dispatched network or cache call will be published by the
      * [androidx.lifecycle.LiveData] specifically [SupportViewModel.model]
      *
-     * @see [SupportViewModel.queryFor]
+     * @see [SupportViewModel.requestBundleLiveData]
      */
-    override fun makeRequest() {
+    override fun onFetchDataInitialize() {
         val isNull = payload?.also {
             supportViewModel(
                 parameter = it
@@ -130,14 +133,6 @@ class FragmentFeedNewsList : SupportFragmentList<CrunchyRssNews, CrunchyCorePres
                     msg = "Media category not selected"
                 )
             )
-    }
-
-    /**
-     * Called when the data is changed.
-     * @param t  The new data
-     */
-    override fun onChanged(t: PagedList<CrunchyRssNews>?) {
-        onPostModelChange(t)
     }
 
     override val retryButtonText: Int = R.string.action_retry

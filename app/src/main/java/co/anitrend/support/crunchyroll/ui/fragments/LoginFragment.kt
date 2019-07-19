@@ -47,6 +47,7 @@ class LoginFragment : SupportFragment<CrunchyLogin?, CrunchyCorePresenter, Crunc
     private lateinit var editLoginText: EditText
     private lateinit var editPasswordText: EditText
     private lateinit var buttonLogin: MaterialButton
+    private lateinit var buttonLoginSkip: MaterialButton
     private lateinit var viewSwitcherLogin: ViewSwitcher
 
     /**
@@ -62,11 +63,18 @@ class LoginFragment : SupportFragment<CrunchyLogin?, CrunchyCorePresenter, Crunc
      * Invoke view model observer to watch for changes
      */
     override fun setUpViewModelObserver() {
-        supportViewModel.model.observe(this, this)
+        supportViewModel.model.observe(this, Observer {
+            if (it != null) {
+                supportPresenter.onLoginSuccess(it)
+                onUpdateUserInterface()
+            }
+            else
+                Timber.tag(moduleTag).e("Unable to login")
+        })
         supportViewModel.networkState?.observe(this, Observer {
             if (it.code != null) {
                 when {
-                    it.message == null -> updateUI()
+                    it.message == null -> onUpdateUserInterface()
                     else -> {
                         viewSwitcherLogin.showPrevious()
                         Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
@@ -119,6 +127,7 @@ class LoginFragment : SupportFragment<CrunchyLogin?, CrunchyCorePresenter, Crunc
             editLoginText = findViewById(R.id.txt_input_email)
             editPasswordText = findViewById(R.id.txt_input_password)
             buttonLogin = findViewById(R.id.loginButton)
+            buttonLoginSkip = findViewById(R.id.skipLoginButton)
             viewSwitcherLogin = findViewById(R.id.view_switcher_login)
         }
     }
@@ -136,7 +145,10 @@ class LoginFragment : SupportFragment<CrunchyLogin?, CrunchyCorePresenter, Crunc
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         buttonLogin.setOnClickListener {
-            makeRequest()
+            onFetchDataInitialize()
+        }
+        buttonLoginSkip.setOnClickListener {
+            onUpdateUserInterface()
         }
         setUpViewModelObserver()
     }
@@ -162,7 +174,7 @@ class LoginFragment : SupportFragment<CrunchyLogin?, CrunchyCorePresenter, Crunc
      *
      * Check implementation for more details
      */
-    override fun updateUI() {
+    override fun onUpdateUserInterface() {
         startActivity(Intent(activity, MainActivity::class.java))
         activity?.finish()
     }
@@ -174,28 +186,15 @@ class LoginFragment : SupportFragment<CrunchyLogin?, CrunchyCorePresenter, Crunc
      * The results of the dispatched network or cache call will be published by the
      * [androidx.lifecycle.LiveData] specifically [SupportViewModel.model]
      *
-     * @see [SupportViewModel.queryFor]
+     * @see [SupportViewModel.requestBundleLiveData]
      */
-    override fun makeRequest() {
+    override fun onFetchDataInitialize() {
         viewSwitcherLogin.showNext()
         supportViewModel(CrunchyAuthenticationUseCase.Payload(
             account = editLoginText.editableText.toString(),
             password = editPasswordText.editableText.toString(),
             authenticationType = if (supportPresenter.supportPreference.isAuthenticated) LOG_IN else LOG_OUT
         ))
-    }
-
-    /**
-     * Called when the data is changed.
-     * @param t  The new data
-     */
-    override fun onChanged(t: CrunchyLogin?) {
-        if (t != null) {
-            supportPresenter.onLoginSuccess(t)
-            updateUI()
-        }
-        else
-            Timber.tag(moduleTag).e("Unable to login")
     }
 
     companion object {

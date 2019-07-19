@@ -42,6 +42,7 @@
     <string name="Loading">Loading</string>
     <string name="action_login">Login</string>
     <string name="action_logout">Logout</string>
+    <string name="action_later">Later</string>
 
     <!--These are the actual value of the titles above, obviously no translation required here-->
 </resources>

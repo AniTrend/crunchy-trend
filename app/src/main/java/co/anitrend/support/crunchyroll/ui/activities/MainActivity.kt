@@ -91,7 +91,7 @@ class MainActivity : SupportActivity<Nothing, CrunchyCorePresenter>(), Navigatio
             setNavigationItemSelectedListener(this@MainActivity)
             setCheckedItem(selectedItem)
         }
-        updateUI()
+        onUpdateUserInterface()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -181,22 +181,37 @@ class MainActivity : SupportActivity<Nothing, CrunchyCorePresenter>(), Navigatio
         bottomDrawerBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
 
         supportFragment?.apply {
-            ISupportFragmentActivity = this@apply
+            supportFragmentActivity = this@apply
             supportFragmentManager.commit {
                 replace(R.id.contentFrame, this@apply, tag)
             }
         }
     }
 
-    override fun updateUI() {
+    /**
+     * Handles the updating of views, binding, creation or state change, depending on the context
+     * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
+     *
+     * Check implementation for more details
+     */
+    override fun onUpdateUserInterface() {
         if (selectedItem != 0)
             onNavigate(selectedItem)
         else
             onNavigate(R.id.nav_show_latest)
     }
 
-    override fun makeRequest() {
-
+    /**
+     * Handles the complex logic required to dispatch network request to [SupportViewModel]
+     * which uses [SupportRepository] to either request from the network or database cache.
+     *
+     * The results of the dispatched network or cache call will be published by the
+     * [androidx.lifecycle.LiveData] specifically [SupportViewModel.model]
+     *
+     * @see [SupportViewModel.requestBundleLiveData]
+     */
+    override fun onFetchDataInitialize() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     /**

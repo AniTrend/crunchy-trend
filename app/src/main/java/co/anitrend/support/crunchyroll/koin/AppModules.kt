@@ -54,7 +54,7 @@ val appModules = module {
                         .transform(
                             CenterCrop(),
                             RoundedCorners(androidApplication().resources.getDimensionPixelSize(R.dimen.md_margin))
-                        )
+                        ).placeholder(R.drawable.ic_crunchyroll)
                 }
             }))
             .build()

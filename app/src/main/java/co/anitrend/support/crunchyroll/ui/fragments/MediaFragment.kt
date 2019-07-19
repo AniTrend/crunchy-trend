@@ -14,40 +14,23 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.ui.activities
+package co.anitrend.support.crunchyroll.ui.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.commit
-import co.anitrend.support.crunchyroll.R
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.ui.fragments.LoginFragment
-import com.google.android.material.appbar.MaterialToolbar
-import io.wax911.support.ui.activity.SupportActivity
+import co.anitrend.support.crunchyroll.core.viewmodel.media.CrunchyMediaViewModel
+import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
+import io.wax911.support.core.viewmodel.SupportViewModel
+import io.wax911.support.ui.fragment.SupportFragment
 import org.koin.android.ext.android.inject
 
-class LoginActivity : SupportActivity<Nothing, CrunchyCorePresenter>() {
-
-    private val supportToolbar by lazy {
-        findViewById<MaterialToolbar>(R.id.materialToolbar)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
-        setSupportActionBar(supportToolbar)
-    }
-
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-        onUpdateUserInterface()
-    }
+class MediaFragment : SupportFragment<CrunchyMedia?, CrunchyCorePresenter, List<CrunchyMedia>?>() {
 
     /**
-     * Can be used to configure custom theme styling as desired
+     * Invoke view model observer to watch for changes
      */
-    override fun configureActivity() {
-
+    override fun setUpViewModelObserver() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     /**
@@ -66,7 +49,7 @@ class LoginActivity : SupportActivity<Nothing, CrunchyCorePresenter>() {
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     /**
@@ -76,12 +59,7 @@ class LoginActivity : SupportActivity<Nothing, CrunchyCorePresenter>() {
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        LoginFragment.newInstance().apply {
-            supportFragmentManager.commit {
-                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                replace(R.id.contentFrame, this@apply, tag)
-            }
-        }
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     /**
@@ -94,6 +72,6 @@ class LoginActivity : SupportActivity<Nothing, CrunchyCorePresenter>() {
      * @see [SupportViewModel.requestBundleLiveData]
      */
     override fun onFetchDataInitialize() {
-
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

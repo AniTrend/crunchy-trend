@@ -38,7 +38,7 @@ class SplashActivity : SupportActivity<Nothing, CrunchyCorePresenter>() {
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
-        makeRequest()
+        onFetchDataInitialize()
     }
 
     /**
@@ -73,7 +73,7 @@ class SplashActivity : SupportActivity<Nothing, CrunchyCorePresenter>() {
      *
      * Check implementation for more details
      */
-    override fun updateUI() {
+    override fun onUpdateUserInterface() {
         val intent = when (supportPresenter.supportPreference.isAuthenticated) {
             true -> Intent(this, MainActivity::class.java)
             else -> Intent(this, LoginActivity::class.java)
@@ -89,9 +89,9 @@ class SplashActivity : SupportActivity<Nothing, CrunchyCorePresenter>() {
      * The results of the dispatched network or cache call will be published by the
      * [androidx.lifecycle.LiveData] specifically [SupportViewModel.model]
      *
-     * @see [SupportViewModel.queryFor]
+     * @see [SupportViewModel.requestBundleLiveData]
      */
-    override fun makeRequest() {
+    override fun onFetchDataInitialize() {
         val coreSessionRequest = OneTimeWorkRequest.Builder(CoreSessionWorker::class.java)
             .addTag(CoreSessionWorker.TAG)
             .build()
@@ -102,10 +102,10 @@ class SplashActivity : SupportActivity<Nothing, CrunchyCorePresenter>() {
             workManager.getWorkInfoByIdLiveData(coreSessionRequest.id)
                 .observe(this, Observer {
                     when (it.state) {
-                        WorkInfo.State.SUCCEEDED -> updateUI()
+                        WorkInfo.State.SUCCEEDED -> onUpdateUserInterface()
                         WorkInfo.State.FAILED -> {
                             Toast.makeText(applicationContext, "Failed to start session, retrying!", Toast.LENGTH_SHORT).show()
-                            makeRequest()
+                            onFetchDataInitialize()
                         }
                         else -> Timber.tag(moduleTag).d("${it.state}")
                     }

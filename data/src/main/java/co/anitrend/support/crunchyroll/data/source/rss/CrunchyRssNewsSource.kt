@@ -59,7 +59,10 @@ class CrunchyRssNewsSource(
      */
     override fun onItemAtEndLoaded(itemAtEnd: CrunchyRssNews) {
         pagingRequestHelper.runIfNotRunning(PagingRequestHelper.RequestType.AFTER) {
-            invoke(it)
+            if (supportPagingHelper.page <= 1) {
+                supportPagingHelper.onPageNext()
+                invoke(it)
+            }
         }
     }
 

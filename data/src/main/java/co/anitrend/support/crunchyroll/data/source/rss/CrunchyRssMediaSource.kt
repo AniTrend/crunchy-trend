@@ -61,7 +61,10 @@ class CrunchyRssMediaSource(
      */
     override fun onItemAtEndLoaded(itemAtEnd: CrunchyRssMedia) {
         pagingRequestHelper.runIfNotRunning(PagingRequestHelper.RequestType.AFTER) {
-            invoke(it)
+            if (supportPagingHelper.page <= 1) {
+                supportPagingHelper.onPageNext()
+                invoke(it)
+            }
         }
     }
 
