@@ -118,6 +118,11 @@ dependencies {
     implementation "io.noties.markwon:image-glide:$markwon"
     implementation "io.noties.markwon:linkify:$markwon"
 
+    /** Exo Player */
+    implementation "com.google.android.exoplayer:exoplayer-core:$exo"
+    implementation "com.google.android.exoplayer:exoplayer-hls:$exo"
+    implementation "com.google.android.exoplayer:exoplayer-ui:$exo"
+
     /** Testing-only dependencies */
     testImplementation "junit:junit:$junit"
     testImplementation "io.mockk:mockk:$mockk"

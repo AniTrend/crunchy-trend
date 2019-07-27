@@ -31,14 +31,14 @@ import retrofit2.http.Query
 interface CrunchyMediaEndpoint {
 
     @JSON
-    @GET("/info.${BuildConfig.apiVersion}.json")
+    @GET("/info.${BuildConfig.apiExtension}.json")
     suspend fun getMediaInfo(
         @Query("media_id") mediaId: Int,
         @Query("fields") mediaFields: String = MediaFieldsContract.mediaFields
-    ) : Response<CrunchyContainer<List<CrunchyMedia>>>
+    ) : Response<CrunchyContainer<CrunchyMedia>>
 
     @JSON
-    @GET("/list_media.${BuildConfig.apiVersion}.json")
+    @GET("/list_media.${BuildConfig.apiExtension}.json")
     suspend fun getMediaList(
         @Query("collection_id") collectionId: Int,
         @Query("offset") offset: Int,
@@ -46,7 +46,7 @@ interface CrunchyMediaEndpoint {
     ) : Response<CrunchyContainer<List<CrunchyMedia>>>
 
     @JSON
-    @GET("/info.${BuildConfig.apiVersion}.json")
+    @GET("/info.${BuildConfig.apiExtension}.json")
     suspend fun getStreamInfo(
         @Query("media_id") mediaId: Int,
         @Query("fields") mediaFields: String = MediaFieldsContract.streamFields

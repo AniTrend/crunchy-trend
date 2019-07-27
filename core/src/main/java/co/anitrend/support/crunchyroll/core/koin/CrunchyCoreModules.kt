@@ -17,16 +17,19 @@
 package co.anitrend.support.crunchyroll.core.koin
 
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.core.util.CrunchyDateHelper
+import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper
 import co.anitrend.support.crunchyroll.core.viewmodel.auth.CrunchyAuthViewModel
-import co.anitrend.support.crunchyroll.core.viewmodel.media.CrunchyMediaViewModel
+import co.anitrend.support.crunchyroll.core.viewmodel.media.CrunchyMediaInfoViewModel
+import co.anitrend.support.crunchyroll.core.viewmodel.media.CrunchyMediaStreamViewModel
+import co.anitrend.support.crunchyroll.core.viewmodel.media.CrunchyMediaListViewModel
 import co.anitrend.support.crunchyroll.core.viewmodel.rss.CrunchyRssMediaViewModel
 import co.anitrend.support.crunchyroll.core.viewmodel.rss.CrunchyRssNewsViewModel
 import co.anitrend.support.crunchyroll.data.repository.auth.CrunchyAuthRepository
-import co.anitrend.support.crunchyroll.data.repository.media.CrunchyMediaRepository
+import co.anitrend.support.crunchyroll.data.repository.media.CrunchyMediaInfoRepository
+import co.anitrend.support.crunchyroll.data.repository.media.CrunchyMediaListRepository
+import co.anitrend.support.crunchyroll.data.repository.media.CrunchyMediaStreamRepository
 import co.anitrend.support.crunchyroll.data.repository.rss.CrunchyRssMediaRepository
 import co.anitrend.support.crunchyroll.data.repository.rss.CrunchyRssNewsRepository
-import co.anitrend.support.crunchyroll.data.util.CrunchySettings
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -54,8 +57,18 @@ val crunchyCoreViewModelModules = module {
         )
     }
     viewModel {
-        CrunchyMediaViewModel(
-            repository = get<CrunchyMediaRepository>()
+        CrunchyMediaListViewModel(
+            repository = get<CrunchyMediaListRepository>()
+        )
+    }
+    viewModel {
+        CrunchyMediaInfoViewModel(
+            repository = get<CrunchyMediaInfoRepository>()
+        )
+    }
+    viewModel {
+        CrunchyMediaStreamViewModel(
+            repository = get<CrunchyMediaStreamRepository>()
         )
     }
     viewModel {

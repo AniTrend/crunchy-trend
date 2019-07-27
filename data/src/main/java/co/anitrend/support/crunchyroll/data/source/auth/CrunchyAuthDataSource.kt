@@ -22,6 +22,7 @@ import co.anitrend.support.crunchyroll.data.auth.CrunchyAuthenticationHelper
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchyLogin
 import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchySessionCoreDao
+import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchySessionDao
 import co.anitrend.support.crunchyroll.data.mapper.auth.CrunchyLoginMapper
 import co.anitrend.support.crunchyroll.data.usecase.auth.CrunchyAuthenticationUseCase
 import io.wax911.support.data.source.contract.ISourceObservable
@@ -34,6 +35,7 @@ import timber.log.Timber
 class CrunchyAuthDataSource(
     private val payload: CrunchyAuthenticationUseCase.Payload,
     private val sessionCoreDao: CrunchySessionCoreDao,
+    private val sessionDao: CrunchySessionDao,
     private val authEndpoint: CrunchyAuthEndpoint,
     private val loginDao: CrunchyLoginDao
 ) : SupportCoreDataSource() {
@@ -61,7 +63,7 @@ class CrunchyAuthDataSource(
     override fun clearDataSource() {
         launch {
             loginDao.clearTable()
-            loginDao.clearTable()
+            sessionDao.clearTable()
             sessionCoreDao.clearTable()
         }
     }

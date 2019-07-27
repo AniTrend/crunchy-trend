@@ -21,6 +21,7 @@ import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyAuthEndpoin
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchySessionEndpoint
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchySession
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchySessionCore
+import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchySessionDao
 import co.anitrend.support.crunchyroll.data.mapper.session.CrunchySessionCoreMapper
@@ -36,6 +37,7 @@ class CrunchySessionDataSource(
     private val sessionEndpoint: CrunchySessionEndpoint,
     private val sessionCoreDao: CrunchySessionCoreDao,
     private val authEndpoint: CrunchyAuthEndpoint,
+    private val crunchyLoginDao: CrunchyLoginDao,
     private val sessionDao: CrunchySessionDao,
     private val payload: CrunchySessionUseCase.Payload
 ) : SupportCoroutineDataSource() {
@@ -108,9 +110,12 @@ class CrunchySessionDataSource(
      * [startNormalSession]
      */
     private suspend fun startUnblockedSession() : NetworkState {
+        val auth = sessionDao.findLatest()?.auth ?: crunchyLoginDao.findLatest()?.auth ?: ""
         val futureResponse = async {
             sessionEndpoint.startUnblockedSession(
-                payload = payload.toMap()
+                payload = payload.copy(
+                    auth = auth
+                ).toMap()
             )
         }
 

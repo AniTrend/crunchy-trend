@@ -14,14 +14,22 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.core.viewmodel.media
+package co.anitrend.support.crunchyroll.data.repository.media
 
-import androidx.paging.PagedList
 import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
-import co.anitrend.support.crunchyroll.data.usecase.media.CrunchyMediaUseCase
-import io.wax911.support.core.viewmodel.SupportViewModel
-import io.wax911.support.data.repository.contract.ISupportRepository
+import co.anitrend.support.crunchyroll.data.usecase.media.CrunchyMediaInfoUseCase
+import io.wax911.support.data.repository.SupportRepository
 
-class CrunchyMediaViewModel(
-    repository: ISupportRepository<PagedList<CrunchyMedia>, CrunchyMediaUseCase.Payload>
-) : SupportViewModel<PagedList<CrunchyMedia>, CrunchyMediaUseCase.Payload>(repository)
+class CrunchyMediaInfoRepository(
+    private val useCase: CrunchyMediaInfoUseCase
+) : SupportRepository<CrunchyMedia?, CrunchyMediaInfoUseCase.Payload>() {
+    /**
+     * Handles dispatching of network requests to a background thread
+     *
+     * @param subject subject to apply business rules
+     */
+    override fun invoke(subject: CrunchyMediaInfoUseCase.Payload) =
+        useCase(
+            param = subject
+        )
+}

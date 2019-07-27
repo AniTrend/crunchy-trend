@@ -18,6 +18,7 @@ package co.anitrend.support.crunchyroll.data.api.endpoint.contract
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
+import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyInterceptor
 import io.wax911.support.data.factory.SupportEndpointFactory
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -41,7 +42,7 @@ open class CrunchyEndpointFactory<S: Any>(
     private val injectInterceptor: Boolean = true
 ) : SupportEndpointFactory<S>(url, endpoint), KoinComponent {
 
-    private val clientInterceptor by inject<Interceptor>()
+    private val clientInterceptor by inject<CrunchyInterceptor>()
 
     override val retrofit: Retrofit by lazy {
         val httpClient = OkHttpClient.Builder()
@@ -54,7 +55,7 @@ open class CrunchyEndpointFactory<S: Any>(
                 when {
                     BuildConfig.DEBUG -> {
                         val httpLoggingInterceptor = HttpLoggingInterceptor()
-                            .setLevel(HttpLoggingInterceptor.Level.BODY)
+                            .setLevel(HttpLoggingInterceptor.Level.HEADERS)
                         addInterceptor(httpLoggingInterceptor)
                     }
                 }

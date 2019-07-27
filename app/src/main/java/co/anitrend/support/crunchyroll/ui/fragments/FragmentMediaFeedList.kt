@@ -25,10 +25,12 @@ import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.viewmodel.rss.CrunchyRssMediaViewModel
 import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssMedia
 import co.anitrend.support.crunchyroll.data.usecase.rss.CrunchyRssMediaUseCase
+import co.anitrend.support.crunchyroll.ui.activities.StreamingActivity
 import co.anitrend.support.crunchyroll.ui.adapters.RssMediaAdapter
 import io.wax911.support.core.viewmodel.SupportViewModel
 import io.wax911.support.data.model.NetworkState
 import io.wax911.support.extension.LAZY_MODE_UNSAFE
+import io.wax911.support.extension.startNewActivity
 import io.wax911.support.ui.fragment.SupportFragmentList
 import io.wax911.support.ui.recycler.adapter.SupportViewAdapter
 import io.wax911.support.ui.recycler.holder.event.ItemClickListener
@@ -59,7 +61,11 @@ class FragmentMediaFeedList : SupportFragmentList<CrunchyRssMedia, CrunchyCorePr
         presenter = supportPresenter,
         clickListener = object: ItemClickListener<CrunchyRssMedia> {
             override fun onItemClick(target: View, data: Pair<Int, CrunchyRssMedia?>) {
-
+                target.context.startNewActivity<StreamingActivity>(
+                    Bundle().also {
+                        it.putInt("mediaId", data.second?.mediaId ?: 0)
+                    }
+                )
             }
 
             override fun onItemLongClick(target: View, data: Pair<Int, CrunchyRssMedia?>) {

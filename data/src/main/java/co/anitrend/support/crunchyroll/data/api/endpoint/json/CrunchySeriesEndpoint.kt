@@ -30,13 +30,13 @@ import retrofit2.http.Query
 interface CrunchySeriesEndpoint {
 
     @JSON
-    @GET("/info.${BuildConfig.apiVersion}.json")
+    @GET("/info.${BuildConfig.apiExtension}.json")
     suspend fun getSeriesInfo(
         @Query("series_id") seriesId: Int?
     ) : Response<CrunchyContainer<CrunchySeries>>
 
     @JSON
-    @GET("/autocomplete.${BuildConfig.apiVersion}.json")
+    @GET("/autocomplete.${BuildConfig.apiExtension}.json")
     suspend fun getSeriesAutoComplete(
         @Query("q") query: String?,
         @Query("media_types") mediaTypes: String = CrunchyMediaTypeContract.ANIME,

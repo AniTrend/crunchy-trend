@@ -29,11 +29,15 @@ import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyInterceptor
 import co.anitrend.support.crunchyroll.data.auth.CrunchyAuthenticationHelper
 import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
 import co.anitrend.support.crunchyroll.data.repository.auth.CrunchyAuthRepository
-import co.anitrend.support.crunchyroll.data.repository.media.CrunchyMediaRepository
+import co.anitrend.support.crunchyroll.data.repository.media.CrunchyMediaInfoRepository
+import co.anitrend.support.crunchyroll.data.repository.media.CrunchyMediaListRepository
+import co.anitrend.support.crunchyroll.data.repository.media.CrunchyMediaStreamRepository
 import co.anitrend.support.crunchyroll.data.repository.rss.CrunchyRssMediaRepository
 import co.anitrend.support.crunchyroll.data.repository.rss.CrunchyRssNewsRepository
 import co.anitrend.support.crunchyroll.data.usecase.auth.CrunchyAuthenticationUseCase
-import co.anitrend.support.crunchyroll.data.usecase.media.CrunchyMediaUseCase
+import co.anitrend.support.crunchyroll.data.usecase.media.CrunchyMediaInfoUseCase
+import co.anitrend.support.crunchyroll.data.usecase.media.CrunchyMediaListUseCase
+import co.anitrend.support.crunchyroll.data.usecase.media.CrunchyMediaStreamUseCase
 import co.anitrend.support.crunchyroll.data.usecase.rss.CrunchyRssMediaUseCase
 import co.anitrend.support.crunchyroll.data.usecase.rss.CrunchyRssNewsUseCase
 import co.anitrend.support.crunchyroll.data.usecase.series.CrunchySeriesUseCase
@@ -83,14 +87,26 @@ val crunchyDataUseCaseModules = module {
     factory {
         CrunchyAuthenticationUseCase(
             sessionCoreDao = get<CrunchyDatabase>().crunchySessionCoreDao(),
+            sessionDao = get<CrunchyDatabase>().crunchySessionDao(),
             authEndpoint = CrunchyAuthEndpoint.create(),
             loginDao = get<CrunchyDatabase>().crunchyLoginDao()
         )
     }
     factory {
-        CrunchyMediaUseCase(
+        CrunchyMediaInfoUseCase(
             mediaEndpoint = CrunchyMediaEndpoint.create(),
             mediaDao = get<CrunchyDatabase>().crunchyMediaDao()
+        )
+    }
+    factory {
+        CrunchyMediaListUseCase(
+            mediaEndpoint = CrunchyMediaEndpoint.create(),
+            mediaDao = get<CrunchyDatabase>().crunchyMediaDao()
+        )
+    }
+    factory {
+        CrunchyMediaStreamUseCase(
+            mediaEndpoint = CrunchyMediaEndpoint.create()
         )
     }
     factory {
@@ -103,6 +119,7 @@ val crunchyDataUseCaseModules = module {
         CrunchySessionUseCase(
             sessionEndpoint  = CrunchySessionEndpoint.create(),
             sessionCoreDao  = get<CrunchyDatabase>().crunchySessionCoreDao(),
+            crunchyLoginDao  = get<CrunchyDatabase>().crunchyLoginDao(),
             authEndpoint  = CrunchyAuthEndpoint.create(),
             sessionDao  = get<CrunchyDatabase>().crunchySessionDao()
         )
@@ -129,7 +146,17 @@ val crunchyDataRepositoryModules = module {
         )
     }
     factory {
-        CrunchyMediaRepository(
+        CrunchyMediaListRepository(
+            useCase = get()
+        )
+    }
+    factory {
+        CrunchyMediaInfoRepository(
+            useCase = get()
+        )
+    }
+    factory {
+        CrunchyMediaStreamRepository(
             useCase = get()
         )
     }

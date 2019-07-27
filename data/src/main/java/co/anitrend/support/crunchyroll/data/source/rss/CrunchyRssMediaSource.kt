@@ -41,6 +41,8 @@ class CrunchyRssMediaSource(
     private val payload: CrunchyRssMediaUseCase.Payload
 ) : SupportPagingDataSource<CrunchyRssMedia>(parentCoroutineJob) {
 
+    private var initialRefresh = false
+
     /**
      * Called when zero items are returned from an initial load of the PagedList's data source.
      */
@@ -63,6 +65,24 @@ class CrunchyRssMediaSource(
         pagingRequestHelper.runIfNotRunning(PagingRequestHelper.RequestType.AFTER) {
             if (supportPagingHelper.page <= 1) {
                 supportPagingHelper.onPageNext()
+                invoke(it)
+            }
+        }
+    }
+
+    /**
+     * Called when the item at the front of the PagedList has been loaded, and access has
+     * occurred within [Config.prefetchDistance] of it.
+     *
+     *
+     * No more data will be prepended to the PagedList before this item.
+     *
+     * @param itemAtFront The first item of PagedList
+     */
+    override fun onItemAtFrontLoaded(itemAtFront: CrunchyRssMedia) {
+        pagingRequestHelper.runIfNotRunning(PagingRequestHelper.RequestType.BEFORE) {
+            if (!initialRefresh) {
+                initialRefresh = true
                 invoke(it)
             }
         }

@@ -20,6 +20,7 @@ import android.os.Parcelable
 import androidx.annotation.StringDef
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyAuthEndpoint
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchySessionEndpoint
+import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchySessionDao
 import co.anitrend.support.crunchyroll.data.source.session.CrunchySessionDataSource
@@ -32,6 +33,7 @@ import kotlinx.android.parcel.Parcelize
 class CrunchySessionUseCase(
     private val sessionEndpoint: CrunchySessionEndpoint,
     private val sessionCoreDao: CrunchySessionCoreDao,
+    private val crunchyLoginDao: CrunchyLoginDao,
     private val authEndpoint: CrunchyAuthEndpoint,
     private val sessionDao: CrunchySessionDao
 ) : ISupportCoroutineUseCase<CrunchySessionUseCase.Payload, NetworkState> {
@@ -46,12 +48,19 @@ class CrunchySessionUseCase(
             sessionEndpoint = sessionEndpoint,
             sessionCoreDao = sessionCoreDao,
             authEndpoint = authEndpoint,
+            crunchyLoginDao = crunchyLoginDao,
             sessionDao = sessionDao,
             payload = param
         )
 
-        if (sessionCoreDao.findLatest() != null)
-            return NetworkState.LOADED
+        if (param.userId == null) {
+            if (sessionCoreDao.findLatest() != null)
+                return NetworkState.LOADED
+        }
+        else {
+            if (sessionDao.findLatest()?.hasExpired() == false)
+                return NetworkState.LOADED
+        }
 
         return dataSource()
     }
@@ -62,7 +71,7 @@ class CrunchySessionUseCase(
         override val sessionType: String?,
         override val deviceId: String? = null,
         override val deviceType: String? = null,
-        val auth: String,
+        val auth: String = "",
         val userId: Int? = null
     ) : ISessionUseCasePayload, Parcelable {
 

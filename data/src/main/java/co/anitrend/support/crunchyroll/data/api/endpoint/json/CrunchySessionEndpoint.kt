@@ -29,7 +29,7 @@ interface CrunchySessionEndpoint {
 
     @GET("/start_session")
     suspend fun startUnblockedSession(
-        @QueryMap payload: Map<String, Any?>
+        @QueryMap payload: Map<String, String?>
     ): Response<CrunchyContainer<CrunchySession>>
 
     @GET("/start_session")

@@ -14,39 +14,37 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.usecase.rss
+package co.anitrend.support.crunchyroll.data.usecase.media
 
 import android.os.Parcelable
-import androidx.annotation.StringDef
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.paging.PagedList
-import co.anitrend.support.crunchyroll.data.api.endpoint.xml.CrunchyEndpoint
-import co.anitrend.support.crunchyroll.data.api.endpoint.xml.CrunchyFeedEndpoint
-import co.anitrend.support.crunchyroll.data.dao.query.rss.CrunchyRssMediaDao
-import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssMedia
-import co.anitrend.support.crunchyroll.data.source.rss.CrunchyRssMediaSource
-import co.anitrend.support.crunchyroll.data.usecase.rss.contract.IRssUseCase
+import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyMediaEndpoint
+import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchyMediaDao
+import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
+import co.anitrend.support.crunchyroll.data.source.media.CrunchyMediaInfoDataSource
+import co.anitrend.support.crunchyroll.data.source.media.CrunchyMediaListDataSource
+import co.anitrend.support.crunchyroll.data.usecase.media.contract.IMediaUseCasePayload
 import io.wax911.support.data.model.NetworkState
 import io.wax911.support.data.model.UiModel
+import io.wax911.support.data.usecase.core.ISupportCoreUseCase
 import kotlinx.android.parcel.Parcelize
 
-class CrunchyRssMediaUseCase(
-    private val rssMediaDao: CrunchyRssMediaDao,
-    private val rssCrunchyEndpoint: CrunchyEndpoint,
-    private val rssFeedCrunchyEndpoint: CrunchyFeedEndpoint
-    ) : IRssUseCase<CrunchyRssMediaUseCase.Payload, CrunchyRssMedia> {
+class CrunchyMediaInfoUseCase(
+    private val mediaEndpoint: CrunchyMediaEndpoint,
+    private val mediaDao: CrunchyMediaDao
+) : ISupportCoreUseCase<CrunchyMediaInfoUseCase.Payload, UiModel<CrunchyMedia?>> {
 
     /**
      * Solves a given use case in the implementation target
      *
      * @param param input for solving a given use case
      */
-    override fun invoke(param: Payload): UiModel<PagedList<CrunchyRssMedia>> {
-        val dataSource = CrunchyRssMediaSource(
-            rssMediaDao = rssMediaDao,
-            rssCrunchyEndpoint = rssCrunchyEndpoint,
-            rssFeedCrunchyEndpoint = rssFeedCrunchyEndpoint,
+    override fun invoke(param: Payload): UiModel<CrunchyMedia?> {
+        val dataSource = CrunchyMediaInfoDataSource(
+            mediaEndpoint = mediaEndpoint,
+            mediaDao = mediaDao,
             payload = param
         )
 
@@ -59,7 +57,7 @@ class CrunchyRssMediaUseCase(
         }
 
         return UiModel(
-            model = dataSource.media(param),
+            model = dataSource.mediaInfo(param),
             networkState = dataSource.networkState,
             refresh = {
                 dataSource.invalidateAndRefresh()
@@ -74,20 +72,6 @@ class CrunchyRssMediaUseCase(
 
     @Parcelize
     data class Payload(
-        override val locale: String = "enUS",
-        val seriesSlug: String?,
-        @RequestType
-        val mediaRssRequestType: String
-    ) : IRssUseCase.IRssPayload, Parcelable {
-        @StringDef(
-            RequestType.GET_BY_SERIES_SLUG,
-            RequestType.GET_LATEST_FEED
-        )
-        annotation class RequestType {
-            companion object {
-                const val GET_BY_SERIES_SLUG = "GET_BY_SERIES_SLUG"
-                const val GET_LATEST_FEED = "GET_LATEST_FEED"
-            }
-        }
-    }
+        override val mediaId: Int
+    ) : IMediaUseCasePayload, Parcelable
 }

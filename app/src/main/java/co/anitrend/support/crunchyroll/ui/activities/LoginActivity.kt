@@ -21,7 +21,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import co.anitrend.support.crunchyroll.R
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.ui.fragments.LoginFragment
+import co.anitrend.support.crunchyroll.ui.fragments.FragmentLogin
 import com.google.android.material.appbar.MaterialToolbar
 import io.wax911.support.ui.activity.SupportActivity
 import org.koin.android.ext.android.inject
@@ -76,7 +76,7 @@ class LoginActivity : SupportActivity<Nothing, CrunchyCorePresenter>() {
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        LoginFragment.newInstance().apply {
+        FragmentLogin.newInstance().apply {
             supportFragmentManager.commit {
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 replace(R.id.contentFrame, this@apply, tag)

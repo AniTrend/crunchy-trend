@@ -25,6 +25,7 @@ import android.widget.EditText
 import android.widget.Toast
 import android.widget.ViewSwitcher
 import androidx.lifecycle.Observer
+import androidx.work.WorkInfo
 import co.anitrend.support.crunchyroll.R
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.viewmodel.auth.CrunchyAuthViewModel
@@ -33,16 +34,15 @@ import co.anitrend.support.crunchyroll.data.usecase.auth.CrunchyAuthenticationUs
 import co.anitrend.support.crunchyroll.data.usecase.auth.CrunchyAuthenticationUseCase.Payload.RequestType.Companion.LOG_IN
 import co.anitrend.support.crunchyroll.data.usecase.auth.CrunchyAuthenticationUseCase.Payload.RequestType.Companion.LOG_OUT
 import co.anitrend.support.crunchyroll.ui.activities.MainActivity
+import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.material.button.MaterialButton
-import io.wax911.support.data.model.NetworkState
-import io.wax911.support.data.model.extension.isSuccessful
 import io.wax911.support.extension.gone
 import io.wax911.support.extension.visible
 import io.wax911.support.ui.fragment.SupportFragment
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class LoginFragment : SupportFragment<CrunchyLogin?, CrunchyCorePresenter, CrunchyLogin?>() {
+class FragmentLogin : SupportFragment<CrunchyLogin?, CrunchyCorePresenter, CrunchyLogin?>() {
 
     private lateinit var editLoginText: EditText
     private lateinit var editPasswordText: EditText
@@ -175,8 +175,37 @@ class LoginFragment : SupportFragment<CrunchyLogin?, CrunchyCorePresenter, Crunc
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        startActivity(Intent(activity, MainActivity::class.java))
-        activity?.finish()
+        supportPresenter.startSessionWorker().also { workManager ->
+            workManager.getWorkInfoByIdLiveData(supportPresenter.coreSessionRequest.id)
+                .observe(this, Observer {
+                    when (it.state) {
+                        WorkInfo.State.SUCCEEDED -> {
+                            startActivity(Intent(activity, MainActivity::class.java))
+                            activity?.finish()
+                        }
+                        WorkInfo.State.FAILED -> {
+                            onSessionActivationFailed()
+                        }
+                        else -> Timber.tag(moduleTag).d("${it.state}")
+                    }
+                })
+        }
+    }
+
+    private fun onSessionActivationFailed() {
+        activity?.also { fragmentActivity ->
+            MaterialDialog(fragmentActivity)
+                .title(text = "Session not started")
+                .message(text = "Application failed to start session, would you like to skip this this stage and retry it later?")
+                .positiveButton(text = "Yes", click = {
+                    startActivity(
+                        Intent(fragmentActivity, MainActivity::class.java)
+                    )
+                    fragmentActivity.finish()
+                })
+                .negativeButton(text = "Retry", click = { onUpdateUserInterface() })
+                .show()
+        }
     }
 
     /**
@@ -193,13 +222,13 @@ class LoginFragment : SupportFragment<CrunchyLogin?, CrunchyCorePresenter, Crunc
         supportViewModel(CrunchyAuthenticationUseCase.Payload(
             account = editLoginText.editableText.toString(),
             password = editPasswordText.editableText.toString(),
-            authenticationType = if (supportPresenter.supportPreference.isAuthenticated) LOG_IN else LOG_OUT
+            authenticationType = if (!supportPresenter.supportPreference.isAuthenticated) LOG_IN else LOG_OUT
         ))
     }
 
     companion object {
-        fun newInstance(): LoginFragment {
-            return LoginFragment()
+        fun newInstance(): FragmentLogin {
+            return FragmentLogin()
         }
     }
 }

@@ -25,7 +25,7 @@
                 <item
                     android:id="@+id/nav_show_latest"
                     android:icon="@drawable/ic_live_tv_24dp"
-                    android:title="@string/nav_show_latest"
+                    android:title="@string/nav_shows"
                     app:showAsAction="ifRoom|withText"/>
 
                 <item

@@ -14,22 +14,14 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.core.util
+package co.anitrend.support.crunchyroll.data.util
 
-import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
-import co.anitrend.support.crunchyroll.data.arch.RCF822Date
 import io.wax911.support.extension.util.contract.ISupportDateHelper
 
 class CrunchyDateHelper : ISupportDateHelper {
 
     companion object {
-        private const val ISO8601_PATTERN = "yyyy-MM-dd'T'HH:mm:ssXXX"
-        private const val RCF822D_PATTERN = "EEE, dd MMM yyyy HH:mm:ss ZZZ"
-
-        fun ISO8601Date.iso8601ToUnixTime(dateHelper: ISupportDateHelper) =
-            dateHelper.convertToUnixTimeStamp(originDate = this, inputPattern = ISO8601_PATTERN)
-
-        fun RCF822Date.rcf822ToUnixTime(dateHelper: ISupportDateHelper) =
-            dateHelper.convertToUnixTimeStamp(this, inputPattern = RCF822D_PATTERN)
+        internal const val ISO8601_PATTERN = "yyyy-MM-dd'T'HH:mm:ssXXX"
+        internal const val RCF822D_PATTERN = "EEE, dd MMM yyyy HH:mm:ss ZZZ"
     }
 }

@@ -14,38 +14,22 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.ui.activities
+package co.anitrend.support.crunchyroll.ui.fragments
 
-import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.widget.Toast
-import androidx.lifecycle.Observer
-import androidx.work.*
-import co.anitrend.support.crunchyroll.R
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.core.worker.CoreSessionWorker
-import io.wax911.support.ui.activity.SupportActivity
+import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
+import io.wax911.support.core.viewmodel.SupportViewModel
+import io.wax911.support.ui.fragment.SupportFragment
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
-class SplashActivity : SupportActivity<Nothing, CrunchyCorePresenter>() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_splash)
-    }
-
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-        onFetchDataInitialize()
-    }
+class FragmentMediaList : SupportFragment<CrunchyMedia?, CrunchyCorePresenter, List<CrunchyMedia>?>() {
 
     /**
-     * Can be used to configure custom theme styling as desired
+     * Invoke view model observer to watch for changes
      */
-    override fun configureActivity() {
-
+    override fun setUpViewModelObserver() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     /**
@@ -64,7 +48,7 @@ class SplashActivity : SupportActivity<Nothing, CrunchyCorePresenter>() {
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     /**
@@ -74,12 +58,7 @@ class SplashActivity : SupportActivity<Nothing, CrunchyCorePresenter>() {
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        val intent = when (supportPresenter.supportPreference.isAuthenticated) {
-            true -> Intent(this, MainActivity::class.java)
-            else -> Intent(this, LoginActivity::class.java)
-        }
-        startActivity(intent)
-        finish()
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     /**
@@ -92,18 +71,6 @@ class SplashActivity : SupportActivity<Nothing, CrunchyCorePresenter>() {
      * @see [SupportViewModel.requestBundleLiveData]
      */
     override fun onFetchDataInitialize() {
-        supportPresenter.startSessionWorker().also { workManager ->
-            workManager.getWorkInfoByIdLiveData(supportPresenter.coreSessionRequest.id)
-                .observe(this, Observer {
-                    when (it.state) {
-                        WorkInfo.State.SUCCEEDED -> onUpdateUserInterface()
-                        WorkInfo.State.FAILED -> {
-                            Toast.makeText(applicationContext, "Failed to start session, retrying!", Toast.LENGTH_SHORT).show()
-                            onFetchDataInitialize()
-                        }
-                        else -> Timber.tag(moduleTag).d("${it.state}")
-                    }
-                })
-        }
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

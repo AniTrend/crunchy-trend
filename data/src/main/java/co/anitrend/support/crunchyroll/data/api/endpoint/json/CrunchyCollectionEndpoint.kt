@@ -29,7 +29,7 @@ import retrofit2.http.Query
 interface CrunchyCollectionEndpoint {
 
     @JSON
-    @GET("/list_collections.${BuildConfig.apiVersion}.json")
+    @GET("/list_collections.${BuildConfig.apiExtension}.json")
     suspend fun getCollections(
         @Query("series_id") seriesId: Int?,
         @Query("offset") offset: Int?,

@@ -14,24 +14,19 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.ui.fragments
+package co.anitrend.support.crunchyroll.ui.activities
 
 import android.os.Bundle
+import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.commit
+import co.anitrend.support.crunchyroll.R
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.core.viewmodel.media.CrunchyMediaViewModel
-import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
-import io.wax911.support.core.viewmodel.SupportViewModel
-import io.wax911.support.ui.fragment.SupportFragment
+import co.anitrend.support.crunchyroll.data.usecase.media.CrunchyMediaStreamUseCase
+import co.anitrend.support.crunchyroll.ui.fragments.FragmentMediaStream
+import io.wax911.support.ui.activity.SupportActivity
 import org.koin.android.ext.android.inject
 
-class MediaFragment : SupportFragment<CrunchyMedia?, CrunchyCorePresenter, List<CrunchyMedia>?>() {
-
-    /**
-     * Invoke view model observer to watch for changes
-     */
-    override fun setUpViewModelObserver() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+class StreamingActivity : SupportActivity<Nothing, CrunchyCorePresenter>() {
 
     /**
      * Should be created lazily through injection or lazy delegate
@@ -39,6 +34,23 @@ class MediaFragment : SupportFragment<CrunchyMedia?, CrunchyCorePresenter, List<
      * @return supportPresenter of the generic type specified
      */
     override val supportPresenter by inject<CrunchyCorePresenter>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_streaming)
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        onUpdateUserInterface()
+    }
+
+    /**
+     * Can be used to configure custom theme styling as desired
+     */
+    override fun configureActivity() {
+
+    }
 
     /**
      * Additional initialization to be done in this method, if the overriding class is type of
@@ -49,7 +61,7 @@ class MediaFragment : SupportFragment<CrunchyMedia?, CrunchyCorePresenter, List<
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     /**
@@ -59,7 +71,16 @@ class MediaFragment : SupportFragment<CrunchyMedia?, CrunchyCorePresenter, List<
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        FragmentMediaStream.newInstance(
+            CrunchyMediaStreamUseCase.Payload(
+                mediaId = intent.getIntExtra("mediaId", 0)
+            )
+        ).apply {
+            supportFragmentManager.commit {
+                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                replace(R.id.contentFrame, this@apply, tag)
+            }
+        }
     }
 
     /**
@@ -72,6 +93,6 @@ class MediaFragment : SupportFragment<CrunchyMedia?, CrunchyCorePresenter, List<
      * @see [SupportViewModel.requestBundleLiveData]
      */
     override fun onFetchDataInitialize() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 }

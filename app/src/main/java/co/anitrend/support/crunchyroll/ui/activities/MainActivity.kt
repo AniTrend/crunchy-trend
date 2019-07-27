@@ -20,7 +20,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
@@ -52,7 +51,7 @@ class MainActivity : SupportActivity<Nothing, CrunchyCorePresenter>(), Navigatio
     private var selectedItem: Int = R.id.nav_show_latest
 
     @StringRes
-    private var selectedTitle: Int = R.string.nav_show_latest
+    private var selectedTitle: Int = R.string.nav_shows
 
     /**
      * Should be created lazily through injection or lazy delegate
@@ -157,7 +156,7 @@ class MainActivity : SupportActivity<Nothing, CrunchyCorePresenter>(), Navigatio
             }
             R.id.nav_contact -> Toast.makeText(this@MainActivity, "Contact", Toast.LENGTH_SHORT).show()
             R.id.nav_show_latest -> {
-                selectedTitle = R.string.nav_show_latest
+                selectedTitle = R.string.nav_shows
                 supportFragment = FragmentMediaFeedList.newInstance(
                     CrunchyRssMediaUseCase.Payload(
                         locale = "enGB",

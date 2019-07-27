@@ -22,9 +22,9 @@ import androidx.paging.PagingRequestHelper
 import androidx.paging.toLiveData
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyMediaEndpoint
 import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchyMediaDao
-import co.anitrend.support.crunchyroll.data.mapper.media.CrunchyMediaMapper
+import co.anitrend.support.crunchyroll.data.mapper.media.CrunchyMediaListMapper
 import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
-import co.anitrend.support.crunchyroll.data.usecase.media.CrunchyMediaUseCase
+import co.anitrend.support.crunchyroll.data.usecase.media.CrunchyMediaListUseCase
 import io.wax911.support.data.source.contract.ISourceObservable
 import io.wax911.support.data.source.paging.SupportPagingDataSource
 import io.wax911.support.data.util.SupportDataKeyStore
@@ -32,11 +32,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-class CrunchyMediaDataSource(
+class CrunchyMediaListDataSource(
     parentCoroutineJob: Job? = null,
     private val mediaEndpoint: CrunchyMediaEndpoint,
     private val mediaDao: CrunchyMediaDao,
-    private val payload: CrunchyMediaUseCase.Payload
+    private val payload: CrunchyMediaListUseCase.Payload
 ) : SupportPagingDataSource<CrunchyMedia>(parentCoroutineJob) {
 
     /**
@@ -79,7 +79,7 @@ class CrunchyMediaDataSource(
             )
         }
 
-        val mapper = CrunchyMediaMapper(
+        val mapper = CrunchyMediaListMapper(
             parentJob = supervisorJob,
             mediaDao = mediaDao,
             pagingRequestHelper = callback
@@ -101,7 +101,7 @@ class CrunchyMediaDataSource(
     }
 
     val media =
-        object : ISourceObservable<PagedList<CrunchyMedia>, CrunchyMediaUseCase.Payload> {
+        object : ISourceObservable<PagedList<CrunchyMedia>, CrunchyMediaListUseCase.Payload> {
         /**
          * Returns the appropriate observable which we will monitor for updates,
          * common implementation may include but not limited to returning
@@ -109,13 +109,13 @@ class CrunchyMediaDataSource(
          *
          * @param parameter parameters, implementation is up to the developer
          */
-        override fun invoke(parameter: CrunchyMediaUseCase.Payload): LiveData<PagedList<CrunchyMedia>> {
+        override fun invoke(parameter: CrunchyMediaListUseCase.Payload): LiveData<PagedList<CrunchyMedia>> {
             val dataSource = mediaDao.findByCollectionIdFactory(
                 collectionId = parameter.collectionId
             )
             return dataSource.toLiveData(
                 config = SupportDataKeyStore.PAGING_CONFIGURATION,
-                boundaryCallback = this@CrunchyMediaDataSource
+                boundaryCallback = this@CrunchyMediaListDataSource
             )
         }
     }

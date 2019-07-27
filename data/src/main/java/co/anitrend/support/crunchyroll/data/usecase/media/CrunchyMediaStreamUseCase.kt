@@ -16,31 +16,35 @@
 
 package co.anitrend.support.crunchyroll.data.usecase.media
 
+import android.os.Parcelable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.paging.PagedList
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyMediaEndpoint
 import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchyMediaDao
 import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
-import co.anitrend.support.crunchyroll.data.source.media.CrunchyMediaDataSource
+import co.anitrend.support.crunchyroll.data.model.stream.CrunchyStreamData
+import co.anitrend.support.crunchyroll.data.model.stream.CrunchyStreamInfo
+import co.anitrend.support.crunchyroll.data.source.media.CrunchyMediaListDataSource
+import co.anitrend.support.crunchyroll.data.source.media.CrunchyMediaStreamDataSource
+import co.anitrend.support.crunchyroll.data.usecase.media.contract.IMediaUseCasePayload
 import io.wax911.support.data.model.NetworkState
 import io.wax911.support.data.model.UiModel
 import io.wax911.support.data.usecase.core.ISupportCoreUseCase
+import kotlinx.android.parcel.Parcelize
 
-class CrunchyMediaUseCase(
-    private val mediaEndpoint: CrunchyMediaEndpoint,
-    private val mediaDao: CrunchyMediaDao
-) : ISupportCoreUseCase<CrunchyMediaUseCase.Payload, UiModel<PagedList<CrunchyMedia>>> {
+class CrunchyMediaStreamUseCase(
+    private val mediaEndpoint: CrunchyMediaEndpoint
+) : ISupportCoreUseCase<CrunchyMediaStreamUseCase.Payload, UiModel<CrunchyStreamInfo?>> {
 
     /**
      * Solves a given use case in the implementation target
      *
      * @param param input for solving a given use case
      */
-    override fun invoke(param: Payload): UiModel<PagedList<CrunchyMedia>> {
-        val dataSource = CrunchyMediaDataSource(
+    override fun invoke(param: Payload): UiModel<CrunchyStreamInfo?> {
+        val dataSource = CrunchyMediaStreamDataSource(
             mediaEndpoint = mediaEndpoint,
-            mediaDao = mediaDao,
             payload = param
         )
 
@@ -53,7 +57,7 @@ class CrunchyMediaUseCase(
         }
 
         return UiModel(
-            model = dataSource.media(param),
+            model = dataSource.streamInfo(null),
             networkState = dataSource.networkState,
             refresh = {
                 dataSource.invalidateAndRefresh()
@@ -66,7 +70,8 @@ class CrunchyMediaUseCase(
         )
     }
 
+    @Parcelize
     data class Payload(
-        val collectionId: Int
-    )
+        override val mediaId: Int
+    ) : IMediaUseCasePayload, Parcelable
 }

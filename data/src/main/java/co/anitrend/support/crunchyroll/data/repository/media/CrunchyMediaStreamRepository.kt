@@ -16,20 +16,19 @@
 
 package co.anitrend.support.crunchyroll.data.repository.media
 
-import androidx.paging.PagedList
-import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
-import co.anitrend.support.crunchyroll.data.usecase.media.CrunchyMediaUseCase
+import co.anitrend.support.crunchyroll.data.model.stream.CrunchyStreamInfo
+import co.anitrend.support.crunchyroll.data.usecase.media.CrunchyMediaStreamUseCase
 import io.wax911.support.data.repository.SupportRepository
 
-class CrunchyMediaRepository(
-    private val useCase: CrunchyMediaUseCase
-) : SupportRepository<PagedList<CrunchyMedia>, CrunchyMediaUseCase.Payload>() {
+class CrunchyMediaStreamRepository(
+    private val useCase: CrunchyMediaStreamUseCase
+) : SupportRepository<CrunchyStreamInfo?, CrunchyMediaStreamUseCase.Payload>() {
     /**
      * Handles dispatching of network requests to a background thread
      *
      * @param subject subject to apply business rules
      */
-    override fun invoke(subject: CrunchyMediaUseCase.Payload) =
+    override fun invoke(subject: CrunchyMediaStreamUseCase.Payload) =
         useCase(
             param = subject
         )

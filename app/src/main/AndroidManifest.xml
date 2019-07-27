@@ -51,6 +51,7 @@
         <activity android:name=".ui.activities.MainActivity"/>
 
         <activity android:name=".ui.activities.LoginActivity"/>
+        <activity android:name=".ui.activities.StreamingActivity"/>
 
         <provider
                 android:authorities="${applicationId}.provider"

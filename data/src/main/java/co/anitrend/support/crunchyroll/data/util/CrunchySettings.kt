@@ -26,7 +26,7 @@ class CrunchySettings(context: Context): SupportPreference(context) {
         get() = sharedPreferences.getInt(AUTHENTICATED_USER, -1)
         set(value) {
             field = value
-            sharedPreferences.edit { AUTHENTICATED_USER to value }
+            sharedPreferences.edit().putInt(AUTHENTICATED_USER, value).apply()
         }
 
     companion object  {

@@ -37,7 +37,7 @@ interface CrunchyMediaDao : ISupportQuery<CrunchyMedia> {
 
     @Query("select * from CrunchyMedia where media_id = :mediaId")
     fun findByMediaIdX(
-        mediaId: Long
+        mediaId: String
     ): LiveData<CrunchyMedia?>
 
 

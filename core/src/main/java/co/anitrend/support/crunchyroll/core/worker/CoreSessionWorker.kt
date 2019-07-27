@@ -29,6 +29,7 @@ class CoreSessionWorker(
     workerParameters: WorkerParameters
 ) : SupportCoroutineWorker<CrunchyCorePresenter>(context, workerParameters), KoinComponent {
 
+    override val presenter by inject<CrunchyCorePresenter>()
     private val crunchySessionUseCase by inject<CrunchySessionUseCase>()
 
     /**
@@ -43,14 +44,22 @@ class CoreSessionWorker(
      * dependent work will not execute if you return [androidx.work.ListenableWorker.Result.failure]
      */
     override suspend fun doWork(): Result {
-        val sessionType = CrunchySessionUseCase.Payload.RequestType.START_CORE_SESSION
-        val networkState = crunchySessionUseCase(
-            CrunchySessionUseCase.Payload(
-                auth = "",
-                deviceType = null,
-                sessionType = sessionType
-            )
-        )
+        val payload = when (presenter.supportPreference.isAuthenticated) {
+            true -> {
+                CrunchySessionUseCase.Payload(
+                    userId = presenter.supportPreference.authenticatedUserId,
+                    sessionType = CrunchySessionUseCase.Payload.RequestType.START_UNBLOCK_SESSION
+                )
+            }
+            else -> {
+                CrunchySessionUseCase.Payload(
+                    sessionType = CrunchySessionUseCase.Payload.RequestType.START_CORE_SESSION
+                )
+            }
+        }
+
+        val networkState = crunchySessionUseCase(payload)
+
         if (networkState.isLoaded())
             return Result.success()
         return Result.failure()

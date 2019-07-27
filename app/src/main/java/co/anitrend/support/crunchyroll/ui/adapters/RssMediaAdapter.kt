@@ -56,6 +56,9 @@ class RssMediaAdapter(
         override fun invoke(model: CrunchyRssMedia?) {
             with (binding) {
                 entity = model
+                mediaThumbnail.setOnClickListener {
+                    onItemClick(it)
+                }
                 executePendingBindings()
             }
         }
