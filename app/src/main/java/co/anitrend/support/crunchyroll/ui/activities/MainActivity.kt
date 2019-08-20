@@ -29,6 +29,7 @@ import co.anitrend.support.crunchyroll.R
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.data.usecase.rss.CrunchyRssMediaUseCase
 import co.anitrend.support.crunchyroll.data.usecase.rss.CrunchyRssNewsUseCase
+import co.anitrend.support.crunchyroll.ui.contract.CrunchyActivity
 import co.anitrend.support.crunchyroll.ui.fragments.FragmentFeedNewsList
 import co.anitrend.support.crunchyroll.ui.fragments.FragmentMediaFeedList
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -41,7 +42,7 @@ import io.wax911.support.ui.util.SupportUiKeyStore
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
 
-class MainActivity : SupportActivity<Nothing, CrunchyCorePresenter>(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : CrunchyActivity<Nothing, CrunchyCorePresenter>(), NavigationView.OnNavigationItemSelectedListener {
 
     private val bottomDrawerBehavior by lazy(LAZY_MODE_UNSAFE) {
         BottomSheetBehavior.from(bottomNavigationDrawer)
@@ -145,25 +146,20 @@ class MainActivity : SupportActivity<Nothing, CrunchyCorePresenter>(), Navigatio
     private fun onNavigate(@IdRes menu: Int) {
         var supportFragment: SupportFragment<*, *, *>? = null
         when (menu) {
-            R.id.nav_theme -> {
-                when (AppCompatDelegate.getDefaultNightMode()) {
-                    AppCompatDelegate.MODE_NIGHT_YES ->
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    else ->
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                }
-                recreate()
-            }
+            R.id.nav_theme -> toggleTheme()
             R.id.nav_contact -> Toast.makeText(this@MainActivity, "Contact", Toast.LENGTH_SHORT).show()
             R.id.nav_show_latest -> {
                 selectedTitle = R.string.nav_shows
                 supportFragment = FragmentMediaFeedList.newInstance(
-                    CrunchyRssMediaUseCase.Payload(
-                        locale = "enGB",
-                        mediaRssRequestType = CrunchyRssMediaUseCase.
-                            Payload.RequestType.GET_LATEST_FEED,
-                        seriesSlug = null
-                    )
+                    Bundle().apply {
+                        val payload = CrunchyRssMediaUseCase.Payload(
+                            locale = "enGB",
+                            mediaRssRequestType = CrunchyRssMediaUseCase.
+                                Payload.RequestType.GET_LATEST_FEED,
+                            seriesSlug = null
+                        )
+                        putParcelable(FragmentMediaFeedList.PAYLOAD, payload)
+                    }
                 )
             }
             R.id.nav_show_news -> {
@@ -211,12 +207,5 @@ class MainActivity : SupportActivity<Nothing, CrunchyCorePresenter>(), Navigatio
      */
     override fun onFetchDataInitialize() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    /**
-     * Can be used to configure custom theme styling as desired
-     */
-    override fun configureActivity() {
-
     }
 }

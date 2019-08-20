@@ -19,20 +19,20 @@ package co.anitrend.support.crunchyroll.extensions
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.databinding.BindingAdapter
 import co.anitrend.support.crunchyroll.data.model.rss.MediaThumbnail
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.request.RequestOptions
+import coil.api.load
 
 @BindingAdapter("imageUrl")
 fun AppCompatImageView.setImageUrl(url: String?) = url?.also {
-    Glide.with(context).load(url)
+    /*Glide.with(context).load(url)
         .transition(DrawableTransitionOptions.withCrossFade(350))
         .apply(RequestOptions.centerCropTransform())
-        .into(this)
+        .into(this)*/
+    load(url)
 }
 
 @BindingAdapter("imageUrl")
 fun AppCompatImageView.setImageUrl(thumbnails: List<MediaThumbnail>?) {
-    val highestQuality = thumbnails?.maxBy { it.width }
-    setImageUrl(highestQuality?.url)
+    setImageUrl(thumbnails.highestQuality()?.url)
 }
+
+fun List<MediaThumbnail>?.highestQuality() = this?.maxBy { it.width }

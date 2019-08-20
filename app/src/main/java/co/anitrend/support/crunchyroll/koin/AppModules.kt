@@ -38,8 +38,6 @@ val appModules = module {
         Markwon.builder(androidApplication())
             .usePlugin(HtmlPlugin.create())
             .usePlugin(LinkifyPlugin.create())
-            .usePlugin(GlideImagesPlugin.create(androidApplication()))
-            .usePlugin(GlideImagesPlugin.create(Glide.with(androidApplication())))
             .usePlugin(GlideImagesPlugin.create(object : GlideImagesPlugin.GlideStore {
                 override fun cancel(target: Target<*>) {
                     Glide.with(androidApplication()).clear(target)

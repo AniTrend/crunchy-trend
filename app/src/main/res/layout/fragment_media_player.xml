@@ -15,24 +15,20 @@
   ~    limitations under the License.
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:focusable="true"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:keepScreenOn="true">
+<io.wax911.support.ui.view.widget.SupportStateLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/supportStateLayout"
+        android:focusable="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:keepScreenOn="true">
 
-    <com.google.android.exoplayer2.ui.PlayerView
-            android:id="@+id/playerView"
-            android:focusable="true"
+    <com.devbrackets.android.exomedia.ui.widget.VideoView
+            android:id="@+id/video_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:measureBasedOnAspectRatio="true"
+            app:useDefaultControls="true"/>
 
-        <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"/>
-
-    </com.google.android.exoplayer2.ui.PlayerView>
-
-</FrameLayout>
+</io.wax911.support.ui.view.widget.SupportStateLayout>

@@ -21,12 +21,12 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import co.anitrend.support.crunchyroll.R
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.data.usecase.media.CrunchyMediaStreamUseCase
+import co.anitrend.support.crunchyroll.ui.contract.CrunchyActivity
 import co.anitrend.support.crunchyroll.ui.fragments.FragmentMediaStream
 import io.wax911.support.ui.activity.SupportActivity
 import org.koin.android.ext.android.inject
 
-class StreamingActivity : SupportActivity<Nothing, CrunchyCorePresenter>() {
+class StreamingActivity : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
 
     /**
      * Should be created lazily through injection or lazy delegate
@@ -40,16 +40,14 @@ class StreamingActivity : SupportActivity<Nothing, CrunchyCorePresenter>() {
         setContentView(R.layout.activity_streaming)
     }
 
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-        onUpdateUserInterface()
-    }
-
     /**
-     * Can be used to configure custom theme styling as desired
+     * Dispatch onResume() to fragments.  Note that for better inter-operation
+     * with older versions of the platform, at the point of this call the
+     * fragments attached to the activity are *not* resumed.
      */
-    override fun configureActivity() {
-
+    override fun onResume() {
+        super.onResume()
+        onUpdateUserInterface()
     }
 
     /**
@@ -66,31 +64,30 @@ class StreamingActivity : SupportActivity<Nothing, CrunchyCorePresenter>() {
 
     /**
      * Handles the updating of views, binding, creation or state change, depending on the context
-     * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
+     * [androidx.lifecycle.LiveData] for a given [io.wax911.support.ui.view.contract.ISupportFragmentActivity]
+     * will be available by this point.
      *
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        FragmentMediaStream.newInstance(
-            CrunchyMediaStreamUseCase.Payload(
-                mediaId = intent.getIntExtra("mediaId", 0)
-            )
-        ).apply {
-            supportFragmentManager.commit {
-                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                replace(R.id.contentFrame, this@apply, tag)
+        if (supportFragmentActivity == null) {
+            supportFragmentActivity = FragmentMediaStream.newInstance(intent.extras).apply {
+                supportFragmentManager.commit {
+                    setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    replace(R.id.contentFrame, this@apply, tag)
+                }
             }
         }
     }
 
     /**
-     * Handles the complex logic required to dispatch network request to [SupportViewModel]
-     * which uses [SupportRepository] to either request from the network or database cache.
+     * Handles the complex logic required to dispatch network request to [io.wax911.support.core.viewmodel.SupportViewModel]
+     * which uses [io.wax911.support.data.repository.SupportRepository] to either request from the network or database cache.
      *
      * The results of the dispatched network or cache call will be published by the
-     * [androidx.lifecycle.LiveData] specifically [SupportViewModel.model]
+     * [androidx.lifecycle.LiveData] specifically [io.wax911.support.core.viewmodel.SupportViewModel.model]
      *
-     * @see [SupportViewModel.requestBundleLiveData]
+     * @see [io.wax911.support.core.viewmodel.SupportViewModel.requestBundleLiveData]
      */
     override fun onFetchDataInitialize() {
 

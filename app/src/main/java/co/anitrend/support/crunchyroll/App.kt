@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll
 
 import android.app.Application
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.work.Configuration
 import co.anitrend.support.crunchyroll.core.koin.crunchyCoreModules
 import co.anitrend.support.crunchyroll.core.koin.crunchyCorePresenterModules
@@ -25,13 +26,20 @@ import co.anitrend.support.crunchyroll.data.koin.crunchyDataModules
 import co.anitrend.support.crunchyroll.data.koin.crunchyDataNetworkModules
 import co.anitrend.support.crunchyroll.data.koin.crunchyDataRepositoryModules
 import co.anitrend.support.crunchyroll.data.koin.crunchyDataUseCaseModules
+import co.anitrend.support.crunchyroll.data.util.CrunchySettings
 import co.anitrend.support.crunchyroll.koin.appModules
+import coil.Coil
+import coil.ImageLoader
+import io.wax911.support.extension.isLowRamDevice
+import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import timber.log.Timber
 
 class App : Application(), Configuration.Provider {
+
+    private val settings by inject<CrunchySettings>()
 
     /** [Koin](https://insert-koin.io/docs/2.0/getting-started/)
      * Initializes Koin dependency injection
@@ -68,6 +76,27 @@ class App : Application(), Configuration.Provider {
         }
     }
 
+    private fun setupCoil() {
+        val imageLoader = ImageLoader(this) {
+            availableMemoryPercentage(0.2)
+            bitmapPoolPercentage(0.2)
+            crossfade(500)
+            allowRgb565(!isLowRamDevice())
+        }
+
+        Coil.setDefaultImageLoader(imageLoader)
+    }
+
+    /**
+     * Set application theme startup
+     */
+    fun applyTheme() {
+        if (settings.isLightTheme)
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        else
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+    }
+
     /**
      * Called when the application is starting, before any activity, service,
      * or receiver objects (excluding content providers) have been created.
@@ -94,6 +123,8 @@ class App : Application(), Configuration.Provider {
         super.onCreate()
         initializeDependencyInjection()
         plantLoggingTree()
+        applyTheme()
+        setupCoil()
     }
 
     /**

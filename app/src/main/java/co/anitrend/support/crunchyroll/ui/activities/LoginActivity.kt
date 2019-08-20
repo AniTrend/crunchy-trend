@@ -21,12 +21,13 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import co.anitrend.support.crunchyroll.R
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
+import co.anitrend.support.crunchyroll.ui.contract.CrunchyActivity
 import co.anitrend.support.crunchyroll.ui.fragments.FragmentLogin
 import com.google.android.material.appbar.MaterialToolbar
 import io.wax911.support.ui.activity.SupportActivity
 import org.koin.android.ext.android.inject
 
-class LoginActivity : SupportActivity<Nothing, CrunchyCorePresenter>() {
+class LoginActivity : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
 
     private val supportToolbar by lazy {
         findViewById<MaterialToolbar>(R.id.materialToolbar)
@@ -41,13 +42,6 @@ class LoginActivity : SupportActivity<Nothing, CrunchyCorePresenter>() {
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
         onUpdateUserInterface()
-    }
-
-    /**
-     * Can be used to configure custom theme styling as desired
-     */
-    override fun configureActivity() {
-
     }
 
     /**

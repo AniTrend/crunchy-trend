@@ -24,24 +24,23 @@ import co.anitrend.support.crunchyroll.R
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.viewmodel.rss.CrunchyRssMediaViewModel
 import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssMedia
+import co.anitrend.support.crunchyroll.data.usecase.media.CrunchyMediaStreamUseCase
 import co.anitrend.support.crunchyroll.data.usecase.rss.CrunchyRssMediaUseCase
+import co.anitrend.support.crunchyroll.extensions.highestQuality
 import co.anitrend.support.crunchyroll.ui.activities.StreamingActivity
 import co.anitrend.support.crunchyroll.ui.adapters.RssMediaAdapter
 import io.wax911.support.core.viewmodel.SupportViewModel
 import io.wax911.support.data.model.NetworkState
-import io.wax911.support.extension.LAZY_MODE_UNSAFE
+import io.wax911.support.extension.argument
 import io.wax911.support.extension.startNewActivity
 import io.wax911.support.ui.fragment.SupportFragmentList
-import io.wax911.support.ui.recycler.adapter.SupportViewAdapter
 import io.wax911.support.ui.recycler.holder.event.ItemClickListener
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FragmentMediaFeedList : SupportFragmentList<CrunchyRssMedia, CrunchyCorePresenter, PagedList<CrunchyRssMedia>>() {
 
-    private val payload by lazy(LAZY_MODE_UNSAFE) {
-        arguments?.getParcelable<CrunchyRssMediaUseCase.Payload>(PAYLOAD)
-    }
+    private val payload by argument<CrunchyRssMediaUseCase.Payload>(PAYLOAD)
 
     /**
      * Should be created lazily through injection or lazy delegate
@@ -62,8 +61,12 @@ class FragmentMediaFeedList : SupportFragmentList<CrunchyRssMedia, CrunchyCorePr
         clickListener = object: ItemClickListener<CrunchyRssMedia> {
             override fun onItemClick(target: View, data: Pair<Int, CrunchyRssMedia?>) {
                 target.context.startNewActivity<StreamingActivity>(
-                    Bundle().also {
-                        it.putInt("mediaId", data.second?.mediaId ?: 0)
+                    Bundle().apply {
+                        val payload = CrunchyMediaStreamUseCase.Payload(
+                            mediaId = data.second?.mediaId ?: 0,
+                            mediaThumbnail = data.second?.thumbnail.highestQuality()?.url
+                        )
+                        putParcelable(FragmentMediaStream.PAYLOAD, payload)
                     }
                 )
             }
@@ -132,13 +135,11 @@ class FragmentMediaFeedList : SupportFragmentList<CrunchyRssMedia, CrunchyCorePr
     override val columnSize: Int = R.integer.single_list_size
 
     companion object {
-        private const val PAYLOAD = "FragmentMediaFeedList:Payload"
+        const val PAYLOAD = "FragmentMediaFeedList:Payload"
 
-        fun newInstance(payload: CrunchyRssMediaUseCase.Payload): FragmentMediaFeedList {
+        fun newInstance(bundle: Bundle?): FragmentMediaFeedList {
             return FragmentMediaFeedList().apply {
-                arguments = Bundle().apply {
-                    putParcelable(PAYLOAD, payload)
-                }
+                arguments = bundle
             }
         }
     }

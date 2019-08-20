@@ -26,8 +26,10 @@ import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchySessionDao
 import co.anitrend.support.crunchyroll.data.source.session.CrunchySessionDataSource
 import co.anitrend.support.crunchyroll.data.usecase.contract.IMappable
 import co.anitrend.support.crunchyroll.data.usecase.session.contract.ISessionUseCasePayload
+import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper
 import io.wax911.support.data.model.NetworkState
 import io.wax911.support.data.usecase.coroutine.ISupportCoroutineUseCase
+import io.wax911.support.extension.util.contract.ISupportDateHelper
 import kotlinx.android.parcel.Parcelize
 
 class CrunchySessionUseCase(
@@ -35,7 +37,8 @@ class CrunchySessionUseCase(
     private val sessionCoreDao: CrunchySessionCoreDao,
     private val crunchyLoginDao: CrunchyLoginDao,
     private val authEndpoint: CrunchyAuthEndpoint,
-    private val sessionDao: CrunchySessionDao
+    private val sessionDao: CrunchySessionDao,
+    private val dateHelper: ISupportDateHelper
 ) : ISupportCoroutineUseCase<CrunchySessionUseCase.Payload, NetworkState> {
 
     /**
@@ -53,14 +56,12 @@ class CrunchySessionUseCase(
             payload = param
         )
 
-        if (param.userId == null) {
+        if (param.userId == null)
             if (sessionCoreDao.findLatest() != null)
                 return NetworkState.LOADED
-        }
-        else {
-            if (sessionDao.findLatest()?.hasExpired() == false)
-                return NetworkState.LOADED
-        }
+
+        if (sessionDao.findLatest()?.hasExpired(dateHelper) == false)
+            return NetworkState.LOADED
 
         return dataSource()
     }

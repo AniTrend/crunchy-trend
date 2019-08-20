@@ -27,8 +27,8 @@ android {
         applicationId "co.anitrend.support.crunchyroll"
         minSdkVersion minSdk
         targetSdkVersion targetSdk
-        versionCode versionCode
-        versionName versionName
+        versionCode rootProject.versionCode
+        versionName rootProject.versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -86,13 +86,15 @@ dependencies {
     implementation "androidx.paging:paging-runtime-ktx:$pagingKtx"
     implementation "androidx.fragment:fragment-ktx:$fragmentKtx"
     implementation "androidx.work:work-runtime-ktx:$workerKtx"
-    implementation "androidx.lifecycle:lifecycle-extensions:$androidx"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleX"
     implementation "androidx.navigation:navigation-ui-ktx:$navigation"
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipeRefreshX"
 
-    /** Glide Libraries */
-    implementation "com.github.bumptech.glide:glide:$glide"
-    kapt "com.github.bumptech.glide:compiler:$glide"
+    /** Coil Libraries */
+    implementation(
+            "io.coil-kt:coil:$coil"
+    )
 
     /** Timber */
     implementation "com.jakewharton.timber:timber:$timber"
@@ -119,9 +121,11 @@ dependencies {
     implementation "io.noties.markwon:linkify:$markwon"
 
     /** Exo Player */
-    implementation "com.google.android.exoplayer:exoplayer-core:$exo"
-    implementation "com.google.android.exoplayer:exoplayer-hls:$exo"
-    implementation "com.google.android.exoplayer:exoplayer-ui:$exo"
+    //implementation "com.google.android.exoplayer:exoplayer-core:$exo"
+    //implementation "com.google.android.exoplayer:exoplayer-hls:$exo"
+    //implementation "com.google.android.exoplayer:exoplayer-ui:$exo"
+
+    implementation "com.devbrackets.android:exomedia:$exoMedia"
 
     /** Testing-only dependencies */
     testImplementation "junit:junit:$junit"

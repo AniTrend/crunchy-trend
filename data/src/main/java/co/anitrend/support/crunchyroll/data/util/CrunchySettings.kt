@@ -29,6 +29,13 @@ class CrunchySettings(context: Context): SupportPreference(context) {
             sharedPreferences.edit().putInt(AUTHENTICATED_USER, value).apply()
         }
 
+    var isLightTheme: Boolean = true
+        get() = sharedPreferences.getBoolean(IS_LIGHT_THEME, true)
+        set(value) {
+            field = value
+            sharedPreferences.edit().putBoolean(IS_LIGHT_THEME, value).apply()
+        }
+
     companion object  {
         const val INVALID_USER_ID: Int = -1
         private const val AUTHENTICATED_USER = "_authenticatedUser"

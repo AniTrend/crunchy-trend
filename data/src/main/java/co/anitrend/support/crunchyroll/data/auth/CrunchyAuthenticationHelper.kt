@@ -32,7 +32,7 @@ class CrunchyAuthenticationHelper(
     private val sessionDao: CrunchySessionDao,
     private val settings: CrunchySettings,
     private val deviceToken: String
-): SupportAuthentication<String>() {
+): SupportAuthentication<String, Request>() {
 
     /**
      * Facade to provide information on auth status of the application,
@@ -71,15 +71,14 @@ class CrunchyAuthenticationHelper(
     }
 
     /**
-     * Injects auth headers if the application was authenticated,
-     * otherwise non
+     * Performs core operation of applying authentication credentials
+     * at runtime
      *
-     * @param requestBuilder
+     * @param resource object that need to be manipulated
      */
-    override fun injectHeaders(requestBuilder: Request.Builder) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun invoke(resource: Request) {
+        injectHeaders(resource)
     }
-
     /**
      * Injects auth headers if the application was authenticated,
      * otherwise non

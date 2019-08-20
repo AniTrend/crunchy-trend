@@ -42,6 +42,7 @@ import co.anitrend.support.crunchyroll.data.usecase.rss.CrunchyRssMediaUseCase
 import co.anitrend.support.crunchyroll.data.usecase.rss.CrunchyRssNewsUseCase
 import co.anitrend.support.crunchyroll.data.usecase.series.CrunchySeriesUseCase
 import co.anitrend.support.crunchyroll.data.usecase.session.CrunchySessionUseCase
+import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper
 import co.anitrend.support.crunchyroll.data.util.CrunchySettings
 import io.wax911.support.extension.util.SupportConnectivityHelper
 import org.koin.android.ext.koin.androidContext
@@ -121,7 +122,8 @@ val crunchyDataUseCaseModules = module {
             sessionCoreDao  = get<CrunchyDatabase>().crunchySessionCoreDao(),
             crunchyLoginDao  = get<CrunchyDatabase>().crunchyLoginDao(),
             authEndpoint  = CrunchyAuthEndpoint.create(),
-            sessionDao  = get<CrunchyDatabase>().crunchySessionDao()
+            sessionDao  = get<CrunchyDatabase>().crunchySessionDao(),
+            dateHelper = get<CrunchyDateHelper>()
         )
     }
     factory {

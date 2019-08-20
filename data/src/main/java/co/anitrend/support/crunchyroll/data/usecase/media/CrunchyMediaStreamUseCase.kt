@@ -19,13 +19,8 @@ package co.anitrend.support.crunchyroll.data.usecase.media
 import android.os.Parcelable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import androidx.paging.PagedList
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyMediaEndpoint
-import co.anitrend.support.crunchyroll.data.dao.query.api.CrunchyMediaDao
-import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
-import co.anitrend.support.crunchyroll.data.model.stream.CrunchyStreamData
 import co.anitrend.support.crunchyroll.data.model.stream.CrunchyStreamInfo
-import co.anitrend.support.crunchyroll.data.source.media.CrunchyMediaListDataSource
 import co.anitrend.support.crunchyroll.data.source.media.CrunchyMediaStreamDataSource
 import co.anitrend.support.crunchyroll.data.usecase.media.contract.IMediaUseCasePayload
 import io.wax911.support.data.model.NetworkState
@@ -72,6 +67,7 @@ class CrunchyMediaStreamUseCase(
 
     @Parcelize
     data class Payload(
-        override val mediaId: Int
+        override val mediaId: Int,
+        val mediaThumbnail: String?
     ) : IMediaUseCasePayload, Parcelable
 }

@@ -24,9 +24,8 @@ import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
 import co.anitrend.support.crunchyroll.data.auth.model.contract.ICrunchySession
 import co.anitrend.support.crunchyroll.data.auth.model.contract.ICrunchySessionUser
 import co.anitrend.support.crunchyroll.data.model.user.CrunchyUser
-import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper
 import co.anitrend.support.crunchyroll.data.util.extension.iso8601ToUnixTime
-import io.wax911.support.extension.util.SupportTimeHelper
+import io.wax911.support.extension.util.contract.ISupportDateHelper
 
 @Entity
 @SuppressWarnings(PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED)
@@ -43,20 +42,8 @@ data class CrunchySession(
     override val expires: ISO8601Date
 ) : ICrunchySession, ICrunchySessionUser {
 
-    fun hasExpired() : Boolean {
-        val crunchyDateHelper = CrunchyDateHelper()
-        val expiryTime = expires.iso8601ToUnixTime(
-            crunchyDateHelper
-        )
-
-        val supportTimeHelper = SupportTimeHelper(
-            supportTimeType = SupportTimeHelper.TIME_UNITS_SECONDS,
-            supportTargetTime = 20
-        )
-
-        return if (expiryTime != null)
-            supportTimeHelper.hasElapsed(expiryTime)
-        else
-            true
+    fun hasExpired(dateHelper: ISupportDateHelper) : Boolean {
+        val expiryTime = expires.iso8601ToUnixTime(dateHelper) ?: 0
+        return System.currentTimeMillis() >= expiryTime
     }
 }

@@ -25,11 +25,12 @@ import androidx.work.*
 import co.anitrend.support.crunchyroll.R
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.worker.CoreSessionWorker
+import co.anitrend.support.crunchyroll.ui.contract.CrunchyActivity
 import io.wax911.support.ui.activity.SupportActivity
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class SplashActivity : SupportActivity<Nothing, CrunchyCorePresenter>() {
+class SplashActivity : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,13 +40,6 @@ class SplashActivity : SupportActivity<Nothing, CrunchyCorePresenter>() {
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
         onFetchDataInitialize()
-    }
-
-    /**
-     * Can be used to configure custom theme styling as desired
-     */
-    override fun configureActivity() {
-
     }
 
     /**
