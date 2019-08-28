@@ -123,7 +123,7 @@ val crunchyDataUseCaseModules = module {
             crunchyLoginDao  = get<CrunchyDatabase>().crunchyLoginDao(),
             authEndpoint  = CrunchyAuthEndpoint.create(),
             sessionDao  = get<CrunchyDatabase>().crunchySessionDao(),
-            dateHelper = get<CrunchyDateHelper>()
+            dateHelper = get()
         )
     }
     factory {

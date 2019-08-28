@@ -18,11 +18,12 @@ package co.anitrend.support.crunchyroll.koin
 
 import android.graphics.drawable.Drawable
 import co.anitrend.support.crunchyroll.R
+import co.anitrend.support.crunchyroll.plugin.CrunchyImageDecoratorPlugin
+import co.anitrend.support.crunchyroll.plugin.CrunchyMarkdownTagPlugin
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import io.noties.markwon.Markwon
@@ -38,16 +39,17 @@ val appModules = module {
         Markwon.builder(androidApplication())
             .usePlugin(HtmlPlugin.create())
             .usePlugin(LinkifyPlugin.create())
+            .usePlugin(CrunchyMarkdownTagPlugin.create())
+            .usePlugin(CrunchyImageDecoratorPlugin.create())
             .usePlugin(GlideImagesPlugin.create(object : GlideImagesPlugin.GlideStore {
                 override fun cancel(target: Target<*>) {
                     Glide.with(androidApplication()).clear(target)
                 }
 
                 override fun load(drawable: AsyncDrawable): RequestBuilder<Drawable> {
-                    val height = (drawable.imageSize?.height?.value ?: 200f) * 2.5f
-                    val width = (drawable.imageSize?.width?.value ?: 180f) * 2.5f
+                    val height = (drawable.imageSize?.height?.value ?: 140f) * 2.5f
+                    val width = (drawable.imageSize?.width?.value ?: 120f) * 2.5f
                     return Glide.with(androidApplication()).load(drawable.destination)
-                        .transition(DrawableTransitionOptions.withCrossFade(250))
                         .apply(RequestOptions.overrideOf(width.toInt() ,height.toInt()))
                         .transform(
                             CenterCrop(),

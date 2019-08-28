@@ -26,53 +26,46 @@
         />
     </data>
 
-    <com.google.android.material.card.MaterialCardView
+    <androidx.appcompat.widget.LinearLayoutCompat
             android:clickable="true"
             android:focusable="true"
-            android:foreground="?selectableItemBackground"
+            android:background="?cardColor"
             android:layout_margin="@dimen/lg_margin"
+            android:orientation="vertical"
+            android:padding="@dimen/xl_margin"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardPreventCornerOverlap="false"
-            app:cardBackgroundColor="?cardColor"
-            app:cardElevation="@dimen/sm_margin"
-            app:cardCornerRadius="@dimen/lg_margin">
+            android:layout_height="wrap_content">
 
-        <LinearLayout
-                android:orientation="vertical"
-                android:padding="@dimen/xl_margin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/media_news_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:text="@{entity.title}"
+                tools:text="@sample/news.json/title"/>
 
-            <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/media_news_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                    android:text="@{entity.title}"
-                    tools:text="@sample/news.json/title"/>
+        <Space android:layout_width="wrap_content"
+               android:layout_height="@dimen/lg_margin"/>
 
-            <Space android:layout_width="wrap_content"
-                   android:layout_height="@dimen/lg_margin"/>
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/media_news_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="@sample/news.json/description"/>
 
-            <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/media_news_description"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="@sample/news.json/description"/>
+        <Space android:layout_width="wrap_content"
+               android:layout_height="@dimen/lg_margin"/>
 
-            <Space android:layout_width="wrap_content"
-                   android:layout_height="@dimen/lg_margin"/>
+        <androidx.appcompat.widget.AppCompatTextView
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:id="@+id/media_news_publication"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:textStyle="italic"
+                android:text="@{entity.publishedOn}"
+                tools:text="@sample/news.json/publishDate"/>
 
-
-            <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/media_news_publication"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{entity.publishedOn}"
-                    tools:text="@sample/news.json/publishDate"/>
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </layout>

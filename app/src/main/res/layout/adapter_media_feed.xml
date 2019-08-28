@@ -44,8 +44,7 @@
                 android:layout_height="0dp"
                 app:imageUrl="@{entity.thumbnail}"
                 app:aspectRatio=".55"
-                tools:scaleType="centerCrop"
-                tools:src="@sample/franxx_banner.jpg" />
+                tools:src="@tools:sample/backgrounds/scenic" />
 
         <LinearLayout
                 android:layout_gravity="top|end"

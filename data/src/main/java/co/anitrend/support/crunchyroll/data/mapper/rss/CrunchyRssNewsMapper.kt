@@ -21,18 +21,28 @@ import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyRssMapper
 import co.anitrend.support.crunchyroll.data.dao.query.rss.CrunchyRssNewsDao
 import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssNews
 import co.anitrend.support.crunchyroll.data.model.rss.contract.ICrunchyRssChannel
+import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper
+import co.anitrend.support.crunchyroll.data.util.extension.rcf822ToUnixTime
+import io.wax911.support.extension.util.contract.ISupportDateHelper
 import kotlinx.coroutines.Job
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import timber.log.Timber
 
 class CrunchyRssNewsMapper(
     parentJob: Job,
     private val crunchyRssNewsDao: CrunchyRssNewsDao,
     pagingRequestHelper: PagingRequestHelper.Request.Callback
-) : CrunchyRssMapper<CrunchyRssNews>(parentJob, pagingRequestHelper) {
+) : CrunchyRssMapper<CrunchyRssNews>(parentJob, pagingRequestHelper), KoinComponent {
+
+    private val dateHelper by inject<ISupportDateHelper>()
 
     override suspend fun onResponseMapFrom(source: ICrunchyRssChannel<CrunchyRssNews>): List<CrunchyRssNews> {
         return source.item?.map {
-            it.copy(copyright = source.copyright)
+            it.copy(
+                copyright = source.copyright,
+                publishedTime = it.publishedOn.rcf822ToUnixTime(dateHelper) ?: 0
+            )
         } ?: emptyList()
     }
 

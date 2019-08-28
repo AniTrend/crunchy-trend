@@ -44,6 +44,7 @@ data class CrunchySession(
 
     fun hasExpired(dateHelper: ISupportDateHelper) : Boolean {
         val expiryTime = expires.iso8601ToUnixTime(dateHelper) ?: 0
-        return System.currentTimeMillis() >= expiryTime
+        val currentSystemTime = System.currentTimeMillis()
+        return currentSystemTime >= expiryTime
     }
 }

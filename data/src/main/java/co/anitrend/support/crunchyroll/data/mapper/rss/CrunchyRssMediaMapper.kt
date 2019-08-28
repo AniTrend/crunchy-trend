@@ -21,14 +21,20 @@ import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyRssMapper
 import co.anitrend.support.crunchyroll.data.dao.query.rss.CrunchyRssMediaDao
 import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssMedia
 import co.anitrend.support.crunchyroll.data.model.rss.contract.ICrunchyRssChannel
+import co.anitrend.support.crunchyroll.data.util.extension.rcf822ToUnixTime
+import io.wax911.support.extension.util.contract.ISupportDateHelper
 import kotlinx.coroutines.Job
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import timber.log.Timber
 
 class CrunchyRssMediaMapper(
     parentJob: Job,
     private val crunchyRssMediaDao: CrunchyRssMediaDao,
     pagingRequestHelper: PagingRequestHelper.Request.Callback
-) : CrunchyRssMapper<CrunchyRssMedia>(parentJob, pagingRequestHelper) {
+) : CrunchyRssMapper<CrunchyRssMedia>(parentJob, pagingRequestHelper), KoinComponent {
+
+    private val dateHelper by inject<ISupportDateHelper>()
 
     /**
      * Creates mapped objects and handles the database operations which may be required to map various objects,
@@ -40,7 +46,11 @@ class CrunchyRssMediaMapper(
      */
     override suspend fun onResponseMapFrom(source: ICrunchyRssChannel<CrunchyRssMedia>): List<CrunchyRssMedia> {
         return source.item?.map {
-            it.copy(copyright = source.copyright)
+            it.copy(
+                copyright = source.copyright,
+                freeAvailableTime = it.freeAvailableDate.rcf822ToUnixTime(dateHelper) ?: 0,
+                premiumAvailableTime = it.premiumAvailableDate.rcf822ToUnixTime(dateHelper) ?: 0
+            )
         } ?: emptyList()
     }
 

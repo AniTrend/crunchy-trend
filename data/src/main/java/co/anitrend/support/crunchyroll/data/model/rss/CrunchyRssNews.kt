@@ -42,7 +42,8 @@ data class CrunchyRssNews(
     @field:Element(name = "guid")
     @PrimaryKey
     var guid: String,
-    override var copyright: String
+    override var copyright: String,
+    var publishedTime: Long
 ) : IRssCopyright {
 
     constructor():
@@ -54,7 +55,8 @@ data class CrunchyRssNews(
                 "",
                 "",
                 "",
-                ""
+                "",
+                0
             )
 
     /**

@@ -30,12 +30,12 @@ interface CrunchyRssNewsDao : ISupportQuery<CrunchyRssNews> {
     suspend fun clearTable()
 
 
-    @Query("select * from CrunchyRssNews order by date(publishedOn) desc")
+    @Query("select * from CrunchyRssNews order by publishedTime desc")
     suspend fun findAll(): List<CrunchyRssNews>
 
-    @Query("select * from CrunchyRssNews order by date(publishedOn) desc")
+    @Query("select * from CrunchyRssNews order by publishedTime desc")
     fun findAllX(): LiveData<List<CrunchyRssNews>>
 
-    @Query("select * from CrunchyRssNews order by date(publishedOn) desc")
+    @Query("select * from CrunchyRssNews order by publishedTime desc")
     fun findByAllFactory(): DataSource.Factory<Int, CrunchyRssNews>
 }

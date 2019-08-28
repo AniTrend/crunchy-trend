@@ -80,7 +80,7 @@ class App : Application(), Configuration.Provider {
         val imageLoader = ImageLoader(this) {
             availableMemoryPercentage(0.2)
             bitmapPoolPercentage(0.2)
-            crossfade(500)
+            crossfade(360)
             allowRgb565(!isLowRamDevice())
         }
 

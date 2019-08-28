@@ -20,14 +20,15 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.databinding.BindingAdapter
 import co.anitrend.support.crunchyroll.data.model.rss.MediaThumbnail
 import coil.api.load
+import coil.request.CachePolicy
+import coil.size.Scale
 
 @BindingAdapter("imageUrl")
 fun AppCompatImageView.setImageUrl(url: String?) = url?.also {
-    /*Glide.with(context).load(url)
-        .transition(DrawableTransitionOptions.withCrossFade(350))
-        .apply(RequestOptions.centerCropTransform())
-        .into(this)*/
-    load(url)
+    load(url) {
+        scale(Scale.FIT)
+        diskCachePolicy(CachePolicy.ENABLED)
+    }
 }
 
 @BindingAdapter("imageUrl")

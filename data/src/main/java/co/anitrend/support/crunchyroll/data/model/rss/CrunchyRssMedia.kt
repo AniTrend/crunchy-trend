@@ -82,7 +82,9 @@ data class CrunchyRssMedia(
         required = false
     )
     var thumbnail : List<MediaThumbnail>?,
-    override var copyright: String = String.empty()
+    override var copyright: String = String.empty(),
+    var freeAvailableTime: Long = 0,
+    var premiumAvailableTime: Long = 0
 ) : IRssCopyright {
 
     constructor() : this(

@@ -30,12 +30,13 @@ import co.anitrend.support.crunchyroll.data.repository.media.CrunchyMediaListRep
 import co.anitrend.support.crunchyroll.data.repository.media.CrunchyMediaStreamRepository
 import co.anitrend.support.crunchyroll.data.repository.rss.CrunchyRssMediaRepository
 import co.anitrend.support.crunchyroll.data.repository.rss.CrunchyRssNewsRepository
+import io.wax911.support.extension.util.contract.ISupportDateHelper
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val crunchyCoreModules = module {
-    single {
+    single<ISupportDateHelper> {
         CrunchyDateHelper()
     }
 }
