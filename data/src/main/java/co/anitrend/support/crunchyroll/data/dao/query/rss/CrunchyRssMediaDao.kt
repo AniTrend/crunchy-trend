@@ -20,8 +20,8 @@ import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Query
+import co.anitrend.arch.data.dao.ISupportQuery
 import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssMedia
-import io.wax911.support.data.dao.ISupportQuery
 
 @Dao
 interface CrunchyRssMediaDao : ISupportQuery<CrunchyRssMedia> {

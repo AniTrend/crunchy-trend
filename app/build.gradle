@@ -21,83 +21,50 @@ plugins {
     id("kotlin-android-extensions")
 }
 
+apply from: "../gradle/gradle-common-config.gradle"
+
 android {
-    compileSdkVersion compileSdk
     defaultConfig {
         applicationId "co.anitrend.support.crunchyroll"
-        minSdkVersion minSdk
-        targetSdkVersion targetSdk
-        versionCode rootProject.versionCode
-        versionName rootProject.versionName
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
     }
     dataBinding {
         enabled = true
     }
-    compileOptions {
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
-
-androidExtensions {
-    experimental = true
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     /** Platform Dependencies */
     implementation project(":support-core")
     implementation project(":support-data")
+    implementation project(":support-domain")
     implementation project(":support-ext")
     implementation project(":support-ui")
     implementation project(":core")
     implementation project(":data")
-
-    /** Koin AndroidX Dependency Injection */
-    implementation "org.koin:koin-core:$koin"
-    implementation "org.koin:koin-core-ext:$koin"
-    implementation "org.koin:koin-androidx-scope:$koin"
-    implementation "org.koin:koin-androidx-viewmodel:$koin"
-
-    /** Kotlin Libraries */
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesCore"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesAndroid"
+    implementation project(":domain")
 
     /** Material Design */
     implementation "com.google.android.material:material:$material"
 
-    implementation "androidx.constraintlayout:constraintlayout:$constraint"
-
     /** Architecture Components */
     implementation "androidx.core:core-ktx:$ktx"
+
     implementation "androidx.paging:paging-runtime:$paging"
     implementation "androidx.paging:paging-runtime-ktx:$pagingKtx"
+
     implementation "androidx.fragment:fragment-ktx:$fragmentKtx"
     implementation "androidx.work:work-runtime-ktx:$workerKtx"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleX"
+
     implementation "androidx.navigation:navigation-ui-ktx:$navigation"
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation"
+
+    implementation "androidx.constraintlayout:constraintlayout:$constraintX"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipeRefreshX"
 
     /** Coil Libraries */
-    implementation(
-            "io.coil-kt:coil:$coil"
-    )
-
-    /** Timber */
-    implementation "com.jakewharton.timber:timber:$timber"
+    implementation "io.coil-kt:coil:$coil"
 
     /** Material Dialogs */
     implementation "com.afollestad.material-dialogs:core:$materialDialogs"
@@ -120,19 +87,9 @@ dependencies {
     implementation "io.noties.markwon:image-glide:$markwon"
     implementation "io.noties.markwon:linkify:$markwon"
 
-    /** Exo Player */
-    //implementation "com.google.android.exoplayer:exoplayer-core:$exo"
-    //implementation "com.google.android.exoplayer:exoplayer-hls:$exo"
-    //implementation "com.google.android.exoplayer:exoplayer-ui:$exo"
-
     implementation "com.devbrackets.android:exomedia:$exoMedia"
 
     /** Testing-only dependencies */
-    testImplementation "junit:junit:$junit"
-    testImplementation "io.mockk:mockk:$mockk"
-    androidTestImplementation "androidx.test:runner:$runner"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"
-
     testImplementation "org.koin:koin-test:$koin"
 }
 

@@ -22,9 +22,8 @@ import co.anitrend.support.crunchyroll.data.model.core.CrunchyLocale
 import kotlinx.coroutines.Job
 
 class CrunchyLocaleMapper(
-    parentJob: Job,
     private val localeDao: CrunchyLocaleDao
-) : CrunchyMapper<List<CrunchyLocale>, List<CrunchyLocale>>(parentJob) {
+) : CrunchyMapper<List<CrunchyLocale>, List<CrunchyLocale>>() {
 
     /**
      * Creates mapped objects and handles the database operations which may be required to map various objects,

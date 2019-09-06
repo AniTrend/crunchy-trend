@@ -18,10 +18,9 @@ package co.anitrend.support.crunchyroll.data.model.rss
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import co.anitrend.support.crunchyroll.data.arch.CrunchyMediaType
+import co.anitrend.arch.extension.empty
 import co.anitrend.support.crunchyroll.data.arch.RCF822Date
 import co.anitrend.support.crunchyroll.data.model.rss.contract.IRssCopyright
-import io.wax911.support.extension.empty
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.ElementList
 import org.simpleframework.xml.Root
