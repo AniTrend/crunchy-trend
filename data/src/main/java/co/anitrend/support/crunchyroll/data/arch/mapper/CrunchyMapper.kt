@@ -18,17 +18,17 @@ package co.anitrend.support.crunchyroll.data.arch.mapper
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingRequestHelper
-import co.anitrend.arch.data.mapper.SupportDataMapper
-import co.anitrend.arch.data.mapper.contract.IMapperHelper
+import co.anitrend.arch.data.mapper.SupportResponseMapper
+import co.anitrend.arch.data.mapper.contract.ISupportResponseHelper
 import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.arch.extension.capitalizeWords
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyContainer
 import kotlinx.coroutines.Deferred
 import retrofit2.Response
 import timber.log.Timber
 
-abstract class CrunchyMapper<S, D> (
-    private val pagingRequestHelper: PagingRequestHelper.Request.Callback? = null
-): SupportDataMapper<S, D>(), IMapperHelper<Deferred<Response<CrunchyContainer<S>>>> {
+abstract class CrunchyMapper<S, D> : SupportResponseMapper<S, D>(),
+    ISupportResponseHelper<Deferred<Response<CrunchyContainer<S>>>> {
 
     /**
      * Response handler for coroutine contexts which need to observe
@@ -40,48 +40,160 @@ abstract class CrunchyMapper<S, D> (
      * @param resource an deferred result awaiting execution
      * @return network state of the deferred result
      */
-    override suspend fun invoke(resource: Deferred<Response<CrunchyContainer<S>>>): NetworkState {
-        val response = resource.await()
-        if (response.isSuccessful) {
-            val responseBody = response.body()
-            if (responseBody != null) {
-                if (!responseBody.error) {
-                    if (responseBody.data != null) {
-                        val mapped = onResponseMapFrom(responseBody.data)
-                        onResponseDatabaseInsert(mapped)
+    override suspend fun invoke(
+        resource: Deferred<Response<CrunchyContainer<S>>>,
+        pagingRequestHelper: PagingRequestHelper.Request.Callback
+    ) {
+        val result = runCatching {
+            val response = resource.await()
+            if (response.isSuccessful) {
+                val responseBody = response.body()
+                if (responseBody != null) {
+                    if (!responseBody.error) {
+                        if (responseBody.data != null) {
+                            val mapped = onResponseMapFrom(responseBody.data)
+                            onResponseDatabaseInsert(mapped)
+                        }
                     } else
-                        Timber.tag(moduleTag).i("Response was a success but response body was empty.")
-                } else {
-                    pagingRequestHelper?.recordFailure(Throwable(responseBody.message))
-                    return NetworkState.Error(
-                        message = responseBody.message,
-                        code = response.code()
-                    )
+                        pagingRequestHelper.recordFailure(Throwable(responseBody.message))
                 }
-            }
-            pagingRequestHelper?.recordSuccess()
-            return NetworkState.Success
-        } else {
-            pagingRequestHelper?.recordFailure(Throwable(response.message()))
-            return NetworkState.Error(
-                message = response.message(),
-                code = response.code()
+                pagingRequestHelper.recordSuccess()
+            } else
+                pagingRequestHelper.recordFailure(Throwable(response.message()))
+        }
+
+        return result.getOrElse {
+            it.printStackTrace()
+            Timber.tag(moduleTag).e(it)
+            NetworkState.Error(
+                heading = "Internal Application Error",
+                message = it.message
             )
         }
     }
 
     /**
-     * Response handler for coroutine contexts which need to observe
-     * the live data of [NetworkState]
+     * Response handler for coroutine contexts which need to observe [NetworkState]
      *
-     * Unless when if using [androidx.paging.PagingRequestHelper.Request.Callback]
-     * then you can ignore the return type
-     *
-     * @param deferred an deferred result awaiting execution
-     * @return network state of the deferred result
+     * @param resource awaiting execution
+     * @param networkState for the deferred result
      */
-    suspend fun invoke(deferred: Deferred<Response<CrunchyContainer<S>>>, networkState: MutableLiveData<NetworkState>) {
-        val resultState = invoke(deferred)
-        networkState.postValue(resultState)
+    override suspend fun invoke(
+        resource: Deferred<Response<CrunchyContainer<S>>>,
+        networkState: MutableLiveData<NetworkState>
+    ) {
+        val result = runCatching {
+            val response = resource.await()
+            if (response.isSuccessful) {
+                val responseBody = response.body()
+                if (responseBody?.error == false) {
+                    if (responseBody.data != null) {
+                        val mapped = onResponseMapFrom(responseBody.data)
+                        onResponseDatabaseInsert(mapped)
+                    }
+                    NetworkState.Success
+                } else {
+                    NetworkState.Error(
+                        heading = responseBody?.code.capitalizeWords(),
+                        message = responseBody?.message
+                    )
+                }
+            } else {
+                NetworkState.Error(
+                    heading = "Network Error",
+                    message = response.message()
+                )
+            }
+        }
+
+        val state = result.getOrElse {
+            it.printStackTrace()
+            NetworkState.Error(
+                heading = "Internal Application Error",
+                message = it.message
+            )
+        }
+        networkState.postValue(state)
+    }
+
+    /**
+     * Response handler for coroutine contexts which need to observe [NetworkState]
+     *
+     * @param resource awaiting execution
+     */
+    override suspend fun invoke(resource: Deferred<Response<CrunchyContainer<S>>>): NetworkState {
+        val result = runCatching {
+            val response = resource.await()
+            if (response.isSuccessful) {
+                val responseBody = response.body()
+                return if (responseBody?.error == false) {
+                    NetworkState.Success
+                } else {
+                    NetworkState.Error(
+                        heading = responseBody?.code.capitalizeWords(),
+                        message = responseBody?.message
+                    )
+                }
+            } else {
+                return NetworkState.Error(
+                    heading = "Internal Application Error",
+                    message = response.message()
+                )
+            }
+        }
+
+        return result.getOrElse {
+            it.printStackTrace()
+            NetworkState.Error(
+                heading = "Internal Application Error",
+                message = it.message
+            )
+        }
+    }
+
+    companion object {
+
+        suspend operator fun <S> invoke(
+            resource: Deferred<Response<CrunchyContainer<S>>>,
+            networkState: MutableLiveData<NetworkState>
+        ): S? {
+            val result = runCatching {
+                val response = resource.await()
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    return if (responseBody?.error == false) {
+                        networkState.postValue(NetworkState.Success)
+                        responseBody.data
+                    } else {
+                        networkState.postValue(
+                            NetworkState.Error(
+                                heading = responseBody?.code.capitalizeWords(),
+                                message = responseBody?.message
+                            )
+                        )
+                        null
+                    }
+                } else {
+                    networkState.postValue(
+                        NetworkState.Error(
+                            heading = "Internal Application Error",
+                            message = response.message()
+                        )
+                    )
+                    null
+                }
+            }
+
+            return result.getOrElse {
+                it.printStackTrace()
+                networkState.postValue(
+                    NetworkState.Error(
+                        heading = "Internal Application Error",
+                        message = it.message
+                    )
+                )
+                null
+            }
+        }
     }
 }

@@ -15,7 +15,7 @@
   ~    limitations under the License.
   -->
 
-<io.wax911.support.ui.view.widget.SupportStateLayout
+<co.anitrend.arch.ui.view.widget.SupportStateLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/supportStateLayout"
@@ -31,4 +31,4 @@
             app:measureBasedOnAspectRatio="true"
             app:useDefaultControls="true"/>
 
-</io.wax911.support.ui.view.widget.SupportStateLayout>
+</co.anitrend.arch.ui.view.widget.SupportStateLayout>

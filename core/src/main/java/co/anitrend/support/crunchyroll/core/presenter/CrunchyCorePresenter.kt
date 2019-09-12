@@ -17,36 +17,11 @@
 package co.anitrend.support.crunchyroll.core.presenter
 
 import android.content.Context
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
-import co.anitrend.support.crunchyroll.core.worker.CoreSessionWorker
-import co.anitrend.support.crunchyroll.data.auth.model.CrunchyLogin
+import co.anitrend.arch.core.presenter.SupportPresenter
 import co.anitrend.support.crunchyroll.data.util.CrunchySettings
-import io.wax911.support.core.presenter.SupportPresenter
+import co.anitrend.support.crunchyroll.domain.entities.result.user.User
 
-class CrunchyCorePresenter(
+open class CrunchyCorePresenter(
     context: Context,
     settings: CrunchySettings
-) : SupportPresenter<CrunchySettings>(context, settings) {
-
-    val coreSessionRequest = OneTimeWorkRequest.Builder(
-        CoreSessionWorker::class.java
-    ).addTag(CoreSessionWorker.TAG).build()
-
-    fun startSessionWorker() : WorkManager {
-        return WorkManager.getInstance(context).also {
-            it.enqueue(coreSessionRequest)
-        }
-    }
-
-    fun onLoginSuccess(crunchyLogin: CrunchyLogin) {
-        if (!supportPreference.isAuthenticated) {
-            supportPreference.authenticatedUserId = crunchyLogin.user.user_id
-            supportPreference.isAuthenticated = true
-        } else {
-            supportPreference.authenticatedUserId = CrunchySettings.INVALID_USER_ID
-            supportPreference.isAuthenticated = false
-        }
-        startSessionWorker()
-    }
-}
+) : SupportPresenter<CrunchySettings>(context, settings)

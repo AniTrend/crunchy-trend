@@ -22,7 +22,7 @@
     <data>
         <variable
                 name="entity"
-                type="co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssNews"
+                type="co.anitrend.support.crunchyroll.domain.entities.result.rss.News"
         />
     </data>
 
@@ -30,7 +30,6 @@
             android:clickable="true"
             android:focusable="true"
             android:background="?cardColor"
-            android:layout_margin="@dimen/lg_margin"
             android:orientation="vertical"
             android:padding="@dimen/xl_margin"
             android:layout_width="match_parent"
@@ -40,18 +39,46 @@
                 android:id="@+id/media_news_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
                 android:text="@{entity.title}"
                 tools:text="@sample/news.json/title"/>
 
         <Space android:layout_width="wrap_content"
-               android:layout_height="@dimen/lg_margin"/>
+               android:layout_height="@dimen/md_margin"/>
 
         <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/media_news_description"
+                android:id="@+id/media_news_sub_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="@sample/news.json/description"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:text="@{entity.subTitle}"
+                tools:text="@sample/news.json/subTitle"/>
+
+        <Space android:layout_width="wrap_content"
+               android:layout_height="@dimen/lg_margin"/>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            <co.anitrend.arch.ui.view.image.SupportImageView
+                    android:layout_width="@dimen/series_image_sm"
+                    android:layout_height="@dimen/series_image_sm"
+                    android:layout_gravity="center_vertical"
+                    app:imageUrl="@{entity.image}"
+                    tools:src="@tools:sample/avatars"
+                    />
+
+            <Space android:layout_width="@dimen/xl_margin"
+                    android:layout_height="wrap_content"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/media_news_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="@sample/news.json/description" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <Space android:layout_width="wrap_content"
                android:layout_height="@dimen/lg_margin"/>
@@ -63,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:textStyle="italic"
-                android:text="@{entity.publishedOn}"
+                app:longDate="@{entity.publishedOn}"
                 tools:text="@sample/news.json/publishDate"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>

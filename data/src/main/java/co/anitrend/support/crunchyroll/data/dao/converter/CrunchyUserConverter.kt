@@ -20,7 +20,7 @@ import androidx.room.TypeConverter
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory.Companion.GSON_BUILDER
 import co.anitrend.support.crunchyroll.data.model.user.CrunchyUser
 import com.google.gson.reflect.TypeToken
-import io.wax911.support.data.dao.RoomConverter
+import co.anitrend.arch.data.dao.RoomConverter
 
 class CrunchyUserConverter : RoomConverter<CrunchyUser> {
 

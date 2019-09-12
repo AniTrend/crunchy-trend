@@ -20,6 +20,7 @@ import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.contract.XML
 import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpointFactory
 import co.anitrend.support.crunchyroll.data.model.rss.core.CrunchyRssMediaContainer
+import co.anitrend.support.crunchyroll.data.model.rss.core.CrunchyRssNewsContainer
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -37,6 +38,12 @@ interface CrunchyFeedEndpoint {
     suspend fun getLatestMediaFeed(
         @Query("locale") crunchyLocale: String
     ): Response<CrunchyRssMediaContainer>
+
+    @XML
+    @GET("crunchyroll/animenews")
+    suspend fun getMediaNews(
+        @Query("locale") crunchyLocale: String
+    ): Response<CrunchyRssNewsContainer>
 
     companion object : CrunchyEndpointFactory<CrunchyFeedEndpoint>(
         url = BuildConfig.apiFeed,

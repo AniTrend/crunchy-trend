@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.data.util
 
 import android.content.Context
 import androidx.core.content.edit
-import io.wax911.support.extension.preference.SupportPreference
+import co.anitrend.arch.extension.preference.SupportPreference
 
 class CrunchySettings(context: Context): SupportPreference(context) {
 
@@ -26,18 +26,23 @@ class CrunchySettings(context: Context): SupportPreference(context) {
         get() = sharedPreferences.getInt(AUTHENTICATED_USER, -1)
         set(value) {
             field = value
-            sharedPreferences.edit().putInt(AUTHENTICATED_USER, value).apply()
+            sharedPreferences.edit {
+                putInt(AUTHENTICATED_USER, value)
+            }
         }
 
     var isLightTheme: Boolean = true
         get() = sharedPreferences.getBoolean(IS_LIGHT_THEME, true)
         set(value) {
             field = value
-            sharedPreferences.edit().putBoolean(IS_LIGHT_THEME, value).apply()
+            sharedPreferences.edit {
+                putBoolean(IS_LIGHT_THEME, value)
+            }
         }
 
     companion object  {
         const val INVALID_USER_ID: Int = -1
         private const val AUTHENTICATED_USER = "_authenticatedUser"
+        private const val IS_LIGHT_THEME = "_isLightTheme"
     }
 }

@@ -57,6 +57,7 @@ dependencies {
     implementation "org.koin:koin-core:$koin"
     implementation "org.koin:koin-core-ext:$koin"
     implementation "org.koin:koin-androidx-scope:$koin"
+    implementation "org.koin:koin-androidx-viewmodel:$koin"
 
     /** Kotlin Libraries */
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
@@ -65,7 +66,6 @@ dependencies {
     
     /** Timber */
     implementation "com.jakewharton.timber:timber:$timber"
-    
     
     /** Testing-only dependencies */
     testImplementation "junit:junit:$junit"

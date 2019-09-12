@@ -19,8 +19,8 @@ package co.anitrend.support.crunchyroll.ui.contract
 import androidx.appcompat.app.AppCompatDelegate
 import co.anitrend.support.crunchyroll.App
 import co.anitrend.support.crunchyroll.data.util.CrunchySettings
-import io.wax911.support.core.presenter.SupportPresenter
-import io.wax911.support.ui.activity.SupportActivity
+import co.anitrend.arch.core.presenter.SupportPresenter
+import co.anitrend.arch.ui.activity.SupportActivity
 
 abstract class CrunchyActivity<M, P : SupportPresenter<CrunchySettings>> : SupportActivity<M, P>() {
 
@@ -41,5 +41,18 @@ abstract class CrunchyActivity<M, P : SupportPresenter<CrunchySettings>> : Suppo
         }
         (applicationContext as App).applyTheme()
         recreate()
+    }
+
+    /**
+     * Handles the complex logic required to dispatch network request to [SupportViewModel]
+     * to either request from the network or database cache.
+     *
+     * The results of the dispatched network or cache call will be published by the
+     * [androidx.lifecycle.LiveData] specifically [SupportViewModel.model]
+     *
+     * @see [SupportViewModel.requestBundleLiveData]
+     */
+    override fun onFetchDataInitialize() {
+
     }
 }

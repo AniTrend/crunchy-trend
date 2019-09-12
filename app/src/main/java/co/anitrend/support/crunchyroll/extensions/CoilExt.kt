@@ -26,14 +26,7 @@ import coil.size.Scale
 @BindingAdapter("imageUrl")
 fun AppCompatImageView.setImageUrl(url: String?) = url?.also {
     load(url) {
-        scale(Scale.FIT)
+        scale(Scale.FILL)
         diskCachePolicy(CachePolicy.ENABLED)
     }
 }
-
-@BindingAdapter("imageUrl")
-fun AppCompatImageView.setImageUrl(thumbnails: List<MediaThumbnail>?) {
-    setImageUrl(thumbnails.highestQuality()?.url)
-}
-
-fun List<MediaThumbnail>?.highestQuality() = this?.maxBy { it.width }

@@ -18,17 +18,15 @@ package co.anitrend.support.crunchyroll.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.widget.Toast
-import androidx.lifecycle.Observer
-import androidx.work.*
+import androidx.lifecycle.Lifecycle
+import co.anitrend.arch.extension.isStateAtLeast
 import co.anitrend.support.crunchyroll.R
+import co.anitrend.support.crunchyroll.auth.activity.AuthenticationActivity
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.core.worker.CoreSessionWorker
 import co.anitrend.support.crunchyroll.ui.contract.CrunchyActivity
-import io.wax911.support.ui.activity.SupportActivity
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 class SplashActivity : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
 
@@ -62,42 +60,32 @@ class SplashActivity : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
     }
 
     /**
+     * Dispatch onResume() to fragments.  Note that for better inter-operation
+     * with older versions of the platform, at the point of this call the
+     * fragments attached to the activity are *not* resumed.
+     */
+    override fun onResume() {
+        super.onResume()
+        onUpdateUserInterface()
+    }
+
+    /**
      * Handles the updating of views, binding, creation or state change, depending on the context
      * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
      *
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        val intent = when (supportPresenter.supportPreference.isAuthenticated) {
-            true -> Intent(this, MainActivity::class.java)
-            else -> Intent(this, LoginActivity::class.java)
-        }
-        startActivity(intent)
-        finish()
-    }
-
-    /**
-     * Handles the complex logic required to dispatch network request to [SupportViewModel]
-     * which uses [SupportRepository] to either request from the network or database cache.
-     *
-     * The results of the dispatched network or cache call will be published by the
-     * [androidx.lifecycle.LiveData] specifically [SupportViewModel.model]
-     *
-     * @see [SupportViewModel.requestBundleLiveData]
-     */
-    override fun onFetchDataInitialize() {
-        supportPresenter.startSessionWorker().also { workManager ->
-            workManager.getWorkInfoByIdLiveData(supportPresenter.coreSessionRequest.id)
-                .observe(this, Observer {
-                    when (it.state) {
-                        WorkInfo.State.SUCCEEDED -> onUpdateUserInterface()
-                        WorkInfo.State.FAILED -> {
-                            Toast.makeText(applicationContext, "Failed to start session, retrying!", Toast.LENGTH_SHORT).show()
-                            onFetchDataInitialize()
-                        }
-                        else -> Timber.tag(moduleTag).d("${it.state}")
-                    }
-                })
+        launch {
+            delay(1500)
+            if (isStateAtLeast(Lifecycle.State.RESUMED)) {
+                val intent = when (supportPresenter.supportPreference.isAuthenticated) {
+                    true -> Intent(this@SplashActivity, MainActivity::class.java)
+                    else -> Intent(this@SplashActivity, AuthenticationActivity::class.java)
+                }
+                startActivity(intent)
+                finish()
+            }
         }
     }
 }

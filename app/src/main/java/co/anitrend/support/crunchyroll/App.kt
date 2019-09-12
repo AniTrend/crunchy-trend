@@ -19,18 +19,13 @@ package co.anitrend.support.crunchyroll
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.work.Configuration
-import co.anitrend.support.crunchyroll.core.koin.crunchyCoreModules
-import co.anitrend.support.crunchyroll.core.koin.crunchyCorePresenterModules
-import co.anitrend.support.crunchyroll.core.koin.crunchyCoreViewModelModules
-import co.anitrend.support.crunchyroll.data.koin.crunchyDataModules
-import co.anitrend.support.crunchyroll.data.koin.crunchyDataNetworkModules
-import co.anitrend.support.crunchyroll.data.koin.crunchyDataRepositoryModules
-import co.anitrend.support.crunchyroll.data.koin.crunchyDataUseCaseModules
+import co.anitrend.arch.extension.isLowRamDevice
+import co.anitrend.support.crunchyroll.core.koin.coreModules
+import co.anitrend.support.crunchyroll.data.koin.*
 import co.anitrend.support.crunchyroll.data.util.CrunchySettings
 import co.anitrend.support.crunchyroll.koin.appModules
 import coil.Coil
 import coil.ImageLoader
-import io.wax911.support.extension.isLowRamDevice
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -51,18 +46,7 @@ class App : Application(), Configuration.Provider {
                 applicationContext
             )
             modules(
-                listOf(
-                    appModules,
-
-                    crunchyCoreModules,
-                    crunchyCoreViewModelModules,
-                    crunchyCorePresenterModules,
-
-                    crunchyDataModules,
-                    crunchyDataUseCaseModules,
-                    crunchyDataNetworkModules,
-                    crunchyDataRepositoryModules
-                )
+                appModules + coreModules + dataModules
             )
         }
     }

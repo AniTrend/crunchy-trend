@@ -50,8 +50,8 @@
 
         <activity android:name=".ui.activities.MainActivity"/>
 
-        <activity android:name=".ui.activities.LoginActivity"/>
-        <activity android:name=".ui.activities.StreamingActivity"/>
+        <activity android:name=".auth.activity.AuthenticationActivity"/>
+        <activity android:name=".stream.activity.StreamingActivity"/>
 
         <provider
                 android:authorities="${applicationId}.provider"

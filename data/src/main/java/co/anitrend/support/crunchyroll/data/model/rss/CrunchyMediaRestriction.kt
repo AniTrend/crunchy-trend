@@ -16,10 +16,42 @@
 
 package co.anitrend.support.crunchyroll.data.model.rss
 
+import co.anitrend.arch.extension.empty
+import org.simpleframework.xml.Attribute
+import org.simpleframework.xml.Element
 import org.simpleframework.xml.Root
 
-@Root(name = "restriction")
+@Root(name = "restriction", strict = false)
 data class CrunchyMediaRestriction(
-    val relationship: String,
-    val type: String
-)
+    @field:Attribute(
+        required = false
+    )
+    var relationship: String,
+    @field:Attribute(
+        required = false
+    )
+    var type: String,
+    @field:Element(
+        required = false
+    )
+    var locales: String
+) {
+    constructor(): this (
+        String.empty(),
+        String.empty(),
+        String.empty()
+    )
+
+    /**
+     * Returns a hash code value for the object.  The general contract of `hashCode` is:
+     *
+     * * Whenever it is invoked on the same object more than once, the `hashCode` method must consistently return the same integer, provided no information used in `equals` comparisons on the object is modified.
+     * * If two objects are equal according to the `equals()` method, then calling the `hashCode` method on each of the two objects must produce the same integer result.
+     */
+    override fun hashCode(): Int {
+        var result = relationship.hashCode()
+        result = 31 * result + type.hashCode()
+        result = 31 * result + locales.hashCode()
+        return result
+    }
+}

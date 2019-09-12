@@ -28,9 +28,8 @@ interface CrunchyCoreEndpoint {
 
     @JSON
     @GET("/list_locales.${BuildConfig.apiExtension}.json")
-    suspend fun fetchLocales(
-
-    ) : Response<CrunchyContainer<List<CrunchyLocale>>>
+    suspend fun fetchLocales():
+            Response<CrunchyContainer<List<CrunchyLocale>>>
 
     companion object : CrunchyEndpointFactory<CrunchyCoreEndpoint>(
         endpoint = CrunchyCoreEndpoint::class,

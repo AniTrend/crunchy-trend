@@ -16,32 +16,26 @@
 
 package co.anitrend.support.crunchyroll.core.koin
 
+import co.anitrend.arch.extension.util.contract.ISupportDateHelper
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
+import co.anitrend.support.crunchyroll.core.viewmodel.*
+import co.anitrend.support.crunchyroll.data.usecase.authentication.LoginUseCaseImpl
+import co.anitrend.support.crunchyroll.data.usecase.authentication.LogoutUseCaseImpl
+import co.anitrend.support.crunchyroll.data.usecase.media.MediaStreamUseCaseImpl
+import co.anitrend.support.crunchyroll.data.usecase.rss.MediaListingUseCaseImpl
+import co.anitrend.support.crunchyroll.data.usecase.rss.NewsUseCaseImpl
 import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper
-import co.anitrend.support.crunchyroll.core.viewmodel.auth.CrunchyAuthViewModel
-import co.anitrend.support.crunchyroll.core.viewmodel.media.CrunchyMediaInfoViewModel
-import co.anitrend.support.crunchyroll.core.viewmodel.media.CrunchyMediaStreamViewModel
-import co.anitrend.support.crunchyroll.core.viewmodel.media.CrunchyMediaListViewModel
-import co.anitrend.support.crunchyroll.core.viewmodel.rss.CrunchyRssMediaViewModel
-import co.anitrend.support.crunchyroll.core.viewmodel.rss.CrunchyRssNewsViewModel
-import co.anitrend.support.crunchyroll.data.repository.auth.CrunchyAuthRepository
-import co.anitrend.support.crunchyroll.data.repository.media.CrunchyMediaInfoRepository
-import co.anitrend.support.crunchyroll.data.repository.media.CrunchyMediaListRepository
-import co.anitrend.support.crunchyroll.data.repository.media.CrunchyMediaStreamRepository
-import co.anitrend.support.crunchyroll.data.repository.rss.CrunchyRssMediaRepository
-import co.anitrend.support.crunchyroll.data.repository.rss.CrunchyRssNewsRepository
-import io.wax911.support.extension.util.contract.ISupportDateHelper
 import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
+import org.koin.androidx.viewmodel.dsl.viewModel
 
-val crunchyCoreModules = module {
+private val coreModule = module {
     single<ISupportDateHelper> {
         CrunchyDateHelper()
     }
 }
 
-val crunchyCorePresenterModules = module {
+private val presenterModule = module {
     factory {
         CrunchyCorePresenter(
             androidContext(),
@@ -50,36 +44,32 @@ val crunchyCorePresenterModules = module {
     }
 }
 
-
-val crunchyCoreViewModelModules = module {
+val viewModelModule = module {
     viewModel {
-        CrunchyAuthViewModel(
-            repository = get<CrunchyAuthRepository>()
+        LoginViewModel(
+            useCase = get<LoginUseCaseImpl>()
         )
     }
     viewModel {
-        CrunchyMediaListViewModel(
-            repository = get<CrunchyMediaListRepository>()
+        LogoutViewModel(
+            useCase = get<LogoutUseCaseImpl>()
         )
     }
     viewModel {
-        CrunchyMediaInfoViewModel(
-            repository = get<CrunchyMediaInfoRepository>()
+        MediaListingViewModel(
+            useCase = get<MediaListingUseCaseImpl>()
         )
     }
     viewModel {
-        CrunchyMediaStreamViewModel(
-            repository = get<CrunchyMediaStreamRepository>()
+        NewsViewModel(
+            useCase = get<NewsUseCaseImpl>()
         )
     }
     viewModel {
-        CrunchyRssMediaViewModel(
-            repository = get<CrunchyRssMediaRepository>()
-        )
-    }
-    viewModel {
-        CrunchyRssNewsViewModel(
-            repository = get<CrunchyRssNewsRepository>()
+        MediaStreamViewModel(
+            useCase = get<MediaStreamUseCaseImpl>()
         )
     }
 }
+
+val coreModules = listOf(coreModule, presenterModule, viewModelModule)

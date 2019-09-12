@@ -22,7 +22,7 @@ import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpoin
 import co.anitrend.support.crunchyroll.data.arch.CrunchyMediaTypeContract
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.model.series.CrunchySeries
-import io.wax911.support.extension.util.SupportExtKeyStore
+import co.anitrend.arch.extension.util.SupportExtKeyStore
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

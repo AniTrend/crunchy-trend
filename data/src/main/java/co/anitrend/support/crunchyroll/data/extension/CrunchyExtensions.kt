@@ -16,3 +16,46 @@
 
 package co.anitrend.support.crunchyroll.data.extension
 
+import co.anitrend.support.crunchyroll.data.arch.ResponseStatus
+import co.anitrend.support.crunchyroll.data.arch.ResponseStatusContract
+import co.anitrend.support.crunchyroll.data.model.core.CrunchyContainer
+import com.google.gson.reflect.TypeToken
+import okhttp3.Response
+import okhttp3.ResponseBody
+import java.lang.reflect.Type
+import java.util.*
+
+fun ResponseStatus.toHttpCode() =
+    when (this) {
+        ResponseStatusContract.BAD_REQUEST -> 400
+        ResponseStatusContract.BAD_SESSION -> 401
+        ResponseStatusContract.OBJECT_NOT_FOUND -> 404
+        ResponseStatusContract.FORBIDDEN -> 403
+        else -> 200
+    }
+
+fun CrunchyContainer<*>.composeWith(response: Response, responseBody: ResponseBody?) =
+    Response.Builder()
+        .code(code.toHttpCode())
+        .body(responseBody)
+        .message(message ?: response.message)
+        .headers(response.headers)
+        .cacheResponse(response.cacheResponse)
+        .priorResponse(response.priorResponse)
+        .request(response.request)
+        .protocol(response.protocol)
+        .sentRequestAtMillis(response.sentRequestAtMillis)
+        .receivedResponseAtMillis(response.receivedResponseAtMillis)
+        .build()
+
+inline fun <reified T> typeTokenOf(): Type =
+    object : TypeToken<T>() {}.type
+
+
+
+fun getSerivceLocale(): String {
+    val locale = Locale.getDefault()
+    val language = locale.language
+    val country = locale.country
+    return "$language$country"
+}

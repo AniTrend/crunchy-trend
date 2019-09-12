@@ -18,19 +18,25 @@ package co.anitrend.support.crunchyroll.data.auth.model
 
 import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.RoomWarnings.PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED
+import co.anitrend.arch.extension.util.contract.ISupportDateHelper
 import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
 import co.anitrend.support.crunchyroll.data.auth.model.contract.ICrunchySession
 import co.anitrend.support.crunchyroll.data.auth.model.contract.ICrunchySessionUser
 import co.anitrend.support.crunchyroll.data.model.user.CrunchyUser
 import co.anitrend.support.crunchyroll.data.util.extension.iso8601ToUnixTime
-import io.wax911.support.extension.util.contract.ISupportDateHelper
 
-@Entity
+@Entity(
+    indices = [
+        Index(value = ["session_id", "auth"], unique = true)
+    ]
+)
 @SuppressWarnings(PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED)
 data class CrunchySession(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    override val sessionCoreId: Int = 1,
     override val session_id: String,
     override val country_code: String,
     override val device_type: String,
@@ -40,11 +46,4 @@ data class CrunchySession(
     override val user: CrunchyUser,
     override val auth: String,
     override val expires: ISO8601Date
-) : ICrunchySession, ICrunchySessionUser {
-
-    fun hasExpired(dateHelper: ISupportDateHelper) : Boolean {
-        val expiryTime = expires.iso8601ToUnixTime(dateHelper) ?: 0
-        val currentSystemTime = System.currentTimeMillis()
-        return currentSystemTime >= expiryTime
-    }
-}
+) : ICrunchySession, ICrunchySessionUser

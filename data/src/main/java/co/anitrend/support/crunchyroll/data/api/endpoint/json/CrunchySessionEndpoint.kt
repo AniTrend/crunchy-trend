@@ -23,17 +23,19 @@ import co.anitrend.support.crunchyroll.data.auth.model.CrunchySessionCore
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyContainer
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.QueryMap
+import retrofit2.http.Query
 
 interface CrunchySessionEndpoint {
 
     @GET("/start_session")
     suspend fun startUnblockedSession(
-        @QueryMap payload: Map<String, String?>
+        @Query("auth") auth: String,
+        @Query("version") version: String = BuildConfig.apiVersion,
+        @Query("user_id") userId: Int
     ): Response<CrunchyContainer<CrunchySession>>
 
     @GET("/start_session")
-    suspend fun startSession()
+    suspend fun startCoreSession()
             : Response<CrunchyContainer<CrunchySessionCore>>
 
     companion object : CrunchyEndpointFactory<CrunchySessionEndpoint>(

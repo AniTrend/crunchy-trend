@@ -16,11 +16,11 @@
 
 package co.anitrend.support.crunchyroll.data.api.endpoint.contract
 
+import co.anitrend.arch.data.factory.SupportEndpointFactory
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
-import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyInterceptor
-import io.wax911.support.data.factory.SupportEndpointFactory
-import okhttp3.Interceptor
+import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyRequestInterceptor
+import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyResponseInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.KoinComponent
@@ -42,20 +42,23 @@ open class CrunchyEndpointFactory<S: Any>(
     private val injectInterceptor: Boolean = true
 ) : SupportEndpointFactory<S>(url, endpoint), KoinComponent {
 
-    private val clientInterceptor by inject<CrunchyInterceptor>()
+    private val clientInterceptor by inject<CrunchyRequestInterceptor>()
+    private val authInterceptor by inject<CrunchyResponseInterceptor>()
 
     override val retrofit: Retrofit by lazy {
         val httpClient = OkHttpClient.Builder()
             .apply {
-                if (injectInterceptor)
+                if (injectInterceptor) {
+                    addInterceptor(authInterceptor)
                     addInterceptor(clientInterceptor)
+                }
                 readTimeout(35, TimeUnit.SECONDS)
                 connectTimeout(35, TimeUnit.SECONDS)
                 retryOnConnectionFailure(true)
                 when {
                     BuildConfig.DEBUG -> {
                         val httpLoggingInterceptor = HttpLoggingInterceptor()
-                            .setLevel(HttpLoggingInterceptor.Level.HEADERS)
+                        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.HEADERS
                         addInterceptor(httpLoggingInterceptor)
                     }
                 }

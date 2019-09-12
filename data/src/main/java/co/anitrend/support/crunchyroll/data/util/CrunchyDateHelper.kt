@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.util
 
-import io.wax911.support.extension.util.contract.ISupportDateHelper
+import co.anitrend.arch.extension.util.contract.ISupportDateHelper
 
 class CrunchyDateHelper : ISupportDateHelper {
 

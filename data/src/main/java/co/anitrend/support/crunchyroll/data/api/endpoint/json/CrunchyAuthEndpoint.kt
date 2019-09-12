@@ -31,7 +31,9 @@ interface CrunchyAuthEndpoint {
     @FormUrlEncoded
     @POST("/login.${BuildConfig.apiExtension}.json")
     suspend fun loginUser(
-        @FieldMap payload: Map<String, String?>
+        @Field("account") account: String,
+        @Field("password") password: String,
+        @Field("session_id") sessionId: String?
     ): Response<CrunchyContainer<CrunchyLogin>>
 
     @JSON
@@ -39,12 +41,16 @@ interface CrunchyAuthEndpoint {
     @POST("/logout.${BuildConfig.apiExtension}.json")
     suspend fun logoutUser(
         @Field("session_id") sessionId: String?
-    ): Response<CrunchyContainer<CrunchyLogin>>
+    ): Response<CrunchyContainer<Any>>
 
     @JSON
     @GET("/start_session.${BuildConfig.apiExtension}.json")
     suspend fun startNormalSession(
-        @QueryMap payload: Map<String, String?>
+        @Query("access_token") accessToken: String = BuildConfig.clientToken,
+        @Query("device_type") deviceType: String,
+        @Query("device_id") deviceId: String,
+        @Query("auth") auth: String,
+        @Query("version") version: String = BuildConfig.apiVersion
     ): Response<CrunchyContainer<CrunchySession>>
 
     companion object : CrunchyEndpointFactory<CrunchyAuthEndpoint>(

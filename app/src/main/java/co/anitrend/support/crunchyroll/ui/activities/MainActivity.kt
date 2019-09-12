@@ -16,29 +16,27 @@
 
 package co.anitrend.support.crunchyroll.ui.activities
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.commit
 import co.anitrend.support.crunchyroll.R
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.data.usecase.rss.CrunchyRssMediaUseCase
-import co.anitrend.support.crunchyroll.data.usecase.rss.CrunchyRssNewsUseCase
 import co.anitrend.support.crunchyroll.ui.contract.CrunchyActivity
-import co.anitrend.support.crunchyroll.ui.fragments.FragmentFeedNewsList
-import co.anitrend.support.crunchyroll.ui.fragments.FragmentMediaFeedList
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.navigation.NavigationView
-import io.wax911.support.core.viewmodel.SupportViewModel
-import io.wax911.support.extension.LAZY_MODE_UNSAFE
-import io.wax911.support.ui.activity.SupportActivity
-import io.wax911.support.ui.fragment.SupportFragment
-import io.wax911.support.ui.util.SupportUiKeyStore
+import co.anitrend.arch.core.viewmodel.SupportPagingViewModel
+import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
+import co.anitrend.arch.extension.startNewActivity
+import co.anitrend.arch.ui.activity.SupportActivity
+import co.anitrend.arch.ui.fragment.SupportFragment
+import co.anitrend.arch.ui.util.SupportUiKeyStore
+import co.anitrend.support.crunchyroll.auth.activity.AuthenticationActivity
+import co.anitrend.support.crunchyroll.news.fragment.FragmentFeedNewsList
+import co.anitrend.support.crunchyroll.listings.fragment.FragmentMediaFeedList
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
 
@@ -65,7 +63,7 @@ class MainActivity : CrunchyActivity<Nothing, CrunchyCorePresenter>(), Navigatio
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(bottomAppBar)
-        bottomDrawerBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+        bottomDrawerBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         if (intent.hasExtra(SupportUiKeyStore.arg_redirect))
             selectedItem = intent.getIntExtra(SupportUiKeyStore.arg_redirect, R.id.nav_show_latest)
     }
@@ -81,11 +79,12 @@ class MainActivity : CrunchyActivity<Nothing, CrunchyCorePresenter>(), Navigatio
     override fun initializeComponents(savedInstanceState: Bundle?) {
         bottomAppBar.apply {
             setNavigationOnClickListener {
-                bottomDrawerBehavior?.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+                bottomDrawerBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
             }
         }
         floatingShortcutButton.setOnClickListener {
-            startActivity(Intent(this, LoginActivity::class.java))
+            startNewActivity<AuthenticationActivity>()
+            finish()
         }
         bottomNavigationView.apply {
             setNavigationItemSelectedListener(this@MainActivity)
@@ -107,10 +106,10 @@ class MainActivity : CrunchyActivity<Nothing, CrunchyCorePresenter>(), Navigatio
     }
 
     override fun onBackPressed() {
-        when (bottomDrawerBehavior?.state) {
+        when (bottomDrawerBehavior.state) {
             BottomSheetBehavior.STATE_EXPANDED,
             BottomSheetBehavior.STATE_HALF_EXPANDED -> {
-                bottomDrawerBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+                bottomDrawerBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                 return
             }
             else -> super.onBackPressed()
@@ -150,30 +149,16 @@ class MainActivity : CrunchyActivity<Nothing, CrunchyCorePresenter>(), Navigatio
             R.id.nav_contact -> Toast.makeText(this@MainActivity, "Contact", Toast.LENGTH_SHORT).show()
             R.id.nav_show_latest -> {
                 selectedTitle = R.string.nav_shows
-                supportFragment = FragmentMediaFeedList.newInstance(
-                    Bundle().apply {
-                        val payload = CrunchyRssMediaUseCase.Payload(
-                            locale = "enGB",
-                            mediaRssRequestType = CrunchyRssMediaUseCase.
-                                Payload.RequestType.GET_LATEST_FEED,
-                            seriesSlug = null
-                        )
-                        putParcelable(FragmentMediaFeedList.PAYLOAD, payload)
-                    }
-                )
+                supportFragment = FragmentMediaFeedList.newInstance()
             }
             R.id.nav_show_news -> {
                 selectedTitle = R.string.nav_show_news
-                supportFragment = FragmentFeedNewsList.newInstance(
-                    CrunchyRssNewsUseCase.Payload(
-                        locale = "enGB"
-                    )
-                )
+                supportFragment = FragmentFeedNewsList.newInstance()
             }
         }
 
         bottomAppBar.setTitle(selectedTitle)
-        bottomDrawerBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+        bottomDrawerBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
         supportFragment?.apply {
             supportFragmentActivity = this@apply
@@ -197,13 +182,13 @@ class MainActivity : CrunchyActivity<Nothing, CrunchyCorePresenter>(), Navigatio
     }
 
     /**
-     * Handles the complex logic required to dispatch network request to [SupportViewModel]
+     * Handles the complex logic required to dispatch network request to [SupportPagingViewModel]
      * which uses [SupportRepository] to either request from the network or database cache.
      *
      * The results of the dispatched network or cache call will be published by the
-     * [androidx.lifecycle.LiveData] specifically [SupportViewModel.model]
+     * [androidx.lifecycle.LiveData] specifically [SupportPagingViewModel.model]
      *
-     * @see [SupportViewModel.requestBundleLiveData]
+     * @see [SupportPagingViewModel.requestBundleLiveData]
      */
     override fun onFetchDataInitialize() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

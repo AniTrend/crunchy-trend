@@ -76,6 +76,14 @@ data class CrunchyRssMedia(
         required = false
     )
     var publisher: String? = null,
+    @field:Element(
+        required = false
+    )
+    var subtitleLanguages: String? = null,
+    @field:Element(
+        required = false
+    )
+    var restriction: CrunchyMediaRestriction? = null,
     @field:ElementList(
         inline = true,
         required = false
@@ -95,14 +103,6 @@ data class CrunchyRssMedia(
         episodeTitle = String.empty(),
         thumbnail = null
     )
-
-    fun durationFormatted() : String {
-        return duration?.let {
-            val minutes = TimeUnit.SECONDS.toMinutes(it.toLong())
-            val seconds = it - TimeUnit.MINUTES.toSeconds(minutes)
-            String.format(Locale.getDefault(), if (seconds < 10) "%d:0%d" else "%d:%d", minutes, seconds)
-        } ?: "00:00"
-    }
 
     /**
      * Indicates whether some other object is "equal to" this one. Implementations must fulfil the following
@@ -134,6 +134,8 @@ data class CrunchyRssMedia(
         result = 31 * result + (episodeNumber?.hashCode() ?: 0)
         result = 31 * result + (duration?.hashCode() ?: 0)
         result = 31 * result + (publisher?.hashCode() ?: 0)
+        result = 31 * result + (subtitleLanguages?.hashCode() ?: 0)
+        result = 31 * result + (restriction?.hashCode() ?: 0)
         result = 31 * result + (thumbnail?.hashCode() ?: 0)
         result = 31 * result + copyright.hashCode()
         return result

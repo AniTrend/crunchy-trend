@@ -21,6 +21,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.RoomWarnings
 import androidx.room.RoomWarnings.PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED
+import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
 import co.anitrend.support.crunchyroll.data.auth.model.contract.ICrunchySessionUser
 import co.anitrend.support.crunchyroll.data.model.user.CrunchyUser
 
@@ -32,5 +33,5 @@ data class CrunchyLogin(
     @Embedded
     override val user: CrunchyUser,
     override val auth: String,
-    override val expires: String
+    override val expires: ISO8601Date
 ) : ICrunchySessionUser

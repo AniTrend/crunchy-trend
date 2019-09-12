@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.model.rss
 
+import co.anitrend.arch.extension.empty
 import org.simpleframework.xml.Attribute
 import org.simpleframework.xml.Root
 
@@ -35,7 +36,7 @@ data class MediaThumbnail(
     var height: Int
 ) {
     constructor() : this(
-        url = "",
+        url = String.empty(),
         height = 0,
         width = 0
     )

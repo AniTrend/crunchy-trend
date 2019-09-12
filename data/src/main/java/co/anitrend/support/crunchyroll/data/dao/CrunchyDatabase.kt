@@ -30,11 +30,9 @@ import co.anitrend.support.crunchyroll.data.auth.model.CrunchySessionCore
 import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyImageSetConverter
 import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyThumbnailConverter
 import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyUserConverter
-import co.anitrend.support.crunchyroll.data.dao.query.api.*
-import co.anitrend.support.crunchyroll.data.dao.query.rss.CrunchyRssMediaDao
-import co.anitrend.support.crunchyroll.data.dao.query.rss.CrunchyRssNewsDao
-import co.anitrend.support.crunchyroll.data.dao.view.collection.CollectionWithMedia
-import co.anitrend.support.crunchyroll.data.dao.view.series.SeriesWithCollection
+import co.anitrend.support.crunchyroll.data.datasource.local.api.*
+import co.anitrend.support.crunchyroll.data.datasource.local.rss.CrunchyRssMediaDao
+import co.anitrend.support.crunchyroll.data.datasource.local.rss.CrunchyRssNewsDao
 import co.anitrend.support.crunchyroll.data.model.collection.CrunchyCollection
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyLocale
 import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
@@ -53,10 +51,6 @@ import co.anitrend.support.crunchyroll.data.model.series.CrunchySeries
         CrunchyMedia::class,
 
         CrunchyRssNews::class, CrunchyRssMedia::class
-    ],
-    views = [
-        CollectionWithMedia::class,
-        SeriesWithCollection::class
     ],
     version = BuildConfig.DATABASE_SCHEMA_VERSION
 )

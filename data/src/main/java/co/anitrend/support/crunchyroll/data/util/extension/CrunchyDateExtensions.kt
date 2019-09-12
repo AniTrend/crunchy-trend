@@ -20,11 +20,16 @@ import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
 import co.anitrend.support.crunchyroll.data.arch.RCF822Date
 import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper.Companion.ISO8601_PATTERN
 import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper.Companion.RCF822D_PATTERN
-import io.wax911.support.extension.util.contract.ISupportDateHelper
+import co.anitrend.arch.extension.util.contract.ISupportDateHelper
+import org.koin.core.Koin
+import org.koin.core.context.GlobalContext
 
+val supportDateHelper by lazy {
+    GlobalContext.get().koin.get<ISupportDateHelper>()
+}
 
-fun ISO8601Date.iso8601ToUnixTime(dateHelper: ISupportDateHelper) =
-    dateHelper.convertToUnixTimeStamp(originDate = this, inputPattern = ISO8601_PATTERN)
+fun ISO8601Date.iso8601ToUnixTime() =
+    supportDateHelper.convertToUnixTimeStamp(originDate = this, inputPattern = ISO8601_PATTERN)
 
-fun RCF822Date.rcf822ToUnixTime(dateHelper: ISupportDateHelper) =
-    dateHelper.convertToUnixTimeStamp(this, inputPattern = RCF822D_PATTERN)
+fun RCF822Date.rcf822ToUnixTime() =
+    supportDateHelper.convertToUnixTimeStamp(this, inputPattern = RCF822D_PATTERN)
