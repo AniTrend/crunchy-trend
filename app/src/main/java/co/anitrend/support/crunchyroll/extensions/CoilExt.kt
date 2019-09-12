@@ -30,7 +30,7 @@ import coil.transform.Transformation
 @BindingAdapter("imageUrl")
 fun AppCompatImageView.setImageUrl(url: String?) = url?.also {
     load(url) {
-        scale(Scale.FILL)
+        scale(Scale.FIT)
         diskCachePolicy(CachePolicy.ENABLED)
     }
 }
@@ -38,12 +38,13 @@ fun AppCompatImageView.setImageUrl(url: String?) = url?.also {
 @BindingAdapter("imageUrl")
 fun AppCompatImageView.setImageUrl(listing: MediaListing?) = listing?.also {
     load(it.episodeThumbnail) {
-        scale(Scale.FILL)
-        /*if (!it.isAllowed)
+        scale(Scale.FIT)
+        val currentTime = System.currentTimeMillis()
+        if (it.freeAvailableTime > currentTime)
             transformations(
-                BlurTransformation(context),
+                //BlurTransformation(context),
                 GrayscaleTransformation()
-            )*/
+            )
         diskCachePolicy(CachePolicy.ENABLED)
     }
 }

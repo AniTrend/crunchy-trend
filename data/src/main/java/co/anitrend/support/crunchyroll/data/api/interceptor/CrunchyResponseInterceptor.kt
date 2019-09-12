@@ -16,23 +16,29 @@
 
 package co.anitrend.support.crunchyroll.data.api.interceptor
 
+import co.anitrend.arch.extension.util.SupportConnectivityHelper
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
+import co.anitrend.support.crunchyroll.data.auth.CrunchyAuthentication
 import co.anitrend.support.crunchyroll.data.extension.composeWith
 import co.anitrend.support.crunchyroll.data.extension.typeTokenOf
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyContainer
 import com.google.gson.ExclusionStrategy
 import com.google.gson.FieldAttributes
-import okhttp3.Interceptor
-import okhttp3.MediaType
-import okhttp3.Response
-import okhttp3.ResponseBody
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import okhttp3.*
 import okhttp3.ResponseBody.Companion.toResponseBody
+import timber.log.Timber
 import java.io.IOException
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Intercepts responses changing them if and when needed
  */
-class CrunchyResponseInterceptor : Interceptor {
+class CrunchyResponseInterceptor(
+    private val connectivityHelper: SupportConnectivityHelper,
+    private val authentication: CrunchyAuthentication
+) : Interceptor {
 
     private val json by lazy {
         CrunchyConverterFactory.GSON_BUILDER
@@ -44,6 +50,8 @@ class CrunchyResponseInterceptor : Interceptor {
                 }
         ).create()
     }
+
+    private val retryCount: AtomicInteger = AtomicInteger(0)
 
     private fun convertResponse(body: String?) : CrunchyContainer<Any?>? {
         return json.fromJson(body, typeTokenOf<CrunchyContainer<Any?>?>())
@@ -62,13 +70,55 @@ class CrunchyResponseInterceptor : Interceptor {
         val mimeType = response.body?.contentType()
         val currentResponse = convertResponse(body)
 
-        if (currentResponse != null) {
-            return currentResponse.composeWith(
-                response,
-                buildResponseBody(body, mimeType)
-            )
+        val newResponse = currentResponse?.composeWith(
+            responseBody = buildResponseBody(
+                body,
+                mimeType
+            ),
+            response = response
+        )
+
+        if (newResponse?.code == 401) {
+            val request = authenticate(newResponse)
+            if (request != null)
+                return chain.proceed(request)
         }
 
+        if (newResponse != null)
+            return newResponse
+
         return response
+    }
+
+
+    /**
+     * Returns a request that includes a credential to satisfy an authentication challenge in
+     * [response]. Returns null if the challenge cannot be satisfied.
+     *
+     * The route is best effort, it currently may not always be provided even when logically
+     * available. It may also not be provided when an authenticator is re-used manually in an
+     * application interceptor, such as when implementing client-specific retries.
+     */
+    private fun authenticate(response: Response): Request? {
+        val origin = response.request
+        Timber.tag("CrunchyAuthenticator").d("Authenticator invoked!")
+        if (connectivityHelper.isConnected) {
+            if (response.priorResponse?.isSuccessful != true) {
+                val retries = retryCount.incrementAndGet()
+                if (retries >= 3) {
+                    runBlocking(Dispatchers.IO) {
+                        authentication.invalidateSession()
+                    }
+                    retryCount.set(0)
+                }
+            }
+
+            return runBlocking(Dispatchers.IO) {
+                authentication.refreshSession(origin).build()
+            }
+        }
+
+        Timber.i("Device is currently offline, skipping interception")
+        return null
     }
 }

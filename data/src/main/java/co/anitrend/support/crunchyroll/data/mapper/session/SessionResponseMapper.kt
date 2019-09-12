@@ -44,6 +44,7 @@ class SessionResponseMapper(
      * @see [ISupportResponseHelper.invoke]
      */
     override suspend fun onResponseDatabaseInsert(mappedData: CrunchySession) {
-        dao.saveSession(mappedData)
+        dao.clearTable()
+        dao.upsert(mappedData)
     }
 }

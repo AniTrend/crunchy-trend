@@ -18,7 +18,6 @@ package co.anitrend.support.crunchyroll.data.api.endpoint.contract
 
 import co.anitrend.arch.data.factory.SupportEndpointFactory
 import co.anitrend.support.crunchyroll.data.BuildConfig
-import co.anitrend.support.crunchyroll.data.api.authenticator.CrunchyAuthenticator
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyRequestInterceptor
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyResponseInterceptor
@@ -29,7 +28,6 @@ import org.koin.core.inject
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
-
 
 /**
  * Generates retrofit service classes
@@ -43,20 +41,18 @@ open class CrunchyEndpointFactory<S: Any>(
     private val injectInterceptor: Boolean = true
 ) : SupportEndpointFactory<S>(url, endpoint), KoinComponent {
 
-    private val clientInterceptor by inject<CrunchyRequestInterceptor>()
     private val responseInterceptor by inject<CrunchyResponseInterceptor>()
-    private val authInterceptor by inject<CrunchyAuthenticator>()
+    private val requestInterceptor by inject<CrunchyRequestInterceptor>()
 
     override val retrofit: Retrofit by lazy {
         val httpClient = OkHttpClient.Builder()
             .apply {
                 if (injectInterceptor) {
                     addInterceptor(responseInterceptor)
-                    addInterceptor(clientInterceptor)
-                    authenticator(authInterceptor)
+                    addInterceptor(requestInterceptor)
                 }
-                readTimeout(35, TimeUnit.SECONDS)
-                connectTimeout(35, TimeUnit.SECONDS)
+                readTimeout(10, TimeUnit.SECONDS)
+                connectTimeout(10, TimeUnit.SECONDS)
                 retryOnConnectionFailure(true)
                 when {
                     BuildConfig.DEBUG -> {

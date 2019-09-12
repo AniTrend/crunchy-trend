@@ -49,6 +49,6 @@ class MediaStreamSourceImpl(
             observable.postValue(MediaStreamTransformer.transform(result))
         }
 
-        return Transformations.distinctUntilChanged(observable)
+        return observable
     }
 }

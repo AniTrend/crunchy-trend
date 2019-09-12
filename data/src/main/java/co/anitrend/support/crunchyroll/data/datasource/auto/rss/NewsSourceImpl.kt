@@ -59,11 +59,9 @@ class NewsSourceImpl(
                     NewsTransformer.transform(it)
                 }
 
-                return Transformations.distinctUntilChanged(
-                    result.toLiveData(
-                        config = SupportDataKeyStore.PAGING_CONFIGURATION,
-                        boundaryCallback = this@NewsSourceImpl
-                    )
+                return result.toLiveData(
+                    config = SupportDataKeyStore.PAGING_CONFIGURATION,
+                    boundaryCallback = this@NewsSourceImpl
                 )
             }
         }

@@ -21,14 +21,9 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import co.anitrend.support.crunchyroll.data.auth.model.contract.ICrunchySession
 
-@Entity(
-    indices = [
-        Index(value = ["session_id"], unique = true)
-    ]
-)
+@Entity
 data class CrunchySessionCore(
-    @PrimaryKey(autoGenerate = true)
-    override val sessionCoreId: Int = 1,
+    @PrimaryKey
     override val session_id: String,
     override val country_code: String,
     override val device_type: String,

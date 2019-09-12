@@ -44,6 +44,7 @@ class LoginResponseMapper(
      * @see [ISupportResponseHelper.invoke]
      */
     override suspend fun onResponseDatabaseInsert(mappedData: CrunchyLogin) {
-        dao.clearAndInsert(mappedData)
+        dao.clearTable()
+        dao.upsert(mappedData)
     }
 }

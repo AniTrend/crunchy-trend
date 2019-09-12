@@ -30,23 +30,9 @@ interface CrunchySessionCoreDao : ISupportQuery<CrunchySessionCore> {
     suspend fun clearTable()
 
 
-    @Query("select * from CrunchySessionCore order by sessionCoreId desc limit 1")
+    @Query("select * from CrunchySessionCore limit 1")
     suspend fun findLatest(): CrunchySessionCore?
 
-    @Query("select * from CrunchySessionCore order by sessionCoreId desc limit 1")
+    @Query("select * from CrunchySessionCore limit 1")
     fun findLatestX(): LiveData<CrunchySessionCore?>
-
-
-    @Transaction
-    suspend fun saveSession(attribute: CrunchySessionCore) {
-        val lastSaved = findLatest()
-        if (lastSaved == null)
-            insert(attribute)
-        else {
-            val updated = attribute.copy(
-                sessionCoreId = lastSaved.sessionCoreId
-            )
-            update(updated)
-        }
-    }
 }

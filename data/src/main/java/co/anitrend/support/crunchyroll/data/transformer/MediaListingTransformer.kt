@@ -93,14 +93,14 @@ object MediaListingTransformer: ISupportMapperHelper<CrunchyRssMedia, MediaListi
             episodeNumber = source.episodeNumber,
             copyright = source.copyright,
             subtitles = null,
-            isAllowed = false
+            isCountryWhiteListed = false
         )
     }
 
     fun transform(source: CrunchyRssMedia, locale: Locale): MediaListing {
         return transform(source).copy(
             subtitles = getSubtitles(source.subtitleLanguages, locale),
-            isAllowed = isAllowed(source.restriction, locale)
+            isCountryWhiteListed = isAllowed(source.restriction, locale)
         )
     }
 }

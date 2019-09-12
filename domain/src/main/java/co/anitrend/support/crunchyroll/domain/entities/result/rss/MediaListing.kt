@@ -28,5 +28,5 @@ data class MediaListing(
     val episodeNumber: String?,
     val copyright: String,
     val subtitles: List<String>?,
-    val isAllowed: Boolean
+    val isCountryWhiteListed: Boolean
 )

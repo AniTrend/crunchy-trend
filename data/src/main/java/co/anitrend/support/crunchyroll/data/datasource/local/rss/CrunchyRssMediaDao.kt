@@ -30,16 +30,33 @@ interface CrunchyRssMediaDao : ISupportQuery<CrunchyRssMedia> {
     suspend fun clearTable()
 
 
-    @Query("select * from CrunchyRssMedia order by premiumAvailableTime desc")
+    @Query("""
+        select * from CrunchyRssMedia 
+        order by premiumAvailableTime desc, 
+        seriesTitle desc, episodeTitle desc, episodeNumber desc
+        """)
     suspend fun findAll(): List<CrunchyRssMedia>
 
-    @Query("select * from CrunchyRssMedia order by premiumAvailableTime desc")
+    @Query("""
+        select * from CrunchyRssMedia 
+        order by premiumAvailableTime desc, 
+        seriesTitle desc, episodeTitle desc, episodeNumber desc
+        """)
     fun findAllX(): LiveData<List<CrunchyRssMedia>>
 
-    @Query("select * from CrunchyRssMedia order by premiumAvailableTime desc")
+    @Query("""
+        select * from CrunchyRssMedia 
+        order by premiumAvailableTime desc, 
+        seriesTitle desc, episodeTitle desc, episodeNumber desc
+        """)
     fun findByAllFactory(): DataSource.Factory<Int, CrunchyRssMedia>
 
-    @Query("select * from CrunchyRssMedia where seriesTitle = :seriesSlug order by premiumAvailableTime desc")
+    @Query("""
+        select * from CrunchyRssMedia 
+        where seriesTitle = :seriesSlug 
+        order by premiumAvailableTime desc, 
+        seriesTitle desc, episodeTitle desc, episodeNumber desc
+        """)
     fun findBySlugFactory(
         seriesSlug: String?
     ): DataSource.Factory<Int, CrunchyRssMedia>

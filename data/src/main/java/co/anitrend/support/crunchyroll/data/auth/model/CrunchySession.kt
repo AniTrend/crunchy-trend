@@ -30,13 +30,12 @@ import co.anitrend.support.crunchyroll.data.util.extension.iso8601ToUnixTime
 
 @Entity(
     indices = [
-        Index(value = ["session_id", "auth"], unique = true)
+        Index(value = ["auth"], unique = true)
     ]
 )
 @SuppressWarnings(PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED)
 data class CrunchySession(
-    @PrimaryKey(autoGenerate = true)
-    override val sessionCoreId: Int = 1,
+    @PrimaryKey
     override val session_id: String,
     override val country_code: String,
     override val device_type: String,

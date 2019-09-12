@@ -61,11 +61,9 @@ class MediaListingSourceImpl(
                     MediaListingTransformer.transform(it, locale)
                 }
 
-                return Transformations.distinctUntilChanged(
-                    result.toLiveData(
-                        config = SupportDataKeyStore.PAGING_CONFIGURATION,
-                        boundaryCallback = this@MediaListingSourceImpl
-                    )
+                return result.toLiveData(
+                    config = SupportDataKeyStore.PAGING_CONFIGURATION,
+                    boundaryCallback = this@MediaListingSourceImpl
                 )
             }
         }

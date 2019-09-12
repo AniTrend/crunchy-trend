@@ -23,7 +23,9 @@ import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.data.arch.StreamQualityContract
 import co.anitrend.support.crunchyroll.data.util.CrunchySettings
 import co.anitrend.support.crunchyroll.domain.entities.result.media.MediaStream
+import coil.Coil
 import coil.api.load
+import coil.size.Scale
 import com.devbrackets.android.exomedia.ui.widget.VideoView
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
@@ -84,10 +86,10 @@ class StreamPresenter(
             .createMediaSource(streamUri)
 
         with (player) {
-            /*coil.Coil.load(context, thumbnail) {
+            Coil.load(context, thumbnail) {
+                scale(Scale.FIT)
                 target { setPreviewImage(it) }
-            }*/
-            setPreviewImage(Uri.parse(thumbnail))
+            }
             setVideoURI(streamUri, source)
         }
     }

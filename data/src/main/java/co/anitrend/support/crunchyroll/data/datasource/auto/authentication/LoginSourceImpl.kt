@@ -51,11 +51,9 @@ class LoginSourceImpl(
             override fun invoke(parameter: LoginQuery): LiveData<User?> {
                 val login = dao.findLatestByAccountX(parameter.account)
 
-                return Transformations.distinctUntilChanged(
-                    Transformations.map(login) {
-                        LoginUserTransformer.transform(it)
-                    }
-                )
+                return Transformations.map(login) {
+                    LoginUserTransformer.transform(it)
+                }
             }
         }
 

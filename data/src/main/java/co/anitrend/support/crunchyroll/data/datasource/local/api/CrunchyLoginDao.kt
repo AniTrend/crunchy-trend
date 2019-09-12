@@ -53,11 +53,4 @@ interface CrunchyLoginDao : ISupportQuery<CrunchyLogin> {
     fun findByUserIdX(
         userId: Int
     ): LiveData<CrunchyLogin?>
-
-
-    @Transaction
-    suspend fun clearAndInsert(attribute: CrunchyLogin) {
-        clearTable()
-        insert(attribute)
-    }
 }
