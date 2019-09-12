@@ -26,7 +26,7 @@ import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.R
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.viewmodel.NewsViewModel
-import co.anitrend.support.crunchyroll.data.extension.getSerivceLocale
+import co.anitrend.support.crunchyroll.data.extension.getCrunchyLocale
 import co.anitrend.support.crunchyroll.domain.entities.query.rss.RssQuery
 import co.anitrend.support.crunchyroll.domain.entities.result.rss.News
 import co.anitrend.support.crunchyroll.news.adapter.RssNewsAdapter
@@ -140,7 +140,7 @@ class FragmentFeedNewsList : SupportFragmentList<News, CrunchyCorePresenter, Pag
     override fun onFetchDataInitialize() {
         supportViewModel(
             RssQuery(
-                language = getSerivceLocale()
+                language = getCrunchyLocale()
             )
         )
     }

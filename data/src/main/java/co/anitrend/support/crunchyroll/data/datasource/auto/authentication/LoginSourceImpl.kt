@@ -51,9 +51,11 @@ class LoginSourceImpl(
             override fun invoke(parameter: LoginQuery): LiveData<User?> {
                 val login = dao.findLatestByAccountX(parameter.account)
 
-                return Transformations.map(login) {
-                    LoginUserTransformer.transform(it)
-                }
+                return Transformations.distinctUntilChanged(
+                    Transformations.map(login) {
+                        LoginUserTransformer.transform(it)
+                    }
+                )
             }
         }
 
@@ -65,7 +67,7 @@ class LoginSourceImpl(
             endpoint.loginUser(
                 account = query.account,
                 password = query.password,
-                sessionId = session?.session_id
+                sessionId = session?.sessionId
             )
         }
 

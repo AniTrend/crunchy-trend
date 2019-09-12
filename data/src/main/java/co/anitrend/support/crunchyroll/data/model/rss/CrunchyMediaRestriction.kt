@@ -34,7 +34,7 @@ data class CrunchyMediaRestriction(
     @field:Element(
         required = false
     )
-    var locales: String
+    var elements: String
 ) {
     constructor(): this (
         String.empty(),
@@ -51,7 +51,7 @@ data class CrunchyMediaRestriction(
     override fun hashCode(): Int {
         var result = relationship.hashCode()
         result = 31 * result + type.hashCode()
-        result = 31 * result + locales.hashCode()
+        result = 31 * result + elements.hashCode()
         return result
     }
 }

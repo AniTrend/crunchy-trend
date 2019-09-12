@@ -21,6 +21,7 @@ import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactor
 import co.anitrend.support.crunchyroll.data.model.user.CrunchyUser
 import com.google.gson.reflect.TypeToken
 import co.anitrend.arch.data.dao.RoomConverter
+import co.anitrend.support.crunchyroll.data.extension.typeTokenOf
 
 class CrunchyUserConverter : RoomConverter<CrunchyUser> {
 
@@ -32,8 +33,7 @@ class CrunchyUserConverter : RoomConverter<CrunchyUser> {
      */
     @TypeConverter
     override fun fromDatabaseValue(dbValue: String): CrunchyUser? {
-        val token = object : TypeToken<CrunchyUser?>(){}.type
-        return GSON_BUILDER.create().fromJson(dbValue, token)
+        return GSON_BUILDER.create().fromJson(dbValue, typeTokenOf<CrunchyUser?>())
     }
 
     /**

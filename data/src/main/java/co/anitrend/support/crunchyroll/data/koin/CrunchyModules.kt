@@ -19,6 +19,7 @@ package co.anitrend.support.crunchyroll.data.koin
 import android.content.Context
 import android.net.ConnectivityManager
 import co.anitrend.arch.extension.util.SupportConnectivityHelper
+import co.anitrend.support.crunchyroll.data.api.authenticator.CrunchyAuthenticator
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyAuthEndpoint
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyMediaEndpoint
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchySessionEndpoint
@@ -88,14 +89,18 @@ private val networkModule = module {
         )
     }
     single {
+        CrunchyAuthenticator(
+            authentication = get(),
+            connectivityHelper = get()
+        )
+    }
+    single {
         CrunchyRequestInterceptor(
             authentication = get()
         )
     }
     single {
-        CrunchyResponseInterceptor(
-            authentication = get()
-        )
+        CrunchyResponseInterceptor()
     }
 }
 

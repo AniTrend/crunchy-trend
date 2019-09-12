@@ -19,14 +19,31 @@ package co.anitrend.support.crunchyroll.extensions
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.databinding.BindingAdapter
 import co.anitrend.support.crunchyroll.data.model.rss.MediaThumbnail
+import co.anitrend.support.crunchyroll.domain.entities.result.rss.MediaListing
 import coil.api.load
 import coil.request.CachePolicy
 import coil.size.Scale
+import coil.transform.BlurTransformation
+import coil.transform.GrayscaleTransformation
+import coil.transform.Transformation
 
 @BindingAdapter("imageUrl")
 fun AppCompatImageView.setImageUrl(url: String?) = url?.also {
     load(url) {
         scale(Scale.FILL)
+        diskCachePolicy(CachePolicy.ENABLED)
+    }
+}
+
+@BindingAdapter("imageUrl")
+fun AppCompatImageView.setImageUrl(listing: MediaListing?) = listing?.also {
+    load(it.episodeThumbnail) {
+        scale(Scale.FILL)
+        /*if (!it.isAllowed)
+            transformations(
+                BlurTransformation(context),
+                GrayscaleTransformation()
+            )*/
         diskCachePolicy(CachePolicy.ENABLED)
     }
 }

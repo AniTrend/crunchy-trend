@@ -26,6 +26,9 @@ import co.anitrend.support.crunchyroll.data.util.CrunchySettings
 import co.anitrend.support.crunchyroll.koin.appModules
 import coil.Coil
 import coil.ImageLoader
+import coil.util.CoilUtils
+import com.google.android.exoplayer2.upstream.cache.CacheUtil.cache
+import okhttp3.OkHttpClient
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -66,6 +69,12 @@ class App : Application(), Configuration.Provider {
             bitmapPoolPercentage(0.2)
             crossfade(360)
             allowRgb565(!isLowRamDevice())
+            allowHardware(true)
+            okHttpClient {
+                OkHttpClient.Builder()
+                    .cache(CoilUtils.createDefaultCache(this@App))
+                    .build()
+            }
         }
 
         Coil.setDefaultImageLoader(imageLoader)

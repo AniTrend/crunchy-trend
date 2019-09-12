@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.data.datasource.auto.rss
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import androidx.paging.PagedList
 import androidx.paging.PagingRequestHelper
 import androidx.paging.toLiveData
@@ -31,6 +32,7 @@ import co.anitrend.support.crunchyroll.domain.entities.query.rss.RssQuery
 import co.anitrend.support.crunchyroll.domain.entities.result.rss.MediaListing
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.util.*
 
 class MediaListingSourceImpl(
     private val responseMapper: MediaListingResponseMapper,
@@ -52,15 +54,18 @@ class MediaListingSourceImpl(
             override fun invoke(parameter: RssQuery): LiveData<PagedList<MediaListing>> {
                 rssQuery = parameter
 
+                val locale = Locale.getDefault()
                 val localSource = dao.findByAllFactory()
 
                 val result = localSource.map {
-                    MediaListingTransformer.transform(it)
+                    MediaListingTransformer.transform(it, locale)
                 }
 
-                return result.toLiveData(
-                    config = SupportDataKeyStore.PAGING_CONFIGURATION,
-                    boundaryCallback = this@MediaListingSourceImpl
+                return Transformations.distinctUntilChanged(
+                    result.toLiveData(
+                        config = SupportDataKeyStore.PAGING_CONFIGURATION,
+                        boundaryCallback = this@MediaListingSourceImpl
+                    )
                 )
             }
         }

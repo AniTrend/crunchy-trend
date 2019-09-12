@@ -36,15 +36,15 @@
             app:cardPreventCornerOverlap="false"
             app:cardBackgroundColor="?cardColor"
             app:cardElevation="@dimen/sm_margin"
-            app:cardCornerRadius="@dimen/lg_margin">
+            app:cardCornerRadius="@dimen/md_margin">
 
         <co.anitrend.arch.ui.view.image.SupportImageView
                 android:id="@+id/media_thumbnail"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                app:imageUrl="@{entity.episodeThumbnail}"
+                app:imageUrl="@{entity}"
                 app:aspectRatio=".55"
-                tools:src="@tools:sample/backgrounds/scenic" />
+                tools:src="@sample/franxx_banner.jpg" />
 
         <LinearLayout
                 android:layout_gravity="top|end"

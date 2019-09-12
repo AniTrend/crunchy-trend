@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.data.datasource.auto.rss
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import androidx.paging.PagedList
 import androidx.paging.PagingRequestHelper
 import androidx.paging.toLiveData
@@ -58,9 +59,11 @@ class NewsSourceImpl(
                     NewsTransformer.transform(it)
                 }
 
-                return result.toLiveData(
-                    config = SupportDataKeyStore.PAGING_CONFIGURATION,
-                    boundaryCallback = this@NewsSourceImpl
+                return Transformations.distinctUntilChanged(
+                    result.toLiveData(
+                        config = SupportDataKeyStore.PAGING_CONFIGURATION,
+                        boundaryCallback = this@NewsSourceImpl
+                    )
                 )
             }
         }

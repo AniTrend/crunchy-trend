@@ -18,6 +18,7 @@ package co.anitrend.support.crunchyroll.data.api.endpoint.contract
 
 import co.anitrend.arch.data.factory.SupportEndpointFactory
 import co.anitrend.support.crunchyroll.data.BuildConfig
+import co.anitrend.support.crunchyroll.data.api.authenticator.CrunchyAuthenticator
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyRequestInterceptor
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyResponseInterceptor
@@ -43,14 +44,16 @@ open class CrunchyEndpointFactory<S: Any>(
 ) : SupportEndpointFactory<S>(url, endpoint), KoinComponent {
 
     private val clientInterceptor by inject<CrunchyRequestInterceptor>()
-    private val authInterceptor by inject<CrunchyResponseInterceptor>()
+    private val responseInterceptor by inject<CrunchyResponseInterceptor>()
+    private val authInterceptor by inject<CrunchyAuthenticator>()
 
     override val retrofit: Retrofit by lazy {
         val httpClient = OkHttpClient.Builder()
             .apply {
                 if (injectInterceptor) {
-                    addInterceptor(authInterceptor)
+                    addInterceptor(responseInterceptor)
                     addInterceptor(clientInterceptor)
+                    authenticator(authInterceptor)
                 }
                 readTimeout(35, TimeUnit.SECONDS)
                 connectTimeout(35, TimeUnit.SECONDS)

@@ -16,7 +16,9 @@
 
 package co.anitrend.support.crunchyroll.data.transformer
 
+import androidx.annotation.VisibleForTesting
 import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
+import co.anitrend.support.crunchyroll.data.model.rss.CrunchyMediaRestriction
 import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssMedia
 import co.anitrend.support.crunchyroll.data.model.rss.MediaThumbnail
 import co.anitrend.support.crunchyroll.domain.entities.result.rss.MediaListing
@@ -25,14 +27,54 @@ import java.util.concurrent.TimeUnit
 
 object MediaListingTransformer: ISupportMapperHelper<CrunchyRssMedia, MediaListing> {
 
-    private fun List<MediaThumbnail>?.highestQuality() = this?.maxBy { it.width }
+    @VisibleForTesting
+    fun highestQuality(thumbnails: List<MediaThumbnail>?) = thumbnails?.maxBy { it.width }
 
-    private fun durationFormatted(duration: Int?) : String {
+    @VisibleForTesting
+    fun durationFormatted(duration: Int?) : String {
         return duration?.let {
             val minutes = TimeUnit.SECONDS.toMinutes(it.toLong())
             val seconds = it - TimeUnit.MINUTES.toSeconds(minutes)
             String.format(Locale.getDefault(), if (seconds < 10) "%d:0%d" else "%d:%d", minutes, seconds)
         } ?: "00:00"
+    }
+
+    @VisibleForTesting
+    fun getSubtitles(subtitles: String?, locale: Locale): List<String>? {
+        if (subtitles != null) {
+            // en - us,es - la,es - es
+            return subtitles
+                .split(',')
+                .map {
+                    val firstDelimiter = it.indexOf(' ')
+                    val lastDelimiter = it.lastIndexOf(' ')
+                    val language = it.substring(
+                        IntRange(0, firstDelimiter - 1)
+                    )
+                    val country = it.substring(
+                        IntRange(lastDelimiter + 1, it.length - 1)
+                    ).toUpperCase(locale)
+
+                    "$language$country"
+                }
+        }
+        return null
+    }
+
+    @VisibleForTesting
+    fun isAllowed(restriction: CrunchyMediaRestriction?, locale: Locale): Boolean {
+        if (restriction != null) {
+            val country = locale.country
+
+            // relationship="allow" type="country"
+            // elements: ua ae gb us
+            val restrictions = restriction.elements
+                .split(' ')
+                .map { it.toLowerCase(locale) }
+            if (restriction.relationship == "allow" && restriction.type == "country")
+                return restrictions.contains(country.toLowerCase(locale))
+        }
+        return true
     }
 
     /**
@@ -45,11 +87,20 @@ object MediaListingTransformer: ISupportMapperHelper<CrunchyRssMedia, MediaListi
             description = source.description,
             freeAvailableTime = source.freeAvailableTime,
             premiumAvailableTime = source.premiumAvailableTime,
-            episodeThumbnail = source.thumbnail.highestQuality()?.url,
+            episodeThumbnail = highestQuality(source.thumbnail)?.url,
             episodeDuration = durationFormatted(source.duration),
             episodeTitle = source.episodeTitle,
             episodeNumber = source.episodeNumber,
-            copyright = source.copyright
+            copyright = source.copyright,
+            subtitles = null,
+            isAllowed = false
+        )
+    }
+
+    fun transform(source: CrunchyRssMedia, locale: Locale): MediaListing {
+        return transform(source).copy(
+            subtitles = getSubtitles(source.subtitleLanguages, locale),
+            isAllowed = isAllowed(source.restriction, locale)
         )
     }
 }

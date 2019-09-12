@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.data.datasource.auto.media
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyMediaEndpoint
 import co.anitrend.support.crunchyroll.data.arch.MediaFieldsContract
@@ -48,6 +49,6 @@ class MediaStreamSourceImpl(
             observable.postValue(MediaStreamTransformer.transform(result))
         }
 
-        return observable
+        return Transformations.distinctUntilChanged(observable)
     }
 }

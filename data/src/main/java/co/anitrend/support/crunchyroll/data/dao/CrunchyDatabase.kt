@@ -28,8 +28,10 @@ import co.anitrend.support.crunchyroll.data.dao.migration.MIGRATION_1_2
 import co.anitrend.support.crunchyroll.data.dao.migration.MIGRATION_2_4
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchySessionCore
 import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyImageSetConverter
+import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyRestrictionConverter
 import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyThumbnailConverter
 import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyUserConverter
+import co.anitrend.support.crunchyroll.data.dao.migration.MIGRATION_6_7
 import co.anitrend.support.crunchyroll.data.datasource.local.api.*
 import co.anitrend.support.crunchyroll.data.datasource.local.rss.CrunchyRssMediaDao
 import co.anitrend.support.crunchyroll.data.datasource.local.rss.CrunchyRssNewsDao
@@ -58,7 +60,8 @@ import co.anitrend.support.crunchyroll.data.model.series.CrunchySeries
     value = [
         CrunchyImageSetConverter::class,
         CrunchyThumbnailConverter::class,
-        CrunchyUserConverter::class
+        CrunchyUserConverter::class,
+        CrunchyRestrictionConverter::class
     ]
 )
 abstract class CrunchyDatabase: RoomDatabase() {
@@ -86,6 +89,7 @@ abstract class CrunchyDatabase: RoomDatabase() {
             ).fallbackToDestructiveMigration()
                 .addMigrations(MIGRATION_1_2)
                 .addMigrations(MIGRATION_2_4)
+                .addMigrations(MIGRATION_6_7)
                 .build()
         }
     }
