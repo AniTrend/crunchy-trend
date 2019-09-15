@@ -33,7 +33,9 @@ class LoginResponseMapper(
      * @see [ISupportResponseHelper.invoke]
      */
     override suspend fun onResponseMapFrom(source: CrunchyLogin): CrunchyLogin {
-        return source
+        return source.copy(
+            loginUserId = source.user.user_id
+        )
     }
 
     /**

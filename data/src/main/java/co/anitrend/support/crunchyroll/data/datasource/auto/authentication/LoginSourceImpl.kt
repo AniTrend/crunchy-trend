@@ -27,16 +27,18 @@ import co.anitrend.support.crunchyroll.data.datasource.local.api.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.datasource.local.api.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.mapper.authentication.LoginResponseMapper
 import co.anitrend.support.crunchyroll.data.transformer.LoginUserTransformer
+import co.anitrend.support.crunchyroll.data.util.CrunchySettings
 import co.anitrend.support.crunchyroll.domain.entities.query.authentication.LoginQuery
 import co.anitrend.support.crunchyroll.domain.entities.result.user.User
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class LoginSourceImpl(
     private val dao: CrunchyLoginDao,
+    private val settings: CrunchySettings,
     private val endpoint: CrunchyAuthEndpoint,
-    private val responseMapper: LoginResponseMapper,
-    private val authenticator: CrunchyAuthentication
+    private val responseMapper: LoginResponseMapper
 ) : LoginSource() {
 
     override val observable =
@@ -61,16 +63,16 @@ class LoginSourceImpl(
         retry = { loginUser(query) }
         networkState.value = NetworkState.Loading
         val deferred = async {
-            val session = authenticator.getCoreSession()
             endpoint.loginUser(
                 account = query.account,
                 password = query.password,
-                sessionId = session?.sessionId
+                sessionId = settings.sessionId
             )
         }
 
         launch {
-            responseMapper(deferred, networkState)
+            val response = responseMapper(deferred, networkState)
+            Timber.tag(moduleTag).i("Logged in userId: ${response?.loginUserId}")
         }
 
         return observable(query)

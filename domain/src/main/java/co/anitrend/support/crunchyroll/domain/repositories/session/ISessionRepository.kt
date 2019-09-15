@@ -23,15 +23,15 @@ interface ISessionRepository {
     /**
      * Returns a session that can be used when the user is not authenticated
      */
-    suspend fun getCoreSession(): Session?
+    fun getCoreSession(): Session?
 
     /**
      * Returns a session that behaves as a fallback when the unblock session fails
      */
-    suspend fun getNormalSession(): Session?
+    fun getNormalSession(): Session?
 
     /**
      * Returns a session for the authenticated user
      */
-    suspend fun getUnblockedSession(): Session?
+    fun getUnblockedSession(): Session?
 }

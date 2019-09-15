@@ -14,15 +14,13 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.mapper.session
+package co.anitrend.support.crunchyroll.data.mapper.media
 
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
-import co.anitrend.support.crunchyroll.data.auth.model.CrunchySessionCore
-import co.anitrend.support.crunchyroll.data.datasource.local.api.CrunchySessionCoreDao
+import co.anitrend.support.crunchyroll.data.model.stream.CrunchyStreamInfo
 
-class CoreSessionResponseMapper(
-    private val dao: CrunchySessionCoreDao
-) : CrunchyMapper<CrunchySessionCore, CrunchySessionCore>() {
+class MediaStreamResponseMapper :
+    CrunchyMapper<CrunchyStreamInfo, CrunchyStreamInfo>() {
 
     /**
      * Creates mapped objects and handles the database operations which may be required to map various objects,
@@ -31,7 +29,7 @@ class CoreSessionResponseMapper(
      * @param source the incoming data source type
      * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
      */
-    override suspend fun onResponseMapFrom(source: CrunchySessionCore): CrunchySessionCore {
+    override suspend fun onResponseMapFrom(source: CrunchyStreamInfo): CrunchyStreamInfo {
         return source
     }
 
@@ -41,7 +39,7 @@ class CoreSessionResponseMapper(
      *
      * @param mappedData mapped object from [onResponseMapFrom] to insert into the database
      */
-    override suspend fun onResponseDatabaseInsert(mappedData: CrunchySessionCore) {
-        dao.upsert(mappedData)
+    override suspend fun onResponseDatabaseInsert(mappedData: CrunchyStreamInfo) {
+        // not persisting anything into the database
     }
 }

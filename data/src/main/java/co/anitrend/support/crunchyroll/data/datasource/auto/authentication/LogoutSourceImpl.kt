@@ -17,52 +17,49 @@
 package co.anitrend.support.crunchyroll.data.datasource.auto.authentication
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.domain.entities.isSuccess
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyAuthEndpoint
-import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
 import co.anitrend.support.crunchyroll.data.datasource.auto.authentication.contract.LogoutSource
 import co.anitrend.support.crunchyroll.data.datasource.local.api.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.datasource.local.api.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.datasource.local.api.CrunchySessionDao
+import co.anitrend.support.crunchyroll.data.mapper.authentication.LogoutResponseMapper
 import co.anitrend.support.crunchyroll.data.util.CrunchySettings
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlin.math.log
 
 class LogoutSourceImpl(
     private val sessionCoreDao: CrunchySessionCoreDao,
+    private val responseMapper: LogoutResponseMapper,
     private val sessionDao: CrunchySessionDao,
     private val endpoint: CrunchyAuthEndpoint,
-    private val dao: CrunchyLoginDao,
-    private val settings: CrunchySettings
+    private val settings: CrunchySettings,
+    private val dao: CrunchyLoginDao
 ) : LogoutSource() {
 
     override fun logoutUser(): LiveData<Boolean> {
         retry = { logoutUser() }
-        networkState.value = NetworkState.Loading
+        networkState.postValue(NetworkState.Loading)
         val deferred = async {
-            val session = sessionCoreDao.findLatest()
             endpoint.logoutUser(
-                sessionId = session?.session_id
+                sessionId = settings.sessionId
             )
         }
 
-        Transformations.map(networkState) {
-            if (it.isSuccess()) {
-                launch { clearDataSource() }
-                with (settings) {
+        launch {
+            val state = responseMapper(deferred)
+            if (state.isSuccess()) {
+                clearDataSource()
+                with(settings) {
                     authenticatedUserId = CrunchySettings.INVALID_USER_ID
+                    hasAccessToPremium = false
                     isAuthenticated = false
+                    sessionId = null
                 }
             }
-            observable.postValue(it.isSuccess())
-        }
-
-        launch {
-            CrunchyMapper(deferred, networkState)
+            networkState.postValue(state)
+            observable.postValue(state.isSuccess())
         }
 
         return observable

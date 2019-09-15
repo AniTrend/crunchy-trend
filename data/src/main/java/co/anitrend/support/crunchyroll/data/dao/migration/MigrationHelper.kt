@@ -79,3 +79,25 @@ val MIGRATION_6_7 = object : Migration(6, 7) {
         }
     }
 }
+
+val MIGRATION_8_9 = object : Migration(8, 9) {
+    /**
+     * Should run the necessary migrations.
+     *
+     * This class cannot access any generated Dao in this method.
+     *
+     * This method is already called inside a transaction and that transaction might actually be a
+     * composite transaction of all necessary `Migration`s.
+     *
+     * @param database The database instance
+     */
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.apply {
+            execSQL("DELETE FROM `CrunchySessionCore`")
+
+            execSQL("DROP TABLE `CrunchyLogin`")
+            execSQL("CREATE TABLE IF NOT EXISTS `CrunchyLogin` (`loginUserId` INTEGER NOT NULL, `auth` TEXT NOT NULL, `expires` TEXT NOT NULL, `user_id` INTEGER NOT NULL, `username` TEXT NOT NULL, `email` TEXT NOT NULL, `first_name` TEXT, `last_name` TEXT, `premium` TEXT, `access_type` TEXT, PRIMARY KEY(`loginUserId`))")
+
+        }
+    }
+}

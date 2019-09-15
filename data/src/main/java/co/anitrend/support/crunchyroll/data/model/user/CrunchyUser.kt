@@ -24,6 +24,7 @@ data class CrunchyUser(
     val email: String,
     val first_name: String?,
     val last_name: String?,
+    // anime|drama|manga
     val premium: String?,
     val access_type: AccessType?
 )

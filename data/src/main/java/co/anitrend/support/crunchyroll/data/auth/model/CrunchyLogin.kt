@@ -28,8 +28,8 @@ import co.anitrend.support.crunchyroll.data.model.user.CrunchyUser
 @Entity
 @SuppressWarnings(PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED)
 data class CrunchyLogin(
-    @PrimaryKey(autoGenerate = true)
-    val loginId: Int,
+    @PrimaryKey
+    val loginUserId: Int,
     @Embedded
     override val user: CrunchyUser,
     override val auth: String,

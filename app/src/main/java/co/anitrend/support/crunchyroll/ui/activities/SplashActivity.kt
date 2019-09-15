@@ -77,7 +77,7 @@ class SplashActivity : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
      */
     override fun onUpdateUserInterface() {
         launch {
-            delay(1500)
+            delay(500)
             if (isStateAtLeast(Lifecycle.State.RESUMED)) {
                 val intent = when (supportPresenter.supportPreference.isAuthenticated) {
                     true -> Intent(this@SplashActivity, MainActivity::class.java)

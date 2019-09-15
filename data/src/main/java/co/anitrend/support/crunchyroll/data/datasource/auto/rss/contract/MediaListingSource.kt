@@ -63,12 +63,14 @@ abstract class MediaListingSource : SupportPagingDataSource<MediaListing>() {
         pagingRequestHelper.runIfNotRunning(
             PagingRequestHelper.RequestType.BEFORE
         ) {
-            if (supportPagingHelper.isFirstPage())
-                launch {
-                    getMediaListingsCatalogue(it)
-                    supportPagingHelper.onPageNext()
-                }
-            else it.recordSuccess()
+            if (connectivityHelper.isConnected) {
+                if (supportPagingHelper.isFirstPage())
+                    launch {
+                        getMediaListingsCatalogue(it)
+                        supportPagingHelper.onPageNext()
+                    }
+                else it.recordSuccess()
+            } else it.recordSuccess()
         }
     }
 }

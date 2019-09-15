@@ -17,8 +17,8 @@
 package co.anitrend.support.crunchyroll.data.arch.mapper
 
 import androidx.paging.PagingRequestHelper
+import co.anitrend.arch.data.common.ISupportPagingResponse
 import co.anitrend.arch.data.mapper.SupportResponseMapper
-import co.anitrend.arch.data.mapper.contract.ISupportResponseHelper
 import co.anitrend.arch.extension.capitalizeWords
 import co.anitrend.support.crunchyroll.data.model.rss.contract.ICrunchyRssChannel
 import co.anitrend.support.crunchyroll.data.model.rss.contract.IRssCopyright
@@ -33,7 +33,7 @@ abstract class CrunchyRssMapper<D : IRssCopyright> :
     SupportResponseMapper<ICrunchyRssChannel<D>, List<D>>() {
 
     val news =
-        object : ISupportResponseHelper<Deferred<Response<CrunchyRssNewsContainer>>> {
+        object : ISupportPagingResponse<Deferred<Response<CrunchyRssNewsContainer>>> {
 
             /**
              * Response handler for coroutine contexts, mainly for paging
@@ -70,7 +70,7 @@ abstract class CrunchyRssMapper<D : IRssCopyright> :
         }
 
     val media =
-        object : ISupportResponseHelper<Deferred<Response<CrunchyRssMediaContainer>>> {
+        object : ISupportPagingResponse<Deferred<Response<CrunchyRssMediaContainer>>> {
 
             /**
              * Response handler for coroutine contexts, mainly for paging

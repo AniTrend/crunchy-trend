@@ -121,7 +121,12 @@ class FragmentLogout : SupportFragment<Boolean, CrunchyCorePresenter, Boolean>()
      */
     override fun setUpViewModelObserver() {
         supportViewModel.model.observe(this, Observer {
-            onUpdateUserInterface()
+            if (it != null) {
+                if (it == true) {
+                    activity.startNewActivity<SplashActivity>()
+                    activity?.finish()
+                }
+            }
         })
         supportViewModel.networkState?.observe(this, Observer {
             binding.stateLayout.setNetworkState(it)
@@ -143,6 +148,11 @@ class FragmentLogout : SupportFragment<Boolean, CrunchyCorePresenter, Boolean>()
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        onUpdateUserInterface()
+    }
+
     /**
      * Handles the updating of views, binding, creation or state change, depending on the context
      * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
@@ -150,12 +160,6 @@ class FragmentLogout : SupportFragment<Boolean, CrunchyCorePresenter, Boolean>()
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        if (supportViewModel.model.value != null) {
-            if (supportViewModel.model.value == true) {
-                activity.startNewActivity<SplashActivity>()
-                activity?.finish()
-            }
-        }
         binding.userIdEditText.setText(
             supportPresenter
                 .supportPreference

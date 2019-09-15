@@ -18,6 +18,7 @@ package co.anitrend.support.crunchyroll.data.util
 
 import android.content.Context
 import androidx.core.content.edit
+import co.anitrend.arch.extension.empty
 import co.anitrend.arch.extension.preference.SupportPreference
 
 class CrunchySettings(context: Context): SupportPreference(context) {
@@ -40,9 +41,29 @@ class CrunchySettings(context: Context): SupportPreference(context) {
             }
         }
 
+    var sessionId: String? = null
+        get() = sharedPreferences.getString(SESSION_ID, null)
+        set(value) {
+            field = value
+            sharedPreferences.edit(commit = true) {
+                putString(SESSION_ID, value)
+            }
+        }
+
+    var hasAccessToPremium: Boolean = false
+        get() = sharedPreferences.getBoolean(PREMIUM_ACCESS, false)
+        set(value) {
+            field = value
+            sharedPreferences.edit {
+                putBoolean(PREMIUM_ACCESS, value)
+            }
+        }
+
     companion object  {
         const val INVALID_USER_ID: Int = -1
         private const val AUTHENTICATED_USER = "_authenticatedUser"
         private const val IS_LIGHT_THEME = "_isLightTheme"
+        private const val SESSION_ID = "_sessionId"
+        private const val PREMIUM_ACCESS = "_premiumAccess"
     }
 }

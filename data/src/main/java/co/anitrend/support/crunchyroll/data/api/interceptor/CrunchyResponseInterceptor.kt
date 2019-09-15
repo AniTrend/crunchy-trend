@@ -41,14 +41,7 @@ class CrunchyResponseInterceptor(
 ) : Interceptor {
 
     private val json by lazy {
-        CrunchyConverterFactory.GSON_BUILDER
-            .addDeserializationExclusionStrategy(
-                object : ExclusionStrategy {
-                    override fun shouldSkipClass(clazz: Class<*>?) = false
-
-                    override fun shouldSkipField(f: FieldAttributes?) = f?.name == "data"
-                }
-        ).create()
+        CrunchyConverterFactory.GSON_BUILDER.create()
     }
 
     private val retryCount: AtomicInteger = AtomicInteger(0)

@@ -33,21 +33,21 @@ class SessionRepository(
     /**
      * Returns a session that can be used when the user is not authenticated
      */
-    override suspend fun getCoreSession(): Session? {
+    override fun getCoreSession(): Session? {
         return coreSource(null)
     }
 
     /**
      * Returns a session that behaves as a fallback when the unblock session fails
      */
-    override suspend fun getNormalSession(): Session? {
+    override fun getNormalSession(): Session? {
         return normalSource(null)
     }
 
     /**
      * Returns a session for the authenticated user
      */
-    override suspend fun getUnblockedSession(): Session? {
+    override fun getUnblockedSession(): Session? {
         return unblockedSource(null)
     }
 

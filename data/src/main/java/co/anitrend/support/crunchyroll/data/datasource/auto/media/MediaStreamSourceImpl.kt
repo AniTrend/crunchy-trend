@@ -17,12 +17,11 @@
 package co.anitrend.support.crunchyroll.data.datasource.auto.media
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyMediaEndpoint
 import co.anitrend.support.crunchyroll.data.arch.MediaFieldsContract
-import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
 import co.anitrend.support.crunchyroll.data.datasource.auto.media.contract.MediaStreamSource
+import co.anitrend.support.crunchyroll.data.mapper.media.MediaStreamResponseMapper
 import co.anitrend.support.crunchyroll.data.transformer.MediaStreamTransformer
 import co.anitrend.support.crunchyroll.domain.entities.query.media.MediaStreamQuery
 import co.anitrend.support.crunchyroll.domain.entities.result.media.MediaStream
@@ -30,7 +29,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class MediaStreamSourceImpl(
-    private val endpoint: CrunchyMediaEndpoint
+    private val endpoint: CrunchyMediaEndpoint,
+    private val responseMapper: MediaStreamResponseMapper
 ) : MediaStreamSource() {
 
     override fun getMediaStream(query: MediaStreamQuery): LiveData<List<MediaStream>?> {
@@ -44,9 +44,11 @@ class MediaStreamSourceImpl(
         }
 
         launch {
-            val result = CrunchyMapper(deferred, networkState)
+            val result = responseMapper(deferred, networkState)
 
-            observable.postValue(MediaStreamTransformer.transform(result))
+            observable.postValue(
+                MediaStreamTransformer.transform(result)
+            )
         }
 
         return observable

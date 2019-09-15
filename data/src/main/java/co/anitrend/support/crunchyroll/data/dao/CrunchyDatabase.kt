@@ -32,6 +32,7 @@ import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyRestrictionConv
 import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyThumbnailConverter
 import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyUserConverter
 import co.anitrend.support.crunchyroll.data.dao.migration.MIGRATION_6_7
+import co.anitrend.support.crunchyroll.data.dao.migration.MIGRATION_8_9
 import co.anitrend.support.crunchyroll.data.datasource.local.api.*
 import co.anitrend.support.crunchyroll.data.datasource.local.rss.CrunchyRssMediaDao
 import co.anitrend.support.crunchyroll.data.datasource.local.rss.CrunchyRssNewsDao
@@ -90,6 +91,7 @@ abstract class CrunchyDatabase: RoomDatabase() {
                 .addMigrations(MIGRATION_1_2)
                 .addMigrations(MIGRATION_2_4)
                 .addMigrations(MIGRATION_6_7)
+                .addMigrations(MIGRATION_8_9)
                 .build()
         }
     }

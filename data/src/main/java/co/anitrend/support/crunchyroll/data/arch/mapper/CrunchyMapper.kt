@@ -18,8 +18,9 @@ package co.anitrend.support.crunchyroll.data.arch.mapper
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingRequestHelper
+import co.anitrend.arch.data.common.ISupportPagingResponse
+import co.anitrend.arch.data.common.ISupportResponse
 import co.anitrend.arch.data.mapper.SupportResponseMapper
-import co.anitrend.arch.data.mapper.contract.ISupportResponseHelper
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.capitalizeWords
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyContainer
@@ -28,7 +29,8 @@ import retrofit2.Response
 import timber.log.Timber
 
 abstract class CrunchyMapper<S, D> : SupportResponseMapper<S, D>(),
-    ISupportResponseHelper<Deferred<Response<CrunchyContainer<S>>>> {
+    ISupportPagingResponse<Deferred<Response<CrunchyContainer<S>>>>,
+    ISupportResponse<Deferred<Response<CrunchyContainer<S>>>, D> {
 
     /**
      * Response handler for coroutine contexts which need to observe
@@ -81,64 +83,36 @@ abstract class CrunchyMapper<S, D> : SupportResponseMapper<S, D>(),
     override suspend fun invoke(
         resource: Deferred<Response<CrunchyContainer<S>>>,
         networkState: MutableLiveData<NetworkState>
-    ) {
+    ) : D? {
         val result = runCatching {
             val response = resource.await()
             if (response.isSuccessful) {
                 val responseBody = response.body()
                 if (responseBody?.error == false) {
-                    if (responseBody.data != null) {
+                    val result = if (responseBody.data != null) {
                         val mapped = onResponseMapFrom(responseBody.data)
                         onResponseDatabaseInsert(mapped)
-                    }
-                    NetworkState.Success
+                        mapped
+                    } else null
+                    networkState.postValue(NetworkState.Success)
+                    result
                 } else {
-                    NetworkState.Error(
-                        heading = responseBody?.code.capitalizeWords(),
-                        message = responseBody?.message
+                    networkState.postValue(
+                        NetworkState.Error(
+                            heading = responseBody?.code.capitalizeWords(),
+                            message = responseBody?.message
+                        )
                     )
+                    null
                 }
             } else {
-                NetworkState.Error(
-                    heading = "Network Error",
-                    message = response.message()
-                )
-            }
-        }
-
-        val state = result.getOrElse {
-            it.printStackTrace()
-            NetworkState.Error(
-                heading = "Internal Application Error",
-                message = it.message
-            )
-        }
-        networkState.postValue(state)
-    }
-
-    /**
-     * Response handler for coroutine contexts which need to observe [NetworkState]
-     *
-     * @param resource awaiting execution
-     */
-    override suspend fun invoke(resource: Deferred<Response<CrunchyContainer<S>>>): NetworkState {
-        val result = runCatching {
-            val response = resource.await()
-            if (response.isSuccessful) {
-                val responseBody = response.body()
-                return if (responseBody?.error == false) {
-                    NetworkState.Success
-                } else {
+                networkState.postValue(
                     NetworkState.Error(
-                        heading = responseBody?.code.capitalizeWords(),
-                        message = responseBody?.message
+                        heading = "Network Error",
+                        message = response.message()
                     )
-                }
-            } else {
-                return NetworkState.Error(
-                    heading = "Internal Application Error",
-                    message = response.message()
                 )
+                null
             }
         }
 
@@ -148,52 +122,7 @@ abstract class CrunchyMapper<S, D> : SupportResponseMapper<S, D>(),
                 heading = "Internal Application Error",
                 message = it.message
             )
-        }
-    }
-
-    companion object {
-
-        suspend operator fun <S> invoke(
-            resource: Deferred<Response<CrunchyContainer<S>>>,
-            networkState: MutableLiveData<NetworkState>
-        ): S? {
-            val result = runCatching {
-                val response = resource.await()
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    return if (responseBody?.error == false) {
-                        networkState.postValue(NetworkState.Success)
-                        responseBody.data
-                    } else {
-                        networkState.postValue(
-                            NetworkState.Error(
-                                heading = responseBody?.code.capitalizeWords(),
-                                message = responseBody?.message
-                            )
-                        )
-                        null
-                    }
-                } else {
-                    networkState.postValue(
-                        NetworkState.Error(
-                            heading = "Internal Application Error",
-                            message = response.message()
-                        )
-                    )
-                    null
-                }
-            }
-
-            return result.getOrElse {
-                it.printStackTrace()
-                networkState.postValue(
-                    NetworkState.Error(
-                        heading = "Internal Application Error",
-                        message = it.message
-                    )
-                )
-                null
-            }
+            null
         }
     }
 }

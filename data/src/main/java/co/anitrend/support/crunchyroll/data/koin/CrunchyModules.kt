@@ -36,6 +36,8 @@ import co.anitrend.support.crunchyroll.data.datasource.auto.session.CoreSessionS
 import co.anitrend.support.crunchyroll.data.datasource.auto.session.NormalSessionSourceImpl
 import co.anitrend.support.crunchyroll.data.datasource.auto.session.UnblockSessionSourceImpl
 import co.anitrend.support.crunchyroll.data.mapper.authentication.LoginResponseMapper
+import co.anitrend.support.crunchyroll.data.mapper.authentication.LogoutResponseMapper
+import co.anitrend.support.crunchyroll.data.mapper.media.MediaStreamResponseMapper
 import co.anitrend.support.crunchyroll.data.mapper.rss.MediaListingResponseMapper
 import co.anitrend.support.crunchyroll.data.mapper.rss.NewsResponseMapper
 import co.anitrend.support.crunchyroll.data.mapper.session.CoreSessionResponseMapper
@@ -82,7 +84,8 @@ private val networkModule = module {
         CrunchyAuthentication(
             connectivityHelper = get(),
             settings = get(),
-            repository = get<SessionRepository>(),
+            unblockSessionUseCase = get<UnblockSessionUseCaseImpl>(),
+            coreSessionUseCase = get<CoreSessionUseCaseImpl>(),
             sessionDao = get<CrunchyDatabase>().crunchySessionDao(),
             sessionCoreDao = get<CrunchyDatabase>().crunchySessionCoreDao()
         )
@@ -126,6 +129,12 @@ private val mapperModule = module {
             dao = get<CrunchyDatabase>().crunchySessionDao()
         )
     }
+    factory {
+        LogoutResponseMapper()
+    }
+    factory {
+        MediaStreamResponseMapper()
+    }
 }
 
 private val sourceModule = module {
@@ -140,37 +149,42 @@ private val sourceModule = module {
         MediaListingSourceImpl(
             responseMapper = get(),
             endpoint = CrunchyFeedEndpoint.create(),
-            dao = get<CrunchyDatabase>().crunchyRssMediaDao()
+            dao = get<CrunchyDatabase>().crunchyRssMediaDao(),
+            settings = get()
         )
     }
     factory {
         CoreSessionSourceImpl(
             dao = get<CrunchyDatabase>().crunchySessionCoreDao(),
             endpoint = CrunchySessionEndpoint.create(),
-            responseMapper = get()
+            responseMapper = get(),
+            settings = get()
         )
     }
     factory {
         NormalSessionSourceImpl(
-            dao = get<CrunchyDatabase>().crunchySessionDao(),
             endpoint = CrunchyAuthEndpoint.create(),
-            coreSessionDao = get<CrunchyDatabase>().crunchySessionDao(),
+            dao = get<CrunchyDatabase>().crunchySessionDao(),
+            coreSessionDao = get<CrunchyDatabase>().crunchySessionCoreDao(),
             loginDao = get<CrunchyDatabase>().crunchyLoginDao(),
-            responseMapper = get()
+            responseMapper = get(),
+            settings = get()
         )
     }
     factory {
         UnblockSessionSourceImpl(
             dao = get<CrunchyDatabase>().crunchySessionDao(),
             endpoint = CrunchySessionEndpoint.create(),
-            coreSessionDao = get<CrunchyDatabase>().crunchySessionDao(),
+            coreSessionDao = get<CrunchyDatabase>().crunchySessionCoreDao(),
             loginDao = get<CrunchyDatabase>().crunchyLoginDao(),
-            responseMapper = get()
+            responseMapper = get(),
+            settings = get()
         )
     }
     factory {
         MediaStreamSourceImpl(
-            endpoint = CrunchyMediaEndpoint.create()
+            endpoint = CrunchyMediaEndpoint.create(),
+            responseMapper = get()
         )
     }
     factory {
@@ -178,7 +192,7 @@ private val sourceModule = module {
             dao = get<CrunchyDatabase>().crunchyLoginDao(),
             endpoint = CrunchyAuthEndpoint.create(),
             responseMapper = get(),
-            authenticator = get()
+            settings = get()
         )
     }
     factory {
@@ -187,6 +201,7 @@ private val sourceModule = module {
             sessionDao = get<CrunchyDatabase>().crunchySessionDao(),
             dao = get<CrunchyDatabase>().crunchyLoginDao(),
             endpoint = CrunchyAuthEndpoint.create(),
+            responseMapper = get(),
             settings = get()
         )
     }
@@ -251,17 +266,17 @@ private val useCaseModule = module {
     }
     factory {
         CoreSessionUseCaseImpl(
-            repository = get()
+            repository = get<SessionRepository>()
         )
     }
     factory {
         NormalSessionUseCaseImpl(
-            repository = get()
+            repository = get<SessionRepository>()
         )
     }
     factory {
         UnblockSessionUseCaseImpl(
-            repository = get()
+            repository = get<SessionRepository>()
         )
     }
 }

@@ -60,9 +60,8 @@ class FragmentLogin : SupportFragment<User?, CrunchyCorePresenter, User?>() {
      */
     override fun setUpViewModelObserver() {
         supportViewModel.model.observe(this, Observer {
-            onUpdateUserInterface()
-            if (it == null)
-                Timber.tag(moduleTag).e("Failed login attempt")
+            if (it != null)
+                onUpdateUserInterface()
         })
         supportViewModel.networkState?.observe(this, Observer {
             supportStateLayout.setNetworkState(it)
@@ -159,8 +158,9 @@ class FragmentLogin : SupportFragment<User?, CrunchyCorePresenter, User?>() {
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        supportPresenter.supportPreference.isAuthenticated = true
         supportPresenter.onLoginStateChange(supportViewModel.model.value)
+        activity?.startNewActivity<MainActivity>()
+        activity?.finish()
     }
 
     /**

@@ -23,6 +23,7 @@ import androidx.annotation.StringDef
     ResponseStatusContract.BAD_REQUEST,
     ResponseStatusContract.BAD_SESSION,
     ResponseStatusContract.OBJECT_NOT_FOUND,
+    ResponseStatusContract.FORBIDDEN,
     ResponseStatusContract.OK
 )
 @Target(AnnotationTarget.TYPEALIAS)
@@ -39,11 +40,12 @@ annotation class ResponseStatusContract {
 @ResponseStatusContract
 typealias ResponseStatus = String
 
-@StringDef(AccessTypeContract.PREMIUM)
+@StringDef(AccessTypeContract.PREMIUM, AccessTypeContract.PREMIUM_PLUS)
 @Target(AnnotationTarget.TYPEALIAS)
 annotation class AccessTypeContract {
     companion object {
         const val PREMIUM = "premium"
+        const val PREMIUM_PLUS = "premium_plus"
     }
 }
 
@@ -53,13 +55,15 @@ typealias AccessType = String
 
 @StringDef(
     CrunchyMediaTypeContract.ANIME,
-    CrunchyMediaTypeContract.DRAMA
+    CrunchyMediaTypeContract.DRAMA,
+    CrunchyMediaTypeContract.MANGA
 )
 @Target(AnnotationTarget.TYPEALIAS)
 annotation class CrunchyMediaTypeContract {
     companion object {
         const val ANIME = "anime"
         const val DRAMA = "drama"
+        const val MANGA = "manga"
     }
 }
 

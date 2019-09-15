@@ -20,25 +20,33 @@ import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchySessionEndpoint
 import co.anitrend.support.crunchyroll.data.datasource.auto.session.contract.SessionSource
 import co.anitrend.support.crunchyroll.data.datasource.local.api.CrunchyLoginDao
+import co.anitrend.support.crunchyroll.data.datasource.local.api.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.datasource.local.api.CrunchySessionDao
 import co.anitrend.support.crunchyroll.data.mapper.session.SessionResponseMapper
 import co.anitrend.support.crunchyroll.data.transformer.SessionTransformer
+import co.anitrend.support.crunchyroll.data.util.CrunchySettings
 import co.anitrend.support.crunchyroll.domain.entities.query.session.UnBlockedSessionQuery
 import co.anitrend.support.crunchyroll.domain.entities.result.session.Session
 import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class UnblockSessionSourceImpl(
     private val dao: CrunchySessionDao,
-    private val endpoint: CrunchySessionEndpoint,
-    private val coreSessionDao: CrunchySessionDao,
     private val loginDao: CrunchyLoginDao,
+    private val settings: CrunchySettings,
+    private val endpoint: CrunchySessionEndpoint,
+    private val coreSessionDao: CrunchySessionCoreDao,
     private val responseMapper: SessionResponseMapper
 ) : SessionSource<Nothing?>() {
 
-    private suspend fun buildQuery(): UnBlockedSessionQuery? {
-        val coreSession = coreSessionDao.findLatest()
-        val loginSession = loginDao.findLatest()
+    private fun buildQuery(): UnBlockedSessionQuery? {
+        val coreSession = coreSessionDao.findBySessionId(
+            settings.sessionId
+        )
+        val loginSession = loginDao.findByUserId(
+            settings.authenticatedUserId
+        )
 
         if (coreSession != null && loginSession != null) {
             return UnBlockedSessionQuery(
@@ -62,13 +70,11 @@ class UnblockSessionSourceImpl(
      * Handles the requesting data from a the network source and returns
      * [NetworkState] to the caller after execution
      */
-    override suspend fun invoke(param: Nothing?): Session? {
+    override fun invoke(param: Nothing?): Session? {
         super.invoke(param)
         networkState.postValue(NetworkState.Loading)
 
-        val query = buildQuery()
-
-        if (query != null) {
+        return buildQuery()?.let { query ->
             val deferred = async {
                 endpoint.startUnblockedSession(
                     auth = query.auth,
@@ -76,14 +82,14 @@ class UnblockSessionSourceImpl(
                 )
             }
 
-            responseMapper(deferred, networkState)
+            val session = runBlocking {
+                responseMapper(deferred, networkState)
+            }
+            if (session != null)
+                settings.sessionId = session.session_id
 
-            val session = dao.findLatest()
-
-            return SessionTransformer.transform(session)
+            SessionTransformer.transform(session)
         }
-
-        return null
     }
 
     /**

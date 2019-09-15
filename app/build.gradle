@@ -90,9 +90,6 @@ dependencies {
     /** Exo media */
     implementation "com.devbrackets.android:exomedia:$exoMedia"
 
-    /** Three Ten ABP */
-    implementation "com.jakewharton.threetenabp:threetenabp:$threeTenABP"
-
     /** Testing-only dependencies */
     testImplementation "org.koin:koin-test:$koin"
 }

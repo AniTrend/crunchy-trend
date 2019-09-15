@@ -19,8 +19,8 @@ ext {
     targetSdk = 29
     minSdk = 21
 
-    versionCode = 25
-    versionName = '0.2.2-alpha01'
+    versionCode = 26
+    versionName = '0.2.3-alpha01'
 
     coil = '0.7.0'
     glide = '4.9.0'
@@ -61,12 +61,12 @@ ext {
     timber = '4.7.1'
 
     smartTab = '2.0.0'
-    tapTarget = '2.15.0'
+    tapTarget = '3.0.0'
     okHttpLogger = '4.0.1'
 
     exoMedia = '4.3.0'
     markwon = '4.1.0'
     exo = '2.10.3'
 
-    threeTenABP = '1.2.1'
+    threetenabp = '1.2.1'
 }

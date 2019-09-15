@@ -16,17 +16,18 @@
 
 package co.anitrend.support.crunchyroll.data.datasource.auto.session.contract
 
+import co.anitrend.arch.data.source.core.SupportCoreDataSource
 import co.anitrend.arch.data.source.coroutine.SupportCoroutineDataSource
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.support.crunchyroll.domain.entities.result.session.Session
 
-abstract class SessionSource<P> : SupportCoroutineDataSource<P, Session?>() {
+abstract class SessionSource<P> : SupportCoreDataSource<P>() {
 
     /**
      * Handles the requesting data from a the network source and returns
      * [NetworkState] to the caller after execution
      */
-    open suspend operator fun invoke(param: P): Session? {
+    open operator fun invoke(param: P): Session? {
         networkState.postValue(NetworkState.Loading)
         retry = { invoke(param) }
         return null

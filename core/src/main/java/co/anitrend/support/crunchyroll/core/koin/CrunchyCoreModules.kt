@@ -31,7 +31,9 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 
 private val coreModule = module {
     single<ISupportDateHelper> {
-        CrunchyDateHelper()
+        CrunchyDateHelper(
+            context = androidContext()
+        )
     }
 }
 

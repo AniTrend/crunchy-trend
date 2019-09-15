@@ -29,27 +29,16 @@ interface CrunchyLoginDao : ISupportQuery<CrunchyLogin> {
     @Query("delete from CrunchyLogin")
     suspend fun clearTable()
 
-
-    @Query("select * from CrunchyLogin limit 1")
-    suspend fun findLatest(): CrunchyLogin?
-
-    @Query("select * from CrunchyLogin limit 1")
-    fun findLatestX(): LiveData<CrunchyLogin?>
-
-
-    @Query("select * from CrunchyLogin where email = :account limit 1")
-    suspend fun findLatestByAccount(account: String): CrunchyLogin?
-
-    @Query("select * from CrunchyLogin where email = :account limit 1")
+    @Query("select * from CrunchyLogin where username = :account")
     fun findLatestByAccountX(account: String): LiveData<CrunchyLogin?>
 
 
-    @Query("select * from CrunchyLogin  where user_id = :userId limit 1")
-    suspend fun findByUserId(
+    @Query("select * from CrunchyLogin  where user_id = :userId")
+    fun findByUserId(
         userId: Int
     ): CrunchyLogin?
 
-    @Query("select * from CrunchyLogin where user_id = :userId limit 1")
+    @Query("select * from CrunchyLogin where user_id = :userId")
     fun findByUserIdX(
         userId: Int
     ): LiveData<CrunchyLogin?>

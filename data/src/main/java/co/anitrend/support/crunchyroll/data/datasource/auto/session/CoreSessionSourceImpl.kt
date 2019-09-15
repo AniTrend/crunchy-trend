@@ -22,10 +22,13 @@ import co.anitrend.support.crunchyroll.data.datasource.auto.session.contract.Ses
 import co.anitrend.support.crunchyroll.data.datasource.local.api.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.mapper.session.CoreSessionResponseMapper
 import co.anitrend.support.crunchyroll.data.transformer.CoreSessionTransformer
+import co.anitrend.support.crunchyroll.data.util.CrunchySettings
 import co.anitrend.support.crunchyroll.domain.entities.result.session.Session
 import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 
 class CoreSessionSourceImpl(
+    private val settings: CrunchySettings,
     private val dao: CrunchySessionCoreDao,
     private val endpoint: CrunchySessionEndpoint,
     private val responseMapper: CoreSessionResponseMapper
@@ -37,7 +40,7 @@ class CoreSessionSourceImpl(
      *
      * In this context the super.invoke() method will allow a retry action to be set
      */
-    override suspend fun invoke(param: Nothing?): Session? {
+    override fun invoke(param: Nothing?): Session? {
         super.invoke(param)
         networkState.postValue(NetworkState.Loading)
         
@@ -45,9 +48,11 @@ class CoreSessionSourceImpl(
             endpoint.startCoreSession()
         }
 
-        responseMapper(deferred, networkState)
-
-        val session = dao.findLatest()
+        val session = runBlocking {
+            responseMapper(deferred, networkState)
+        }
+        if (session != null)
+            settings.sessionId = session.session_id
 
         return CoreSessionTransformer.transform(session)
     }

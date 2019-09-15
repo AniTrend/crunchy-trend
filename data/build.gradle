@@ -88,5 +88,5 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit"
     implementation "com.squareup.okhttp3:logging-interceptor:$okHttpLogger"
 
-    implementation "com.jakewharton.threetenabp:threetenabp:$threeTenABP"
+    implementation "com.jakewharton.threetenabp:threetenabp:$threetenabp"
 }

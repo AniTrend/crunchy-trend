@@ -20,7 +20,7 @@ import co.anitrend.support.crunchyroll.domain.entities.result.session.Session
 import co.anitrend.support.crunchyroll.domain.repositories.session.ISessionRepository
 
 abstract class NormalSessionUseCase(protected val repository: ISessionRepository) {
-    suspend fun invoke(): Session? {
+    operator fun invoke(): Session? {
         return repository.getNormalSession()
     }
 }

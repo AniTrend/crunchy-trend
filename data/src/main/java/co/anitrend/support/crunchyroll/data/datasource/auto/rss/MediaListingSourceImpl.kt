@@ -28,6 +28,7 @@ import co.anitrend.support.crunchyroll.data.datasource.auto.rss.contract.MediaLi
 import co.anitrend.support.crunchyroll.data.datasource.local.rss.CrunchyRssMediaDao
 import co.anitrend.support.crunchyroll.data.mapper.rss.MediaListingResponseMapper
 import co.anitrend.support.crunchyroll.data.transformer.MediaListingTransformer
+import co.anitrend.support.crunchyroll.data.util.CrunchySettings
 import co.anitrend.support.crunchyroll.domain.entities.query.rss.RssQuery
 import co.anitrend.support.crunchyroll.domain.entities.result.rss.MediaListing
 import kotlinx.coroutines.async
@@ -37,7 +38,8 @@ import java.util.*
 class MediaListingSourceImpl(
     private val responseMapper: MediaListingResponseMapper,
     private val endpoint: CrunchyFeedEndpoint,
-    private val dao: CrunchyRssMediaDao
+    private val dao: CrunchyRssMediaDao,
+    private val settings: CrunchySettings
 ) : MediaListingSource() {
 
     private lateinit var rssQuery: RssQuery
@@ -55,10 +57,11 @@ class MediaListingSourceImpl(
                 rssQuery = parameter
 
                 val locale = Locale.getDefault()
+                val hasPremiumAccess = settings.hasAccessToPremium
                 val localSource = dao.findByAllFactory()
 
                 val result = localSource.map {
-                    MediaListingTransformer.transform(it, locale)
+                    MediaListingTransformer.transform(it, locale, hasPremiumAccess)
                 }
 
                 return result.toLiveData(

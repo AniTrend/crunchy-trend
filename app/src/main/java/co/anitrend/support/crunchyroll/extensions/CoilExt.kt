@@ -39,8 +39,12 @@ fun AppCompatImageView.setImageUrl(url: String?) = url?.also {
 fun AppCompatImageView.setImageUrl(listing: MediaListing?) = listing?.also {
     load(it.episodeThumbnail) {
         scale(Scale.FIT)
+        val comparisonTime = if (listing.isPremiumEnabled)
+            it.premiumAvailableTime
+        else it.freeAvailableTime
+
         val currentTime = System.currentTimeMillis()
-        if (it.freeAvailableTime > currentTime)
+        if (comparisonTime > currentTime)
             transformations(
                 //BlurTransformation(context),
                 GrayscaleTransformation()
