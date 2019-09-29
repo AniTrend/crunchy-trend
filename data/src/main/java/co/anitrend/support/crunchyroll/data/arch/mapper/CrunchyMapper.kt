@@ -67,10 +67,7 @@ abstract class CrunchyMapper<S, D> : SupportResponseMapper<S, D>(),
         return result.getOrElse {
             it.printStackTrace()
             Timber.tag(moduleTag).e(it)
-            NetworkState.Error(
-                heading = "Internal Application Error",
-                message = it.message
-            )
+            pagingRequestHelper.recordFailure(it)
         }
     }
 
@@ -118,9 +115,11 @@ abstract class CrunchyMapper<S, D> : SupportResponseMapper<S, D>(),
 
         return result.getOrElse {
             it.printStackTrace()
-            NetworkState.Error(
-                heading = "Internal Application Error",
-                message = it.message
+            networkState.postValue(
+                NetworkState.Error(
+                    heading = "Internal Application Error",
+                    message = it.message
+                )
             )
             null
         }
