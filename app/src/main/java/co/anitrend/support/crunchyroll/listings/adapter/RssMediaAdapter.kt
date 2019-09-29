@@ -19,10 +19,11 @@ package co.anitrend.support.crunchyroll.listings.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssMedia
 import co.anitrend.support.crunchyroll.databinding.AdapterMediaFeedBinding
 import co.anitrend.arch.core.presenter.SupportPresenter
-import co.anitrend.arch.ui.recycler.adapter.SupportViewAdapter
+import co.anitrend.arch.ui.recycler.adapter.SupportPagedListAdapter
 import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.support.crunchyroll.domain.entities.result.rss.MediaListing
@@ -30,7 +31,18 @@ import co.anitrend.support.crunchyroll.domain.entities.result.rss.MediaListing
 class RssMediaAdapter(
     presenter: SupportPresenter<*>,
     private val clickListener: ItemClickListener<MediaListing>
-) : SupportViewAdapter<MediaListing>(presenter) {
+) : SupportPagedListAdapter<MediaListing>(presenter) {
+
+    /**
+     * Used to get stable ids for [androidx.recyclerview.widget.RecyclerView.Adapter] but only if
+     * [androidx.recyclerview.widget.RecyclerView.Adapter.setHasStableIds] is set to true.
+     *
+     * The identifiable id of each item should unique, and if non exists
+     * then this function should return [androidx.recyclerview.widget.RecyclerView.NO_ID]
+     */
+    override fun getStableIdFor(item: MediaListing?): Long {
+        return item?.id?.toLong() ?: RecyclerView.NO_ID
+    }
 
     /**
      * Should provide the required view holder, this function is a substitute for [onCreateViewHolder] which now

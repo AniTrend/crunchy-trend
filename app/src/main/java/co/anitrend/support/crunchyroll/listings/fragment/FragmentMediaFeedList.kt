@@ -27,6 +27,7 @@ import co.anitrend.support.crunchyroll.listings.adapter.RssMediaAdapter
 import co.anitrend.arch.core.viewmodel.SupportPagingViewModel
 import co.anitrend.arch.extension.startNewActivity
 import co.anitrend.arch.ui.fragment.SupportFragmentList
+import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.core.viewmodel.MediaListingViewModel
@@ -38,7 +39,7 @@ import co.anitrend.support.crunchyroll.stream.fragment.FragmentMediaStream
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FragmentMediaFeedList : SupportFragmentList<MediaListing, CrunchyCorePresenter, PagedList<MediaListing>>() {
+class FragmentMediaFeedList : SupportFragmentPagedList<MediaListing, CrunchyCorePresenter, PagedList<MediaListing>>() {
 
     override val supportStateConfiguration = SupportStateLayoutConfiguration(
         loadingDrawable = R.drawable.ic_crunchyroll,

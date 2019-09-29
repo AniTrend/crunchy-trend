@@ -21,6 +21,7 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import co.anitrend.arch.ui.fragment.SupportFragmentList
+import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.R
@@ -33,7 +34,7 @@ import co.anitrend.support.crunchyroll.news.adapter.RssNewsAdapter
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FragmentFeedNewsList : SupportFragmentList<News, CrunchyCorePresenter, PagedList<News>>() {
+class FragmentFeedNewsList : SupportFragmentPagedList<News, CrunchyCorePresenter, PagedList<News>>() {
 
     override val supportStateConfiguration = SupportStateLayoutConfiguration(
         loadingDrawable = R.drawable.ic_crunchyroll,
