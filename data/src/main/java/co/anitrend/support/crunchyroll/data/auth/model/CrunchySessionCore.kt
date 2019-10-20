@@ -17,7 +17,6 @@
 package co.anitrend.support.crunchyroll.data.auth.model
 
 import androidx.room.Entity
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import co.anitrend.support.crunchyroll.data.auth.model.contract.ICrunchySession
 

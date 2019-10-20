@@ -18,17 +18,17 @@
 
 package co.anitrend.support.crunchyroll.data.api.converter
 
-import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import co.anitrend.support.crunchyroll.data.api.contract.JSON
 import co.anitrend.support.crunchyroll.data.api.contract.XML
-import org.simpleframework.xml.convert.AnnotationStrategy
-import retrofit2.converter.gson.GsonConverterFactory
-import org.simpleframework.xml.core.Persister
 import com.google.gson.GsonBuilder
-import java.lang.reflect.Type
 import okhttp3.ResponseBody
+import org.simpleframework.xml.convert.AnnotationStrategy
+import org.simpleframework.xml.core.Persister
 import retrofit2.Converter
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.simplexml.SimpleXmlConverterFactory
+import java.lang.reflect.Type
 
 
 class CrunchyConverterFactory private constructor(): Converter.Factory() {

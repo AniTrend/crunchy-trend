@@ -19,7 +19,6 @@ package co.anitrend.support.crunchyroll.data.model.rss.channel
 import co.anitrend.support.crunchyroll.data.arch.RCF822Date
 import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssNews
 import co.anitrend.support.crunchyroll.data.model.rss.contract.ICrunchyRssChannel
-import org.koin.core.qualifier.named
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.ElementList
 import org.simpleframework.xml.Root

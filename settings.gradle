@@ -3,9 +3,11 @@ include ':app',
         ':support-core',
         ':support-data',
         ':support-domain',
+        ':support-theme',
         ':core', ':data', ':support-ui', ':domain'
 project(':support-ext').projectDir = new File('support-app/support-ext')
 project(':support-core').projectDir = new File('support-app/support-core')
 project(':support-domain').projectDir = new File('support-app/support-domain')
 project(':support-data').projectDir = new File('support-app/support-data')
+project(':support-theme').projectDir = new File('support-app/support-theme')
 project(':support-ui').projectDir = new File('support-app/support-ui')

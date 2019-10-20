@@ -38,7 +38,7 @@ class UnblockSessionSourceImpl(
     private val endpoint: CrunchySessionEndpoint,
     private val coreSessionDao: CrunchySessionCoreDao,
     private val responseMapper: SessionResponseMapper
-) : SessionSource<Nothing?>() {
+) : SessionSource() {
 
     private fun buildQuery(): UnBlockedSessionQuery? {
         val coreSession = coreSessionDao.findBySessionId(
@@ -70,8 +70,8 @@ class UnblockSessionSourceImpl(
      * Handles the requesting data from a the network source and returns
      * [NetworkState] to the caller after execution
      */
-    override fun invoke(param: Nothing?): Session? {
-        super.invoke(param)
+    override fun invoke(): Session? {
+        super.invoke()
         networkState.postValue(NetworkState.Loading)
 
         return buildQuery()?.let { query ->

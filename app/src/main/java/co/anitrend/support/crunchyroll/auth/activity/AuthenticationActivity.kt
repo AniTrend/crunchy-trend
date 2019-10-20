@@ -20,11 +20,11 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import co.anitrend.support.crunchyroll.R
+import co.anitrend.support.crunchyroll.auth.fragment.FragmentLogin
+import co.anitrend.support.crunchyroll.auth.fragment.FragmentLogout
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.ui.contract.CrunchyActivity
-import co.anitrend.support.crunchyroll.auth.fragment.FragmentLogin
 import com.google.android.material.appbar.MaterialToolbar
-import co.anitrend.support.crunchyroll.auth.fragment.FragmentLogout
 import org.koin.android.ext.android.inject
 
 class AuthenticationActivity : CrunchyActivity<Nothing, CrunchyCorePresenter>() {

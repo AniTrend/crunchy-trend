@@ -19,7 +19,6 @@ package co.anitrend.support.crunchyroll.data.usecase.rss
 import androidx.paging.PagedList
 import co.anitrend.arch.data.model.UserInterfaceState
 import co.anitrend.support.crunchyroll.data.repository.rss.NewsRepository
-import co.anitrend.support.crunchyroll.domain.entities.query.rss.RssQuery
 import co.anitrend.support.crunchyroll.domain.entities.result.rss.News
 import co.anitrend.support.crunchyroll.domain.interactors.rss.NewsUseCase
 

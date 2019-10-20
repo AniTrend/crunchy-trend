@@ -24,8 +24,6 @@ import co.anitrend.support.crunchyroll.data.model.rss.contract.IRssCopyright
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.ElementList
 import org.simpleframework.xml.Root
-import java.util.*
-import java.util.concurrent.TimeUnit
 
 @Entity
 @Root(name = "item", strict = false)

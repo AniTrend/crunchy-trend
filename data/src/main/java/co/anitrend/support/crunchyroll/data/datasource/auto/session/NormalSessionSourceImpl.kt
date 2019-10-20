@@ -18,7 +18,6 @@ package co.anitrend.support.crunchyroll.data.datasource.auto.session
 
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyAuthEndpoint
-import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchySessionEndpoint
 import co.anitrend.support.crunchyroll.data.datasource.auto.session.contract.SessionSource
 import co.anitrend.support.crunchyroll.data.datasource.local.api.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.datasource.local.api.CrunchySessionCoreDao
@@ -26,13 +25,10 @@ import co.anitrend.support.crunchyroll.data.datasource.local.api.CrunchySessionD
 import co.anitrend.support.crunchyroll.data.mapper.session.SessionResponseMapper
 import co.anitrend.support.crunchyroll.data.transformer.SessionTransformer
 import co.anitrend.support.crunchyroll.data.util.CrunchySettings
-import co.anitrend.support.crunchyroll.data.util.extension.iso8601ToUnixTime
 import co.anitrend.support.crunchyroll.domain.entities.query.session.NormalSessionQuery
-import co.anitrend.support.crunchyroll.domain.entities.query.session.UnBlockedSessionQuery
 import co.anitrend.support.crunchyroll.domain.entities.result.session.Session
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
-import org.threeten.bp.Instant
 import timber.log.Timber
 
 class NormalSessionSourceImpl(
@@ -42,7 +38,7 @@ class NormalSessionSourceImpl(
     private val endpoint: CrunchyAuthEndpoint,
     private val coreSessionDao: CrunchySessionCoreDao,
     private val responseMapper: SessionResponseMapper
-) : SessionSource<Nothing?>() {
+) : SessionSource() {
 
     private fun buildQuery(): NormalSessionQuery? {
         val coreSession = coreSessionDao.findBySessionId(
@@ -75,8 +71,8 @@ class NormalSessionSourceImpl(
      * Handles the requesting data from a the network source and returns
      * [NetworkState] to the caller after execution
      */
-    override fun invoke(param: Nothing?): Session? {
-        super.invoke(param)
+    override fun invoke(): Session? {
+        super.invoke()
         networkState.postValue(NetworkState.Loading)
 
         return buildQuery()?.let { query ->

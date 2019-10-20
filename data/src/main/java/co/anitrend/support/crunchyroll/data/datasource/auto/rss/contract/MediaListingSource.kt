@@ -22,9 +22,7 @@ import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.data.source.paging.SupportPagingDataSource
 import co.anitrend.support.crunchyroll.domain.entities.query.rss.RssQuery
 import co.anitrend.support.crunchyroll.domain.entities.result.rss.MediaListing
-import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 abstract class MediaListingSource : SupportPagingDataSource<MediaListing>() {
 

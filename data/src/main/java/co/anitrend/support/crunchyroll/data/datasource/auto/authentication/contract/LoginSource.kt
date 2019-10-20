@@ -17,15 +17,12 @@
 package co.anitrend.support.crunchyroll.data.datasource.auto.authentication.contract
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.data.source.core.SupportCoreDataSource
-import co.anitrend.arch.data.source.coroutine.SupportCoroutineDataSource
-import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.support.crunchyroll.domain.entities.query.authentication.LoginQuery
 import co.anitrend.support.crunchyroll.domain.entities.result.user.User
 
-abstract class LoginSource : SupportCoreDataSource<LoginQuery>() {
+abstract class LoginSource : SupportCoreDataSource() {
 
     protected abstract val observable: ISourceObservable<LoginQuery, User?>
     abstract fun loginUser(query: LoginQuery): LiveData<User?>

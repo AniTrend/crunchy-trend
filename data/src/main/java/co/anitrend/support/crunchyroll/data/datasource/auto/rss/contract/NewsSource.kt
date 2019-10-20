@@ -23,7 +23,6 @@ import co.anitrend.arch.data.source.paging.SupportPagingDataSource
 import co.anitrend.support.crunchyroll.domain.entities.query.rss.RssQuery
 import co.anitrend.support.crunchyroll.domain.entities.result.rss.News
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 abstract class NewsSource : SupportPagingDataSource<News>() {
 

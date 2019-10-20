@@ -16,7 +16,10 @@
 
 package co.anitrend.support.crunchyroll.data.model.series
 
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Fts4
+import androidx.room.PrimaryKey
 import co.anitrend.support.crunchyroll.data.arch.CrunchyMediaType
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyImageSet
 import co.anitrend.support.crunchyroll.data.model.series.contract.ICrunchySeries

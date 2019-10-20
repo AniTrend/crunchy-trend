@@ -18,8 +18,8 @@ package co.anitrend.support.crunchyroll.data.model.core
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import co.anitrend.support.crunchyroll.data.model.series.CrunchySeries
 import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
+import co.anitrend.support.crunchyroll.data.model.series.CrunchySeries
 
 @Entity
 data class CrunchyQueueEntry(

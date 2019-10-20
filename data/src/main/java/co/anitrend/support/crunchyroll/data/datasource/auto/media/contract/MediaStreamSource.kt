@@ -22,7 +22,7 @@ import co.anitrend.arch.data.source.core.SupportCoreDataSource
 import co.anitrend.support.crunchyroll.domain.entities.query.media.MediaStreamQuery
 import co.anitrend.support.crunchyroll.domain.entities.result.media.MediaStream
 
-abstract class MediaStreamSource : SupportCoreDataSource<MediaStreamQuery>() {
+abstract class MediaStreamSource : SupportCoreDataSource() {
 
     protected val observable = MutableLiveData<List<MediaStream>?>()
     abstract fun getMediaStream(query: MediaStreamQuery): LiveData<List<MediaStream>?>

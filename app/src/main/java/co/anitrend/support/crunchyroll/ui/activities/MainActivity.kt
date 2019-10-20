@@ -23,20 +23,20 @@ import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.fragment.app.commit
-import co.anitrend.support.crunchyroll.R
-import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.ui.contract.CrunchyActivity
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.navigation.NavigationView
 import co.anitrend.arch.core.viewmodel.SupportPagingViewModel
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.startNewActivity
 import co.anitrend.arch.ui.activity.SupportActivity
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.arch.ui.util.SupportUiKeyStore
+import co.anitrend.support.crunchyroll.R
 import co.anitrend.support.crunchyroll.auth.activity.AuthenticationActivity
-import co.anitrend.support.crunchyroll.news.fragment.FragmentFeedNewsList
+import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.listings.fragment.FragmentMediaFeedList
+import co.anitrend.support.crunchyroll.news.fragment.FragmentFeedNewsList
+import co.anitrend.support.crunchyroll.ui.contract.CrunchyActivity
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
 

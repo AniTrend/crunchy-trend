@@ -26,8 +26,8 @@ import co.anitrend.support.crunchyroll.data.usecase.rss.MediaListingUseCaseImpl
 import co.anitrend.support.crunchyroll.data.usecase.rss.NewsUseCaseImpl
 import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper
 import org.koin.android.ext.koin.androidContext
-import org.koin.dsl.module
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.dsl.module
 
 private val coreModule = module {
     single<ISupportDateHelper> {

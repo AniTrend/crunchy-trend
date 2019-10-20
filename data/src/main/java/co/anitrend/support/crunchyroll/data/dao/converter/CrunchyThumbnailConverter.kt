@@ -17,11 +17,10 @@
 package co.anitrend.support.crunchyroll.data.dao.converter
 
 import androidx.room.TypeConverter
-import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory.Companion.GSON_BUILDER
-import co.anitrend.support.crunchyroll.data.model.rss.MediaThumbnail
-import com.google.gson.reflect.TypeToken
 import co.anitrend.arch.data.dao.RoomConverter
+import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory.Companion.GSON_BUILDER
 import co.anitrend.support.crunchyroll.data.extension.typeTokenOf
+import co.anitrend.support.crunchyroll.data.model.rss.MediaThumbnail
 
 class CrunchyThumbnailConverter : RoomConverter<List<MediaThumbnail>> {
 

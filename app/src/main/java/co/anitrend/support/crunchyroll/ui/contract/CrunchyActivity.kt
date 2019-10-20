@@ -17,10 +17,10 @@
 package co.anitrend.support.crunchyroll.ui.contract
 
 import androidx.appcompat.app.AppCompatDelegate
-import co.anitrend.support.crunchyroll.App
-import co.anitrend.support.crunchyroll.data.util.CrunchySettings
 import co.anitrend.arch.core.presenter.SupportPresenter
 import co.anitrend.arch.ui.activity.SupportActivity
+import co.anitrend.support.crunchyroll.App
+import co.anitrend.support.crunchyroll.data.util.CrunchySettings
 
 abstract class CrunchyActivity<M, P : SupportPresenter<CrunchySettings>> : SupportActivity<M, P>() {
 

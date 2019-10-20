@@ -17,7 +17,7 @@
 package co.anitrend.support.crunchyroll.data.auth
 
 import co.anitrend.arch.data.auth.contract.ISupportAuthentication
-import co.anitrend.arch.extension.util.SupportConnectivityHelper
+import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.datasource.local.api.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.datasource.local.api.CrunchySessionDao
 import co.anitrend.support.crunchyroll.data.extension.getCrunchyLocale
@@ -31,7 +31,7 @@ import okhttp3.Request
 import timber.log.Timber
 
 class CrunchyAuthentication(
-    private val connectivityHelper: SupportConnectivityHelper,
+    private val connectivityHelper: SupportConnectivity,
     private val coreSessionUseCase: CoreSessionUseCase,
     private val unblockSessionUseCase: UnblockSessionUseCase,
     private val sessionDao: CrunchySessionDao,

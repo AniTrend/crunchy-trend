@@ -17,7 +17,6 @@
 package co.anitrend.support.crunchyroll.domain.interactors.authentication
 
 import co.anitrend.arch.domain.common.IUserInterfaceState
-import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.domain.usecases.ISupportUseCase
 import co.anitrend.support.crunchyroll.domain.repositories.authentication.ILogoutRepository
 

@@ -17,7 +17,6 @@
 package co.anitrend.support.crunchyroll.data.datasource.auto.rss
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import androidx.paging.PagedList
 import androidx.paging.PagingRequestHelper
 import androidx.paging.toLiveData
@@ -32,7 +31,6 @@ import co.anitrend.support.crunchyroll.data.util.CrunchySettings
 import co.anitrend.support.crunchyroll.domain.entities.query.rss.RssQuery
 import co.anitrend.support.crunchyroll.domain.entities.result.rss.MediaListing
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import java.util.*
 
 class MediaListingSourceImpl(

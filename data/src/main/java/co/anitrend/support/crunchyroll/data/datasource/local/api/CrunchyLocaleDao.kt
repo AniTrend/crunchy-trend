@@ -19,8 +19,8 @@ package co.anitrend.support.crunchyroll.data.datasource.local.api
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
-import co.anitrend.support.crunchyroll.data.model.core.CrunchyLocale
 import co.anitrend.arch.data.dao.ISupportQuery
+import co.anitrend.support.crunchyroll.data.model.core.CrunchyLocale
 
 @Dao
 interface CrunchyLocaleDao : ISupportQuery<CrunchyLocale> {

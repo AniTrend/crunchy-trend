@@ -36,7 +36,6 @@ import co.anitrend.support.crunchyroll.domain.entities.result.user.User
 import co.anitrend.support.crunchyroll.ui.activities.MainActivity
 import com.google.android.material.button.MaterialButton
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 class FragmentLogin : SupportFragment<User?, CrunchyCorePresenter, User?>() {
 

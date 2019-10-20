@@ -17,38 +17,35 @@
 package co.anitrend.support.crunchyroll.data.repository.session
 
 import co.anitrend.arch.data.repository.SupportRepository
-import co.anitrend.support.crunchyroll.data.datasource.auto.session.CoreSessionSourceImpl
-import co.anitrend.support.crunchyroll.data.datasource.auto.session.NormalSessionSourceImpl
-import co.anitrend.support.crunchyroll.data.datasource.auto.session.UnblockSessionSourceImpl
 import co.anitrend.support.crunchyroll.data.datasource.auto.session.contract.SessionSource
 import co.anitrend.support.crunchyroll.domain.entities.result.session.Session
 import co.anitrend.support.crunchyroll.domain.repositories.session.ISessionRepository
 
 class SessionRepository(
-    private val coreSource: SessionSource<Nothing?>,
-    private val normalSource: SessionSource<Nothing?>,
-    private val unblockedSource: SessionSource<Nothing?>
+    private val coreSource: SessionSource,
+    private val normalSource: SessionSource,
+    private val unblockedSource: SessionSource
 ) : SupportRepository(coreSource), ISessionRepository {
 
     /**
      * Returns a session that can be used when the user is not authenticated
      */
     override fun getCoreSession(): Session? {
-        return coreSource(null)
+        return coreSource()
     }
 
     /**
      * Returns a session that behaves as a fallback when the unblock session fails
      */
     override fun getNormalSession(): Session? {
-        return normalSource(null)
+        return normalSource()
     }
 
     /**
      * Returns a session for the authenticated user
      */
     override fun getUnblockedSession(): Session? {
-        return unblockedSource(null)
+        return unblockedSource()
     }
 
     /**

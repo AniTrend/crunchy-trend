@@ -16,11 +16,11 @@
 
 package co.anitrend.support.crunchyroll.data.util.extension
 
+import co.anitrend.arch.extension.util.contract.ISupportDateHelper
 import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
 import co.anitrend.support.crunchyroll.data.arch.RCF822Date
 import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper.Companion.ISO8601_PATTERN
 import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper.Companion.RCF822_PATTERN
-import co.anitrend.arch.extension.util.contract.ISupportDateHelper
 import org.koin.core.context.GlobalContext
 
 val supportDateHelper by lazy {

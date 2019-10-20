@@ -32,7 +32,7 @@ class CoreSessionSourceImpl(
     private val dao: CrunchySessionCoreDao,
     private val endpoint: CrunchySessionEndpoint,
     private val responseMapper: CoreSessionResponseMapper
-) : SessionSource<Nothing?>() {
+) : SessionSource() {
 
     /**
      * Handles the requesting data from a the network source and return
@@ -40,8 +40,8 @@ class CoreSessionSourceImpl(
      *
      * In this context the super.invoke() method will allow a retry action to be set
      */
-    override fun invoke(param: Nothing?): Session? {
-        super.invoke(param)
+    override fun invoke(): Session? {
+        super.invoke()
         networkState.postValue(NetworkState.Loading)
         
         val deferred = async {

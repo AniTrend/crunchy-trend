@@ -21,8 +21,8 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import co.anitrend.support.crunchyroll.R
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.ui.contract.CrunchyActivity
 import co.anitrend.support.crunchyroll.stream.fragment.FragmentMediaStream
+import co.anitrend.support.crunchyroll.ui.contract.CrunchyActivity
 import org.koin.android.ext.android.inject
 
 class StreamingActivity : CrunchyActivity<Nothing, CrunchyCorePresenter>() {

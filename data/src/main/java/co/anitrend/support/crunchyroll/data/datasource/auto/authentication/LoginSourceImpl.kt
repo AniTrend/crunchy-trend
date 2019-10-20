@@ -21,10 +21,8 @@ import androidx.lifecycle.Transformations
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyAuthEndpoint
-import co.anitrend.support.crunchyroll.data.auth.CrunchyAuthentication
 import co.anitrend.support.crunchyroll.data.datasource.auto.authentication.contract.LoginSource
 import co.anitrend.support.crunchyroll.data.datasource.local.api.CrunchyLoginDao
-import co.anitrend.support.crunchyroll.data.datasource.local.api.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.mapper.authentication.LoginResponseMapper
 import co.anitrend.support.crunchyroll.data.transformer.LoginUserTransformer
 import co.anitrend.support.crunchyroll.data.util.CrunchySettings

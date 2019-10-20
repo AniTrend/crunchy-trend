@@ -18,7 +18,6 @@ package co.anitrend.support.crunchyroll.data.util
 
 import android.content.Context
 import androidx.core.content.edit
-import co.anitrend.arch.extension.empty
 import co.anitrend.arch.extension.preference.SupportPreference
 
 class CrunchySettings(context: Context): SupportPreference(context) {
@@ -59,9 +58,19 @@ class CrunchySettings(context: Context): SupportPreference(context) {
             }
         }
 
+    var isAuthenticated: Boolean = false
+        get() = sharedPreferences.getBoolean(IS_AUTHENTICATED, false)
+        set(value) {
+            field = value
+            sharedPreferences.edit {
+                putBoolean(IS_AUTHENTICATED, value)
+            }
+        }
+
     companion object  {
         const val INVALID_USER_ID: Int = -1
         private const val AUTHENTICATED_USER = "_authenticatedUser"
+        private const val IS_AUTHENTICATED = "_isAuthenticated"
         private const val IS_LIGHT_THEME = "_isLightTheme"
         private const val SESSION_ID = "_sessionId"
         private const val PREMIUM_ACCESS = "_premiumAccess"

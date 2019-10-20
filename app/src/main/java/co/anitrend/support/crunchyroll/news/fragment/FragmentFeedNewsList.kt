@@ -20,7 +20,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.paging.PagedList
-import co.anitrend.arch.ui.fragment.SupportFragmentList
 import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration

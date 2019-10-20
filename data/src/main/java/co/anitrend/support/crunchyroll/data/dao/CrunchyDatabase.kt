@@ -24,13 +24,13 @@ import androidx.room.TypeConverters
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchyLogin
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchySession
-import co.anitrend.support.crunchyroll.data.dao.migration.MIGRATION_1_2
-import co.anitrend.support.crunchyroll.data.dao.migration.MIGRATION_2_4
 import co.anitrend.support.crunchyroll.data.auth.model.CrunchySessionCore
 import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyImageSetConverter
 import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyRestrictionConverter
 import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyThumbnailConverter
 import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyUserConverter
+import co.anitrend.support.crunchyroll.data.dao.migration.MIGRATION_1_2
+import co.anitrend.support.crunchyroll.data.dao.migration.MIGRATION_2_4
 import co.anitrend.support.crunchyroll.data.dao.migration.MIGRATION_6_7
 import co.anitrend.support.crunchyroll.data.dao.migration.MIGRATION_8_9
 import co.anitrend.support.crunchyroll.data.datasource.local.api.*

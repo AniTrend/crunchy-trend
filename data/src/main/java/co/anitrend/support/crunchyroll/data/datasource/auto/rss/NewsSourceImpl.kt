@@ -17,7 +17,6 @@
 package co.anitrend.support.crunchyroll.data.datasource.auto.rss
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import androidx.paging.PagedList
 import androidx.paging.PagingRequestHelper
 import androidx.paging.toLiveData
@@ -31,7 +30,6 @@ import co.anitrend.support.crunchyroll.data.transformer.NewsTransformer
 import co.anitrend.support.crunchyroll.domain.entities.query.rss.RssQuery
 import co.anitrend.support.crunchyroll.domain.entities.result.rss.News
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 
 class NewsSourceImpl(
     private val responseMapper: NewsResponseMapper,

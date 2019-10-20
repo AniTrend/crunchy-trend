@@ -21,12 +21,10 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.RoomWarnings.PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED
-import co.anitrend.arch.extension.util.contract.ISupportDateHelper
 import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
 import co.anitrend.support.crunchyroll.data.auth.model.contract.ICrunchySession
 import co.anitrend.support.crunchyroll.data.auth.model.contract.ICrunchySessionUser
 import co.anitrend.support.crunchyroll.data.model.user.CrunchyUser
-import co.anitrend.support.crunchyroll.data.util.extension.iso8601ToUnixTime
 
 @Entity(
     indices = [

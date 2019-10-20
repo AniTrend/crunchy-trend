@@ -16,7 +16,6 @@
 
 package co.anitrend.support.crunchyroll.stream.fragment
 
-import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -34,10 +33,7 @@ import co.anitrend.support.crunchyroll.core.viewmodel.MediaStreamViewModel
 import co.anitrend.support.crunchyroll.domain.entities.query.media.MediaStreamQuery
 import co.anitrend.support.crunchyroll.domain.entities.result.media.MediaStream
 import co.anitrend.support.crunchyroll.stream.presenter.StreamPresenter
-import coil.Coil
-import coil.api.load
 import com.devbrackets.android.exomedia.ui.widget.VideoView
-import com.google.android.exoplayer2.source.BaseMediaSource
 import kotlinx.android.parcel.Parcelize
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel

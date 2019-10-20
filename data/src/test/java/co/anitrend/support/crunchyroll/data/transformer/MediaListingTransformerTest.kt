@@ -18,9 +18,8 @@ package co.anitrend.support.crunchyroll.data.transformer
 
 import co.anitrend.support.crunchyroll.data.model.rss.CrunchyMediaRestriction
 import co.anitrend.support.crunchyroll.data.model.rss.MediaThumbnail
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
 import java.util.*
 
 class MediaListingTransformerTest {

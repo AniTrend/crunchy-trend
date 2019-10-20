@@ -16,14 +16,12 @@
 
 package co.anitrend.support.crunchyroll.data.api.interceptor
 
-import co.anitrend.arch.extension.util.SupportConnectivityHelper
+import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
 import co.anitrend.support.crunchyroll.data.auth.CrunchyAuthentication
 import co.anitrend.support.crunchyroll.data.extension.composeWith
 import co.anitrend.support.crunchyroll.data.extension.typeTokenOf
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyContainer
-import com.google.gson.ExclusionStrategy
-import com.google.gson.FieldAttributes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import okhttp3.*
@@ -36,7 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger
  * Intercepts responses changing them if and when needed
  */
 class CrunchyResponseInterceptor(
-    private val connectivityHelper: SupportConnectivityHelper,
+    private val connectivityHelper: SupportConnectivity,
     private val authentication: CrunchyAuthentication
 ) : Interceptor {
 

@@ -19,7 +19,6 @@ package co.anitrend.support.crunchyroll.core.presenter
 import android.content.Context
 import co.anitrend.arch.core.presenter.SupportPresenter
 import co.anitrend.support.crunchyroll.data.util.CrunchySettings
-import co.anitrend.support.crunchyroll.domain.entities.result.user.User
 
 open class CrunchyCorePresenter(
     context: Context,

@@ -20,14 +20,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import co.anitrend.support.crunchyroll.data.model.rss.CrunchyRssNews
-import co.anitrend.support.crunchyroll.databinding.AdapterNewsFeedBinding
-import io.noties.markwon.Markwon
 import co.anitrend.arch.core.presenter.SupportPresenter
 import co.anitrend.arch.ui.recycler.adapter.SupportPagedListAdapter
 import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
+import co.anitrend.support.crunchyroll.databinding.AdapterNewsFeedBinding
 import co.anitrend.support.crunchyroll.domain.entities.result.rss.News
+import io.noties.markwon.Markwon
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 

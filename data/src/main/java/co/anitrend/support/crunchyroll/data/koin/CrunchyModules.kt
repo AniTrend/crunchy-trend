@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.data.koin
 
 import android.content.Context
 import android.net.ConnectivityManager
-import co.anitrend.arch.extension.util.SupportConnectivityHelper
+import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyAuthEndpoint
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyMediaEndpoint
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchySessionEndpoint
@@ -74,7 +74,7 @@ private val dataModule = module {
 
 private val networkModule = module {
     factory {
-        SupportConnectivityHelper(
+        SupportConnectivity(
             androidContext().getSystemService(
                 Context.CONNECTIVITY_SERVICE
             ) as ConnectivityManager?
@@ -208,28 +208,28 @@ private val sourceModule = module {
 }
 
 private val repositoryModule = module {
-    factory {
+    single {
         NewsRepository(
             source = get<NewsSourceImpl>()
         )
     }
-    factory {
+    single {
         MediaListingRepository(
             source = get<MediaListingSourceImpl>()
         )
     }
-    factory {
+    single {
         AuthenticationRepository(
             loginSource = get<LoginSourceImpl>(),
             logoutSource = get<LogoutSourceImpl>()
         )
     }
-    factory {
+    single {
         MediaStreamRepository(
             source = get<MediaStreamSourceImpl>()
         )
     }
-    factory {
+    single {
         SessionRepository(
             coreSource = get<CoreSessionSourceImpl>(),
             normalSource = get<NormalSessionSourceImpl>(),
