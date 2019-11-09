@@ -19,12 +19,6 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="co.anitrend.support.crunchyroll">
 
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.INTERNET" />
-
     <application
             android:name=".App"
             android:allowBackup="true"
@@ -33,6 +27,7 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
+            android:appCategory="video"
             tools:replace="android:allowBackup"
             tools:ignore="GoogleAppIndexingWarning">
 
@@ -40,27 +35,16 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
 
-        <activity android:name=".ui.activities.SplashActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
-
-        <activity android:name=".ui.activities.MainActivity"/>
-
-        <activity android:name=".auth.activity.AuthenticationActivity"/>
-        <activity android:name=".stream.activity.StreamingActivity"/>
+        <activity android:name=".ui.activity.MainScreen"/>
 
         <provider
                 android:authorities="${applicationId}.provider"
-                android:name=".service.FileProviderService"
+                android:name="co.anitrend.arch.core.provider.SupportFileProvider"
                 android:grantUriPermissions="true"
                 android:exported="false">
             <meta-data
                     android:name="android.support.FILE_PROVIDER_PATHS"
-                    android:resource="@xml/file_provider_paths"/>
+                    android:resource="@xml/support_file_provider_paths"/>
         </provider>
     </application>
 

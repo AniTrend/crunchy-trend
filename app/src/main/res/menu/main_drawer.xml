@@ -37,17 +37,6 @@
         </menu>
     </item>
 
-    <item android:title="@string/nav_header_customization">
-        <menu>
-            <group android:id="@+id/nav_group_customization">
-                <item
-                    android:id="@+id/nav_theme"
-                    android:icon="@drawable/ic_invert_colors_24dp"
-                    android:title="@string/nav_theme" />
-            </group>
-        </menu>
-    </item>
-
     <item android:title="@string/nav_header_support">
         <menu>
             <group android:id="@+id/nav_group_support">

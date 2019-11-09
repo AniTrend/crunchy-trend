@@ -21,7 +21,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.activities.MainActivity">
+        tools:context=".ui.activity.MainScreen">
 
     <include layout="@layout/content_main" />
 
@@ -57,7 +57,7 @@
                 android:id="@+id/bottomNavigationView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/background_bottom_sheet"
+                android:background="@drawable/bottom_dialog_background"
                 app:itemTextAppearance="@style/SupportTheme.FontFamily"
                 app:itemBackground="@drawable/nav_item_background"
                 app:headerLayout="@layout/nav_header_main"

@@ -1,10 +1,10 @@
-include ':app',
+include ':app', ':feature-auth', ':feature-splash', ':feature-player', ':feature-news', ':feature-listing', ':feature-settings', ':feature-search', ':feature-discover', ':feature-media',
         ':support-ext',
         ':support-core',
         ':support-data',
         ':support-domain',
         ':support-theme',
-        ':core', ':data', ':support-ui', ':domain'
+        ':app-core', ':app-data', ':support-ui', ':app-domain'
 project(':support-ext').projectDir = new File('support-app/support-ext')
 project(':support-core').projectDir = new File('support-app/support-core')
 project(':support-domain').projectDir = new File('support-app/support-domain')

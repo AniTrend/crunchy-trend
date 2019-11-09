@@ -22,7 +22,7 @@
         android:enabled="true"
         android:shortcutId="SHORTCUT_SEARCH"
         android:icon="@drawable/ic_shortcut_search"
-        android:shortcutShortLabel="@string/action_search">
+        android:shortcutShortLabel="@string/label_text_action_search">
         <intent
             android:action="android.intent.action.VIEW"
             android:targetClass="co.anitrend.support.crunchyroll.ui.MainActivity"

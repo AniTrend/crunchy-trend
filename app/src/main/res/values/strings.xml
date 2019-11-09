@@ -15,11 +15,7 @@
   -->
 
 <resources>
-    <string name="app_name">CrunchyTrend</string>
-
-    <string name="nav_header_customization">Customization</string>
     <string name="nav_header_navigation">Navigation</string>
-    <string name="nav_theme">Theme</string>
 
     <string name="nav_header_support">Support</string>
     <string name="nav_contact">Contact</string>
@@ -27,22 +23,5 @@
     <string name="nav_shows">Shows</string>
     <string name="nav_show_news">News</string>
 
-    <string name="action_search">Search</string>
-
-    <string name="action_retry">Reload</string>
-
-
     <string name="app_banner_text">CrunchyTrend - All Rights Reserved.</string>
-
-    <!-- Settings for Notifications -->
-
-
-    <!-- Settings for Data & Sync &amp; is the html equivalent of &-->
-
-    <string name="Loading">Loading</string>
-    <string name="action_login">Login</string>
-    <string name="action_logout">Logout</string>
-    <string name="action_later">Later</string>
-
-    <!--These are the actual value of the titles above, obviously no translation required here-->
 </resources>

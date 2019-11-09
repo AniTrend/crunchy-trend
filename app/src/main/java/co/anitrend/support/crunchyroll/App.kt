@@ -16,114 +16,36 @@
 
 package co.anitrend.support.crunchyroll
 
-import android.app.Application
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.work.Configuration
-import co.anitrend.arch.extension.isLowRamDevice
-import co.anitrend.support.crunchyroll.core.koin.coreModules
-import co.anitrend.support.crunchyroll.data.koin.dataModules
-import co.anitrend.support.crunchyroll.data.util.CrunchySettings
+import co.anitrend.support.crunchyroll.core.CrunchyApplication
 import co.anitrend.support.crunchyroll.koin.appModules
-import coil.Coil
-import coil.ImageLoader
-import coil.util.CoilUtils
-import okhttp3.OkHttpClient
-import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
-import timber.log.Timber
+import org.koin.core.context.stopKoin
 
-class App : Application(), Configuration.Provider {
-
-    private val settings by inject<CrunchySettings>()
+class App : CrunchyApplication() {
 
     /** [Koin](https://insert-koin.io/docs/2.0/getting-started/)
-     * Initializes Koin dependency injection
+     *
+     * Initializes dependencies for the entire application, this function is automatically called
+     * in [onCreate] as the first call to assure all injections are available
      */
-    private fun initializeDependencyInjection() {
-        startKoin {
+    override fun initializeDependencyInjection() {
+        startKoin{
             androidLogger()
             androidContext(
                 applicationContext
             )
-            modules(
-                appModules + coreModules + dataModules
-            )
+            modules(appModules)
         }
     }
 
-    /**
-     * Timber logging tree depending on the build type we plant the appropriate tree
+    /** [Koin](https://insert-koin.io/docs/2.0/getting-started/)
+     *
+     * Restarts the global koin instance
      */
-    private fun plantLoggingTree() {
-        when (BuildConfig.DEBUG) {
-            true -> Timber.plant(Timber.DebugTree())
-        }
-    }
-
-    private fun setupCoil() {
-        val imageLoader = ImageLoader(this) {
-            availableMemoryPercentage(0.2)
-            bitmapPoolPercentage(0.2)
-            crossfade(360)
-            allowRgb565(!isLowRamDevice())
-            allowHardware(true)
-            okHttpClient {
-                OkHttpClient.Builder()
-                    .cache(CoilUtils.createDefaultCache(this@App))
-                    .build()
-            }
-        }
-
-        Coil.setDefaultImageLoader(imageLoader)
-    }
-
-    /**
-     * Set application theme startup
-     */
-    fun applyTheme() {
-        if (settings.isLightTheme)
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        else
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-    }
-
-    /**
-     * Called when the application is starting, before any activity, service,
-     * or receiver objects (excluding content providers) have been created.
-     *
-     *
-     * Implementations should be as quick as possible (for example using
-     * lazy initialization of state) since the time spent in this function
-     * directly impacts the performance of starting the first activity,
-     * service, or receiver in a process.
-     *
-     *
-     * If you override this method, be sure to call `super.onCreate()`.
-     *
-     *
-     * Be aware that direct boot may also affect callback order on
-     * Android [android.os.Build.VERSION_CODES.N] and later devices.
-     * Until the user unlocks the device, only direct boot aware components are
-     * allowed to run. You should consider that all direct boot unaware
-     * components, including such [android.content.ContentProvider], are
-     * disabled until user unlock happens, especially when component callback
-     * order matters.
-     */
-    override fun onCreate() {
-        super.onCreate()
+    override fun restartDependencyInjection() {
+        stopKoin()
         initializeDependencyInjection()
-        plantLoggingTree()
-        applyTheme()
-        setupCoil()
-    }
-
-    /**
-     * @return The [Configuration] used to initialize WorkManager
-     */
-    override fun getWorkManagerConfiguration(): Configuration {
-        return Configuration.Builder()
-            .build()
     }
 }

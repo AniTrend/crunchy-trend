@@ -22,28 +22,28 @@ plugins {
 }
 
 apply from: "../gradle/gradle-common-config.gradle"
+apply from: "../gradle/gradle-common-config-app.gradle"
+apply from: "../gradle/gradle-common-dependencies.gradle"
 
 android {
     defaultConfig {
         applicationId "co.anitrend.support.crunchyroll"
-    }
-    dataBinding {
-        enabled = true
     }
 }
 
 dependencies {
 
     /** Platform Dependencies */
+    implementation project(":support-ui")
+    implementation project(":support-ext")
     implementation project(":support-core")
     implementation project(":support-data")
     implementation project(":support-theme")
     implementation project(":support-domain")
-    implementation project(":support-ext")
-    implementation project(":support-ui")
-    implementation project(":core")
-    implementation project(":data")
-    implementation project(":domain")
+
+    implementation project(':app-core')
+    implementation project(':app-data')
+    implementation project(':app-domain')
 
     /** Material Design */
     implementation "com.google.android.material:material:$material"
@@ -64,9 +64,6 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$constraintX"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipeRefreshX"
 
-    /** Coil Libraries */
-    implementation "io.coil-kt:coil:$coil"
-
     /** Material Dialogs */
     implementation "com.afollestad.material-dialogs:core:$materialDialogs"
     implementation "com.afollestad.material-dialogs:input:$materialDialogs"
@@ -81,15 +78,6 @@ dependencies {
 
     /** Tap Target Prompt */
     implementation "uk.co.samuelwall:material-tap-target-prompt:$tapTarget"
-
-    /** Markwon */
-    implementation "io.noties.markwon:core:$markwon"
-    implementation "io.noties.markwon:html:$markwon"
-    implementation "io.noties.markwon:image-glide:$markwon"
-    implementation "io.noties.markwon:linkify:$markwon"
-
-    /** Exo media */
-    implementation "com.devbrackets.android:exomedia:$exoMedia"
 
     /** Testing-only dependencies */
     testImplementation "org.koin:koin-test:$koin"
