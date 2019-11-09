@@ -153,12 +153,11 @@ class FragmentLogout : SupportFragment<Boolean, CrunchyCorePresenter, Boolean>()
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        binding.userIdEditText.setText(
-            supportPresenter
-                .supportPreference
-                .authenticatedUserId
-                .toString()
-        )
+        val userId = supportPresenter.supportPreference.authenticatedUserId
+        val liveData = supportViewModel.getUserByIdLiveData(userId)
+        liveData.observe(this, Observer {
+            binding.currentUserModel = it
+        })
     }
 
     /**

@@ -20,6 +20,7 @@ import co.anitrend.support.crunchyroll.feature.listing.presenter.ListingPresente
 import co.anitrend.support.crunchyroll.feature.listing.viewmodel.MediaListingViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 
 private val presenterModule = module {
@@ -38,3 +39,11 @@ private val viewModelModule = module {
         )
     }
 }
+
+private val featureModules = listOf(presenterModule, viewModelModule)
+
+private val koinModules by lazy {
+    loadKoinModules(featureModules)
+}
+
+fun injectFeatureModules() = koinModules

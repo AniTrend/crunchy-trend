@@ -19,14 +19,14 @@ ext {
     targetSdk = 29
     minSdk = 21
 
-    versionCode = 27
-    versionName = '0.2.3-alpha02'
+    versionCode = 31
+    versionName = '0.2.4-alpha01'
 
     coil = '0.8.0'
     glide = '4.10.0'
-    retrofit = '2.6.1'
+    retrofit = '2.6.2'
 
-    material = '1.1.0-beta01'
+    material = '1.1.0-beta02'
     preferenceX = "1.1.0"
     swipeRefreshX = "1.0.0"
     constraintX = '2.0.0-beta3'

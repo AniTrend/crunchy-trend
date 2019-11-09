@@ -24,6 +24,7 @@ import co.anitrend.support.crunchyroll.feature.authentication.ui.fragment.Fragme
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.authentication.R
+import co.anitrend.support.crunchyroll.feature.authentication.koin.injectFeatureModules
 import com.google.android.material.appbar.MaterialToolbar
 import org.koin.android.ext.android.inject
 
@@ -55,6 +56,7 @@ class AuthenticationScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
+        injectFeatureModules()
         onUpdateUserInterface()
     }
 

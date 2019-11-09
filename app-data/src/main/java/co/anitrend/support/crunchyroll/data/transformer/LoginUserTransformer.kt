@@ -30,6 +30,7 @@ object LoginUserTransformer : ISupportMapperHelper<CrunchyLogin?, User?> {
             User(
                 userId = it.user.user_id,
                 username = it.user.username,
+                email = it.user.email,
                 premium = it.user.premium,
                 accessType = it.user.access_type
             )

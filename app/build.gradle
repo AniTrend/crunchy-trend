@@ -45,6 +45,16 @@ dependencies {
     implementation project(':app-data')
     implementation project(':app-domain')
 
+    implementation project(':feature-splash')
+
+    /** Runtime features */
+    runtimeOnly project(':feature-auth')
+    runtimeOnly project(':feature-listing')
+    runtimeOnly project(':feature-news')
+    runtimeOnly project(':feature-player')
+    runtimeOnly project(':feature-search')
+    runtimeOnly project(':feature-settings')
+
     /** Material Design */
     implementation "com.google.android.material:material:$material"
 

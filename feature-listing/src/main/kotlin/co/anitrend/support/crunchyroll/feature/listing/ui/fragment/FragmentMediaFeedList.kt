@@ -31,6 +31,7 @@ import co.anitrend.support.crunchyroll.data.extension.getCrunchyLocale
 import co.anitrend.support.crunchyroll.domain.entities.query.rss.RssQuery
 import co.anitrend.support.crunchyroll.domain.entities.result.rss.MediaListing
 import co.anitrend.support.crunchyroll.feature.listing.R
+import co.anitrend.support.crunchyroll.feature.listing.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.listing.presenter.ListingPresenter
 import co.anitrend.support.crunchyroll.feature.listing.ui.adapter.RssMediaAdapter
 import org.koin.android.ext.android.inject
@@ -97,7 +98,7 @@ class FragmentMediaFeedList : SupportFragmentPagedList<MediaListing, CrunchyCore
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-
+        injectFeatureModules()
     }
 
     /**

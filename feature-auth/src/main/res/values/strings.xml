@@ -18,7 +18,13 @@
 
     <string name="label_action_login">Login</string>
     <string name="label_action_logout">Logout</string>
-    <string name="label_action_later">Later</string>
+
+    <string name="label_action_later">Anonymous</string>
+
     <string name="hint_label_password">Password</string>
     <string name="hint_label_username">Username</string>
+
+    <string name="label_optional_login">Please login to get the most out of the app</string>
+    <string name="label_alternative_login">Or use alternative anonymous authentication, please note that some features my not be available</string>
+    <string name="label_text_confirm_logout">Logging out of CrunchyTrend already?</string>
 </resources>

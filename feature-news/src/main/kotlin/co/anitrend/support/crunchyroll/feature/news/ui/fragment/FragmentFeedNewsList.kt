@@ -28,6 +28,7 @@ import co.anitrend.support.crunchyroll.data.extension.getCrunchyLocale
 import co.anitrend.support.crunchyroll.domain.entities.query.rss.RssQuery
 import co.anitrend.support.crunchyroll.domain.entities.result.rss.News
 import co.anitrend.support.crunchyroll.feature.news.R
+import co.anitrend.support.crunchyroll.feature.news.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.news.ui.adapter.RssNewsAdapter
 import co.anitrend.support.crunchyroll.feature.news.viewmodel.NewsViewModel
 import org.koin.android.ext.android.inject
@@ -101,7 +102,7 @@ class FragmentFeedNewsList : SupportFragmentPagedList<News, CrunchyCorePresenter
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-
+        injectFeatureModules()
     }
 
     /**

@@ -34,6 +34,7 @@ import co.anitrend.support.crunchyroll.domain.entities.query.authentication.Logi
 import co.anitrend.support.crunchyroll.domain.entities.result.user.User
 import co.anitrend.support.crunchyroll.feature.authentication.R
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.chip.Chip
 import org.koin.android.ext.android.inject
 
 class FragmentLogin : SupportFragment<User?, CrunchyCorePresenter, User?>() {
@@ -41,7 +42,7 @@ class FragmentLogin : SupportFragment<User?, CrunchyCorePresenter, User?>() {
     private lateinit var editLoginText: EditText
     private lateinit var editPasswordText: EditText
     private lateinit var buttonLogin: MaterialButton
-    private lateinit var buttonLoginSkip: MaterialButton
+    private lateinit var buttonLoginSkip: Chip
     private lateinit var supportStateLayout: SupportStateLayout
 
     /**

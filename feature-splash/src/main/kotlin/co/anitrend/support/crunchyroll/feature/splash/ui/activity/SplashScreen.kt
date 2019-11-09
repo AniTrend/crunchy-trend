@@ -23,6 +23,7 @@ import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.splash.R
+import co.anitrend.support.crunchyroll.feature.splash.koin.injectFeatureModules
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -55,7 +56,7 @@ class SplashScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-
+        injectFeatureModules()
     }
 
     /**
@@ -78,10 +79,10 @@ class SplashScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
         launch {
             delay(500)
             if (isStateAtLeast(Lifecycle.State.RESUMED)) {
-                when (supportPresenter.supportPreference.isAuthenticated) {
-                    true -> NavigationTargets.Main(applicationContext)
-                    else -> NavigationTargets.Authentication(applicationContext)
-                }
+                if (supportPresenter.supportPreference.isAuthenticated)
+                    NavigationTargets.Main(applicationContext)
+                else
+                    NavigationTargets.Authentication(applicationContext)
                 finish()
             }
         }

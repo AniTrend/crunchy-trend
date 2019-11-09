@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.feature.settings.koin
 
+import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 
 private val presenterModule = module {
@@ -25,3 +26,11 @@ private val presenterModule = module {
 private val viewModelModule = module {
 
 }
+
+private val featureModules = listOf(presenterModule, viewModelModule)
+
+private val koinModules by lazy {
+    loadKoinModules(featureModules)
+}
+
+fun injectFeatureModules() = koinModules

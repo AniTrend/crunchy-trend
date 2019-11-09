@@ -28,7 +28,7 @@ interface INavigationRouter {
      */
     operator fun invoke(context: Context?, bundle: Bundle? = null) {
         runCatching {
-            context?.startActivity(navRouterIntent, bundle)
+            context?.startActivity(navRouterIntent)
         }.exceptionOrNull()?.printStackTrace()
     }
 }

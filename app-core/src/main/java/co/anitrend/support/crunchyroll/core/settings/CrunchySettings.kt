@@ -25,7 +25,9 @@ import co.anitrend.support.crunchyroll.core.util.locale.AniTrendLocale
 import co.anitrend.support.crunchyroll.core.util.theme.AniTrendTheme
 import co.anitrend.support.crunchyroll.core.R
 import co.anitrend.support.crunchyroll.core.settings.common.IConfigurationSettings
+import co.anitrend.support.crunchyroll.core.settings.common.locale.ILocaleSettings
 import co.anitrend.support.crunchyroll.core.settings.common.privacy.IPrivacySettings
+import co.anitrend.support.crunchyroll.core.settings.common.theme.IThemeSettings
 import co.anitrend.support.crunchyroll.data.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.data.settings.IAuthenticationSettings.Companion.INVALID_USER_ID
 
@@ -166,6 +168,7 @@ class CrunchySettings(context: Context) : SupportPreference(context), IAuthentic
          */
         internal val BINDINGS = arrayOf(
             ISupportPreference::class, IConfigurationSettings::class,
+            ILocaleSettings::class, IThemeSettings::class,
             IAuthenticationSettings::class, IPrivacySettings::class
         )
     }

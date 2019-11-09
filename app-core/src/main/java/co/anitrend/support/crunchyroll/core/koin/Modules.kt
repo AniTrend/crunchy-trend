@@ -21,6 +21,7 @@ import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.core.R
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
+import co.anitrend.support.crunchyroll.core.util.config.ConfigurationUtil
 import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.binds
@@ -45,6 +46,11 @@ private val coreModule = module {
             context = androidContext()
         )
     } binds(CrunchySettings.BINDINGS)
+    factory {
+        ConfigurationUtil(
+            settings = get()
+        )
+    }
 }
 
 private val presenterModule = module {

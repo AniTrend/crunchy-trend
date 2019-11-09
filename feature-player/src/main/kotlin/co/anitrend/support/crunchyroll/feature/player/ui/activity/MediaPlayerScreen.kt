@@ -23,6 +23,7 @@ import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.feature.player.ui.fragment.FragmentMediaStream
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.player.R
+import co.anitrend.support.crunchyroll.feature.player.koin.injectFeatureModules
 import org.koin.android.ext.android.inject
 
 class MediaPlayerScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
@@ -58,7 +59,7 @@ class MediaPlayerScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-
+        injectFeatureModules()
     }
 
     /**

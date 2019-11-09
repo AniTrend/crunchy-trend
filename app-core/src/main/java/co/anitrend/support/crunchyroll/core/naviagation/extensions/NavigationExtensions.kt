@@ -20,37 +20,45 @@ import android.content.Intent
 import androidx.fragment.app.Fragment
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.naviagation.contract.INavigationTarget
+import timber.log.Timber
 
-private const val PACKAGE_NAME = "co.anitrend.support.crunchyroll"
+private const val APPLICATION_PACKAGE_NAME = "co.anitrend.support.crunchyroll"
 
-private val classMap = mutableMapOf<String, Class<*>?>()
+private val classMap = mutableMapOf<String, Class<*>>()
 
 private inline fun <reified T : Any> Any.castOrNull() = this as? T
 
 private fun forIntent(className: String): Intent =
-    Intent(Intent.ACTION_VIEW).setClassName(PACKAGE_NAME, className)
+    Intent(Intent.ACTION_VIEW).setClassName(APPLICATION_PACKAGE_NAME, className)
 
 internal fun String.loadIntentOrNull(): Intent? =
-    runCatching {
-        Class.forName(this).run {
-            forIntent(this@loadIntentOrNull)
-        }
-    }.getOrNull()
+    try {
+        Class.forName(this).run { forIntent(this@loadIntentOrNull) }
+    } catch (e: ClassNotFoundException) {
+        Timber.tag("loadIntentOrNull").e(e)
+        null
+    }
 
 internal fun <T> String.loadClassOrNull(): Class<out T>? =
     classMap.getOrPut(this) {
-        runCatching {
+        try {
             Class.forName(this)
-        }.getOrNull()
-    }?.castOrNull()
+        } catch (e: ClassNotFoundException) {
+            Timber.tag("loadClassOrNull").e(e)
+            return null
+        }
+    }.castOrNull()
 
 internal fun <T : SupportFragment<*, *, *>> String.loadFragmentOrNull(): T? =
-    runCatching {
-        loadClassOrNull<T>()?.newInstance()
-    }.getOrNull()
+    try {
+        this.loadClassOrNull<T>()?.newInstance()
+    } catch (e: ClassNotFoundException) {
+        Timber.tag("loadFragmentOrNull").e(e)
+        null
+    }
 
 fun INavigationTarget.forIntent(): Intent? {
-    return className.loadIntentOrNull()
+    return "$APPLICATION_PACKAGE_NAME.$className".loadIntentOrNull()
 }
 
 fun INavigationTarget.forFragment(): SupportFragment<*, *, *>? {

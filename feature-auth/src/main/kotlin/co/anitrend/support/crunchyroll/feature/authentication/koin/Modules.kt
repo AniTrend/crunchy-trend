@@ -16,11 +16,13 @@
 
 package co.anitrend.support.crunchyroll.feature.authentication.koin
 
+import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
 import co.anitrend.support.crunchyroll.feature.authentication.presenter.AuthPresenter
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.LoginViewModel
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.LogoutViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 
 private val presenterModule = module {
@@ -40,9 +42,16 @@ private val viewModelModule = module {
     }
     viewModel {
         LogoutViewModel(
-            useCase = get()
+            useCase = get(),
+            loginDao = get<CrunchyDatabase>().crunchyLoginDao()
         )
     }
 }
 
-val autenticationFeatureModules = listOf(presenterModule, viewModelModule)
+private val featureModules = listOf(presenterModule, viewModelModule)
+
+private val koinModules by lazy {
+    loadKoinModules(featureModules)
+}
+
+fun injectFeatureModules() = koinModules

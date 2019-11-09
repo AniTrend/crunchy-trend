@@ -32,6 +32,7 @@ import io.noties.markwon.image.glide.GlideImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 
 private val coreModule = module {
@@ -69,3 +70,11 @@ private val viewModelModule = module {
         )
     }
 }
+
+private val featureModules = listOf(coreModule, presenterModule, viewModelModule)
+
+private val koinModules by lazy {
+    loadKoinModules(featureModules)
+}
+
+fun injectFeatureModules() = koinModules

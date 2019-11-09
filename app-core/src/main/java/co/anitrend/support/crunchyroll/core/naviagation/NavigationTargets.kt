@@ -17,7 +17,6 @@
 package co.anitrend.support.crunchyroll.core.naviagation
 
 import android.os.Parcelable
-import android.provider.ContactsContract.Directory.PACKAGE_NAME
 import co.anitrend.support.crunchyroll.core.naviagation.contract.INavigationRouter
 import co.anitrend.support.crunchyroll.core.naviagation.contract.INavigationTarget
 import co.anitrend.support.crunchyroll.core.naviagation.extensions.forIntent
@@ -26,58 +25,42 @@ import kotlinx.android.parcel.Parcelize
 object NavigationTargets {
 
     object Main : INavigationRouter, INavigationTarget {
-        private const val targetItem = "ui.activity.MainScreen"
-
-        override val className = "$PACKAGE_NAME.$targetItem"
+        override val className = "ui.activity.MainScreen"
         override val navRouterIntent = forIntent()
     }
 
     object Splash : INavigationRouter, INavigationTarget {
-        private const val targetItem = "feature.ui.activity.SplashScreen"
-
-        override val className = "$PACKAGE_NAME.$targetItem"
+        override val className = "feature.ui.activity.SplashScreen"
         override val navRouterIntent = forIntent()
     }
 
     object Settings : INavigationRouter, INavigationTarget {
-        private const val targetItem = "feature.settings.ui.activity.SettingsScreen"
-
-        override val className = "$PACKAGE_NAME.$targetItem"
+        override val className = "feature.settings.ui.activity.SettingsScreen"
         override val navRouterIntent = forIntent()
     }
 
     object Authentication : INavigationRouter, INavigationTarget {
-        private const val targetItem = "feature.authentication.ui.activity.AuthenticationScreen"
-
-        override val className = "$PACKAGE_NAME.$targetItem"
+        override val className = "feature.authentication.ui.activity.AuthenticationScreen"
         override val navRouterIntent = forIntent()
     }
 
     object News : INavigationRouter, INavigationTarget {
-        private const val targetItem = "feature.listing.ui.fragment.FragmentFeedNewsList"
-
-        override val className = "$PACKAGE_NAME.$targetItem"
+        override val className = "feature.listing.ui.fragment.FragmentFeedNewsList"
         override val navRouterIntent = forIntent()
     }
 
     object Listing : INavigationRouter, INavigationTarget {
-        private const val targetItem = "feature.listing.ui.fragment.FragmentMediaFeeList"
-
-        override val className = "$PACKAGE_NAME.$targetItem"
+        override val className = "feature.listing.ui.fragment.FragmentMediaFeeList"
         override val navRouterIntent = forIntent()
     }
 
     object MediaDetail : INavigationRouter, INavigationTarget {
-        private const val targetItem = "feature.media.ui.activity.MediaDetailScreen"
-
-        override val className = "$PACKAGE_NAME.$targetItem"
+        override val className = "feature.media.ui.activity.MediaDetailScreen"
         override val navRouterIntent = forIntent()
     }
 
     object MediaPlayer : INavigationRouter, INavigationTarget {
-        private const val targetItem = "feature.player.ui.activity.MediaPlayerScreen"
-
-        override val className = "$PACKAGE_NAME.$targetItem"
+        override val className = "feature.player.ui.activity.MediaPlayerScreen"
         override val navRouterIntent = forIntent()
 
 
@@ -91,9 +74,7 @@ object NavigationTargets {
     }
 
     object Search : INavigationRouter, INavigationTarget {
-        private const val targetItem = "feature.search.ui.activity.SearchScreen"
-
-        override val className = "$PACKAGE_NAME.$targetItem"
+        override val className = "feature.search.ui.activity.SearchScreen"
         override val navRouterIntent = forIntent()
     }
 }
