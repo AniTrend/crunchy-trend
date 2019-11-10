@@ -35,7 +35,7 @@ fun AppCompatImageView.setImageUrl(url: String?) = url?.also {
 @BindingAdapter("imageUrl")
 fun AppCompatImageView.setImageUrl(listing: MediaListing?) = listing?.also {
     load(it.episodeThumbnail) {
-        scale(Scale.FIT)
+        scale(Scale.FILL)
         val comparisonTime = if (listing.isPremiumEnabled)
             it.premiumAvailableTime
         else it.freeAvailableTime

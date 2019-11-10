@@ -20,7 +20,7 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.feature.player.ui.fragment.FragmentMediaStream
+import co.anitrend.support.crunchyroll.feature.player.ui.fragment.MediaStreamContent
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.player.R
 import co.anitrend.support.crunchyroll.feature.player.koin.injectFeatureModules
@@ -71,7 +71,7 @@ class MediaPlayerScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
      */
     override fun onUpdateUserInterface() {
         if (supportFragmentActivity == null) {
-            supportFragmentActivity = FragmentMediaStream.newInstance(intent.extras).apply {
+            supportFragmentActivity = MediaStreamContent.newInstance(intent.extras).apply {
                 supportFragmentManager.commit {
                     setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     replace(R.id.contentFrame, this@apply, tag)

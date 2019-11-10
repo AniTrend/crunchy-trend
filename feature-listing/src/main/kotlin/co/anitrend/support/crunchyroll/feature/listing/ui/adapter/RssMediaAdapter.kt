@@ -52,7 +52,13 @@ class RssMediaAdapter(
         viewType: Int,
         layoutInflater: LayoutInflater
     ): SupportViewHolder<MediaListing> {
-        return MediaRssViewHolder(AdapterMediaFeedBinding.inflate(layoutInflater, parent, false))
+        return MediaRssViewHolder(
+            AdapterMediaFeedBinding.inflate(
+                layoutInflater,
+                parent,
+                false
+            )
+        )
     }
 
 

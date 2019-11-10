@@ -20,6 +20,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.paging.PagedList
+import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
@@ -34,14 +35,10 @@ import co.anitrend.support.crunchyroll.feature.news.viewmodel.NewsViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FragmentFeedNewsList : SupportFragmentPagedList<News, CrunchyCorePresenter, PagedList<News>>() {
+class NewsFeedContent : SupportFragmentPagedList<News, CrunchyCorePresenter, PagedList<News>>() {
 
-    override val supportStateConfiguration = SupportStateLayoutConfiguration(
-        loadingDrawable = R.drawable.ic_crunchyroll,
-        errorDrawable = R.drawable.ic_support_empty_state,
-        loadingMessage = R.string.label_text_loading,
-        retryAction = R.string.label_text_action_retry
-    )
+    override val supportStateConfiguration
+            by inject<SupportStateLayoutConfiguration>()
 
     /**
      * Should be created lazily through injection or lazy delegate
@@ -57,32 +54,34 @@ class FragmentFeedNewsList : SupportFragmentPagedList<News, CrunchyCorePresenter
      */
     override val supportViewModel by viewModel<NewsViewModel>()
 
-    override val supportViewAdapter = RssNewsAdapter(
-        presenter = supportPresenter,
-        clickListener = object : ItemClickListener<News> {
-            /**
-             * When the target view from [View.OnClickListener]
-             * is clicked from a view holder this method will be called
-             *
-             * @param target view that has been clicked
-             * @param data the liveData that at the click index
-             */
-            override fun onItemClick(target: View, data: Pair<Int, News?>) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
+    override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
+        RssNewsAdapter(
+            presenter = supportPresenter,
+            clickListener = object : ItemClickListener<News> {
+                /**
+                 * When the target view from [View.OnClickListener]
+                 * is clicked from a view holder this method will be called
+                 *
+                 * @param target view that has been clicked
+                 * @param data the liveData that at the click index
+                 */
+                override fun onItemClick(target: View, data: Pair<Int, News?>) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
 
-            /**
-             * When the target view from [View.OnLongClickListener]
-             * is clicked from a view holder this method will be called
-             *
-             * @param target view that has been long clicked
-             * @param data the liveData that at the long click index
-             */
-            override fun onItemLongClick(target: View, data: Pair<Int, News?>) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                /**
+                 * When the target view from [View.OnLongClickListener]
+                 * is clicked from a view holder this method will be called
+                 *
+                 * @param target view that has been long clicked
+                 * @param data the liveData that at the long click index
+                 */
+                override fun onItemLongClick(target: View, data: Pair<Int, News?>) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
             }
-        }
-    )
+        )
+    }
 
     /**
      * Invoke view model observer to watch for changes
@@ -133,12 +132,4 @@ class FragmentFeedNewsList : SupportFragmentPagedList<News, CrunchyCorePresenter
     }
 
     override val columnSize: Int = R.integer.single_list_size
-
-    companion object {
-        private const val PAYLOAD = "FragmentFeedNewsList:Payload"
-
-        fun newInstance(): FragmentFeedNewsList {
-            return FragmentFeedNewsList()
-        }
-    }
 }

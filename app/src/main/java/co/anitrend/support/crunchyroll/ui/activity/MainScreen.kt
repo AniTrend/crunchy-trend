@@ -23,6 +23,9 @@ import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.fragment.app.commit
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
 import co.anitrend.arch.core.viewmodel.SupportPagingViewModel
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.ui.activity.SupportActivity
@@ -63,7 +66,7 @@ class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(), NavigationV
         setSupportActionBar(bottomAppBar)
         bottomDrawerBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         if (intent.hasExtra(SupportUiKeyStore.arg_redirect))
-            selectedItem = intent.getIntExtra(SupportUiKeyStore.arg_redirect, R.id.nav_show_latest)
+            selectedItem = intent.getIntExtra(SupportUiKeyStore.arg_redirect, R.id.nav_show_news)
     }
 
     /**
@@ -153,7 +156,6 @@ class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(), NavigationV
 
         bottomAppBar.setTitle(selectedTitle)
         bottomDrawerBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-
         supportFragment?.apply {
             supportFragmentActivity = this@apply
             supportFragmentManager.commit {
@@ -164,7 +166,7 @@ class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(), NavigationV
 
     /**
      * Handles the updating of views, binding, creation or state change, depending on the context
-     * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
+     * [androidx.lifecycle.LiveData] for a given [getSupportFragmentManager] will be available by this point.
      *
      * Check implementation for more details
      */
@@ -173,18 +175,5 @@ class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(), NavigationV
             onNavigate(selectedItem)
         else
             onNavigate(R.id.nav_show_latest)
-    }
-
-    /**
-     * Handles the complex logic required to dispatch network request to [SupportPagingViewModel]
-     * which uses [SupportRepository] to either request from the network or database cache.
-     *
-     * The results of the dispatched network or cache call will be published by the
-     * [androidx.lifecycle.LiveData] specifically [SupportPagingViewModel.model]
-     *
-     * @see [SupportPagingViewModel.requestBundleLiveData]
-     */
-    override fun onFetchDataInitialize() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

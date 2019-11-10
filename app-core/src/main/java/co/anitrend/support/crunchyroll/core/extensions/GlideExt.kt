@@ -14,8 +14,5 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.service
+package co.anitrend.support.crunchyroll.core.extensions
 
-import androidx.core.content.FileProvider
-
-class FileProviderService : FileProvider()

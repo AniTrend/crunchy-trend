@@ -29,24 +29,24 @@ private val classMap = mutableMapOf<String, Class<*>>()
 private inline fun <reified T : Any> Any.castOrNull() = this as? T
 
 private fun forIntent(className: String): Intent =
-    Intent(Intent.ACTION_VIEW).setClassName(APPLICATION_PACKAGE_NAME, className)
+    Intent(Intent.ACTION_VIEW)
+        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        .setClassName(APPLICATION_PACKAGE_NAME, className)
 
 internal fun String.loadIntentOrNull(): Intent? =
     try {
-        Class.forName(this).run { forIntent(this@loadIntentOrNull) }
+        Class.forName(this).run {
+            forIntent(this@loadIntentOrNull)
+        }
     } catch (e: ClassNotFoundException) {
         Timber.tag("loadIntentOrNull").e(e)
         null
     }
 
+@Throws(ClassNotFoundException::class)
 internal fun <T> String.loadClassOrNull(): Class<out T>? =
     classMap.getOrPut(this) {
-        try {
-            Class.forName(this)
-        } catch (e: ClassNotFoundException) {
-            Timber.tag("loadClassOrNull").e(e)
-            return null
-        }
+        Class.forName(this)
     }.castOrNull()
 
 internal fun <T : SupportFragment<*, *, *>> String.loadFragmentOrNull(): T? =
@@ -57,10 +57,13 @@ internal fun <T : SupportFragment<*, *, *>> String.loadFragmentOrNull(): T? =
         null
     }
 
+/**
+ * Builds a an intent path for the target
+ */
 fun INavigationTarget.forIntent(): Intent? {
-    return "$APPLICATION_PACKAGE_NAME.$className".loadIntentOrNull()
+    return "$APPLICATION_PACKAGE_NAME.$packageName.$className".loadIntentOrNull()
 }
 
 fun INavigationTarget.forFragment(): SupportFragment<*, *, *>? {
-    return className.loadFragmentOrNull()
+    return forIntent()?.component?.className?.loadFragmentOrNull()
 }

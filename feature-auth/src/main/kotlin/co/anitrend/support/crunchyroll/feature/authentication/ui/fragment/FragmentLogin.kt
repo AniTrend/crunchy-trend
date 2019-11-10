@@ -20,30 +20,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import androidx.lifecycle.Observer
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.ui.fragment.SupportFragment
-import co.anitrend.arch.ui.view.widget.SupportStateLayout
 import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.feature.authentication.presenter.AuthPresenter
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.LoginViewModel
-import co.anitrend.support.crunchyroll.domain.entities.query.authentication.LoginQuery
 import co.anitrend.support.crunchyroll.domain.entities.result.user.User
-import co.anitrend.support.crunchyroll.feature.authentication.R
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.chip.Chip
+import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLoginBinding
+import co.anitrend.support.crunchyroll.feature.authentication.presenter.AuthPresenter
+import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.LoginViewModel
+import kotlinx.android.synthetic.main.login_anonymous_controls.view.*
 import org.koin.android.ext.android.inject
 
 class FragmentLogin : SupportFragment<User?, CrunchyCorePresenter, User?>() {
 
-    private lateinit var editLoginText: EditText
-    private lateinit var editPasswordText: EditText
-    private lateinit var buttonLogin: MaterialButton
-    private lateinit var buttonLoginSkip: Chip
-    private lateinit var supportStateLayout: SupportStateLayout
+    private lateinit var binding: FragmentLoginBinding
 
     /**
      * Should be created lazily through injection or lazy delegate
@@ -63,11 +55,15 @@ class FragmentLogin : SupportFragment<User?, CrunchyCorePresenter, User?>() {
                 onUpdateUserInterface()
         })
         supportViewModel.networkState?.observe(this, Observer {
-            supportStateLayout.setNetworkState(it)
+            binding.supportStateLayout.setNetworkState(it)
         })
         supportViewModel.refreshState?.observe(this, Observer {
-            supportStateLayout.setNetworkState(it)
+            binding.supportStateLayout.setNetworkState(it)
         })
+        with(binding) {
+            lifecycleOwner = this@FragmentLogin
+            viewModel = supportViewModel
+        }
     }
 
     /**
@@ -108,15 +104,11 @@ class FragmentLogin : SupportFragment<User?, CrunchyCorePresenter, User?>() {
      *
      * @return Return the View for the fragment's UI, or null.
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_login, container, false)?.apply {
-            editLoginText = findViewById(R.id.txt_input_email)
-            editPasswordText = findViewById(R.id.txt_input_password)
-            buttonLogin = findViewById(R.id.loginButton)
-            buttonLoginSkip = findViewById(R.id.skipLoginButton)
-            supportStateLayout = findViewById(R.id.view_switcher_login)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
+        FragmentLoginBinding.inflate(inflater, container, false).let {
+            binding = it
+            it.root
         }
-    }
 
     /**
      * Called immediately after [.onCreateView]
@@ -130,18 +122,18 @@ class FragmentLogin : SupportFragment<User?, CrunchyCorePresenter, User?>() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        buttonLogin.setOnClickListener {
+        binding.loginButton.setOnClickListener {
             onFetchDataInitialize()
         }
-        buttonLoginSkip.setOnClickListener {
+        binding.loginAnonymousControls.skipLoginButton.setOnClickListener {
             NavigationTargets.Main(context)
             activity?.finish()
         }
-        supportStateLayout.stateConfiguration = koinOf()
-        supportStateLayout.onWidgetInteraction = View.OnClickListener {
+        binding.supportStateLayout.stateConfiguration = koinOf()
+        binding.supportStateLayout.onWidgetInteraction = View.OnClickListener {
             supportViewModel.retry()
         }
-        supportStateLayout.setNetworkState(NetworkState.Success)
+        binding.supportStateLayout.setNetworkState(NetworkState.Success)
         setUpViewModelObserver()
     }
 
@@ -167,12 +159,10 @@ class FragmentLogin : SupportFragment<User?, CrunchyCorePresenter, User?>() {
      * @see [LoginViewModel.invoke]
      */
     override fun onFetchDataInitialize() {
-        supportViewModel(
-            LoginQuery(
-                account = editLoginText.editableText.toString(),
-                password = editPasswordText.editableText.toString()
-            )
-        )
+        supportPresenter.onSubmit(
+            supportViewModel.loginQuery,
+            binding
+        ) { supportViewModel(supportViewModel.loginQuery) }
     }
 
     companion object {

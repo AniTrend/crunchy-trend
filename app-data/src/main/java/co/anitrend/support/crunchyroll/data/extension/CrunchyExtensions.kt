@@ -51,8 +51,6 @@ fun CrunchyContainer<*>.composeWith(response: Response, responseBody: ResponseBo
 inline fun <reified T> typeTokenOf(): Type =
     object : TypeToken<T>() {}.type
 
-
-
 fun getCrunchyLocale(): String {
     val locale = Locale.getDefault()
     val language = locale.language

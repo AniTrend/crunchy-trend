@@ -17,6 +17,6 @@
 package co.anitrend.support.crunchyroll.domain.entities.query.authentication
 
 data class LoginQuery(
-    val account: String,
-    val password: String
+    var account: String,
+    var password: String
 )

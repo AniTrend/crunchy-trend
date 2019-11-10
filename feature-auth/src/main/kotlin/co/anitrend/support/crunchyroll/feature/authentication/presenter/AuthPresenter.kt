@@ -20,7 +20,9 @@ import android.content.Context
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
 import co.anitrend.support.crunchyroll.data.settings.IAuthenticationSettings
+import co.anitrend.support.crunchyroll.domain.entities.query.authentication.LoginQuery
 import co.anitrend.support.crunchyroll.domain.entities.result.user.User
+import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLoginBinding
 
 class AuthPresenter(
     context: Context,
@@ -31,5 +33,23 @@ class AuthPresenter(
         supportPreference.authenticatedUserId = user?.userId ?: IAuthenticationSettings.INVALID_USER_ID
         supportPreference.hasAccessToPremium = user?.premium != null
         supportPreference.isAuthenticated = user != null
+    }
+
+    /**
+     * validate form and invoke action on success
+     */
+    fun onSubmit(loginQuery: LoginQuery, binding: FragmentLoginBinding, onSuccess: () -> Unit) {
+        var errors = 0
+        if (loginQuery.account.isBlank()) {
+            binding.userEmailInputLayout.error = "Field cannot be empty"
+            errors += 1
+        }
+        if (loginQuery.password.isBlank()) {
+            binding.userPasswordInputLayout.error = "Field cannot be empty"
+            errors += 1
+        }
+
+        if (errors == 0)
+            onSuccess()
     }
 }

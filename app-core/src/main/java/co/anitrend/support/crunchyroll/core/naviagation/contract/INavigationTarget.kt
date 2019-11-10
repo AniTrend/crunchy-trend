@@ -17,5 +17,6 @@
 package co.anitrend.support.crunchyroll.core.naviagation.contract
 
 interface INavigationTarget {
+    val packageName: String
     val className: String
 }

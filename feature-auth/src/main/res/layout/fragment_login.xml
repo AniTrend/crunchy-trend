@@ -15,10 +15,18 @@
   ~    limitations under the License.
   -->
 
-<co.anitrend.arch.ui.view.widget.SupportStateLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/view_switcher_login"
+        xmlns:tools="http://schemas.android.com/tools">
+    
+    <data>
+        <variable
+                name="viewModel"
+                type="co.anitrend.support.crunchyroll.feature.authentication.viewmodel.LoginViewModel" />
+    </data>
+
+    <co.anitrend.arch.ui.view.widget.SupportStateLayout
+        android:id="@+id/supportStateLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -40,14 +48,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/xl_margin" />
 
-            <include layout="@layout/login_anonymous_controls" />
+            <include android:id="@+id/login_anonymous_controls"
+                    layout="@layout/login_anonymous_controls" />
 
             <Space
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/xl_margin" />
 
             <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/review_title_layout"
+                    android:id="@+id/user_email_input_layout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -62,7 +71,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:inputType="textEmailAddress|text"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:text="@={viewModel.loginQuery.account}"
+                        tools:text="John"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -71,11 +82,10 @@
                     android:layout_height="@dimen/xl_margin" />
 
             <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/user_password_layout"
+                    android:id="@+id/user_password_input_layout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/review_title_layout"
                     android:layout_marginStart="@dimen/spacing_lg"
                     android:layout_marginEnd="@dimen/spacing_lg"
                     android:hint="@string/hint_label_password"
@@ -88,7 +98,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:inputType="textPassword"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:text="@={viewModel.loginQuery.password}"
+                        tools:text="Doe"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -98,7 +110,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_below="@id/user_password_layout"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/lg_margin"
                     android:maxLines="1"
@@ -110,3 +121,5 @@
     </androidx.core.widget.NestedScrollView>
 
 </co.anitrend.arch.ui.view.widget.SupportStateLayout>
+
+</layout>

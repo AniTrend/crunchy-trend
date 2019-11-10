@@ -19,6 +19,7 @@ plugins {
     id("kotlin-kapt")
     id("kotlin-android")
     id("kotlin-android-extensions")
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 apply from: "../gradle/gradle-common-config.gradle"

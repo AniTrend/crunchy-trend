@@ -43,10 +43,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 app:imageUrl="@{entity}"
-                app:aspectRatio=".55"
+                app:aspectRatio=".57"
                 tools:src="@sample/franxx_banner.jpg" />
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_gravity="top|end"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_timelapse_24dp"/>
 
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <co.anitrend.arch.ui.view.text.SingleLineTextView
                 android:id="@+id/media_title"

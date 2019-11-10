@@ -17,7 +17,6 @@
 package co.anitrend.support.crunchyroll.feature.player.ui.fragment
 
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,11 +34,10 @@ import co.anitrend.support.crunchyroll.feature.player.R
 import co.anitrend.support.crunchyroll.feature.player.presenter.StreamPresenter
 import co.anitrend.support.crunchyroll.feature.player.viewmodel.MediaStreamViewModel
 import com.devbrackets.android.exomedia.ui.widget.VideoView
-import kotlinx.android.parcel.Parcelize
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FragmentMediaStream : SupportFragment<MediaStream?, CrunchyCorePresenter, List<MediaStream>?>() {
+class MediaStreamContent : SupportFragment<MediaStream?, CrunchyCorePresenter, List<MediaStream>?>() {
 
     /**
      * Should be created lazily through injection or lazy delegate
@@ -178,8 +176,8 @@ class FragmentMediaStream : SupportFragment<MediaStream?, CrunchyCorePresenter, 
     }
 
     companion object {
-        fun newInstance(bundle: Bundle?): FragmentMediaStream {
-            return FragmentMediaStream().apply {
+        fun newInstance(bundle: Bundle?): MediaStreamContent {
+            return MediaStreamContent().apply {
                 arguments = bundle
             }
         }

@@ -21,11 +21,14 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import co.anitrend.arch.core.viewmodel.SupportPagingViewModel
+import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
+import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
+import co.anitrend.support.crunchyroll.core.settings.common.locale.ILocaleSettings
 import co.anitrend.support.crunchyroll.feature.listing.viewmodel.MediaListingViewModel
 import co.anitrend.support.crunchyroll.data.extension.getCrunchyLocale
 import co.anitrend.support.crunchyroll.domain.entities.query.rss.RssQuery
@@ -37,7 +40,7 @@ import co.anitrend.support.crunchyroll.feature.listing.ui.adapter.RssMediaAdapte
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FragmentMediaFeedList : SupportFragmentPagedList<MediaListing, CrunchyCorePresenter, PagedList<MediaListing>>() {
+class MediaFeedContent : SupportFragmentPagedList<MediaListing, CrunchyCorePresenter, PagedList<MediaListing>>() {
 
     override val supportStateConfiguration by inject<SupportStateLayoutConfiguration>()
 
@@ -55,22 +58,17 @@ class FragmentMediaFeedList : SupportFragmentPagedList<MediaListing, CrunchyCore
      */
     override val supportViewModel by viewModel<MediaListingViewModel>()
 
-    override val supportViewAdapter =
+    override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         RssMediaAdapter(
             presenter = supportPresenter,
             clickListener = object : ItemClickListener<MediaListing> {
                 override fun onItemClick(target: View, data: Pair<Int, MediaListing?>) {
-                    val payload = NavigationTargets.MediaPlayer.Payload(
+                    val mediaPlayerPayload = NavigationTargets.MediaPlayer.Payload(
                         mediaId = data.second?.id ?: 0,
                         episodeThumbnail = data.second?.episodeThumbnail
                     )
                     NavigationTargets.MediaPlayer(
-                        target.context, Bundle().apply {
-                            putParcelable(
-                                NavigationTargets.MediaPlayer.PAYLOAD,
-                                payload
-                            )
-                        }
+                        target.context, mediaPlayerPayload
                     )
                 }
 
@@ -79,6 +77,7 @@ class FragmentMediaFeedList : SupportFragmentPagedList<MediaListing, CrunchyCore
                 }
             }
         )
+    }
 
     /**
      * Invoke view model observer to watch for changes
@@ -129,10 +128,4 @@ class FragmentMediaFeedList : SupportFragmentPagedList<MediaListing, CrunchyCore
     }
 
     override val columnSize: Int = R.integer.single_list_size
-
-    companion object {
-        fun newInstance(): FragmentMediaFeedList {
-            return FragmentMediaFeedList()
-        }
-    }
 }
