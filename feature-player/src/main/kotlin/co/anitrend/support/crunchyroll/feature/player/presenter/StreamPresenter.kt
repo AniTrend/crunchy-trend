@@ -19,8 +19,8 @@ package co.anitrend.support.crunchyroll.feature.player.presenter
 import android.content.Context
 import android.net.Uri
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.data.arch.StreamQualityContract
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
+import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyStreamQuality
 import co.anitrend.support.crunchyroll.domain.entities.result.media.MediaStream
 import co.anitrend.support.crunchyroll.feature.player.R
 import coil.Coil
@@ -60,11 +60,11 @@ class StreamPresenter(
     fun getOptimalStream(model: List<MediaStream>?): MediaStream? {
         if (model?.isEmpty() != true) {
             model?.find { stream ->
-                stream.quality == StreamQualityContract.LOW ||
-                        stream.quality == StreamQualityContract.MEDIUM
+                stream.quality == CrunchyStreamQuality.low.name ||
+                        stream.quality == CrunchyStreamQuality.mid.name
             }
             return model?.filterNot { stream ->
-                stream.quality == StreamQualityContract.LOW
+                stream.quality == CrunchyStreamQuality.low.name
             }?.first()
         }
         return null

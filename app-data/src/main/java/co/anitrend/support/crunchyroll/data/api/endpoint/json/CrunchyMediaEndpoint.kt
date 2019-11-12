@@ -20,7 +20,7 @@ import co.anitrend.arch.extension.util.SupportExtKeyStore
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.contract.JSON
 import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpointFactory
-import co.anitrend.support.crunchyroll.data.arch.MediaFieldsContract
+import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyMediaField
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.model.media.CrunchyMedia
 import co.anitrend.support.crunchyroll.data.model.stream.CrunchyStreamInfo
@@ -34,7 +34,7 @@ interface CrunchyMediaEndpoint {
     @GET("/info.${BuildConfig.apiExtension}.json")
     suspend fun getMediaInfo(
         @Query("media_id") mediaId: Int,
-        @Query("fields") mediaFields: String = MediaFieldsContract.mediaFields
+        @Query("fields") mediaFields: String = CrunchyMediaField.mediaFields
     ) : Response<CrunchyContainer<CrunchyMedia>>
 
     @JSON
@@ -49,7 +49,7 @@ interface CrunchyMediaEndpoint {
     @GET("/info.${BuildConfig.apiExtension}.json")
     suspend fun getStreamInfo(
         @Query("media_id") mediaId: Int,
-        @Query("fields") mediaFields: String = MediaFieldsContract.streamFields
+        @Query("fields") mediaFields: String = CrunchyMediaField.streamFields
     ) : Response<CrunchyContainer<CrunchyStreamInfo>>
 
 

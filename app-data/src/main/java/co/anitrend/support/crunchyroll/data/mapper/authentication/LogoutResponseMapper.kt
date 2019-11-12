@@ -60,7 +60,7 @@ class LogoutResponseMapper : CrunchyMapper<Any?, Any?>() {
                     NetworkState.Success
                 } else {
                     NetworkState.Error(
-                        heading = responseBody?.code.capitalizeWords(),
+                        heading = responseBody?.code?.name.capitalizeWords(),
                         message = responseBody?.message
                     )
                 }

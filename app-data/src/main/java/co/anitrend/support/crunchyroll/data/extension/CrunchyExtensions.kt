@@ -16,8 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.extension
 
-import co.anitrend.support.crunchyroll.data.arch.ResponseStatus
-import co.anitrend.support.crunchyroll.data.arch.ResponseStatusContract
+import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyResponseStatus
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyContainer
 import com.google.gson.reflect.TypeToken
 import okhttp3.Response
@@ -25,12 +24,12 @@ import okhttp3.ResponseBody
 import java.lang.reflect.Type
 import java.util.*
 
-fun ResponseStatus.toHttpCode() =
+fun CrunchyResponseStatus.toHttpCode() =
     when (this) {
-        ResponseStatusContract.BAD_REQUEST -> 400
-        ResponseStatusContract.BAD_SESSION -> 401
-        ResponseStatusContract.OBJECT_NOT_FOUND -> 404
-        ResponseStatusContract.FORBIDDEN -> 403
+        CrunchyResponseStatus.bad_request -> 400
+        CrunchyResponseStatus.bad_session -> 401
+        CrunchyResponseStatus.object_not_found -> 404
+        CrunchyResponseStatus.forbidden -> 403
         else -> 200
     }
 

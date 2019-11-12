@@ -16,24 +16,11 @@
 
 package co.anitrend.support.crunchyroll.data.model.core
 
-import co.anitrend.support.crunchyroll.data.arch.ResponseStatus
-import co.anitrend.support.crunchyroll.data.arch.ResponseStatusContract
+import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyResponseStatus
 
 data class CrunchyContainer<D>(
-    val code: ResponseStatus,
+    val code: CrunchyResponseStatus,
     val error: Boolean,
     val data: D?,
     val message: String?
-) {
-    fun isBadSession() =
-        code == ResponseStatusContract.BAD_SESSION
-
-    fun isBadRequest() =
-        code == ResponseStatusContract.BAD_REQUEST
-
-    fun isObjectNotFound() =
-        code == ResponseStatusContract.OBJECT_NOT_FOUND
-
-    fun isForbidden() =
-        code == ResponseStatusContract.FORBIDDEN
-}
+)

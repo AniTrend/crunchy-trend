@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.model.collection.contract
 
-import co.anitrend.support.crunchyroll.data.arch.CrunchyMediaType
+import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyMediaType
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyImageSet
 
 interface ICrunchyCollection {

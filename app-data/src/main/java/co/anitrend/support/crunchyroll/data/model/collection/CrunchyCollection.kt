@@ -19,7 +19,7 @@ package co.anitrend.support.crunchyroll.data.model.collection
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import co.anitrend.support.crunchyroll.data.arch.CrunchyMediaType
+import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyMediaType
 import co.anitrend.support.crunchyroll.data.model.collection.contract.ICrunchyCollection
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyImageSet
 

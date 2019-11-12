@@ -14,18 +14,7 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.model.series.contract
+package co.anitrend.support.crunchyroll.data.arch
 
-import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyMediaType
-import co.anitrend.support.crunchyroll.data.model.core.CrunchyImageSet
-
-interface ICrunchySeries {
-
-    val media_type: CrunchyMediaType
-    val series_id: Int
-    val name: String
-    val description: String
-    val url: String
-    val landscape_image: CrunchyImageSet?
-    val portrait_image: CrunchyImageSet?
-}
+typealias ISO8601Date = String
+typealias RCF822Date = String

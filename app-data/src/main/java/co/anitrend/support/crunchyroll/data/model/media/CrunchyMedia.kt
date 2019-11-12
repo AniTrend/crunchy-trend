@@ -20,8 +20,8 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import co.anitrend.support.crunchyroll.data.arch.CrunchyMediaType
 import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
+import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyMediaType
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyImageSet
 import co.anitrend.support.crunchyroll.data.model.media.contract.ICrunchyMedia
 

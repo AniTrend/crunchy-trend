@@ -203,28 +203,28 @@ private val sourceModule = module {
 }
 
 private val repositoryModule = module {
-    single {
+    factory {
         NewsRepository(
             source = get<NewsSourceImpl>()
         )
     }
-    single {
+    factory {
         MediaListingRepository(
             source = get<MediaListingSourceImpl>()
         )
     }
-    single {
+    factory {
         AuthenticationRepository(
             loginSource = get<LoginSourceImpl>(),
             logoutSource = get<LogoutSourceImpl>()
         )
     }
-    single {
+    factory {
         MediaStreamRepository(
             source = get<MediaStreamSourceImpl>()
         )
     }
-    single {
+    factory {
         SessionRepository(
             coreSource = get<CoreSessionSourceImpl>(),
             normalSource = get<NormalSessionSourceImpl>(),

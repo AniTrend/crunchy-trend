@@ -96,7 +96,7 @@ abstract class CrunchyMapper<S, D> : SupportResponseMapper<S, D>(),
                 } else {
                     networkState.postValue(
                         NetworkState.Error(
-                            heading = responseBody?.code.capitalizeWords(),
+                            heading = responseBody?.code?.name.capitalizeWords(),
                             message = responseBody?.message
                         )
                     )

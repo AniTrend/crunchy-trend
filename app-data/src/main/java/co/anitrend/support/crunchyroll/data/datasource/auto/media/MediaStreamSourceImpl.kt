@@ -19,7 +19,7 @@ package co.anitrend.support.crunchyroll.data.datasource.auto.media
 import androidx.lifecycle.LiveData
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.support.crunchyroll.data.api.endpoint.json.CrunchyMediaEndpoint
-import co.anitrend.support.crunchyroll.data.arch.MediaFieldsContract
+import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyMediaField
 import co.anitrend.support.crunchyroll.data.datasource.auto.media.contract.MediaStreamSource
 import co.anitrend.support.crunchyroll.data.mapper.media.MediaStreamResponseMapper
 import co.anitrend.support.crunchyroll.data.transformer.MediaStreamTransformer
@@ -39,7 +39,7 @@ class MediaStreamSourceImpl(
         val deferred = async {
             endpoint.getStreamInfo(
                 mediaId = query.mediaId,
-                mediaFields = MediaFieldsContract.streamFields
+                mediaFields = CrunchyMediaField.streamFields
             )
         }
 

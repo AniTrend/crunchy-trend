@@ -17,16 +17,10 @@
 
 <resources>
     <color name="colorItemNavBackgroundSelected">#D9E2E2E2</color>
-    <!--<color name="colorWhite">#fafafa</color>
-    <color name="colorAccent">#FFC107</color>-->
+    <color name="colorWhite">#fafafa</color>
+    <color name="colorAccent">#F9A825</color>
 
-    <color name="colorAccent">#000</color>
+    <!--<color name="colorAccent">#000</color>-->
 
     <color name="material_300">#E0E0E0</color>
-
-    <color name="nav_divider">#e0e0e0</color>
-
-    <color name="colorWhite">#FFF</color>
-    <color name="colorPrimary">#F2F5FB</color>
-    <color name="colorPrimaryDark">#F2F5FB</color>
 </resources>

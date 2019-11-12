@@ -29,7 +29,7 @@ object MediaStreamTransformer : ISupportMapperHelper<CrunchyStreamInfo?, List<Me
     override fun transform(source: CrunchyStreamInfo?): List<MediaStream>? {
         return source?.stream_data?.streams?.map {
             MediaStream(
-                quality = it.quality,
+                quality = it.quality.name,
                 url = it.url,
                 playHead = source.playhead,
                 expires = it.expires.iso8601ToUnixTime()

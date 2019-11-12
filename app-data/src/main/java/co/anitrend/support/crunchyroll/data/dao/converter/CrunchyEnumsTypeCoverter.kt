@@ -14,18 +14,20 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.model.series.contract
+package co.anitrend.support.crunchyroll.data.dao.converter
 
+import androidx.room.TypeConverter
+import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyAccessType
 import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyMediaType
-import co.anitrend.support.crunchyroll.data.model.core.CrunchyImageSet
 
-interface ICrunchySeries {
+class CrunchyEnumsTypeCoverter {
 
-    val media_type: CrunchyMediaType
-    val series_id: Int
-    val name: String
-    val description: String
-    val url: String
-    val landscape_image: CrunchyImageSet?
-    val portrait_image: CrunchyImageSet?
+    @TypeConverter fun fromAccessType(value: CrunchyAccessType?) = value?.ordinal
+    @TypeConverter fun toAccessType(value: Int?) = value?.toEnum<CrunchyAccessType>()
+
+    @TypeConverter fun fromMediaType(value: CrunchyMediaType?) = value?.ordinal
+    @TypeConverter fun toMediaType(value: Int?) = value?.toEnum<CrunchyMediaType>()
+
+
+    private inline fun <reified T : Enum<T>> Int.toEnum(): T = enumValues<T>()[this]
 }

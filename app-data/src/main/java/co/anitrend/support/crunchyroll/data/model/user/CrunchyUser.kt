@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.model.user
 
-import co.anitrend.support.crunchyroll.data.arch.AccessType
+import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyAccessType
 
 data class CrunchyUser(
     val user_id: Int,
@@ -26,5 +26,5 @@ data class CrunchyUser(
     val last_name: String?,
     // anime|drama|manga
     val premium: String?,
-    val access_type: AccessType?
+    val access_type: CrunchyAccessType?
 )

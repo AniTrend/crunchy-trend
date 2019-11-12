@@ -16,36 +16,52 @@
 
 package co.anitrend.support.crunchyroll.data.api.endpoint.json
 
-import co.anitrend.arch.extension.util.SupportExtKeyStore
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.contract.JSON
 import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpointFactory
-import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyMediaType
 import co.anitrend.support.crunchyroll.data.model.core.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.model.series.CrunchySeries
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface CrunchySeriesEndpoint {
+interface CrunchyTrackingEndpoint {
 
     @JSON
-    @GET("/info.${BuildConfig.apiExtension}.json")
-    suspend fun getSeriesInfo(
+    @GET("/add_to_queue.${BuildConfig.apiExtension}.json")
+    suspend fun addToQueue(
         @Query("series_id") seriesId: Int?
-    ) : Response<CrunchyContainer<CrunchySeries>>
+    ) : Response<CrunchyContainer<Any>>
 
     @JSON
-    @GET("/autocomplete.${BuildConfig.apiExtension}.json")
-    suspend fun getSeriesAutoComplete(
-        @Query("q") query: String?,
-        @Query("media_types") mediaTypes: String = CrunchyMediaType.anime.name,
-        @Query("offset") offset: Int,
-        @Query("limit") limit: Int = SupportExtKeyStore.pagingLimit
-    ) : Response<CrunchyContainer<List<CrunchySeries>>>
+    @GET("/remove_from_queue.${BuildConfig.apiExtension}.json")
+    suspend fun removeFromQueue(
+        @Query("series_id") seriesId: Int?
+    ) : Response<CrunchyContainer<Any>>
 
-    companion object : CrunchyEndpointFactory<CrunchySeriesEndpoint>(
-        endpoint = CrunchySeriesEndpoint::class,
+    @JSON
+    @GET("/queue.${BuildConfig.apiExtension}.json")
+    suspend fun getQueue(
+        @Query("series_id") seriesId: Int?
+    ) : Response<CrunchyContainer<Any>>
+
+    @JSON
+    @GET("/recently_watched.${BuildConfig.apiExtension}.json")
+    suspend fun getRecentlyWatched(
+        @Query("series_id") seriesId: Int?
+    ) : Response<CrunchyContainer<Any>>
+
+    @JSON
+    @GET("/log.${BuildConfig.apiExtension}.json")
+    suspend fun savePlayProgress(
+        @Query("event") event: String = "playback_status",
+        @Query("playhead") playHead: Int,
+        @Query("media_id") mediaId: Int?
+    ) : Response<CrunchyContainer<Any>>
+
+
+    companion object : CrunchyEndpointFactory<CrunchyTrackingEndpoint>(
+        endpoint = CrunchyTrackingEndpoint::class,
         url = BuildConfig.apiUrl
     )
 }
