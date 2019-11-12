@@ -23,6 +23,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.ui.fragment.SupportFragment
+import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
@@ -127,7 +128,7 @@ class FragmentLogin : SupportFragment<User?, CrunchyCorePresenter, User?>() {
         }
         binding.loginAnonymousControls.skipLoginButton.setOnClickListener {
             NavigationTargets.Main(context)
-            activity?.finish()
+            activity?.closeScreen()
         }
         binding.supportStateLayout.stateConfiguration = koinOf()
         binding.supportStateLayout.onWidgetInteraction = View.OnClickListener {
@@ -146,7 +147,7 @@ class FragmentLogin : SupportFragment<User?, CrunchyCorePresenter, User?>() {
     override fun onUpdateUserInterface() {
         supportPresenter.onLoginStateChange(supportViewModel.model.value)
         NavigationTargets.Main(context)
-        activity?.finish()
+        activity?.closeScreen()
     }
 
     /**

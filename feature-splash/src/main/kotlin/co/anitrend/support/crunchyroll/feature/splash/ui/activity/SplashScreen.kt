@@ -19,6 +19,7 @@ package co.anitrend.support.crunchyroll.feature.splash.ui.activity
 import android.os.Bundle
 import androidx.lifecycle.Lifecycle
 import co.anitrend.arch.extension.isStateAtLeast
+import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
@@ -83,7 +84,7 @@ class SplashScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
                     NavigationTargets.Main(applicationContext)
                 else
                     NavigationTargets.Authentication(applicationContext)
-                finish()
+                closeScreen()
             }
         }
     }

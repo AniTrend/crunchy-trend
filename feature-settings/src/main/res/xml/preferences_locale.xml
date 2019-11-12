@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~    Copyright 2019 AniTrend
   ~
@@ -14,15 +15,15 @@
   ~    limitations under the License.
   -->
 
-<resources>
-    <string-array name="preference_locale_entries">
-        <item>Follow system</item>
-        <item>English (UK)</item>
-        <item>French (France)</item>
-    </string-array>
-    <string-array name="preference_locale_values">
-        <item>AUTOMATIC</item>
-        <item>ENGLISH_UK</item>
-        <item>FRENCH_FRANCE</item>
-    </string-array>
-</resources>
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ListPreference
+            app:defaultValue="AUTOMATIC"
+            app:icon="@drawable/ic_speaker_notes_24dp"
+            app:entries="@array/preference_locale_entries"
+            app:entryValues="@array/preference_locale_values"
+            app:key="@string/settings_configuration_locale"
+            app:title="@string/preference_title_locale_config"
+            app:useSimpleSummaryProvider="true" />
+
+</androidx.preference.PreferenceScreen>

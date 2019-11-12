@@ -14,38 +14,25 @@
   ~    limitations under the License.
   -->
 
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/messages_header">
+    <Preference
+            app:title="@string/preference_title_accounts"
+            app:summary="@string/preference_summary_accounts"
+            app:icon="@drawable/ic_account"
+            app:key="@string/preference_key_accounts"
+            app:allowDividerBelow="true"/>
 
-        <EditTextPreference
-                app:key="signature"
-                app:title="@string/signature_title"
-                app:useSimpleSummaryProvider="true" />
+    <Preference
+            app:title="@string/preference_title_locale"
+            app:summary="@string/preference_summary_locale"
+            app:icon="@drawable/ic_language"
+            app:fragment="co.anitrend.support.crunchyroll.feature.settings.ui.fragment.LocaleContentScreen"/>
 
-        <ListPreference
-                app:defaultValue="reply"
-                app:entries="@array/reply_entries"
-                app:entryValues="@array/reply_values"
-                app:key="reply"
-                app:title="@string/reply_title"
-                app:useSimpleSummaryProvider="true" />
+    <Preference
+            app:title="@string/preference_title_privacy"
+            app:summary="@string/preference_summary_privacy"
+            app:icon="@drawable/ic_privacy"
+            app:fragment="co.anitrend.support.crunchyroll.feature.settings.ui.fragment.PrivacyContentScreen"/>
 
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/sync_header">
-
-        <SwitchPreferenceCompat
-                app:key="sync"
-                app:title="@string/sync_title" />
-
-        <SwitchPreferenceCompat
-                app:dependency="sync"
-                app:key="attachment"
-                app:summaryOff="@string/attachment_summary_off"
-                app:summaryOn="@string/attachment_summary_on"
-                app:title="@string/attachment_title" />
-
-    </PreferenceCategory>
-
-</PreferenceScreen>
+</androidx.preference.PreferenceScreen>

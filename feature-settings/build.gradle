@@ -47,6 +47,8 @@ dependencies {
     implementation project(':app-data')
     implementation project(':app-domain')
 
+    implementation project(':android-core')
+
     /** Material Design */
     implementation "com.google.android.material:material:$material"
 

@@ -32,6 +32,10 @@ android {
     }
 }
 
+ext {
+    palette = '1.0.0'
+}
+
 dependencies {
     /** Platform Dependencies */
     implementation project(":support-domain")
@@ -45,6 +49,8 @@ dependencies {
 
     /** Material Design */
     implementation "com.google.android.material:material:$material"
+    implementation "androidx.palette:palette:$palette"
+    implementation "androidx.palette:palette-ktx:$palette"
 
     /** Lifecycle Components*/
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleX"

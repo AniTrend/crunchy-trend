@@ -28,6 +28,7 @@ import co.anitrend.arch.ui.activity.SupportActivity
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.arch.ui.util.SupportUiKeyStore
 import co.anitrend.support.crunchyroll.R
+import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.naviagation.extensions.forFragment
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
@@ -125,7 +126,7 @@ class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(), NavigationV
             }
             R.id.action_login -> {
                 NavigationTargets.Authentication(applicationContext)
-                finish()
+                closeScreen()
                 return true
             }
         }

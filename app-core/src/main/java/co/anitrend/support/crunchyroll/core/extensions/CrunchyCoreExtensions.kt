@@ -40,6 +40,10 @@ fun CrunchyActivity<*, *>.recreateModules() {
     }.exceptionOrNull()?.printStackTrace()
 }
 
+fun FragmentActivity?.closeScreen() {
+    this?.finishAfterTransition()
+}
+
 /**
  * Creates a default dialog with a lifecycle already attached to it and will not dismiss
  * when the user touches outside the view
