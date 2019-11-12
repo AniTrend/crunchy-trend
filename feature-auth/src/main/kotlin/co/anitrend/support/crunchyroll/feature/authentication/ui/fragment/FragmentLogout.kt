@@ -98,11 +98,11 @@ class FragmentLogout : SupportFragment<Boolean, CrunchyCorePresenter, Boolean>()
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.stateLayout.stateConfiguration = koinOf()
-        binding.stateLayout.onWidgetInteraction = View.OnClickListener {
+        binding.supportStateLayout.stateConfiguration = koinOf()
+        binding.supportStateLayout.onWidgetInteraction = View.OnClickListener {
             supportViewModel.retry()
         }
-        binding.stateLayout.setNetworkState(NetworkState.Success)
+        binding.supportStateLayout.setNetworkState(NetworkState.Success)
         binding.userLogoutButton.setOnClickListener {
             onFetchDataInitialize()
         }
@@ -122,10 +122,10 @@ class FragmentLogout : SupportFragment<Boolean, CrunchyCorePresenter, Boolean>()
             }
         })
         supportViewModel.networkState?.observe(this, Observer {
-            binding.stateLayout.setNetworkState(it)
+            binding.supportStateLayout.setNetworkState(it)
         })
         supportViewModel.refreshState?.observe(this, Observer {
-            binding.stateLayout.setNetworkState(it)
+            binding.supportStateLayout.setNetworkState(it)
         })
     }
 
@@ -171,6 +171,14 @@ class FragmentLogout : SupportFragment<Boolean, CrunchyCorePresenter, Boolean>()
      */
     override fun onFetchDataInitialize() {
         supportViewModel(null)
+    }
+
+    override fun hasBackPressableAction(): Boolean {
+        if (binding.supportStateLayout.isError) {
+            binding.supportStateLayout.setNetworkState(NetworkState.Success)
+            return true
+        }
+        return super.hasBackPressableAction()
     }
 
 

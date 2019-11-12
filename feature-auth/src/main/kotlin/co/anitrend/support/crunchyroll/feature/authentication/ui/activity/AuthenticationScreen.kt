@@ -25,14 +25,10 @@ import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.authentication.R
 import co.anitrend.support.crunchyroll.feature.authentication.koin.injectFeatureModules
-import com.google.android.material.appbar.MaterialToolbar
+import kotlinx.android.synthetic.main.activity_auth.*
 import org.koin.android.ext.android.inject
 
 class AuthenticationScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
-
-    private val supportToolbar by lazy {
-        findViewById<MaterialToolbar>(R.id.materialToolbar)
-    }
 
     /**
      * Should be created lazily through injection or lazy delegate
@@ -44,7 +40,7 @@ class AuthenticationScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
-        setSupportActionBar(supportToolbar)
+        setSupportActionBar(bottomAppBar)
     }
 
     /**

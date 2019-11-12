@@ -16,8 +16,12 @@
 
 <resources>
     <style name="AppTheme" parent="SupportTheme.AppTheme">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:colorAccent">@color/colorAccent</item>
         <item name="android:windowAnimationStyle">@style/SupportTheme.WindowAnimationStyle</item>
+
+        <item name="android:windowBackground">@color/colorPrimary</item>
 
         <item name="md_color_button_text">@color/colorAccent</item>
     </style>

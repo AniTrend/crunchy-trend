@@ -18,11 +18,15 @@ package co.anitrend.support.crunchyroll.core.koin
 
 import co.anitrend.arch.extension.util.contract.ISupportDateHelper
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
+import co.anitrend.core.util.theme.ThemeUtil
 import co.anitrend.support.crunchyroll.core.R
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
 import co.anitrend.support.crunchyroll.core.util.config.ConfigurationUtil
+import co.anitrend.support.crunchyroll.core.util.locale.SessionLocaleProviderHelper
+import co.anitrend.support.crunchyroll.core.util.locale.LocaleUtil
 import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper
+import co.anitrend.support.crunchyroll.data.util.ICrunchySessionLocale
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.binds
 import org.koin.dsl.module
@@ -53,6 +57,24 @@ private val coreModule = module {
     }
 }
 
+private val configurationModule = module {
+    single {
+        LocaleUtil(
+            settings = get()
+        )
+    }
+    single {
+        ThemeUtil(
+            settings = get()
+        )
+    }
+    factory<ICrunchySessionLocale> {
+        SessionLocaleProviderHelper(
+            localeUtil = get()
+        )
+    }
+}
+
 private val presenterModule = module {
     factory {
         CrunchyCorePresenter(
@@ -62,4 +84,4 @@ private val presenterModule = module {
     }
 }
 
-val coreModules = listOf(coreModule, presenterModule)
+val coreModules = listOf(coreModule, configurationModule, presenterModule)

@@ -23,10 +23,6 @@ import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.fragment.app.commit
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
-import androidx.navigation.ui.setupWithNavController
-import co.anitrend.arch.core.viewmodel.SupportPagingViewModel
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.ui.activity.SupportActivity
 import co.anitrend.arch.ui.fragment.SupportFragment
@@ -78,14 +74,9 @@ class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(), NavigationV
      * @param
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        bottomAppBar.apply {
-            setNavigationOnClickListener {
-                bottomDrawerBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-            }
-        }
+
         floatingShortcutButton.setOnClickListener {
-            NavigationTargets.Authentication(applicationContext)
-            finish()
+            bottomDrawerBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
         bottomNavigationView.apply {
             setNavigationItemSelectedListener(this@MainScreen)
@@ -128,6 +119,15 @@ class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(), NavigationV
                 Toast.makeText(this, "onMenuItemClick", Toast.LENGTH_SHORT).show()
                 return true
             }
+            R.id.action_settings -> {
+                NavigationTargets.Settings(applicationContext)
+                return true
+            }
+            R.id.action_login -> {
+                NavigationTargets.Authentication(applicationContext)
+                finish()
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -143,7 +143,6 @@ class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(), NavigationV
     private fun onNavigate(@IdRes menu: Int) {
         var supportFragment: SupportFragment<*, *, *>? = null
         when (menu) {
-            R.id.nav_contact -> Toast.makeText(this@MainScreen, "Contact", Toast.LENGTH_SHORT).show()
             R.id.nav_show_latest -> {
                 selectedTitle = R.string.nav_shows
                 supportFragment = NavigationTargets.Listing.forFragment()

@@ -81,7 +81,8 @@ private val networkModule = module {
             unblockSessionUseCase = get<UnblockSessionUseCaseImpl>(),
             coreSessionUseCase = get<CoreSessionUseCaseImpl>(),
             sessionDao = get<CrunchyDatabase>().crunchySessionDao(),
-            sessionCoreDao = get<CrunchyDatabase>().crunchySessionCoreDao()
+            sessionCoreDao = get<CrunchyDatabase>().crunchySessionCoreDao(),
+            sessionLocale = get()
         )
     }
     single {

@@ -44,7 +44,7 @@
                 android:layout_height="0dp"
                 app:imageUrl="@{entity}"
                 app:aspectRatio=".57"
-                tools:src="@sample/franxx_banner.jpg" />
+                tools:src="@sample/franxx_banner.png" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_gravity="top|end"

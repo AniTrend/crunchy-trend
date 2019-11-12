@@ -54,7 +54,11 @@ abstract class CrunchyApplication : Application(), Configuration.Provider {
             allowHardware(true)
             okHttpClient {
                 OkHttpClient.Builder()
-                    .cache(CoilUtils.createDefaultCache(this@CrunchyApplication))
+                    .cache(
+                        CoilUtils.createDefaultCache(
+                            this@CrunchyApplication
+                        )
+                    )
                     .build()
             }
         }
@@ -76,9 +80,7 @@ abstract class CrunchyApplication : Application(), Configuration.Provider {
      */
     protected open fun applyNightMode() {
         // apply application theme on application instance
-        ThemeUtil(
-            settings = koinOf()
-        ).applyNightMode()
+        koinOf<ThemeUtil>().applyNightMode()
     }
 
     /**

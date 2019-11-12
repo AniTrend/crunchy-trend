@@ -37,15 +37,4 @@
         </menu>
     </item>
 
-    <item android:title="@string/nav_header_support">
-        <menu>
-            <group android:id="@+id/nav_group_support">
-                <item
-                    android:id="@+id/nav_contact"
-                    android:icon="@drawable/ic_email_24dp"
-                    android:title="@string/nav_contact" />
-            </group>
-        </menu>
-    </item>
-
 </menu>

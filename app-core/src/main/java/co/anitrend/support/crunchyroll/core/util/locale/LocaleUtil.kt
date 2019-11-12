@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package co.anitrend.core.util.locale
+package co.anitrend.support.crunchyroll.core.util.locale
 
 import android.content.Context
 import android.content.res.Configuration
@@ -23,10 +23,7 @@ import co.anitrend.support.crunchyroll.core.settings.common.locale.ILocaleSettin
 import co.anitrend.support.crunchyroll.core.util.locale.AniTrendLocale
 import java.util.*
 
-class LocaleUtil(
-    private val context: Context,
-    private val settings: ILocaleSettings
-) {
+class LocaleUtil(private val settings: ILocaleSettings) {
 
     val locale: Locale
         get() {
@@ -35,7 +32,7 @@ class LocaleUtil(
             return getPersonalizedLocale()
         }
 
-    internal fun applyApplicationLocale() {
+    internal fun applyApplicationLocale(context: Context) {
         Locale.setDefault(locale)
         val resources: Resources = context.resources
         val configuration = Configuration(resources.configuration)

@@ -19,9 +19,10 @@ package co.anitrend.support.crunchyroll.core.util.config
 import android.content.Intent
 import co.anitrend.support.crunchyroll.core.util.config.contract.IConfigurationUtil
 import co.anitrend.support.crunchyroll.core.util.locale.AniTrendLocale
-import co.anitrend.core.util.locale.LocaleUtil
+import co.anitrend.support.crunchyroll.core.util.locale.LocaleUtil
 import co.anitrend.support.crunchyroll.core.util.theme.AniTrendTheme
 import co.anitrend.core.util.theme.ThemeUtil
+import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.core.settings.common.IConfigurationSettings
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 
@@ -46,8 +47,8 @@ class ConfigurationUtil(
     override fun onCreate(activity: CrunchyActivity<*, *>) {
         applicationTheme = settings.theme
         applicationLocale = settings.locale
-        LocaleUtil(activity, settings).applyApplicationLocale()
-        ThemeUtil(settings).applyApplicationTheme(activity)
+        koinOf<LocaleUtil>().applyApplicationLocale(activity)
+        koinOf<ThemeUtil>().applyApplicationTheme(activity)
     }
 
     /**

@@ -165,6 +165,14 @@ class FragmentLogin : SupportFragment<User?, CrunchyCorePresenter, User?>() {
         ) { supportViewModel(supportViewModel.loginQuery) }
     }
 
+    override fun hasBackPressableAction(): Boolean {
+        if (binding.supportStateLayout.isError) {
+            binding.supportStateLayout.setNetworkState(NetworkState.Success)
+            return true
+        }
+        return super.hasBackPressableAction()
+    }
+
     companion object {
         fun newInstance(): FragmentLogin {
             return FragmentLogin()

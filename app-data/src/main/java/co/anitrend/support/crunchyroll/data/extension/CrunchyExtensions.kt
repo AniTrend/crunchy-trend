@@ -51,9 +51,9 @@ fun CrunchyContainer<*>.composeWith(response: Response, responseBody: ResponseBo
 inline fun <reified T> typeTokenOf(): Type =
     object : TypeToken<T>() {}.type
 
-fun getCrunchyLocale(): String {
-    val locale = Locale.getDefault()
-    val language = locale.language
-    val country = locale.country
+/**
+ * Uses system locale to generate a locale string which crunchyroll can use
+ */
+fun Locale.toCrunchyLocale(): String {
     return "$language$country"
 }

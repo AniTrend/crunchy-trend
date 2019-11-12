@@ -23,12 +23,29 @@
         android:layout_height="match_parent"
         tools:context=".ui.activity.AuthenticationScreen">
 
-    <include layout="@layout/layout_app_bar" />
-
     <FrameLayout
             android:id="@+id/contentFrame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottomAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:hapticFeedbackEnabled="true"
+            android:backgroundTint="@color/primaryColor"
+            app:fabAlignmentMode="end"
+            app:hideOnScroll="true"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingShortcutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_anchorGravity="end|right"
+            app:layout_anchor="@id/bottomAppBar"
+            app:backgroundTint="@color/material_300"
+            app:srcCompat="@drawable/ic_help_white_24dp"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

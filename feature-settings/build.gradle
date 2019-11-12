@@ -25,6 +25,8 @@ plugins {
 apply from: "../gradle/gradle-common-config.gradle"
 apply from: "../gradle/gradle-common-config-app.gradle"
 apply from: "../gradle/gradle-common-dependencies.gradle"
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     defaultConfig {
@@ -58,4 +60,5 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleX"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleX"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycleStateX"
+    implementation 'androidx.preference:preference:1.1.0'
 }

@@ -28,9 +28,9 @@ import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.core.settings.common.locale.ILocaleSettings
+import co.anitrend.support.crunchyroll.data.extension.toCrunchyLocale
+import co.anitrend.support.crunchyroll.data.util.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.feature.listing.viewmodel.MediaListingViewModel
-import co.anitrend.support.crunchyroll.data.extension.getCrunchyLocale
 import co.anitrend.support.crunchyroll.domain.entities.query.rss.RssQuery
 import co.anitrend.support.crunchyroll.domain.entities.result.rss.MediaListing
 import co.anitrend.support.crunchyroll.feature.listing.R
@@ -120,9 +120,10 @@ class MediaFeedContent : SupportFragmentPagedList<MediaListing, CrunchyCorePrese
      * @see [SupportPagingViewModel.requestBundleLiveData]
      */
     override fun onFetchDataInitialize() {
+        val currentLocale = koinOf<ICrunchySessionLocale>().sessionLocale
         supportViewModel(
             RssQuery(
-                language = getCrunchyLocale()
+                language = currentLocale.toCrunchyLocale()
             )
         )
     }

@@ -1,4 +1,4 @@
-include ':app', ':feature-auth', ':feature-splash', ':feature-player', ':feature-news', ':feature-listing', ':feature-settings', ':feature-search', ':feature-discover', ':feature-media',
+include ':app', ':feature-auth', ':feature-splash', ':feature-player', ':feature-news', ':feature-listing', ':feature-settings', ':feature-search', ':feature-discover', ':feature-media', ':android-core',
         ':support-ext',
         ':support-core',
         ':support-data',

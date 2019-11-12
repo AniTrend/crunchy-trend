@@ -20,10 +20,11 @@ import co.anitrend.arch.data.auth.contract.ISupportAuthentication
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.datasource.local.api.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.datasource.local.api.CrunchySessionDao
-import co.anitrend.support.crunchyroll.data.extension.getCrunchyLocale
+import co.anitrend.support.crunchyroll.data.extension.toCrunchyLocale
 import co.anitrend.support.crunchyroll.data.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.data.transformer.CoreSessionTransformer
 import co.anitrend.support.crunchyroll.data.transformer.SessionTransformer
+import co.anitrend.support.crunchyroll.data.util.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.domain.entities.result.session.Session
 import co.anitrend.support.crunchyroll.domain.interactors.session.CoreSessionUseCase
 import co.anitrend.support.crunchyroll.domain.interactors.session.UnblockSessionUseCase
@@ -36,7 +37,8 @@ class CrunchyAuthentication(
     private val unblockSessionUseCase: UnblockSessionUseCase,
     private val sessionDao: CrunchySessionDao,
     private val sessionCoreDao: CrunchySessionCoreDao,
-    private val settings: IAuthenticationSettings
+    private val settings: IAuthenticationSettings,
+    private val sessionLocale: ICrunchySessionLocale
 ): ISupportAuthentication {
 
     override val moduleTag: String = javaClass.simpleName
@@ -102,7 +104,7 @@ class CrunchyAuthentication(
     private fun buildRequest(request: Request, session: Session?): Request.Builder {
         val originalHttpUrl = request.url
         val urlBuilder = originalHttpUrl.newBuilder()
-            .addEncodedQueryParameter(LOCALE, getCrunchyLocale())
+            .addEncodedQueryParameter(LOCALE, sessionLocale.sessionLocale.toCrunchyLocale())
 
         if (session != null) {
             urlBuilder

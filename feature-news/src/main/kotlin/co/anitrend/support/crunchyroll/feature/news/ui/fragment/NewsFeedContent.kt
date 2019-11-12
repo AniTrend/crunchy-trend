@@ -24,8 +24,10 @@ import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
+import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.data.extension.getCrunchyLocale
+import co.anitrend.support.crunchyroll.data.extension.toCrunchyLocale
+import co.anitrend.support.crunchyroll.data.util.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.domain.entities.query.rss.RssQuery
 import co.anitrend.support.crunchyroll.domain.entities.result.rss.News
 import co.anitrend.support.crunchyroll.feature.news.R
@@ -124,9 +126,10 @@ class NewsFeedContent : SupportFragmentPagedList<News, CrunchyCorePresenter, Pag
      * @see [SupportViewModel.requestBundleLiveData]
      */
     override fun onFetchDataInitialize() {
+        val currentLocale = koinOf<ICrunchySessionLocale>().sessionLocale
         supportViewModel(
             RssQuery(
-                language = getCrunchyLocale()
+                language = currentLocale.toCrunchyLocale()
             )
         )
     }

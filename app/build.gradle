@@ -45,6 +45,8 @@ dependencies {
     implementation project(':app-data')
     implementation project(':app-domain')
 
+    implementation project(':android-core')
+
     /** Runtime features */
     implementation project(':feature-auth')
     implementation project(':feature-listing')
