@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package co.anitrend.core.util.theme
+package co.anitrend.support.crunchyroll.core.util.theme
 
 import android.os.Build
 import android.view.View

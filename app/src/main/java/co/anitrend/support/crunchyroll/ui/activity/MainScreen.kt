@@ -117,7 +117,7 @@ class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(), NavigationV
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_search -> {
-                Toast.makeText(this, "onMenuItemClick", Toast.LENGTH_SHORT).show()
+                NavigationTargets.Search(applicationContext)
                 return true
             }
             R.id.action_settings -> {

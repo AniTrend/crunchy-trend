@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.core.koin
 
 import co.anitrend.arch.extension.util.contract.ISupportDateHelper
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
-import co.anitrend.core.util.theme.ThemeUtil
+import co.anitrend.support.crunchyroll.core.util.theme.ThemeUtil
 import co.anitrend.support.crunchyroll.core.R
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings

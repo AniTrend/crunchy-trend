@@ -20,7 +20,7 @@ import android.app.Application
 import android.util.Log
 import androidx.work.Configuration
 import co.anitrend.arch.extension.isLowRamDevice
-import co.anitrend.core.util.theme.ThemeUtil
+import co.anitrend.support.crunchyroll.core.util.theme.ThemeUtil
 import co.anitrend.support.crunchyroll.core.analytics.AnalyticsLogger
 import co.anitrend.support.crunchyroll.core.extensions.analytics
 import co.anitrend.support.crunchyroll.core.extensions.koinOf

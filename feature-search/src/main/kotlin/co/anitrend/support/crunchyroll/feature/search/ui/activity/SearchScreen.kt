@@ -14,26 +14,21 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.feature.settings.ui.activity
+package co.anitrend.support.crunchyroll.feature.search.ui.activity
 
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.commit
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
-import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
-import co.anitrend.support.crunchyroll.data.settings.IAuthenticationSettings
-import co.anitrend.support.crunchyroll.feature.settings.R
-import co.anitrend.support.crunchyroll.feature.settings.koin.injectFeatureModules
-import kotlinx.android.synthetic.main.settings_activity.*
+import co.anitrend.support.crunchyroll.feature.search.R
+import co.anitrend.support.crunchyroll.feature.search.koin.injectFeatureModules
+import co.anitrend.support.crunchyroll.feature.search.ui.fragment.SearchContentScreen
+import kotlinx.android.synthetic.main.search_activity.*
 import org.koin.android.ext.android.inject
 
-class SettingsScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
+class SearchScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
 
     private lateinit var systemChromeFader: ElasticDragDismissFrameLayout.SystemChromeFader
 
@@ -46,7 +41,7 @@ class SettingsScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.settings_activity)
+        setContentView(R.layout.search_activity)
         setSupportActionBar(bottomAppBar)
     }
 
@@ -61,13 +56,6 @@ class SettingsScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
     override fun initializeComponents(savedInstanceState: Bundle?) {
         injectFeatureModules()
         onUpdateUserInterface()
-        floatingShortcutButton.setOnClickListener {
-            Toast.makeText(
-                applicationContext,
-                "shows theme bottom sheet tools",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
         systemChromeFader =
             object : ElasticDragDismissFrameLayout.SystemChromeFader(
                 this
@@ -103,41 +91,8 @@ class SettingsScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        supportFragmentManager.commit {
-            replace(R.id.settings_content, SettingsFragment())
-        }
-    }
-
-    class SettingsFragment : PreferenceFragmentCompat() {
-
-        private val settings by inject<IAuthenticationSettings>()
-
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-            setPreferencesFromResource(R.xml.root_preferences, rootKey)
-        }
-
-        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            super.onViewCreated(view, savedInstanceState)
-            findPreference<Preference>(
-                getString(R.string.preference_key_accounts)
-            )?.onPreferenceClickListener =
-                Preference.OnPreferenceClickListener {
-                    when (settings.isAuthenticated) {
-                        true -> {
-                            NavigationTargets.Authentication(activity)
-                            activity?.closeScreen()
-                            true
-                        }
-                        else -> {
-                            Toast.makeText(
-                                context,
-                                "You are not currently logged in",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            false
-                        }
-                    }
-            }
-        }
+        /*supportFragmentManager.commit {
+            replace(R.id.search_content, SearchContentScreen())
+        }*/
     }
 }

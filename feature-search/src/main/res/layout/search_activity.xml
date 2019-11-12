@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~    Copyright 2019 AniTrend
   ~
@@ -24,14 +25,20 @@
         app:dragDismissDistance="@dimen/nav_item_selector_margin"
         app:dragDismissScale="0.95"
         android:clipToPadding="false"
-        tools:context=".ui.activity.SettingsScreen">
-    
+        tools:context=".ui.activity.SearchScreen">
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+        <com.iammert.library.ui.multisearchviewlib.MultiSearchView
+                android:id="@+id/multiSearchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:searchTextStyle="@style/SearchTextStyle" />
+
         <FrameLayout
-                android:id="@+id/settings_content"
+                android:id="@+id/search_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
@@ -46,15 +53,6 @@
                 android:backgroundTint="@color/primaryColor"
                 app:fabAlignmentMode="end"
                 app:hideOnScroll="true"/>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/floatingShortcutButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_anchorGravity="end|right"
-                app:layout_anchor="@id/bottomAppBar"
-                app:backgroundTint="@color/material_300"
-                app:srcCompat="@drawable/ic_color_lens_black_24dp"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

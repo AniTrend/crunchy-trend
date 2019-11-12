@@ -21,7 +21,7 @@ import co.anitrend.support.crunchyroll.core.util.config.contract.IConfigurationU
 import co.anitrend.support.crunchyroll.core.util.locale.AniTrendLocale
 import co.anitrend.support.crunchyroll.core.util.locale.LocaleUtil
 import co.anitrend.support.crunchyroll.core.util.theme.AniTrendTheme
-import co.anitrend.core.util.theme.ThemeUtil
+import co.anitrend.support.crunchyroll.core.util.theme.ThemeUtil
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.core.settings.common.IConfigurationSettings
