@@ -19,10 +19,10 @@ package co.anitrend.support.crunchyroll.feature.authentication.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import co.anitrend.arch.core.viewmodel.SupportViewModel
-import co.anitrend.support.crunchyroll.data.datasource.local.api.CrunchyLoginDao
+import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.transformer.LoginUserTransformer
-import co.anitrend.support.crunchyroll.data.usecase.authentication.LogoutUseCaseImpl
-import co.anitrend.support.crunchyroll.domain.entities.result.user.User
+import co.anitrend.support.crunchyroll.data.authentication.usecase.LogoutUseCaseImpl
+import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 
 class LogoutViewModel(
     override val useCase: LogoutUseCaseImpl,
@@ -39,7 +39,7 @@ class LogoutViewModel(
         useCaseResult.value = result
     }
 
-    fun getUserByIdLiveData(userId: Int): LiveData<User?> {
+    fun getUserByIdLiveData(userId: Int): LiveData<CrunchyUser?> {
         val liveData = loginDao.findByUserIdX(userId)
         return Transformations.map(liveData) {
             LoginUserTransformer.transform(it)

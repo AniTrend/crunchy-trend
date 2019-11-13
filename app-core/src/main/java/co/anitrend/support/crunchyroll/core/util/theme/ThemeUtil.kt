@@ -56,6 +56,8 @@ class ThemeUtil(private val settings: IThemeSettings) {
                 }
                 else -> {
                     // According to Google/IO other ui options like auto and follow system might be deprecated
+                    window.navigationBarColor = window.context.getCompatColor(R.color.colorPrimary)
+                    window.decorView.systemUiVisibility = systemUiOptions or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
                 }
             }
         }

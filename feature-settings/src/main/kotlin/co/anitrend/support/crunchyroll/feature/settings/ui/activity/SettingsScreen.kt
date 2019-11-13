@@ -27,7 +27,7 @@ import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
-import co.anitrend.support.crunchyroll.data.settings.IAuthenticationSettings
+import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.feature.settings.R
 import co.anitrend.support.crunchyroll.feature.settings.koin.injectFeatureModules
 import kotlinx.android.synthetic.main.settings_activity.*

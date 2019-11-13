@@ -18,9 +18,9 @@ package co.anitrend.support.crunchyroll.feature.news.viewmodel
 
 import androidx.paging.PagedList
 import co.anitrend.arch.core.viewmodel.SupportPagingViewModel
-import co.anitrend.support.crunchyroll.data.usecase.rss.NewsUseCaseImpl
-import co.anitrend.support.crunchyroll.domain.entities.query.rss.RssQuery
-import co.anitrend.support.crunchyroll.domain.entities.result.rss.News
+import co.anitrend.support.crunchyroll.data.news.usecase.NewsUseCaseImpl
+import co.anitrend.support.crunchyroll.domain.common.RssQuery
+import co.anitrend.support.crunchyroll.domain.news.entities.News
 
 class NewsViewModel(
     override val useCase: NewsUseCaseImpl

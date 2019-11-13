@@ -21,7 +21,7 @@ import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.adapter.contract.ISupportViewAdapter
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.data.model.media.contract.ICrunchyMedia
+import co.anitrend.support.crunchyroll.data.media.model.contract.ICrunchyMedia
 import org.koin.android.ext.android.inject
 
 class SearchContentScreen : SupportFragmentPagedList<ICrunchyMedia, CrunchyCorePresenter, ICrunchyMedia>() {

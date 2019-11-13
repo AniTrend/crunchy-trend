@@ -28,10 +28,11 @@ import co.anitrend.support.crunchyroll.core.settings.common.IConfigurationSettin
 import co.anitrend.support.crunchyroll.core.settings.common.locale.ILocaleSettings
 import co.anitrend.support.crunchyroll.core.settings.common.privacy.IPrivacySettings
 import co.anitrend.support.crunchyroll.core.settings.common.theme.IThemeSettings
-import co.anitrend.support.crunchyroll.data.settings.IAuthenticationSettings
-import co.anitrend.support.crunchyroll.data.settings.IAuthenticationSettings.Companion.INVALID_USER_ID
+import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
+import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings.Companion.INVALID_USER_ID
 
-class CrunchySettings(context: Context) : SupportPreference(context), IAuthenticationSettings,
+class CrunchySettings(context: Context) : SupportPreference(context),
+    IAuthenticationSettings,
     IConfigurationSettings, IPrivacySettings {
 
     override var sessionId: String? = null

@@ -26,7 +26,7 @@ import co.anitrend.support.crunchyroll.core.util.config.ConfigurationUtil
 import co.anitrend.support.crunchyroll.core.util.locale.SessionLocaleProviderHelper
 import co.anitrend.support.crunchyroll.core.util.locale.LocaleUtil
 import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper
-import co.anitrend.support.crunchyroll.data.util.ICrunchySessionLocale
+import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.binds
 import org.koin.dsl.module

@@ -23,7 +23,7 @@
     <data>
         <variable
                 name="currentUserModel"
-                type="co.anitrend.support.crunchyroll.domain.entities.result.user.User" />
+                type="co.anitrend.support.crunchyroll.domain.crunchyUser.entities.CrunchyUser" />
     </data>
 
     <co.anitrend.arch.ui.view.widget.SupportStateLayout

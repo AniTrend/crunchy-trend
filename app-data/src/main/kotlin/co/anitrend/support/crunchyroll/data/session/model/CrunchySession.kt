@@ -1,0 +1,47 @@
+/*
+ *    Copyright 2019 AniTrend
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
+package co.anitrend.support.crunchyroll.data.session.model
+
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
+import androidx.room.RoomWarnings.PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED
+import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
+import co.anitrend.support.crunchyroll.data.session.model.contract.ICrunchySession
+import co.anitrend.support.crunchyroll.data.session.model.contract.ICrunchySessionUser
+import co.anitrend.support.crunchyroll.data.user.model.CrunchyUser
+
+@Entity(
+    indices = [
+        Index(value = ["auth"], unique = true)
+    ]
+)
+@SuppressWarnings(PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED)
+data class CrunchySession(
+    @PrimaryKey
+    override val session_id: String,
+    override val country_code: String,
+    override val device_type: String,
+    override val device_id: String,
+    override val version: String,
+    @Embedded
+    override val user: CrunchyUser,
+    override val auth: String,
+    override val expires: ISO8601Date
+) : ICrunchySession,
+    ICrunchySessionUser

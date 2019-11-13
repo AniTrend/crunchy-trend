@@ -28,11 +28,11 @@ import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.data.extension.toCrunchyLocale
-import co.anitrend.support.crunchyroll.data.util.ICrunchySessionLocale
+import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
+import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.feature.listing.viewmodel.MediaListingViewModel
-import co.anitrend.support.crunchyroll.domain.entities.query.rss.RssQuery
-import co.anitrend.support.crunchyroll.domain.entities.result.rss.MediaListing
+import co.anitrend.support.crunchyroll.domain.common.RssQuery
+import co.anitrend.support.crunchyroll.domain.episode.entities.EpisodeFeed
 import co.anitrend.support.crunchyroll.feature.listing.R
 import co.anitrend.support.crunchyroll.feature.listing.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.listing.presenter.ListingPresenter
@@ -40,7 +40,7 @@ import co.anitrend.support.crunchyroll.feature.listing.ui.adapter.RssMediaAdapte
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MediaFeedContent : SupportFragmentPagedList<MediaListing, CrunchyCorePresenter, PagedList<MediaListing>>() {
+class MediaFeedContent : SupportFragmentPagedList<EpisodeFeed, CrunchyCorePresenter, PagedList<EpisodeFeed>>() {
 
     override val supportStateConfiguration by inject<SupportStateLayoutConfiguration>()
 
@@ -61,8 +61,8 @@ class MediaFeedContent : SupportFragmentPagedList<MediaListing, CrunchyCorePrese
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         RssMediaAdapter(
             presenter = supportPresenter,
-            clickListener = object : ItemClickListener<MediaListing> {
-                override fun onItemClick(target: View, data: Pair<Int, MediaListing?>) {
+            clickListener = object : ItemClickListener<EpisodeFeed> {
+                override fun onItemClick(target: View, data: Pair<Int, EpisodeFeed?>) {
                     val mediaPlayerPayload = NavigationTargets.MediaPlayer.Payload(
                         mediaId = data.second?.id ?: 0,
                         episodeThumbnail = data.second?.episodeThumbnail
@@ -72,7 +72,7 @@ class MediaFeedContent : SupportFragmentPagedList<MediaListing, CrunchyCorePrese
                     )
                 }
 
-                override fun onItemLongClick(target: View, data: Pair<Int, MediaListing?>) {
+                override fun onItemLongClick(target: View, data: Pair<Int, EpisodeFeed?>) {
 
                 }
             }

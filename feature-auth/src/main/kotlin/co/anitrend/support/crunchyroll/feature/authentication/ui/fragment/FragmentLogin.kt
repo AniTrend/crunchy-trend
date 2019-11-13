@@ -27,14 +27,14 @@ import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.domain.entities.result.user.User
+import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLoginBinding
 import co.anitrend.support.crunchyroll.feature.authentication.presenter.AuthPresenter
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.LoginViewModel
 import kotlinx.android.synthetic.main.login_anonymous_controls.view.*
 import org.koin.android.ext.android.inject
 
-class FragmentLogin : SupportFragment<User?, CrunchyCorePresenter, User?>() {
+class FragmentLogin : SupportFragment<CrunchyUser?, CrunchyCorePresenter, CrunchyUser?>() {
 
     private lateinit var binding: FragmentLoginBinding
 

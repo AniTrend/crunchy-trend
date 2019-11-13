@@ -26,10 +26,10 @@ import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.data.extension.toCrunchyLocale
-import co.anitrend.support.crunchyroll.data.util.ICrunchySessionLocale
-import co.anitrend.support.crunchyroll.domain.entities.query.rss.RssQuery
-import co.anitrend.support.crunchyroll.domain.entities.result.rss.News
+import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
+import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
+import co.anitrend.support.crunchyroll.domain.common.RssQuery
+import co.anitrend.support.crunchyroll.domain.news.entities.News
 import co.anitrend.support.crunchyroll.feature.news.R
 import co.anitrend.support.crunchyroll.feature.news.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.news.ui.adapter.RssNewsAdapter

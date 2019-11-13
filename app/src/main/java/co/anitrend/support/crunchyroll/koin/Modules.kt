@@ -17,7 +17,7 @@
 package co.anitrend.support.crunchyroll.koin
 
 import co.anitrend.support.crunchyroll.core.koin.coreModules
-import co.anitrend.support.crunchyroll.data.koin.dataModules
+import co.anitrend.support.crunchyroll.data.arch.di.crunchDataModules
 
 
-val appModules = coreModules + dataModules
+val appModules = coreModules + crunchDataModules

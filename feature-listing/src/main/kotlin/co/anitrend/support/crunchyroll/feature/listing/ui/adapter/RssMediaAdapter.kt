@@ -24,13 +24,13 @@ import co.anitrend.arch.core.presenter.SupportPresenter
 import co.anitrend.arch.ui.recycler.adapter.SupportPagedListAdapter
 import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.support.crunchyroll.domain.entities.result.rss.MediaListing
+import co.anitrend.support.crunchyroll.domain.episode.entities.EpisodeFeed
 import co.anitrend.support.crunchyroll.feature.listing.databinding.AdapterMediaFeedBinding
 
 class RssMediaAdapter(
     presenter: SupportPresenter<*>,
-    private val clickListener: ItemClickListener<MediaListing>
-) : SupportPagedListAdapter<MediaListing>(presenter) {
+    private val clickListener: ItemClickListener<EpisodeFeed>
+) : SupportPagedListAdapter<EpisodeFeed>(presenter) {
 
     /**
      * Used to get stable ids for [androidx.recyclerview.widget.RecyclerView.Adapter] but only if
@@ -39,7 +39,7 @@ class RssMediaAdapter(
      * The identifiable id of each item should unique, and if non exists
      * then this function should return [androidx.recyclerview.widget.RecyclerView.NO_ID]
      */
-    override fun getStableIdFor(item: MediaListing?): Long {
+    override fun getStableIdFor(item: EpisodeFeed?): Long {
         return item?.id?.toLong() ?: RecyclerView.NO_ID
     }
 
@@ -51,7 +51,7 @@ class RssMediaAdapter(
         parent: ViewGroup,
         viewType: Int,
         layoutInflater: LayoutInflater
-    ): SupportViewHolder<MediaListing> {
+    ): SupportViewHolder<EpisodeFeed> {
         return MediaRssViewHolder(
             AdapterMediaFeedBinding.inflate(
                 layoutInflater,
@@ -64,14 +64,14 @@ class RssMediaAdapter(
 
     inner class MediaRssViewHolder(
         private val binding: AdapterMediaFeedBinding
-    ): SupportViewHolder<MediaListing>(binding.root) {
+    ): SupportViewHolder<EpisodeFeed>(binding.root) {
 
         /**
          * Load images, text, buttons, etc. in this method from the given parameter
          *
          * @param model Is the liveData at the current adapter position
          */
-        override fun invoke(model: MediaListing?) {
+        override fun invoke(model: EpisodeFeed?) {
             with (binding) {
                 entity = model
                 mediaThumbnail.setOnClickListener {

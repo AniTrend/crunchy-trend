@@ -17,12 +17,12 @@
 package co.anitrend.support.crunchyroll.feature.player.viewmodel
 
 import co.anitrend.arch.core.viewmodel.SupportViewModel
-import co.anitrend.support.crunchyroll.data.usecase.media.MediaStreamUseCaseImpl
-import co.anitrend.support.crunchyroll.domain.entities.query.media.MediaStreamQuery
-import co.anitrend.support.crunchyroll.domain.entities.result.media.MediaStream
+import co.anitrend.support.crunchyroll.data.stream.usecase.CrunchyStreamUseCaseImpl
+import co.anitrend.support.crunchyroll.domain.stream.models.MediaStreamQuery
+import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 
 class MediaStreamViewModel(
-    override val useCase: MediaStreamUseCaseImpl
+    override val useCase: CrunchyStreamUseCaseImpl
 ) : SupportViewModel<MediaStreamQuery, List<MediaStream>?>() {
 
     /**

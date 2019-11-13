@@ -23,7 +23,7 @@
     <data>
         <variable
                 name="model"
-                type="co.anitrend.support.crunchyroll.domain.entities.result.user.User" />
+                type="co.anitrend.support.crunchyroll.domain.crunchyUser.entities.CrunchyUser" />
     </data>
 
     <LinearLayout

@@ -19,9 +19,9 @@ package co.anitrend.support.crunchyroll.feature.authentication.presenter
 import android.content.Context
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
-import co.anitrend.support.crunchyroll.data.settings.IAuthenticationSettings
-import co.anitrend.support.crunchyroll.domain.entities.query.authentication.LoginQuery
-import co.anitrend.support.crunchyroll.domain.entities.result.user.User
+import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
+import co.anitrend.support.crunchyroll.domain.authentication.models.LoginQuery
+import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLoginBinding
 
 class AuthPresenter(
@@ -29,10 +29,10 @@ class AuthPresenter(
     settings: CrunchySettings
 ) : CrunchyCorePresenter(context, settings) {
 
-    fun onLoginStateChange(user: User?) {
-        supportPreference.authenticatedUserId = user?.userId ?: IAuthenticationSettings.INVALID_USER_ID
-        supportPreference.hasAccessToPremium = user?.premium != null
-        supportPreference.isAuthenticated = user != null
+    fun onLoginStateChange(crunchyUser: CrunchyUser?) {
+        supportPreference.authenticatedUserId = crunchyUser?.userId ?: IAuthenticationSettings.INVALID_USER_ID
+        supportPreference.hasAccessToPremium = crunchyUser?.premium != null
+        supportPreference.isAuthenticated = crunchyUser != null
     }
 
     /**

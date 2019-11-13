@@ -18,18 +18,19 @@ package co.anitrend.support.crunchyroll.feature.authentication.viewmodel
 
 import co.anitrend.arch.core.viewmodel.SupportViewModel
 import co.anitrend.arch.extension.empty
-import co.anitrend.support.crunchyroll.data.usecase.authentication.LoginUseCaseImpl
-import co.anitrend.support.crunchyroll.domain.entities.query.authentication.LoginQuery
-import co.anitrend.support.crunchyroll.domain.entities.result.user.User
+import co.anitrend.support.crunchyroll.data.authentication.usecase.LoginUseCaseImpl
+import co.anitrend.support.crunchyroll.domain.authentication.models.LoginQuery
+import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 
 class LoginViewModel(
     override val useCase: LoginUseCaseImpl
-) : SupportViewModel<LoginQuery, User?>() {
+) : SupportViewModel<LoginQuery, CrunchyUser?>() {
 
-    val loginQuery = LoginQuery(
-        account = String.empty(),
-        password = String.empty()
-    )
+    val loginQuery =
+        LoginQuery(
+            account = String.empty(),
+            password = String.empty()
+        )
 
     /**
      * Starts view model operations

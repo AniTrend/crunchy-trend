@@ -16,10 +16,11 @@
 
 package co.anitrend.support.crunchyroll.core.util.locale
 
-import co.anitrend.support.crunchyroll.data.util.ICrunchySessionLocale
+import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
 import java.util.*
 
-class SessionLocaleProviderHelper(private val localeUtil: LocaleUtil) : ICrunchySessionLocale {
+class SessionLocaleProviderHelper(private val localeUtil: LocaleUtil) :
+    ICrunchySessionLocale {
 
     /**
      * provides current application locale

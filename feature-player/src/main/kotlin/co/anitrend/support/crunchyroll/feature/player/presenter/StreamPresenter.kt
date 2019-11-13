@@ -21,7 +21,7 @@ import android.net.Uri
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
 import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyStreamQuality
-import co.anitrend.support.crunchyroll.domain.entities.result.media.MediaStream
+import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.feature.player.R
 import coil.Coil
 import coil.api.load
