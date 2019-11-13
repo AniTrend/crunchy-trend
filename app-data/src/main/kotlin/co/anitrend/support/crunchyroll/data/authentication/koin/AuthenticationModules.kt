@@ -16,24 +16,88 @@
 
 package co.anitrend.support.crunchyroll.data.authentication.koin
 
+import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthEndpoint
+import co.anitrend.support.crunchyroll.data.authentication.helper.CrunchyAuthentication
+import co.anitrend.support.crunchyroll.data.authentication.mapper.LoginResponseMapper
+import co.anitrend.support.crunchyroll.data.authentication.mapper.LogoutResponseMapper
+import co.anitrend.support.crunchyroll.data.authentication.repository.AuthenticationRepository
+import co.anitrend.support.crunchyroll.data.authentication.source.LoginSourceImpl
+import co.anitrend.support.crunchyroll.data.authentication.source.LogoutSourceImpl
+import co.anitrend.support.crunchyroll.data.authentication.usecase.LoginUseCaseImpl
+import co.anitrend.support.crunchyroll.data.authentication.usecase.LogoutUseCaseImpl
+import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
+import co.anitrend.support.crunchyroll.data.session.usecase.CoreSessionUseCaseImpl
+import co.anitrend.support.crunchyroll.data.session.usecase.UnblockSessionUseCaseImpl
 import org.koin.dsl.module
 
-private val dataSourceModule = module {
+private val coreModule = module {
+    factory {
+        CrunchyAuthentication(
+            connectivityHelper = get(),
+            settings = get(),
+            unblockSessionUseCase = get<UnblockSessionUseCaseImpl>(),
+            coreSessionUseCase = get<CoreSessionUseCaseImpl>(),
+            sessionDao = get<CrunchyDatabase>().crunchySessionDao(),
+            sessionCoreDao = get<CrunchyDatabase>().crunchySessionCoreDao(),
+            sessionLocale = get()
+        )
+    }
+}
 
+private val dataSourceModule = module {
+    factory {
+        LoginSourceImpl(
+            dao = get<CrunchyDatabase>().crunchyLoginDao(),
+            endpoint = CrunchyAuthEndpoint.create(),
+            responseMapper = get(),
+            settings = get()
+        )
+    }
+    factory {
+        LogoutSourceImpl(
+            sessionCoreDao = get<CrunchyDatabase>().crunchySessionCoreDao(),
+            sessionDao = get<CrunchyDatabase>().crunchySessionDao(),
+            dao = get<CrunchyDatabase>().crunchyLoginDao(),
+            endpoint = CrunchyAuthEndpoint.create(),
+            responseMapper = get(),
+            settings = get()
+        )
+    }
 }
 
 private val mapperModule = module {
-
+    factory {
+        LoginResponseMapper(
+            dao = get<CrunchyDatabase>().crunchyLoginDao()
+        )
+    }
+    factory {
+        LogoutResponseMapper()
+    }
 }
 
 private val repositoryModule = module {
-
+    factory {
+        AuthenticationRepository(
+            loginSource = get<LoginSourceImpl>(),
+            logoutSource = get<LogoutSourceImpl>()
+        )
+    }
 }
 
 private val useCaseModule = module {
-
+    factory {
+        LoginUseCaseImpl(
+            repository = get()
+        )
+    }
+    factory {
+        LogoutUseCaseImpl(
+            repository = get()
+        )
+    }
 }
 
 val authenticationModules = listOf(
-    dataSourceModule, mapperModule, repositoryModule, useCaseModule
+    coreModule, dataSourceModule, mapperModule, repositoryModule, useCaseModule
 )

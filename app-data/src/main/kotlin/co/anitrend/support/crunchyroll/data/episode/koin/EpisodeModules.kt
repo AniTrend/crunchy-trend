@@ -17,22 +17,47 @@
 package co.anitrend.support.crunchyroll.data.episode.koin
 
 
+import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
+import co.anitrend.support.crunchyroll.data.episode.datasource.remote.CrunchyEpisodeFeedEndpoint
+import co.anitrend.support.crunchyroll.data.episode.mapper.EpisodeFeedResponseMapper
+import co.anitrend.support.crunchyroll.data.episode.repository.EpisodeFeedRepository
+import co.anitrend.support.crunchyroll.data.episode.source.EpisodeFeedSourceImpl
+import co.anitrend.support.crunchyroll.data.episode.usecase.EpisodeFeedUseCaseImpl
 import org.koin.dsl.module
 
 private val dataSourceModule = module {
-
+    factory {
+        EpisodeFeedSourceImpl(
+            responseMapper = get(),
+            endpoint = CrunchyEpisodeFeedEndpoint.create(),
+            dao = get<CrunchyDatabase>().crunchyRssMediaDao(),
+            settings = get()
+        )
+    }
 }
 
 private val mapperModule = module {
-
+    factory {
+        EpisodeFeedResponseMapper(
+            dao = get<CrunchyDatabase>().crunchyRssMediaDao()
+        )
+    }
 }
 
 private val repositoryModule = module {
-
+    factory {
+        EpisodeFeedRepository(
+            source = get<EpisodeFeedSourceImpl>()
+        )
+    }
 }
 
 private val useCaseModule = module {
-
+    factory {
+        EpisodeFeedUseCaseImpl(
+            repository = get()
+        )
+    }
 }
 
 val episodeModules = listOf(
