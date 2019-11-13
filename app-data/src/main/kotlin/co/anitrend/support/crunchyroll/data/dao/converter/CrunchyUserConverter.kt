@@ -20,9 +20,9 @@ import androidx.room.TypeConverter
 import co.anitrend.arch.data.dao.RoomConverter
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory.Companion.GSON_BUILDER
 import co.anitrend.support.crunchyroll.data.arch.extension.typeTokenOf
-import co.anitrend.support.crunchyroll.data.user.model.CrunchyUser
+import co.anitrend.support.crunchyroll.data.user.model.CrunchyAuthUser
 
-class CrunchyUserConverter : RoomConverter<CrunchyUser> {
+class CrunchyUserConverter : RoomConverter<CrunchyAuthUser> {
 
     /**
      * Convert database types back to the original type
@@ -31,8 +31,8 @@ class CrunchyUserConverter : RoomConverter<CrunchyUser> {
      * @param dbValue saved database value type
      */
     @TypeConverter
-    override fun fromDatabaseValue(dbValue: String): CrunchyUser? {
-        return GSON_BUILDER.create().fromJson(dbValue, typeTokenOf<CrunchyUser?>())
+    override fun fromDatabaseValue(dbValue: String): CrunchyAuthUser? {
+        return GSON_BUILDER.create().fromJson(dbValue, typeTokenOf<CrunchyAuthUser?>())
     }
 
     /**
@@ -43,7 +43,7 @@ class CrunchyUserConverter : RoomConverter<CrunchyUser> {
      * @param entity item which room should convert
      */
     @TypeConverter
-    override fun toDatabaseValue(entity: CrunchyUser?): String {
+    override fun toDatabaseValue(entity: CrunchyAuthUser?): String {
         return GSON_BUILDER.create().toJson(entity)
     }
 }

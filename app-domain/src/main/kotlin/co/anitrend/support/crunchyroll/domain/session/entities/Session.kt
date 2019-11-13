@@ -18,10 +18,9 @@ package co.anitrend.support.crunchyroll.domain.session.entities
 
 data class Session(
     val sessionId: String,
-    val countryCode: String,
     val deviceType: String,
     val deviceId: String,
-    val userId: Int? = null,
+    val userId: Long? = null,
     val auth: String? = null,
     val expires: Long? = null
 )

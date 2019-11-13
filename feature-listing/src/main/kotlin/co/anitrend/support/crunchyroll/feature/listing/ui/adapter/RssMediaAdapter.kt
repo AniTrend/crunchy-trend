@@ -25,7 +25,7 @@ import co.anitrend.arch.ui.recycler.adapter.SupportPagedListAdapter
 import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.support.crunchyroll.domain.episode.entities.EpisodeFeed
-import co.anitrend.support.crunchyroll.feature.listing.databinding.AdapterMediaFeedBinding
+import co.anitrend.support.crunchyroll.feature.feed.databinding.AdapterMediaFeedBinding
 
 class RssMediaAdapter(
     presenter: SupportPresenter<*>,
@@ -40,7 +40,7 @@ class RssMediaAdapter(
      * then this function should return [androidx.recyclerview.widget.RecyclerView.NO_ID]
      */
     override fun getStableIdFor(item: EpisodeFeed?): Long {
-        return item?.id?.toLong() ?: RecyclerView.NO_ID
+        return item?.id ?: RecyclerView.NO_ID
     }
 
     /**

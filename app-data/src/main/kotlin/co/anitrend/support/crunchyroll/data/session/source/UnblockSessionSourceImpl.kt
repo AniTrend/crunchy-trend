@@ -24,7 +24,7 @@ import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySess
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionDao
 import co.anitrend.support.crunchyroll.data.session.mapper.SessionResponseMapper
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
-import co.anitrend.support.crunchyroll.data.transformer.SessionTransformer
+import co.anitrend.support.crunchyroll.data.session.transformer.SessionTransformer
 import co.anitrend.support.crunchyroll.domain.session.models.UnBlockedSessionQuery
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
 import kotlinx.coroutines.async

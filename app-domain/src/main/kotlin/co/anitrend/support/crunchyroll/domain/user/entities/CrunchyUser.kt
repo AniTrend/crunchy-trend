@@ -17,7 +17,7 @@
 package co.anitrend.support.crunchyroll.domain.user.entities
 
 data class CrunchyUser(
-    val userId: Int,
+    val userId: Long,
     val username: String,
     val email: String,
     val premium: String?,

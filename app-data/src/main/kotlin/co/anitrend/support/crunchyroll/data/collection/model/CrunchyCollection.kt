@@ -16,29 +16,21 @@
 
 package co.anitrend.support.crunchyroll.data.collection.model
 
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
-import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyMediaType
-import co.anitrend.support.crunchyroll.data.collection.model.contract.ICrunchyCollection
+import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyImageSet
 
-@Entity(
-    indices = [
-        Index(value = ["series_id"])
-    ]
-)
 data class CrunchyCollection(
-    override val availability_notes: String,
-    override val media_type: CrunchyMediaType,
-    override val series_id: Int,
-    @PrimaryKey
-    override val collection_id: Int,
-    override val complete: Boolean,
-    override val name: String,
-    override val description: String,
-    override val landscape_image: CrunchyImageSet?,
-    override val portrait_image: CrunchyImageSet?,
-    override val season: String,
-    override val created: String
-) : ICrunchyCollection
+    val collection_id: Int,
+    val etp_guid: String,
+    val series_id: Int,
+    val series_etp_guid: String,
+    val name: String,
+    val description: String,
+    val media_type: String,
+    val season: String,
+    val complete: Boolean,
+    val landscape_image: CrunchyImageSet?,
+    val portrait_image: CrunchyImageSet?,
+    val availability_notes: String?,
+    val created: ISO8601Date
+)

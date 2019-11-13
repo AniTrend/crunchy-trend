@@ -17,7 +17,7 @@
 package co.anitrend.support.crunchyroll.domain.episode.entities
 
 data class EpisodeFeed(
-    val id: Int,
+    val id: Long,
     val title: String,
     val description: String?,
     val freeAvailableTime: Long,

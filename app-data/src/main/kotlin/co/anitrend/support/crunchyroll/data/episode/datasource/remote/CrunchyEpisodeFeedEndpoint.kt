@@ -24,7 +24,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-internal interface CrunchyEpisodeFeedEndpoint {
+interface CrunchyEpisodeFeedEndpoint {
 
     @XML
     @GET("/crunchyroll/rss/anime/popular")

@@ -20,10 +20,10 @@ interface IAuthenticationSettings {
 
     var hasAccessToPremium: Boolean
     var sessionId: String?
-    var authenticatedUserId: Int
+    var authenticatedUserId: Long
     var isAuthenticated: Boolean
 
     companion object {
-        const val INVALID_USER_ID: Int = -1
+        const val INVALID_USER_ID: Long = -1
     }
 }

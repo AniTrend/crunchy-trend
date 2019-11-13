@@ -22,7 +22,7 @@ import co.anitrend.support.crunchyroll.data.session.source.contract.SessionSourc
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.session.mapper.CoreSessionResponseMapper
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
-import co.anitrend.support.crunchyroll.data.transformer.CoreSessionTransformer
+import co.anitrend.support.crunchyroll.data.session.transformer.CoreSessionTransformer
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
@@ -52,7 +52,7 @@ class CoreSessionSourceImpl(
             responseMapper(deferred, networkState)
         }
         if (session != null)
-            settings.sessionId = session.session_id
+            settings.sessionId = session.sessionId
 
         return CoreSessionTransformer.transform(session)
     }

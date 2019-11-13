@@ -18,13 +18,14 @@ package co.anitrend.support.crunchyroll.data.news.mapper
 
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyRssMapper
 import co.anitrend.support.crunchyroll.data.news.datasource.local.CrunchyRssNewsDao
+import co.anitrend.support.crunchyroll.data.news.datasource.local.transformer.NewsEntityTransformer
+import co.anitrend.support.crunchyroll.data.news.entity.NewsEntity
 import co.anitrend.support.crunchyroll.data.news.model.CrunchyRssNews
 import co.anitrend.support.crunchyroll.data.rss.contract.ICrunchyRssChannel
-import co.anitrend.support.crunchyroll.data.util.extension.rcf822ToUnixTime
 
 class NewsResponseMapper(
     private val dao: CrunchyRssNewsDao
-) : CrunchyRssMapper<CrunchyRssNews>() {
+) : CrunchyRssMapper<CrunchyRssNews, NewsEntity>() {
 
     /**
      * Creates mapped objects and handles the database operations which may be required to map various objects,
@@ -34,11 +35,12 @@ class NewsResponseMapper(
      * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
      * @see [ISupportResponseHelper.invoke]
      */
-    override suspend fun onResponseMapFrom(source: ICrunchyRssChannel<CrunchyRssNews>): List<CrunchyRssNews> {
+    override suspend fun onResponseMapFrom(source: ICrunchyRssChannel<CrunchyRssNews>): List<NewsEntity> {
         return source.item?.map {
-            it.copy(
-                copyright = source.copyright,
-                publishedTime = it.publishedOn.rcf822ToUnixTime()
+            NewsEntityTransformer.transform(
+                it.copy(
+                    copyright = source.copyright
+                )
             )
         } ?: emptyList()
     }
@@ -50,7 +52,7 @@ class NewsResponseMapper(
      * @param mappedData mapped object from [onResponseMapFrom] to insert into the database
      * @see [ISupportResponseHelper.invoke]
      */
-    override suspend fun onResponseDatabaseInsert(mappedData: List<CrunchyRssNews>) {
+    override suspend fun onResponseDatabaseInsert(mappedData: List<NewsEntity>) {
         if (mappedData.isNotEmpty())
             dao.upsert(mappedData)
     }

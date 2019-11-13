@@ -16,14 +16,11 @@
 
 package co.anitrend.support.crunchyroll.data.news.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import co.anitrend.support.crunchyroll.data.arch.RCF822Date
 import co.anitrend.support.crunchyroll.data.rss.contract.IRssCopyright
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.Root
 
-@Entity
 @Root(name = "item", strict = false)
 data class CrunchyRssNews(
     @field:Element(name = "title")
@@ -39,7 +36,6 @@ data class CrunchyRssNews(
     @field:Element(name = "link")
     var referenceLink: String,
     @field:Element(name = "guid")
-    @PrimaryKey
     var guid: String,
     override var copyright: String,
     var publishedTime: Long

@@ -19,10 +19,12 @@ package co.anitrend.support.crunchyroll.data.authentication.mapper
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
 import co.anitrend.support.crunchyroll.data.authentication.model.CrunchyLogin
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
+import co.anitrend.support.crunchyroll.data.authentication.datasource.local.transformer.LoginEntityTransformer
+import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEntity
 
 class LoginResponseMapper(
     private val dao: CrunchyLoginDao
-) : CrunchyMapper<CrunchyLogin, CrunchyLogin>() {
+) : CrunchyMapper<CrunchyLogin, CrunchyLoginEntity>() {
 
     /**
      * Creates mapped objects and handles the database operations which may be required to map various objects,
@@ -32,10 +34,8 @@ class LoginResponseMapper(
      * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
      * @see [ISupportResponseHelper.invoke]
      */
-    override suspend fun onResponseMapFrom(source: CrunchyLogin): CrunchyLogin {
-        return source.copy(
-            loginUserId = source.user.user_id
-        )
+    override suspend fun onResponseMapFrom(source: CrunchyLogin): CrunchyLoginEntity {
+        return LoginEntityTransformer.transform(source)
     }
 
     /**
@@ -45,7 +45,7 @@ class LoginResponseMapper(
      * @param mappedData mapped object from [onResponseMapFrom] to insert into the database
      * @see [ISupportResponseHelper.invoke]
      */
-    override suspend fun onResponseDatabaseInsert(mappedData: CrunchyLogin) {
+    override suspend fun onResponseDatabaseInsert(mappedData: CrunchyLoginEntity) {
         dao.clearTable()
         dao.upsert(mappedData)
     }

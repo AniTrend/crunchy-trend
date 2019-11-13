@@ -21,39 +21,61 @@ import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Query
 import co.anitrend.arch.data.dao.ISupportQuery
-import co.anitrend.support.crunchyroll.data.collection.model.CrunchyCollection
+import co.anitrend.support.crunchyroll.data.collection.entity.CrunchyCollectionEntity
 
 @Dao
-interface CrunchyCollectionDao : ISupportQuery<CrunchyCollection> {
+interface CrunchyCollectionDao : ISupportQuery<CrunchyCollectionEntity> {
 
-    @Query("delete from CrunchyCollection")
+    @Query("""
+        delete from CrunchyCollectionEntity
+        """)
     suspend fun clearTable()
 
 
-    @Query("select * from CrunchyCollection where collection_id = :collectionId")
+    @Query("""
+        select * 
+        from CrunchyCollectionEntity 
+        where collectionId = :collectionId
+        """)
     fun findByCollectionIdX(
         collectionId: Int
-    ): LiveData<CrunchyCollection?>
+    ): LiveData<CrunchyCollectionEntity?>
 
-    @Query("select * from CrunchyCollection where collection_id = :collectionId")
+    @Query("""
+        select * 
+        from CrunchyCollectionEntity 
+        where collectionId = :collectionId
+        """)
     fun findByCollectionId(
         collectionId: Int
-    ): CrunchyCollection?
+    ): CrunchyCollectionEntity?
 
 
 
-    @Query("select * from CrunchyCollection where series_id = :seriesId")
+    @Query("""
+        select * 
+        from CrunchyCollectionEntity 
+        where seriesId = :seriesId
+        """)
     suspend fun findBySeriesId(
         seriesId: Int
-    ): List<CrunchyCollection>
+    ): List<CrunchyCollectionEntity>
 
-    @Query("select * from CrunchyCollection where series_id = :seriesId")
+    @Query("""
+        select * 
+        from CrunchyCollectionEntity 
+        where seriesId = :seriesId
+        """)
     fun findBySeriesIdX(
         seriesId: Int
-    ): LiveData<List<CrunchyCollection>>
+    ): LiveData<List<CrunchyCollectionEntity>>
 
-    @Query("select * from CrunchyCollection where series_id = :seriesId")
+    @Query("""
+        select * 
+        from CrunchyCollectionEntity 
+        where seriesId = :seriesId
+        """)
     fun findBySeriesIdFactory(
         seriesId: Int
-    ): DataSource.Factory<Int, CrunchyCollection>
+    ): DataSource.Factory<Int, CrunchyCollectionEntity>
 }

@@ -24,7 +24,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-internal interface CrunchyNewsFeedEndpoint {
+interface CrunchyNewsFeedEndpoint {
 
     @XML
     @GET("crunchyroll/animenews")

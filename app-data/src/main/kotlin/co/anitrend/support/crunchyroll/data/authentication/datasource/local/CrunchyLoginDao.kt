@@ -20,25 +20,41 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import co.anitrend.arch.data.dao.ISupportQuery
-import co.anitrend.support.crunchyroll.data.authentication.model.CrunchyLogin
+import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEntity
 
 @Dao
-interface CrunchyLoginDao : ISupportQuery<CrunchyLogin> {
+interface CrunchyLoginDao : ISupportQuery<CrunchyLoginEntity> {
 
-    @Query("delete from CrunchyLogin")
+    @Query("""
+        delete from CrunchyLoginEntity
+        """)
     suspend fun clearTable()
 
-    @Query("select * from CrunchyLogin where username = :account")
-    fun findLatestByAccountX(account: String): LiveData<CrunchyLogin?>
+    @Query("""
+        select * 
+        from CrunchyLoginEntity 
+        where username = :account
+        """)
+    fun findLatestByAccountX(
+        account: String
+    ): LiveData<CrunchyLoginEntity?>
 
 
-    @Query("select * from CrunchyLogin  where user_id = :userId")
+    @Query("""
+        select * 
+        from CrunchyLoginEntity 
+        where userId = :userId
+        """)
     fun findByUserId(
         userId: Int
-    ): CrunchyLogin?
+    ): CrunchyLoginEntity?
 
-    @Query("select * from CrunchyLogin where user_id = :userId")
+    @Query("""
+        select * 
+        from CrunchyLoginEntity 
+        where userId = :userId
+        """)
     fun findByUserIdX(
         userId: Int
-    ): LiveData<CrunchyLogin?>
+    ): LiveData<CrunchyLoginEntity?>
 }

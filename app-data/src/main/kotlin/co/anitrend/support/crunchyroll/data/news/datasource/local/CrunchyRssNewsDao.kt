@@ -21,21 +21,35 @@ import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Query
 import co.anitrend.arch.data.dao.ISupportQuery
-import co.anitrend.support.crunchyroll.data.news.model.CrunchyRssNews
+import co.anitrend.support.crunchyroll.data.news.entity.NewsEntity
 
 @Dao
-interface CrunchyRssNewsDao : ISupportQuery<CrunchyRssNews> {
+interface CrunchyRssNewsDao : ISupportQuery<NewsEntity> {
 
-    @Query("delete from CrunchyRssNews")
+    @Query("""
+        delete from NewsEntity
+        """)
     suspend fun clearTable()
 
 
-    @Query("select * from CrunchyRssNews order by publishedTime desc")
-    suspend fun findAll(): List<CrunchyRssNews>
+    @Query("""
+        select * 
+        from NewsEntity 
+        order by publishedOn desc
+        """)
+    suspend fun findAll(): List<NewsEntity>
 
-    @Query("select * from CrunchyRssNews order by publishedTime desc")
-    fun findAllX(): LiveData<List<CrunchyRssNews>>
+    @Query("""
+        select * 
+        from NewsEntity 
+        order by publishedOn desc
+        """)
+    fun findAllX(): LiveData<List<NewsEntity>>
 
-    @Query("select * from CrunchyRssNews order by publishedTime desc")
-    fun findByAllFactory(): DataSource.Factory<Int, CrunchyRssNews>
+    @Query("""
+        select * 
+        from NewsEntity 
+        order by publishedOn desc
+        """)
+    fun findByAllFactory(): DataSource.Factory<Int, NewsEntity>
 }

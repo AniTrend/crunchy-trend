@@ -23,51 +23,42 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
-import co.anitrend.support.crunchyroll.data.authentication.model.CrunchyLogin
+import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEntity
 import co.anitrend.support.crunchyroll.data.collection.datasource.local.CrunchyCollectionDao
-import co.anitrend.support.crunchyroll.data.session.model.CrunchySession
-import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionCore
-import co.anitrend.support.crunchyroll.data.dao.converter.*
-import co.anitrend.support.crunchyroll.data.dao.migrations.MIGRATION_1_2
-import co.anitrend.support.crunchyroll.data.dao.migrations.MIGRATION_2_4
-import co.anitrend.support.crunchyroll.data.dao.migrations.MIGRATION_6_7
-import co.anitrend.support.crunchyroll.data.dao.migrations.MIGRATION_8_9
-import co.anitrend.support.crunchyroll.data.episode.datasource.local.CrunchyRssEpisodeDao
-import co.anitrend.support.crunchyroll.data.news.datasource.local.CrunchyRssNewsDao
 import co.anitrend.support.crunchyroll.data.collection.model.CrunchyCollection
-import co.anitrend.support.crunchyroll.data.locale.model.CrunchyLocale
-import co.anitrend.support.crunchyroll.data.media.model.CrunchyMedia
-import co.anitrend.support.crunchyroll.data.episode.model.CrunchyRssEpisode
+import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyEnumsTypeCoverter
+import co.anitrend.support.crunchyroll.data.dao.migrations.migrations
+import co.anitrend.support.crunchyroll.data.episode.datasource.local.CrunchyRssEpisodeDao
+import co.anitrend.support.crunchyroll.data.episode.entity.EpisodeFeedEntity
 import co.anitrend.support.crunchyroll.data.locale.datasource.local.CrunchyLocaleDao
+import co.anitrend.support.crunchyroll.data.locale.entity.CrunchyLocaleEntity
 import co.anitrend.support.crunchyroll.data.media.datasource.local.CrunchyMediaDao
-import co.anitrend.support.crunchyroll.data.news.model.CrunchyRssNews
+import co.anitrend.support.crunchyroll.data.media.model.CrunchyMedia
+import co.anitrend.support.crunchyroll.data.news.datasource.local.CrunchyRssNewsDao
+import co.anitrend.support.crunchyroll.data.news.entity.NewsEntity
 import co.anitrend.support.crunchyroll.data.series.datasource.local.CrunchySeriesDao
 import co.anitrend.support.crunchyroll.data.series.model.CrunchySeries
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionDao
+import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionCoreEntity
+import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
 
 @Database(
     entities = [
-        CrunchySession::class, CrunchySessionCore::class,
-        CrunchyLogin::class,
+        CrunchySessionEntity::class, CrunchySessionCoreEntity::class,
+        CrunchyLoginEntity::class,
 
-        CrunchyLocale::class,
+        CrunchyLocaleEntity::class,
 
         CrunchySeries::class, CrunchyCollection::class,
         CrunchyMedia::class,
 
-        CrunchyRssNews::class, CrunchyRssEpisode::class
+        NewsEntity::class, EpisodeFeedEntity::class
     ],
     version = BuildConfig.DATABASE_SCHEMA_VERSION
 )
 @TypeConverters(
-    value = [
-        CrunchyImageSetConverter::class,
-        CrunchyThumbnailConverter::class,
-        CrunchyUserConverter::class,
-        CrunchyRestrictionConverter::class,
-        CrunchyEnumsTypeCoverter::class
-    ]
+    value = [CrunchyEnumsTypeCoverter::class]
 )
 abstract class CrunchyDatabase: RoomDatabase() {
 
@@ -75,9 +66,9 @@ abstract class CrunchyDatabase: RoomDatabase() {
 
     abstract fun crunchySessionCoreDao(): CrunchySessionCoreDao
 
-    abstract fun crunchySeriesDao(): CrunchySeriesDao
     abstract fun crunchyCollectionDao(): CrunchyCollectionDao
     abstract fun crunchyMediaDao(): CrunchyMediaDao
+    abstract fun crunchySeriesDao(): CrunchySeriesDao
 
     abstract fun crunchyLoginDao(): CrunchyLoginDao
     abstract fun crunchySessionDao(): CrunchySessionDao
@@ -92,10 +83,7 @@ abstract class CrunchyDatabase: RoomDatabase() {
                 CrunchyDatabase::class.java,
                 "crunchy-db"
             ).fallbackToDestructiveMigration()
-                .addMigrations(MIGRATION_1_2)
-                .addMigrations(MIGRATION_2_4)
-                .addMigrations(MIGRATION_6_7)
-                .addMigrations(MIGRATION_8_9)
+                .addMigrations(*migrations)
                 .build()
         }
     }

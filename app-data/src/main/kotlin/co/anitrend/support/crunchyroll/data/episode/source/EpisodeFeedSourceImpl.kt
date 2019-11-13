@@ -22,21 +22,19 @@ import androidx.paging.PagingRequestHelper
 import androidx.paging.toLiveData
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.data.util.SupportDataKeyStore
-import co.anitrend.support.crunchyroll.data.episode.source.contract.EpisodeFeedSource
 import co.anitrend.support.crunchyroll.data.episode.datasource.local.CrunchyRssEpisodeDao
+import co.anitrend.support.crunchyroll.data.episode.datasource.remote.CrunchyEpisodeFeedEndpoint
 import co.anitrend.support.crunchyroll.data.episode.mapper.EpisodeFeedResponseMapper
-import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
-import co.anitrend.support.crunchyroll.data.transformer.MediaListingTransformer
+import co.anitrend.support.crunchyroll.data.episode.source.contract.EpisodeFeedSource
+import co.anitrend.support.crunchyroll.data.episode.transformer.EpisodeFeedTransformer
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.episode.entities.EpisodeFeed
 import kotlinx.coroutines.async
-import java.util.*
 
 class EpisodeFeedSourceImpl(
     private val responseMapper: EpisodeFeedResponseMapper,
-    private val endpoint: CrunchyFeedEndpoint,
-    private val dao: CrunchyRssEpisodeDao,
-    private val settings: IAuthenticationSettings
+    private val endpoint: CrunchyEpisodeFeedEndpoint,
+    private val dao: CrunchyRssEpisodeDao
 ) : EpisodeFeedSource() {
 
     private lateinit var rssQuery: RssQuery
@@ -52,13 +50,10 @@ class EpisodeFeedSourceImpl(
              */
             override fun invoke(parameter: RssQuery): LiveData<PagedList<EpisodeFeed>> {
                 rssQuery = parameter
-
-                val locale = Locale.getDefault()
-                val hasPremiumAccess = settings.hasAccessToPremium
                 val localSource = dao.findByAllFactory()
 
                 val result = localSource.map {
-                    MediaListingTransformer.transform(it, locale, hasPremiumAccess)
+                    EpisodeFeedTransformer.transform(it)
                 }
 
                 return result.toLiveData(

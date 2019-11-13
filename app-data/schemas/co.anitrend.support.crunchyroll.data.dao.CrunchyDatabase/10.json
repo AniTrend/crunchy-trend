@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 10,
-    "identityHash": "7eabe205d1757f3d94b79095179e34fe",
+    "identityHash": "2d060f60cc62b35ce5a880c25da2ace6",
     "entities": [
       {
         "tableName": "CrunchySession",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`session_id` TEXT NOT NULL, `country_code` TEXT NOT NULL, `device_type` TEXT NOT NULL, `device_id` TEXT NOT NULL, `version` TEXT NOT NULL, `auth` TEXT NOT NULL, `expires` TEXT NOT NULL, `user_id` INTEGER NOT NULL, `username` TEXT NOT NULL, `email` TEXT NOT NULL, `first_name` TEXT, `last_name` TEXT, `premium` TEXT, `access_type` INTEGER, PRIMARY KEY(`session_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`session_id` TEXT NOT NULL, `country_code` TEXT NOT NULL, `device_type` TEXT NOT NULL, `device_id` TEXT NOT NULL, `version` TEXT NOT NULL, `user` TEXT NOT NULL, `auth` TEXT NOT NULL, `expires` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "session_id",
@@ -35,6 +35,12 @@
           {
             "fieldPath": "version",
             "columnName": "version",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "user",
+            "columnName": "user",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -49,71 +55,18 @@
             "columnName": "expires",
             "affinity": "TEXT",
             "notNull": true
-          },
-          {
-            "fieldPath": "user.user_id",
-            "columnName": "user_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "user.username",
-            "columnName": "username",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "user.email",
-            "columnName": "email",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "user.first_name",
-            "columnName": "first_name",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "user.last_name",
-            "columnName": "last_name",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "user.premium",
-            "columnName": "premium",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "user.access_type",
-            "columnName": "access_type",
-            "affinity": "INTEGER",
-            "notNull": false
           }
         ],
         "primaryKey": {
-          "columnNames": [
-            "session_id"
-          ],
+          "columnNames": [],
           "autoGenerate": false
         },
-        "indices": [
-          {
-            "name": "index_CrunchySession_auth",
-            "unique": true,
-            "columnNames": [
-              "auth"
-            ],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_CrunchySession_auth` ON `${TABLE_NAME}` (`auth`)"
-          }
-        ],
+        "indices": [],
         "foreignKeys": []
       },
       {
         "tableName": "CrunchySessionCore",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`session_id` TEXT NOT NULL, `country_code` TEXT NOT NULL, `device_type` TEXT NOT NULL, `device_id` TEXT NOT NULL, `version` TEXT NOT NULL, PRIMARY KEY(`session_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`session_id` TEXT NOT NULL, `country_code` TEXT NOT NULL, `device_type` TEXT NOT NULL, `device_id` TEXT NOT NULL, `version` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "session_id",
@@ -147,9 +100,7 @@
           }
         ],
         "primaryKey": {
-          "columnNames": [
-            "session_id"
-          ],
+          "columnNames": [],
           "autoGenerate": false
         },
         "indices": [],
@@ -157,12 +108,12 @@
       },
       {
         "tableName": "CrunchyLogin",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`loginUserId` INTEGER NOT NULL, `auth` TEXT NOT NULL, `expires` TEXT NOT NULL, `user_id` INTEGER NOT NULL, `username` TEXT NOT NULL, `email` TEXT NOT NULL, `first_name` TEXT, `last_name` TEXT, `premium` TEXT, `access_type` INTEGER, PRIMARY KEY(`loginUserId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user` TEXT NOT NULL, `auth` TEXT NOT NULL, `expires` TEXT NOT NULL)",
         "fields": [
           {
-            "fieldPath": "loginUserId",
-            "columnName": "loginUserId",
-            "affinity": "INTEGER",
+            "fieldPath": "user",
+            "columnName": "user",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -176,54 +127,10 @@
             "columnName": "expires",
             "affinity": "TEXT",
             "notNull": true
-          },
-          {
-            "fieldPath": "user.user_id",
-            "columnName": "user_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "user.username",
-            "columnName": "username",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "user.email",
-            "columnName": "email",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "user.first_name",
-            "columnName": "first_name",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "user.last_name",
-            "columnName": "last_name",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "user.premium",
-            "columnName": "premium",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "user.access_type",
-            "columnName": "access_type",
-            "affinity": "INTEGER",
-            "notNull": false
           }
         ],
         "primaryKey": {
-          "columnNames": [
-            "loginUserId"
-          ],
+          "columnNames": [],
           "autoGenerate": false
         },
         "indices": [],
@@ -674,7 +581,7 @@
         "foreignKeys": []
       },
       {
-        "tableName": "CrunchyRssMedia",
+        "tableName": "CrunchyRssEpisode",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`title` TEXT NOT NULL, `description` TEXT, `mediaId` INTEGER NOT NULL, `premiumAvailableDate` TEXT NOT NULL, `freeAvailableDate` TEXT NOT NULL, `seriesTitle` TEXT NOT NULL, `episodeTitle` TEXT NOT NULL, `episodeNumber` TEXT, `duration` INTEGER, `publisher` TEXT, `subtitleLanguages` TEXT, `restriction` TEXT, `thumbnail` TEXT, `copyright` TEXT NOT NULL, `freeAvailableTime` INTEGER NOT NULL, `premiumAvailableTime` INTEGER NOT NULL, PRIMARY KEY(`mediaId`))",
         "fields": [
           {
@@ -787,7 +694,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7eabe205d1757f3d94b79095179e34fe')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2d060f60cc62b35ce5a880c25da2ace6')"
     ]
   }
 }

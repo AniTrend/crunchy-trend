@@ -29,8 +29,8 @@ import retrofit2.Response
 import timber.log.Timber
 
 @Suppress("UNCHECKED_CAST")
-abstract class CrunchyRssMapper<D : IRssCopyright> :
-    SupportResponseMapper<ICrunchyRssChannel<D>, List<D>>() {
+abstract class CrunchyRssMapper<S : IRssCopyright, D> :
+    SupportResponseMapper<ICrunchyRssChannel<S>, List<D>>() {
 
     val news =
         object : ISupportPagingResponse<Deferred<Response<CrunchyRssNewsContainer>>> {
@@ -50,7 +50,7 @@ abstract class CrunchyRssMapper<D : IRssCopyright> :
                     val responseBody = response.body()
                     if (response.isSuccessful && responseBody?.channel != null) {
                         val mapped = onResponseMapFrom(
-                            responseBody.channel as ICrunchyRssChannel<D>
+                            responseBody.channel as ICrunchyRssChannel<S>
                         )
                         onResponseDatabaseInsert(mapped)
                         pagingRequestHelper.recordSuccess()
@@ -87,7 +87,7 @@ abstract class CrunchyRssMapper<D : IRssCopyright> :
                     val responseBody = response.body()
                     if (response.isSuccessful && responseBody?.channel != null) {
                         val mapped = onResponseMapFrom(
-                            responseBody.channel as ICrunchyRssChannel<D>
+                            responseBody.channel as ICrunchyRssChannel<S>
                         )
                         onResponseDatabaseInsert(mapped)
                         pagingRequestHelper.recordSuccess()

@@ -23,7 +23,7 @@ import co.anitrend.support.crunchyroll.data.authentication.datasource.local.Crun
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionDao
 import co.anitrend.support.crunchyroll.data.session.mapper.SessionResponseMapper
-import co.anitrend.support.crunchyroll.data.transformer.SessionTransformer
+import co.anitrend.support.crunchyroll.data.session.transformer.SessionTransformer
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.domain.session.models.NormalSessionQuery
 import co.anitrend.support.crunchyroll.domain.session.entities.Session

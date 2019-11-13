@@ -18,14 +18,20 @@ package co.anitrend.support.crunchyroll.data.episode.mapper
 
 import co.anitrend.arch.data.mapper.SupportResponseMapper
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyRssMapper
+import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.data.episode.datasource.local.CrunchyRssEpisodeDao
+import co.anitrend.support.crunchyroll.data.episode.datasource.local.transformer.EpisodeFeedEntityTransformer
+import co.anitrend.support.crunchyroll.data.episode.entity.EpisodeFeedEntity
 import co.anitrend.support.crunchyroll.data.episode.model.CrunchyRssEpisode
+import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.data.rss.contract.ICrunchyRssChannel
 import co.anitrend.support.crunchyroll.data.util.extension.rcf822ToUnixTime
 
 class EpisodeFeedResponseMapper(
-    private val dao: CrunchyRssEpisodeDao
-) : CrunchyRssMapper<CrunchyRssEpisode>() {
+    private val dao: CrunchyRssEpisodeDao,
+    private val localeHelper: ICrunchySessionLocale,
+    private val settings: IAuthenticationSettings
+) : CrunchyRssMapper<CrunchyRssEpisode, EpisodeFeedEntity>() {
 
     /**
      * Creates mapped objects and handles the database operations which may be required to map various objects,
@@ -35,12 +41,15 @@ class EpisodeFeedResponseMapper(
      * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
      * @see [SupportResponseMapper]
      */
-    override suspend fun onResponseMapFrom(source: ICrunchyRssChannel<CrunchyRssEpisode>): List<CrunchyRssEpisode> {
+    override suspend fun onResponseMapFrom(source: ICrunchyRssChannel<CrunchyRssEpisode>): List<EpisodeFeedEntity> {
+        // EpisodeFeedEntityTransformer
         return source.item?.map {
-            it.copy(
-                copyright = source.copyright,
-                freeAvailableTime = it.freeAvailableDate.rcf822ToUnixTime(),
-                premiumAvailableTime = it.premiumAvailableDate.rcf822ToUnixTime()
+            EpisodeFeedEntityTransformer.transform(
+                source = it.copy(
+                    copyright = source.copyright
+                ),
+                locale = localeHelper.sessionLocale,
+                hasPremiumAccess = settings.hasAccessToPremium
             )
         } ?: emptyList()
     }
@@ -52,7 +61,7 @@ class EpisodeFeedResponseMapper(
      * @param mappedData mapped object from [onResponseMapFrom] to insert into the database
      * @see [SupportResponseMapper]
      */
-    override suspend fun onResponseDatabaseInsert(mappedData: List<CrunchyRssEpisode>) {
+    override suspend fun onResponseDatabaseInsert(mappedData: List<EpisodeFeedEntity>) {
         if (mappedData.isNotEmpty())
             dao.upsert(mappedData)
     }

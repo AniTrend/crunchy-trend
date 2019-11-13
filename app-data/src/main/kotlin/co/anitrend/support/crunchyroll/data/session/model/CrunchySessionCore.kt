@@ -16,16 +16,10 @@
 
 package co.anitrend.support.crunchyroll.data.session.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import co.anitrend.support.crunchyroll.data.session.model.contract.ICrunchySession
-
-@Entity
 data class CrunchySessionCore(
-    @PrimaryKey
-    override val session_id: String,
-    override val country_code: String,
-    override val device_type: String,
-    override val device_id: String,
-    override val version: String
-) : ICrunchySession
+    val session_id: String,
+    val country_code: String,
+    val device_type: String,
+    val device_id: String,
+    val version: String
+)

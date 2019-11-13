@@ -20,18 +20,24 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import co.anitrend.arch.data.dao.ISupportQuery
-import co.anitrend.support.crunchyroll.data.locale.model.CrunchyLocale
+import co.anitrend.support.crunchyroll.data.locale.entity.CrunchyLocaleEntity
 
 @Dao
-interface CrunchyLocaleDao : ISupportQuery<CrunchyLocale> {
+interface CrunchyLocaleDao : ISupportQuery<CrunchyLocaleEntity> {
 
-    @Query("delete from CrunchyLocale")
+    @Query("""
+        delete from CrunchyLocaleEntity
+        """)
     suspend fun clearTable()
 
 
-    @Query("select * from CrunchyLocale")
-    suspend fun getAll() : List<CrunchyLocale>
+    @Query("""
+        select * from CrunchyLocaleEntity
+        """)
+    suspend fun getAll() : List<CrunchyLocaleEntity>
 
-    @Query("select * from CrunchyLocale")
-    fun getAllX() : LiveData<List<CrunchyLocale>>
+    @Query("""
+        select * from CrunchyLocaleEntity
+        """)
+    fun getAllX() : LiveData<List<CrunchyLocaleEntity>>
 }

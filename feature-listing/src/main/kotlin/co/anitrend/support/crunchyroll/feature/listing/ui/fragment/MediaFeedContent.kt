@@ -33,7 +33,7 @@ import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.feature.listing.viewmodel.MediaListingViewModel
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.episode.entities.EpisodeFeed
-import co.anitrend.support.crunchyroll.feature.listing.R
+import co.anitrend.support.crunchyroll.feature.feed.R
 import co.anitrend.support.crunchyroll.feature.listing.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.listing.presenter.ListingPresenter
 import co.anitrend.support.crunchyroll.feature.listing.ui.adapter.RssMediaAdapter

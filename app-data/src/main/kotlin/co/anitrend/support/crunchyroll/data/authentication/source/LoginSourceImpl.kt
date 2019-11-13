@@ -24,7 +24,7 @@ import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.Cru
 import co.anitrend.support.crunchyroll.data.authentication.source.contract.LoginSource
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.authentication.mapper.LoginResponseMapper
-import co.anitrend.support.crunchyroll.data.transformer.LoginUserTransformer
+import co.anitrend.support.crunchyroll.data.authentication.transformer.CrunchyUserTransformer
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.domain.authentication.models.LoginQuery
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
@@ -52,7 +52,7 @@ class LoginSourceImpl(
                 val login = dao.findLatestByAccountX(parameter.account)
 
                 return Transformations.map(login) {
-                    LoginUserTransformer.transform(it)
+                    CrunchyUserTransformer.transform(it)
                 }
             }
         }
@@ -70,7 +70,7 @@ class LoginSourceImpl(
 
         launch {
             val response = responseMapper(deferred, networkState)
-            Timber.tag(moduleTag).i("Logged in userId: ${response?.loginUserId}")
+            Timber.tag(moduleTag).i("Logged in userId: ${response?.userId}")
         }
 
         return observable(query)

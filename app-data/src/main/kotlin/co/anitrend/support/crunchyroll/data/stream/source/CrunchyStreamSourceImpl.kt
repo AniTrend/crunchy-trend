@@ -22,7 +22,7 @@ import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyMediaField
 import co.anitrend.support.crunchyroll.data.stream.datasource.remote.CrunchyStreamEndpoint
 import co.anitrend.support.crunchyroll.data.stream.source.contract.CrunchyStreamSource
 import co.anitrend.support.crunchyroll.data.stream.mapper.CrunchyStreamResponseMapper
-import co.anitrend.support.crunchyroll.data.transformer.MediaStreamTransformer
+import co.anitrend.support.crunchyroll.data.stream.transformer.MediaStreamTransformer
 import co.anitrend.support.crunchyroll.domain.stream.models.MediaStreamQuery
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import kotlinx.coroutines.async

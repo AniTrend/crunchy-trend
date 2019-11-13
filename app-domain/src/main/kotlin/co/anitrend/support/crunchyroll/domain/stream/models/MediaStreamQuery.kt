@@ -17,5 +17,5 @@
 package co.anitrend.support.crunchyroll.domain.stream.models
 
 data class MediaStreamQuery(
-    val mediaId: Int
+    val mediaId: Long
 )

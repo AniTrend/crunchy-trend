@@ -21,45 +21,47 @@ import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Query
 import co.anitrend.arch.data.dao.ISupportQuery
-import co.anitrend.support.crunchyroll.data.episode.model.CrunchyRssEpisode
+import co.anitrend.support.crunchyroll.data.episode.entity.EpisodeFeedEntity
 
 @Dao
-interface CrunchyRssEpisodeDao : ISupportQuery<CrunchyRssEpisode> {
+interface CrunchyRssEpisodeDao : ISupportQuery<EpisodeFeedEntity> {
 
-    @Query("delete from CrunchyRssEpisode")
+    @Query("""
+        delete from EpisodeFeedEntity
+        """)
     suspend fun clearTable()
 
 
     @Query(
         """
-        select * from CrunchyRssEpisode 
+        select * from EpisodeFeedEntity 
         order by premiumAvailableTime desc, 
         seriesTitle desc, episodeTitle desc, episodeNumber desc
         """
     )
-    suspend fun findAll(): List<CrunchyRssEpisode>
+    suspend fun findAll(): List<EpisodeFeedEntity>
 
     @Query(
         """
-        select * from CrunchyRssEpisode 
+        select * from EpisodeFeedEntity 
         order by premiumAvailableTime desc, 
         seriesTitle desc, episodeTitle desc, episodeNumber desc
         """
     )
-    fun findAllX(): LiveData<List<CrunchyRssEpisode>>
+    fun findAllX(): LiveData<List<EpisodeFeedEntity>>
 
     @Query(
         """
-        select * from CrunchyRssEpisode 
+        select * from EpisodeFeedEntity 
         order by premiumAvailableTime desc, 
         seriesTitle desc, episodeTitle desc, episodeNumber desc
         """
     )
-    fun findByAllFactory(): DataSource.Factory<Int, CrunchyRssEpisode>
+    fun findByAllFactory(): DataSource.Factory<Int, EpisodeFeedEntity>
 
     @Query(
         """
-        select * from CrunchyRssEpisode 
+        select * from EpisodeFeedEntity 
         where seriesTitle = :seriesSlug 
         order by premiumAvailableTime desc, 
         seriesTitle desc, episodeTitle desc, episodeNumber desc
@@ -67,5 +69,5 @@ interface CrunchyRssEpisodeDao : ISupportQuery<CrunchyRssEpisode> {
     )
     fun findBySlugFactory(
         seriesSlug: String?
-    ): DataSource.Factory<Int, CrunchyRssEpisode>
+    ): DataSource.Factory<Int, EpisodeFeedEntity>
 }

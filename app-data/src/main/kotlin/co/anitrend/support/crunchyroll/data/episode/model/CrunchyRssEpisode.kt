@@ -16,8 +16,6 @@
 
 package co.anitrend.support.crunchyroll.data.episode.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import co.anitrend.arch.extension.empty
 import co.anitrend.support.crunchyroll.data.arch.RCF822Date
 import co.anitrend.support.crunchyroll.data.rss.contract.IRssCopyright
@@ -25,7 +23,6 @@ import org.simpleframework.xml.Element
 import org.simpleframework.xml.ElementList
 import org.simpleframework.xml.Root
 
-@Entity
 @Root(name = "item", strict = false)
 data class CrunchyRssEpisode(
     @field:Element(
@@ -42,7 +39,6 @@ data class CrunchyRssEpisode(
         name = "mediaId",
         required = false
     )
-    @PrimaryKey
     var mediaId: Int,
     @field:Element(
         name = "premiumPubDate",
@@ -87,9 +83,7 @@ data class CrunchyRssEpisode(
         required = false
     )
     var thumbnail : List<EpisodeThumbnail>?,
-    override var copyright: String = String.empty(),
-    var freeAvailableTime: Long = 0,
-    var premiumAvailableTime: Long = 0
+    override var copyright: String = String.empty()
 ) : IRssCopyright {
 
     constructor() : this(

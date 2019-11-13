@@ -22,8 +22,8 @@ import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySess
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionDao
 import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
-import co.anitrend.support.crunchyroll.data.transformer.CoreSessionTransformer
-import co.anitrend.support.crunchyroll.data.transformer.SessionTransformer
+import co.anitrend.support.crunchyroll.data.session.transformer.CoreSessionTransformer
+import co.anitrend.support.crunchyroll.data.session.transformer.SessionTransformer
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
 import co.anitrend.support.crunchyroll.domain.session.interactors.CoreSessionUseCase

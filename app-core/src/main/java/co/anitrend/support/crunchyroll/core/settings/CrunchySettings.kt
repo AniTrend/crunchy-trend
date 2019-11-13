@@ -65,15 +65,15 @@ class CrunchySettings(context: Context) : SupportPreference(context),
             }
         }
 
-    override var authenticatedUserId: Int = INVALID_USER_ID
-        get() = sharedPreferences.getInt(
+    override var authenticatedUserId: Long = INVALID_USER_ID
+        get() = sharedPreferences.getLong(
             stringOf(R.string.settings_authentication_id),
             INVALID_USER_ID
         )
         set(value) {
             field = value
             sharedPreferences.edit {
-                putInt(
+                putLong(
                     stringOf(R.string.settings_authentication_id),
                     value
                 )
