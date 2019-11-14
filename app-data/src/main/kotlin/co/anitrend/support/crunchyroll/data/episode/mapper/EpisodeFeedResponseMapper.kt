@@ -22,16 +22,15 @@ import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticat
 import co.anitrend.support.crunchyroll.data.episode.datasource.local.CrunchyRssEpisodeDao
 import co.anitrend.support.crunchyroll.data.episode.datasource.local.transformer.EpisodeFeedEntityTransformer
 import co.anitrend.support.crunchyroll.data.episode.entity.EpisodeFeedEntity
-import co.anitrend.support.crunchyroll.data.episode.model.CrunchyRssEpisode
+import co.anitrend.support.crunchyroll.data.episode.model.CrunchyEpisodeModel
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.data.rss.contract.ICrunchyRssChannel
-import co.anitrend.support.crunchyroll.data.util.extension.rcf822ToUnixTime
 
 class EpisodeFeedResponseMapper(
     private val dao: CrunchyRssEpisodeDao,
     private val localeHelper: ICrunchySessionLocale,
     private val settings: IAuthenticationSettings
-) : CrunchyRssMapper<CrunchyRssEpisode, EpisodeFeedEntity>() {
+) : CrunchyRssMapper<CrunchyEpisodeModel, EpisodeFeedEntity>() {
 
     /**
      * Creates mapped objects and handles the database operations which may be required to map various objects,
@@ -41,7 +40,7 @@ class EpisodeFeedResponseMapper(
      * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
      * @see [SupportResponseMapper]
      */
-    override suspend fun onResponseMapFrom(source: ICrunchyRssChannel<CrunchyRssEpisode>): List<EpisodeFeedEntity> {
+    override suspend fun onResponseMapFrom(source: ICrunchyRssChannel<CrunchyEpisodeModel>): List<EpisodeFeedEntity> {
         // EpisodeFeedEntityTransformer
         return source.item?.map {
             EpisodeFeedEntityTransformer.transform(

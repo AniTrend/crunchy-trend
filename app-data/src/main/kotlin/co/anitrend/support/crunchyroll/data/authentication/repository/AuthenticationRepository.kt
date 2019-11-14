@@ -20,7 +20,7 @@ import co.anitrend.arch.data.model.UserInterfaceState
 import co.anitrend.arch.data.repository.SupportRepository
 import co.anitrend.support.crunchyroll.data.authentication.source.contract.LoginSource
 import co.anitrend.support.crunchyroll.data.authentication.source.contract.LogoutSource
-import co.anitrend.support.crunchyroll.domain.authentication.models.LoginQuery
+import co.anitrend.support.crunchyroll.domain.authentication.models.CrunchyLoginQuery
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 import co.anitrend.support.crunchyroll.domain.authentication.repositories.ILoginRepository
 import co.anitrend.support.crunchyroll.domain.authentication.repositories.ILogoutRepository
@@ -35,7 +35,7 @@ class AuthenticationRepository(
     /**
      * Authenticates a user
      */
-    override fun loginUser(query: LoginQuery) =
+    override fun loginUser(query: CrunchyLoginQuery) =
         UserInterfaceState.create(
             model = loginSource.loginUser(query),
             source = loginSource

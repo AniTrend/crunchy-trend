@@ -18,15 +18,15 @@ package co.anitrend.support.crunchyroll.data.session.datasource.local.transforme
 
 import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionCoreEntity
-import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionCore
+import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionCoreModel
 
 object CoreSessionEntityTransformer :
-    ISupportMapperHelper<CrunchySessionCore, CrunchySessionCoreEntity> {
+    ISupportMapperHelper<CrunchySessionCoreModel, CrunchySessionCoreEntity> {
 
     /**
      * Transforms the the [source] to the target type
      */
-    override fun transform(source: CrunchySessionCore): CrunchySessionCoreEntity {
+    override fun transform(source: CrunchySessionCoreModel): CrunchySessionCoreEntity {
         return CrunchySessionCoreEntity(
             sessionId = source.session_id,
             deviceType = source.device_type,

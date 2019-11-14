@@ -17,14 +17,14 @@
 package co.anitrend.support.crunchyroll.data.authentication.mapper
 
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
-import co.anitrend.support.crunchyroll.data.authentication.model.CrunchyLogin
+import co.anitrend.support.crunchyroll.data.authentication.model.CrunchyLoginModel
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.transformer.LoginEntityTransformer
 import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEntity
 
 class LoginResponseMapper(
     private val dao: CrunchyLoginDao
-) : CrunchyMapper<CrunchyLogin, CrunchyLoginEntity>() {
+) : CrunchyMapper<CrunchyLoginModel, CrunchyLoginEntity>() {
 
     /**
      * Creates mapped objects and handles the database operations which may be required to map various objects,
@@ -34,7 +34,7 @@ class LoginResponseMapper(
      * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
      * @see [ISupportResponseHelper.invoke]
      */
-    override suspend fun onResponseMapFrom(source: CrunchyLogin): CrunchyLoginEntity {
+    override suspend fun onResponseMapFrom(source: CrunchyLoginModel): CrunchyLoginEntity {
         return LoginEntityTransformer.transform(source)
     }
 

@@ -28,7 +28,7 @@ import co.anitrend.support.crunchyroll.data.episode.mapper.EpisodeFeedResponseMa
 import co.anitrend.support.crunchyroll.data.episode.source.contract.EpisodeFeedSource
 import co.anitrend.support.crunchyroll.data.episode.transformer.EpisodeFeedTransformer
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
-import co.anitrend.support.crunchyroll.domain.episode.entities.EpisodeFeed
+import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 import kotlinx.coroutines.async
 
 class EpisodeFeedSourceImpl(
@@ -40,7 +40,7 @@ class EpisodeFeedSourceImpl(
     private lateinit var rssQuery: RssQuery
 
     override val episodeListingsObservable =
-        object : ISourceObservable<RssQuery, PagedList<EpisodeFeed>> {
+        object : ISourceObservable<RssQuery, PagedList<CrunchyEpisodeFeed>> {
             /**
              * Returns the appropriate observable which we will monitor for updates,
              * common implementation may include but not limited to returning
@@ -48,7 +48,7 @@ class EpisodeFeedSourceImpl(
              *
              * @param parameter to use when executing
              */
-            override fun invoke(parameter: RssQuery): LiveData<PagedList<EpisodeFeed>> {
+            override fun invoke(parameter: RssQuery): LiveData<PagedList<CrunchyEpisodeFeed>> {
                 rssQuery = parameter
                 val localSource = dao.findByAllFactory()
 

@@ -19,7 +19,7 @@ package co.anitrend.support.crunchyroll.data.authentication.source
 import androidx.lifecycle.LiveData
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.domain.entities.isSuccess
-import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthEndpoint
+import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthenticationEndpoint
 import co.anitrend.support.crunchyroll.data.authentication.source.contract.LogoutSource
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
@@ -33,7 +33,7 @@ class LogoutSourceImpl(
     private val sessionCoreDao: CrunchySessionCoreDao,
     private val responseMapper: LogoutResponseMapper,
     private val sessionDao: CrunchySessionDao,
-    private val endpoint: CrunchyAuthEndpoint,
+    private val endpoint: CrunchyAuthenticationEndpoint,
     private val settings: IAuthenticationSettings,
     private val dao: CrunchyLoginDao
 ) : LogoutSource() {

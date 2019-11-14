@@ -17,18 +17,18 @@
 package co.anitrend.support.crunchyroll.data.collection.datasource.local.transformer
 
 import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
-import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyMediaType
+import co.anitrend.support.crunchyroll.domain.series.enums.CrunchyMediaType
 import co.anitrend.support.crunchyroll.data.collection.entity.CrunchyCollectionEntity
-import co.anitrend.support.crunchyroll.data.collection.model.CrunchyCollection
+import co.anitrend.support.crunchyroll.data.collection.model.CrunchyCollectionModel
 import co.anitrend.support.crunchyroll.data.util.extension.iso8601ToUnixTime
 
 object CrunchyCollectionEntityTransformer :
-    ISupportMapperHelper<CrunchyCollection, CrunchyCollectionEntity> {
+    ISupportMapperHelper<CrunchyCollectionModel, CrunchyCollectionEntity> {
 
     /**
      * Transforms the the [source] to the target type
      */
-    override fun transform(source: CrunchyCollection): CrunchyCollectionEntity {
+    override fun transform(source: CrunchyCollectionModel): CrunchyCollectionEntity {
         return CrunchyCollectionEntity(
             collectionId = source.collection_id.toLong(),
             etpGuid = source.etp_guid,

@@ -29,6 +29,7 @@ fun CrunchyResponseStatus.toHttpCode() =
         CrunchyResponseStatus.bad_request -> 400
         CrunchyResponseStatus.bad_session -> 401
         CrunchyResponseStatus.object_not_found -> 404
+        CrunchyResponseStatus.bad_auth_params,
         CrunchyResponseStatus.forbidden -> 403
         else -> 200
     }

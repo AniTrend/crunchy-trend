@@ -29,7 +29,7 @@ import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
-import co.anitrend.support.crunchyroll.domain.news.entities.News
+import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import co.anitrend.support.crunchyroll.feature.news.R
 import co.anitrend.support.crunchyroll.feature.news.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.news.ui.adapter.RssNewsAdapter
@@ -37,7 +37,7 @@ import co.anitrend.support.crunchyroll.feature.news.viewmodel.NewsViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NewsFeedContent : SupportFragmentPagedList<News, CrunchyCorePresenter, PagedList<News>>() {
+class NewsFeedContent : SupportFragmentPagedList<CrunchyNews, CrunchyCorePresenter, PagedList<CrunchyNews>>() {
 
     override val supportStateConfiguration
             by inject<SupportStateLayoutConfiguration>()
@@ -59,7 +59,7 @@ class NewsFeedContent : SupportFragmentPagedList<News, CrunchyCorePresenter, Pag
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         RssNewsAdapter(
             presenter = supportPresenter,
-            clickListener = object : ItemClickListener<News> {
+            clickListener = object : ItemClickListener<CrunchyNews> {
                 /**
                  * When the target view from [View.OnClickListener]
                  * is clicked from a view holder this method will be called
@@ -67,7 +67,7 @@ class NewsFeedContent : SupportFragmentPagedList<News, CrunchyCorePresenter, Pag
                  * @param target view that has been clicked
                  * @param data the liveData that at the click index
                  */
-                override fun onItemClick(target: View, data: Pair<Int, News?>) {
+                override fun onItemClick(target: View, data: Pair<Int, CrunchyNews?>) {
                     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                 }
 
@@ -78,7 +78,7 @@ class NewsFeedContent : SupportFragmentPagedList<News, CrunchyCorePresenter, Pag
                  * @param target view that has been long clicked
                  * @param data the liveData that at the long click index
                  */
-                override fun onItemLongClick(target: View, data: Pair<Int, News?>) {
+                override fun onItemLongClick(target: View, data: Pair<Int, CrunchyNews?>) {
                     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                 }
             }

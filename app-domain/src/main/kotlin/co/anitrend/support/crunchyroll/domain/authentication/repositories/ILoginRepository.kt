@@ -17,12 +17,12 @@
 package co.anitrend.support.crunchyroll.domain.authentication.repositories
 
 import co.anitrend.arch.domain.common.IUserInterfaceState
-import co.anitrend.support.crunchyroll.domain.authentication.models.LoginQuery
+import co.anitrend.support.crunchyroll.domain.authentication.models.CrunchyLoginQuery
 
 interface ILoginRepository<R : IUserInterfaceState<*>> {
 
     /**
      * Authenticates a user
      */
-    fun loginUser(query: LoginQuery): R
+    fun loginUser(query: CrunchyLoginQuery): R
 }

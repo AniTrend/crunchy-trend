@@ -18,15 +18,15 @@ package co.anitrend.support.crunchyroll.data.news.transformer
 
 import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
 import co.anitrend.support.crunchyroll.data.news.entity.NewsEntity
-import co.anitrend.support.crunchyroll.domain.news.entities.News
+import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 
-object NewsTransformer : ISupportMapperHelper<NewsEntity, News> {
+object NewsTransformer : ISupportMapperHelper<NewsEntity, CrunchyNews> {
 
     /**
      * Transforms the the [source] to the target type
      */
-    override fun transform(source: NewsEntity): News {
-        return News(
+    override fun transform(source: NewsEntity): CrunchyNews {
+        return CrunchyNews(
             title = source.title,
             image = source.image,
             author = source.author,

@@ -19,7 +19,7 @@ package co.anitrend.support.crunchyroll.data.stream.repository
 import co.anitrend.arch.data.model.UserInterfaceState
 import co.anitrend.arch.data.repository.SupportRepository
 import co.anitrend.support.crunchyroll.data.stream.source.contract.CrunchyStreamSource
-import co.anitrend.support.crunchyroll.domain.stream.models.MediaStreamQuery
+import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.domain.stream.repositories.IStreamRepository
 
@@ -28,7 +28,7 @@ class CrunchyStreamRepository(
 ) : SupportRepository(source),
     IStreamRepository<UserInterfaceState<List<MediaStream>?>> {
 
-    override fun getStream(query: MediaStreamQuery) =
+    override fun getStream(query: CrunchyMediaStreamQuery) =
         UserInterfaceState.create(
             model = source.getMediaStream(query),
             source = source

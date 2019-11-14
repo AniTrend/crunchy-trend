@@ -18,21 +18,21 @@ package co.anitrend.support.crunchyroll.data.collection.transformer
 
 import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
 import co.anitrend.support.crunchyroll.data.collection.entity.CrunchyCollectionEntity
-import co.anitrend.support.crunchyroll.domain.collection.entities.CollectionMedia
+import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
 
 object CollectionMediaTransformer :
-    ISupportMapperHelper<CrunchyCollectionEntity, CollectionMedia> {
+    ISupportMapperHelper<CrunchyCollectionEntity, CrunchyCollection> {
 
     /**
      * Transforms the the [source] to the target type
      */
-    override fun transform(source: CrunchyCollectionEntity): CollectionMedia {
-        return CollectionMedia(
+    override fun transform(source: CrunchyCollectionEntity): CrunchyCollection {
+        return CrunchyCollection(
             collectionId = source.collectionId,
             seriesId = source.seriesId,
             name = source.name,
             description = source.description,
-            mediaType = source.mediaType.name,
+            mediaType = source.mediaType,
             season = source.season,
             complete = source.complete,
             landscapeImage = source.landscapeImage,

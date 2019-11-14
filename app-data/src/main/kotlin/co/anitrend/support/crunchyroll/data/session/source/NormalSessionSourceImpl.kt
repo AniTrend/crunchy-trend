@@ -17,7 +17,7 @@
 package co.anitrend.support.crunchyroll.data.session.source
 
 import co.anitrend.arch.domain.entities.NetworkState
-import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthEndpoint
+import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthenticationEndpoint
 import co.anitrend.support.crunchyroll.data.session.source.contract.SessionSource
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
@@ -25,7 +25,7 @@ import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySess
 import co.anitrend.support.crunchyroll.data.session.mapper.SessionResponseMapper
 import co.anitrend.support.crunchyroll.data.session.transformer.SessionTransformer
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
-import co.anitrend.support.crunchyroll.domain.session.models.NormalSessionQuery
+import co.anitrend.support.crunchyroll.domain.session.models.CrunchyNormalSessionQuery
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
@@ -35,12 +35,12 @@ class NormalSessionSourceImpl(
     private val dao: CrunchySessionDao,
     private val settings: IAuthenticationSettings,
     private val loginDao: CrunchyLoginDao,
-    private val endpoint: CrunchyAuthEndpoint,
+    private val endpoint: CrunchyAuthenticationEndpoint,
     private val coreSessionDao: CrunchySessionCoreDao,
     private val responseMapper: SessionResponseMapper
 ) : SessionSource() {
 
-    private fun buildQuery(): NormalSessionQuery? {
+    private fun buildQuery(): CrunchyNormalSessionQuery? {
         val coreSession = coreSessionDao.findBySessionId(
             settings.sessionId
         )
@@ -49,10 +49,10 @@ class NormalSessionSourceImpl(
         )
 
         if (coreSession != null && loginSession != null) {
-            return NormalSessionQuery(
+            return CrunchyNormalSessionQuery(
                 auth = loginSession.auth,
-                deviceType = coreSession.device_type,
-                deviceId = coreSession.device_id
+                deviceType = coreSession.deviceType,
+                deviceId = coreSession.deviceId
             )
         }
 
@@ -88,7 +88,7 @@ class NormalSessionSourceImpl(
                 responseMapper(deferred, networkState)
             }
             if (session != null)
-                settings.sessionId = session.session_id
+                settings.sessionId = session.sessionId
 
             SessionTransformer.transform(session)
         }

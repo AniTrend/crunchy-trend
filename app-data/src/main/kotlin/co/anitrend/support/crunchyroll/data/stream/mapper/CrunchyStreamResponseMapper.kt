@@ -17,10 +17,10 @@
 package co.anitrend.support.crunchyroll.data.stream.mapper
 
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
-import co.anitrend.support.crunchyroll.data.stream.model.CrunchyStreamInfo
+import co.anitrend.support.crunchyroll.data.stream.model.CrunchyStreamInfoModel
 
 class CrunchyStreamResponseMapper :
-    CrunchyMapper<CrunchyStreamInfo, CrunchyStreamInfo>() {
+    CrunchyMapper<CrunchyStreamInfoModel, CrunchyStreamInfoModel>() {
 
     /**
      * Creates mapped objects and handles the database operations which may be required to map various objects,
@@ -29,7 +29,7 @@ class CrunchyStreamResponseMapper :
      * @param source the incoming data source type
      * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
      */
-    override suspend fun onResponseMapFrom(source: CrunchyStreamInfo): CrunchyStreamInfo {
+    override suspend fun onResponseMapFrom(source: CrunchyStreamInfoModel): CrunchyStreamInfoModel {
         return source
     }
 
@@ -39,7 +39,7 @@ class CrunchyStreamResponseMapper :
      *
      * @param mappedData mapped object from [onResponseMapFrom] to insert into the database
      */
-    override suspend fun onResponseDatabaseInsert(mappedData: CrunchyStreamInfo) {
+    override suspend fun onResponseDatabaseInsert(mappedData: CrunchyStreamInfoModel) {
         // not persisting anything into the database
     }
 }

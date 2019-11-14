@@ -21,7 +21,7 @@ import co.anitrend.support.crunchyroll.data.api.contract.JSON
 import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpointFactory
 import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyMediaField
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
-import co.anitrend.support.crunchyroll.data.stream.model.CrunchyStreamInfo
+import co.anitrend.support.crunchyroll.data.stream.model.CrunchyStreamInfoModel
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -31,9 +31,9 @@ interface CrunchyStreamEndpoint {
     @JSON
     @GET("/info.${BuildConfig.apiExtension}.json")
     suspend fun getStreamInfo(
-        @Query("media_id") mediaId: Int,
+        @Query("media_id") mediaId: Long,
         @Query("fields") mediaFields: String = CrunchyMediaField.streamFields
-    ) : Response<CrunchyContainer<CrunchyStreamInfo>>
+    ) : Response<CrunchyContainer<CrunchyStreamInfoModel>>
 
 
     companion object : CrunchyEndpointFactory<CrunchyStreamEndpoint>(

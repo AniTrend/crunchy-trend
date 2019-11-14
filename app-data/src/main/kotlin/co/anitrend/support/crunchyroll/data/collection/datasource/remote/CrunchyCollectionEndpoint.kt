@@ -20,7 +20,7 @@ import co.anitrend.arch.extension.util.SupportExtKeyStore
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.contract.JSON
 import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpointFactory
-import co.anitrend.support.crunchyroll.data.collection.model.CrunchyCollection
+import co.anitrend.support.crunchyroll.data.collection.model.CrunchyCollectionModel
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import retrofit2.Response
 import retrofit2.http.GET
@@ -31,10 +31,10 @@ interface CrunchyCollectionEndpoint {
     @JSON
     @GET("/list_collections.${BuildConfig.apiExtension}.json")
     suspend fun getCollections(
-        @Query("series_id") seriesId: Int?,
-        @Query("offset") offset: Int?,
+        @Query("series_id") seriesId: Long,
+        @Query("offset") offset: Int,
         @Query("limit") limit: Int = SupportExtKeyStore.pagingLimit
-    ) : Response<CrunchyContainer<List<CrunchyCollection>>>
+    ) : Response<CrunchyContainer<List<CrunchyCollectionModel>>>
 
     companion object : CrunchyEndpointFactory<CrunchyCollectionEndpoint>(
         endpoint = CrunchyCollectionEndpoint::class,

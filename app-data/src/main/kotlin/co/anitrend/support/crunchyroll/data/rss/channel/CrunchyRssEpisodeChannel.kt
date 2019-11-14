@@ -17,7 +17,7 @@
 package co.anitrend.support.crunchyroll.data.rss.channel
 
 import co.anitrend.support.crunchyroll.data.arch.RCF822Date
-import co.anitrend.support.crunchyroll.data.episode.model.CrunchyRssEpisode
+import co.anitrend.support.crunchyroll.data.episode.model.CrunchyEpisodeModel
 import co.anitrend.support.crunchyroll.data.rss.contract.ICrunchyRssChannel
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.ElementList
@@ -40,8 +40,8 @@ data class CrunchyRssEpisodeChannel(
         required = false,
         inline = true
     )
-    override var item: List<CrunchyRssEpisode>? = null
-) : ICrunchyRssChannel<CrunchyRssEpisode> {
+    override var item: List<CrunchyEpisodeModel>? = null
+) : ICrunchyRssChannel<CrunchyEpisodeModel> {
     constructor() : this(
         copyright = "",
         publishedDate = "",

@@ -46,7 +46,7 @@ interface CrunchyLoginDao : ISupportQuery<CrunchyLoginEntity> {
         where userId = :userId
         """)
     fun findByUserId(
-        userId: Int
+        userId: Long
     ): CrunchyLoginEntity?
 
     @Query("""
@@ -55,6 +55,6 @@ interface CrunchyLoginDao : ISupportQuery<CrunchyLoginEntity> {
         where userId = :userId
         """)
     fun findByUserIdX(
-        userId: Int
+        userId: Long
     ): LiveData<CrunchyLoginEntity?>
 }

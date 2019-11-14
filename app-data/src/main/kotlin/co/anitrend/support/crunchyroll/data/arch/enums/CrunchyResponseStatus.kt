@@ -18,6 +18,7 @@ package co.anitrend.support.crunchyroll.data.arch.enums
 
 @Suppress("EnumEntryName")
 enum class CrunchyResponseStatus {
+    bad_auth_params,
     bad_request,
     bad_session,
     object_not_found,

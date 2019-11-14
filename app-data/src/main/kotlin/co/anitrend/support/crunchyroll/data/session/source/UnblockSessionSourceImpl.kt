@@ -25,7 +25,7 @@ import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySess
 import co.anitrend.support.crunchyroll.data.session.mapper.SessionResponseMapper
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.data.session.transformer.SessionTransformer
-import co.anitrend.support.crunchyroll.domain.session.models.UnBlockedSessionQuery
+import co.anitrend.support.crunchyroll.domain.session.models.CrunchyUnBlockedSessionQuery
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
@@ -40,7 +40,7 @@ class UnblockSessionSourceImpl(
     private val responseMapper: SessionResponseMapper
 ) : SessionSource() {
 
-    private fun buildQuery(): UnBlockedSessionQuery? {
+    private fun buildQuery(): CrunchyUnBlockedSessionQuery? {
         val coreSession = coreSessionDao.findBySessionId(
             settings.sessionId
         )
@@ -49,9 +49,9 @@ class UnblockSessionSourceImpl(
         )
 
         if (coreSession != null && loginSession != null) {
-            return UnBlockedSessionQuery(
+            return CrunchyUnBlockedSessionQuery(
                 auth = loginSession.auth,
-                userId = loginSession.user.user_id
+                userId = loginSession.userId
             )
         }
 
@@ -86,7 +86,7 @@ class UnblockSessionSourceImpl(
                 responseMapper(deferred, networkState)
             }
             if (session != null)
-                settings.sessionId = session.session_id
+                settings.sessionId = session.sessionId
 
             SessionTransformer.transform(session)
         }

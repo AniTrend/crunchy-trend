@@ -1,14 +1,14 @@
 /*
  *    Copyright 2019 AniTrend
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    Licensed under the Apache License, Version 2.0 (the """License""");
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
  *
  *        http://www.apache.org/licenses/LICENSE-2.0
  *
  *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    distributed under the License is distributed on an """AS IS""" BASIS,
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
@@ -21,39 +21,64 @@ import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Query
 import co.anitrend.arch.data.dao.ISupportQuery
-import co.anitrend.support.crunchyroll.data.media.model.CrunchyMedia
+import co.anitrend.support.crunchyroll.data.media.entity.CrunchyMediaEntity
 
 @Dao
-interface CrunchyMediaDao : ISupportQuery<CrunchyMedia> {
+interface CrunchyMediaDao : ISupportQuery<CrunchyMediaEntity> {
 
-    @Query("delete from CrunchyMedia")
+    @Query("""
+        delete from CrunchyMediaEntity
+        """)
     suspend fun clearTable()
 
 
-    @Query("select * from CrunchyMedia where media_id = :mediaId")
+    @Query("""
+        select * 
+        from CrunchyMediaEntity 
+        where mediaId = :mediaId
+        """)
      suspend fun findByMediaId(
         mediaId: String
-    ): CrunchyMedia?
+    ): CrunchyMediaEntity?
 
-    @Query("select * from CrunchyMedia where media_id = :mediaId")
+    @Query("""
+        select * 
+        from CrunchyMediaEntity 
+        where mediaId = :mediaId
+        """)
     fun findByMediaIdX(
         mediaId: String
-    ): LiveData<CrunchyMedia?>
+    ): LiveData<CrunchyMediaEntity?>
 
 
 
-    @Query("select * from CrunchyMedia where collection_id = :collectionId order by media_id desc")
+    @Query("""
+        select * 
+        from CrunchyMediaEntity 
+        where collectionId = :collectionId 
+        order by mediaId desc
+        """)
     suspend fun findByCollectionId(
         collectionId: Int
-    ): List<CrunchyMedia>
+    ): List<CrunchyMediaEntity>
 
-    @Query("select * from CrunchyMedia where collection_id = :collectionId order by media_id desc")
+    @Query("""
+        select * 
+        from CrunchyMediaEntity 
+        where collectionId = :collectionId 
+        order by mediaId desc
+        """)
     fun findByCollectionIdX(
         collectionId: Int
-    ): LiveData<List<CrunchyMedia>>
+    ): LiveData<List<CrunchyMediaEntity>>
 
-    @Query("select * from CrunchyMedia where collection_id = :collectionId order by media_id desc")
+    @Query("""
+        select * 
+        from CrunchyMediaEntity 
+        where collectionId = :collectionId 
+        order by mediaId desc
+        """)
     fun findByCollectionIdFactory(
         collectionId: Int
-    ): DataSource.Factory<Int, CrunchyMedia>
+    ): DataSource.Factory<Int, CrunchyMediaEntity>
 }

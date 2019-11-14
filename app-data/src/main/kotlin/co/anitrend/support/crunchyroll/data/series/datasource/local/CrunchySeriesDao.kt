@@ -1,14 +1,14 @@
 /*
  *    Copyright 2019 AniTrend
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    Licensed under the Apache License, Version 2.0 (the """License""");
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
  *
  *        http://www.apache.org/licenses/LICENSE-2.0
  *
  *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    distributed under the License is distributed on an """AS IS""" BASIS,
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
@@ -21,50 +21,87 @@ import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Query
 import co.anitrend.arch.data.dao.ISupportQuery
-import co.anitrend.support.crunchyroll.data.series.model.CrunchySeries
+import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesEntity
 
 @Dao
-interface CrunchySeriesDao : ISupportQuery<CrunchySeries> {
+interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
 
-    @Query("delete from CrunchySeries")
+    @Query("""
+        delete from CrunchySeriesEntity
+        """)
     suspend fun clearTable()
 
 
-    @Query("select *, rowid from CrunchySeries where series_id = :seriesId")
+    @Query("""
+        select *
+        from CrunchySeriesEntity 
+        where seriesId = :seriesId
+        """)
     suspend fun findBySeriesId(
         seriesId: Int
-    ): CrunchySeries?
+    ): CrunchySeriesEntity?
 
-    @Query("select *, rowid from CrunchySeries where series_id = :seriesId")
+    @Query("""
+        select *
+        from CrunchySeriesEntity 
+        where seriesId = :seriesId
+    """)
     fun findBySeriesIdX(
         seriesId: Int
-    ): LiveData<CrunchySeries?>
+    ): LiveData<CrunchySeriesEntity?>
 
 
 
-    @Query("select *, rowid from CrunchySeries where name match :seriesName order by name desc")
+    @Query("""
+        select *
+        from CrunchySeriesEntity 
+        where name match :seriesName 
+        order by name desc
+    """)
     suspend fun findBySeriesName(
         seriesName: String
-    ): List<CrunchySeries>
+    ): List<CrunchySeriesEntity>
 
-    @Query("select *, rowid from CrunchySeries where name match :seriesName order by name desc")
+    @Query("""
+        select *
+        from CrunchySeriesEntity 
+        where name match :seriesName 
+        order by name desc
+    """)
     fun findBySeriesNameX(
         seriesName: String
-    ): LiveData<List<CrunchySeries>>
+    ): LiveData<List<CrunchySeriesEntity>>
 
-    @Query("select *, rowid from CrunchySeries where name match :seriesName order by name desc")
+    @Query("""
+        select *
+        from CrunchySeriesEntity 
+        where name match :seriesName 
+        order by name desc
+    """)
     fun findBySeriesNameFactory(
         seriesName: String
-    ): DataSource.Factory<Int, CrunchySeries>
+    ): DataSource.Factory<Int, CrunchySeriesEntity>
 
 
 
-    @Query("select *, rowid from CrunchySeries order by name desc")
-    suspend fun findAll(): List<CrunchySeries>
+    @Query("""
+        select *
+        from CrunchySeriesEntity 
+        order by name desc
+        """)
+    suspend fun findAll(): List<CrunchySeriesEntity>
 
-    @Query("select *, rowid from CrunchySeries order by name desc")
-    fun findAllX(): LiveData<List<CrunchySeries>>
+    @Query("""
+        select *
+        from CrunchySeriesEntity 
+        order by name desc
+        """)
+    fun findAllX(): LiveData<List<CrunchySeriesEntity>>
 
-    @Query("select *, rowid from CrunchySeries order by name desc")
-    fun findAllFactory(): DataSource.Factory<Int, CrunchySeries>
+    @Query("""
+        select *
+        from CrunchySeriesEntity 
+        order by name desc
+        """)
+    fun findAllFactory(): DataSource.Factory<Int, CrunchySeriesEntity>
 }

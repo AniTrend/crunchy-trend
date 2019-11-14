@@ -20,12 +20,12 @@ import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyRssMapper
 import co.anitrend.support.crunchyroll.data.news.datasource.local.CrunchyRssNewsDao
 import co.anitrend.support.crunchyroll.data.news.datasource.local.transformer.NewsEntityTransformer
 import co.anitrend.support.crunchyroll.data.news.entity.NewsEntity
-import co.anitrend.support.crunchyroll.data.news.model.CrunchyRssNews
+import co.anitrend.support.crunchyroll.data.news.model.CrunchyNewsModel
 import co.anitrend.support.crunchyroll.data.rss.contract.ICrunchyRssChannel
 
 class NewsResponseMapper(
     private val dao: CrunchyRssNewsDao
-) : CrunchyRssMapper<CrunchyRssNews, NewsEntity>() {
+) : CrunchyRssMapper<CrunchyNewsModel, NewsEntity>() {
 
     /**
      * Creates mapped objects and handles the database operations which may be required to map various objects,
@@ -35,7 +35,7 @@ class NewsResponseMapper(
      * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
      * @see [ISupportResponseHelper.invoke]
      */
-    override suspend fun onResponseMapFrom(source: ICrunchyRssChannel<CrunchyRssNews>): List<NewsEntity> {
+    override suspend fun onResponseMapFrom(source: ICrunchyRssChannel<CrunchyNewsModel>): List<NewsEntity> {
         return source.item?.map {
             NewsEntityTransformer.transform(
                 it.copy(

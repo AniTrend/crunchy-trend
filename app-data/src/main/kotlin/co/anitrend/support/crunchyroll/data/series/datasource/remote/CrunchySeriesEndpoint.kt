@@ -20,9 +20,9 @@ import co.anitrend.arch.extension.util.SupportExtKeyStore
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.contract.JSON
 import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpointFactory
-import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyMediaType
+import co.anitrend.support.crunchyroll.domain.series.enums.CrunchyMediaType
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
-import co.anitrend.support.crunchyroll.data.series.model.CrunchySeries
+import co.anitrend.support.crunchyroll.data.series.model.CrunchySeriesModel
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -32,17 +32,17 @@ interface CrunchySeriesEndpoint {
     @JSON
     @GET("/info.${BuildConfig.apiExtension}.json")
     suspend fun getSeriesInfo(
-        @Query("series_id") seriesId: Int?
-    ) : Response<CrunchyContainer<CrunchySeries>>
+        @Query("series_id") seriesId: Long
+    ) : Response<CrunchyContainer<CrunchySeriesModel>>
 
     @JSON
     @GET("/autocomplete.${BuildConfig.apiExtension}.json")
     suspend fun getSeriesAutoComplete(
-        @Query("q") query: String?,
+        @Query("q") query: String,
         @Query("media_types") mediaTypes: String = CrunchyMediaType.anime.name,
         @Query("offset") offset: Int,
         @Query("limit") limit: Int = SupportExtKeyStore.pagingLimit
-    ) : Response<CrunchyContainer<List<CrunchySeries>>>
+    ) : Response<CrunchyContainer<List<CrunchySeriesModel>>>
 
     companion object : CrunchyEndpointFactory<CrunchySeriesEndpoint>(
         endpoint = CrunchySeriesEndpoint::class,

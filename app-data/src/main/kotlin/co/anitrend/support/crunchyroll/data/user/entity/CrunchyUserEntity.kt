@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.user.entity
 
-import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyAccessType
+import co.anitrend.support.crunchyroll.domain.user.enums.CrunchyAccessType
 
 /**
  * @param premium anime|drama|manga

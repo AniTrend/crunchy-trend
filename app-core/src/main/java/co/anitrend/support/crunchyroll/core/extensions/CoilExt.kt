@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.core.extensions
 
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.databinding.BindingAdapter
-import co.anitrend.support.crunchyroll.domain.episode.entities.EpisodeFeed
+import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 import coil.api.load
 import coil.request.CachePolicy
 import coil.size.Scale
@@ -33,7 +33,7 @@ fun AppCompatImageView.setImageUrl(url: String?) = url?.also {
 }
 
 @BindingAdapter("imageUrl")
-fun AppCompatImageView.setImageUrl(feed: EpisodeFeed?) = feed?.also {
+fun AppCompatImageView.setImageUrl(feed: CrunchyEpisodeFeed?) = feed?.also {
     load(it.episodeThumbnail) {
         scale(Scale.FILL)
         val comparisonTime = if (feed.isPremiumEnabled)

@@ -18,7 +18,6 @@ package co.anitrend.support.crunchyroll.data.authentication.transformer
 
 import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
 import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEntity
-import co.anitrend.support.crunchyroll.data.authentication.model.CrunchyLogin
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 
 object CrunchyUserTransformer : ISupportMapperHelper<CrunchyLoginEntity?, CrunchyUser?> {
@@ -33,7 +32,7 @@ object CrunchyUserTransformer : ISupportMapperHelper<CrunchyLoginEntity?, Crunch
                 username = it.username,
                 email = it.email,
                 premium = it.premium,
-                accessType = it.accessType?.name
+                accessType = it.accessType
             )
         }
     }

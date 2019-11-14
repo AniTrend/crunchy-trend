@@ -18,19 +18,19 @@ package co.anitrend.support.crunchyroll.feature.player.viewmodel
 
 import co.anitrend.arch.core.viewmodel.SupportViewModel
 import co.anitrend.support.crunchyroll.data.stream.usecase.CrunchyStreamUseCaseImpl
-import co.anitrend.support.crunchyroll.domain.stream.models.MediaStreamQuery
+import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 
 class MediaStreamViewModel(
     override val useCase: CrunchyStreamUseCaseImpl
-) : SupportViewModel<MediaStreamQuery, List<MediaStream>?>() {
+) : SupportViewModel<CrunchyMediaStreamQuery, List<MediaStream>?>() {
 
     /**
      * Starts view model operations
      *
      * @param parameter request payload
      */
-    override fun invoke(parameter: MediaStreamQuery) {
+    override fun invoke(parameter: CrunchyMediaStreamQuery) {
         val result = useCase(parameter)
         useCaseResult.value = result
     }

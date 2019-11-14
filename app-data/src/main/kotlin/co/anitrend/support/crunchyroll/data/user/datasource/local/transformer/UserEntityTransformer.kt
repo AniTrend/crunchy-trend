@@ -17,16 +17,16 @@
 package co.anitrend.support.crunchyroll.data.user.datasource.local.transformer
 
 import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
-import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyAccessType
+import co.anitrend.support.crunchyroll.domain.user.enums.CrunchyAccessType
 import co.anitrend.support.crunchyroll.data.user.entity.CrunchyUserEntity
-import co.anitrend.support.crunchyroll.data.user.model.CrunchyAuthUser
+import co.anitrend.support.crunchyroll.data.user.model.CrunchyUserModel
 
-object UserEntityTransformer : ISupportMapperHelper<CrunchyAuthUser, CrunchyUserEntity> {
+object UserEntityTransformer : ISupportMapperHelper<CrunchyUserModel, CrunchyUserEntity> {
 
     /**
      * Transforms the the [source] to the target type
      */
-    override fun transform(source: CrunchyAuthUser): CrunchyUserEntity {
+    override fun transform(source: CrunchyUserModel): CrunchyUserEntity {
         return CrunchyUserEntity(
             userId = source.user_id.toLong(),
             username = source.username,

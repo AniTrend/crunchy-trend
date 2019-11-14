@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.data.authentication.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyAccessType
+import co.anitrend.support.crunchyroll.domain.user.enums.CrunchyAccessType
 
 @Entity
 data class CrunchyLoginEntity(

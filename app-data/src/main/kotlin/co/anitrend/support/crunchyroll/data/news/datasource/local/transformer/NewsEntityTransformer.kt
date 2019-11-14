@@ -19,15 +19,15 @@ package co.anitrend.support.crunchyroll.data.news.datasource.local.transformer
 import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
 import co.anitrend.support.crunchyroll.data.news.entity.NewsEntity
 import co.anitrend.support.crunchyroll.data.news.helper.NewsHelper
-import co.anitrend.support.crunchyroll.data.news.model.CrunchyRssNews
+import co.anitrend.support.crunchyroll.data.news.model.CrunchyNewsModel
 import co.anitrend.support.crunchyroll.data.util.extension.rcf822ToUnixTime
 
-object NewsEntityTransformer : ISupportMapperHelper<CrunchyRssNews, NewsEntity> {
+object NewsEntityTransformer : ISupportMapperHelper<CrunchyNewsModel, NewsEntity> {
 
     /**
      * Transforms the the [source] to the target type
      */
-    override fun transform(source: CrunchyRssNews): NewsEntity {
+    override fun transform(source: CrunchyNewsModel): NewsEntity {
         val content = NewsHelper.getContentWithoutImage(source.description)
 
         return NewsEntity(

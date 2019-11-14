@@ -16,10 +16,12 @@
 
 package co.anitrend.support.crunchyroll.domain.user.entities
 
+import co.anitrend.support.crunchyroll.domain.user.enums.CrunchyAccessType
+
 data class CrunchyUser(
     val userId: Long,
     val username: String,
     val email: String,
     val premium: String?,
-    val accessType: String?
+    val accessType: CrunchyAccessType?
 )

@@ -19,7 +19,7 @@ package co.anitrend.support.crunchyroll.data.collection.entity
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyMediaType
+import co.anitrend.support.crunchyroll.domain.series.enums.CrunchyMediaType
 
 @Entity(
     indices = [

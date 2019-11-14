@@ -16,8 +16,13 @@
 
 package co.anitrend.support.crunchyroll.domain.stream.entities
 
+import co.anitrend.support.crunchyroll.domain.stream.enums.CrunchyStreamQuality
+
 data class MediaStream(
-    val quality: String,
+    val subTitleLanguage: String,
+    val audioLanguage: String,
+    val format: String,
+    val quality: CrunchyStreamQuality,
     val url: String,
     val playHead: Int,
     val expires: Long

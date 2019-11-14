@@ -20,13 +20,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.domain.entities.NetworkState
-import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthEndpoint
+import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthenticationEndpoint
 import co.anitrend.support.crunchyroll.data.authentication.source.contract.LoginSource
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.authentication.mapper.LoginResponseMapper
 import co.anitrend.support.crunchyroll.data.authentication.transformer.CrunchyUserTransformer
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
-import co.anitrend.support.crunchyroll.domain.authentication.models.LoginQuery
+import co.anitrend.support.crunchyroll.domain.authentication.models.CrunchyLoginQuery
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -35,12 +35,12 @@ import timber.log.Timber
 class LoginSourceImpl(
     private val dao: CrunchyLoginDao,
     private val settings: IAuthenticationSettings,
-    private val endpoint: CrunchyAuthEndpoint,
+    private val endpoint: CrunchyAuthenticationEndpoint,
     private val responseMapper: LoginResponseMapper
 ) : LoginSource() {
 
     override val observable =
-        object : ISourceObservable<LoginQuery, CrunchyUser?> {
+        object : ISourceObservable<CrunchyLoginQuery, CrunchyUser?> {
             /**
              * Returns the appropriate observable which we will monitor for updates,
              * common implementation may include but not limited to returning
@@ -48,7 +48,7 @@ class LoginSourceImpl(
              *
              * @param parameter to use when executing
              */
-            override fun invoke(parameter: LoginQuery): LiveData<CrunchyUser?> {
+            override fun invoke(parameter: CrunchyLoginQuery): LiveData<CrunchyUser?> {
                 val login = dao.findLatestByAccountX(parameter.account)
 
                 return Transformations.map(login) {
@@ -57,7 +57,7 @@ class LoginSourceImpl(
             }
         }
 
-    override fun loginUser(query: LoginQuery): LiveData<CrunchyUser?> {
+    override fun loginUser(query: CrunchyLoginQuery): LiveData<CrunchyUser?> {
         retry = { loginUser(query) }
         networkState.value = NetworkState.Loading
         val deferred = async {

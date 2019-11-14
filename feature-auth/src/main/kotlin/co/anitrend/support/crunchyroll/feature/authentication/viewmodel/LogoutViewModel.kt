@@ -39,7 +39,7 @@ class LogoutViewModel(
         useCaseResult.value = result
     }
 
-    fun getUserByIdLiveData(userId: Int): LiveData<CrunchyUser?> {
+    fun getUserByIdLiveData(userId: Long): LiveData<CrunchyUser?> {
         val liveData = loginDao.findByUserIdX(userId)
         return Transformations.map(liveData) {
             CrunchyUserTransformer.transform(it)

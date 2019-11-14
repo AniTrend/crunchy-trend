@@ -19,8 +19,8 @@ ext {
     targetSdk = 29
     minSdk = 21
 
-    versionCode = 32
-    versionName = '0.2.4-alpha02'
+    versionCode = 35
+    versionName = '0.2.5-alpha01'
 
     coil = '0.8.0'
     glide = '4.10.0'

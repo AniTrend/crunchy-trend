@@ -19,6 +19,7 @@ package co.anitrend.support.crunchyroll.feature.authentication.ui.activity
 import android.os.Bundle
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
+import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.feature.authentication.ui.fragment.FragmentLogin
 import co.anitrend.support.crunchyroll.feature.authentication.ui.fragment.FragmentLogout
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
@@ -63,14 +64,16 @@ class AuthenticationScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        val target = when (supportPresenter.supportPreference.isAuthenticated) {
+        supportFragmentActivity = when (supportPresenter.supportPreference.isAuthenticated) {
             true -> FragmentLogout.newInstance()
             else -> FragmentLogin.newInstance()
         }
 
+        val targetFragment = supportFragmentActivity as SupportFragment<*, *, *>
+
         supportFragmentManager.commit {
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            replace(R.id.contentFrame, target, target.tag)
+            replace(R.id.contentFrame, targetFragment, targetFragment.tag)
         }
     }
 }

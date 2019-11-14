@@ -19,15 +19,15 @@ package co.anitrend.support.crunchyroll.feature.authentication.viewmodel
 import co.anitrend.arch.core.viewmodel.SupportViewModel
 import co.anitrend.arch.extension.empty
 import co.anitrend.support.crunchyroll.data.authentication.usecase.LoginUseCaseImpl
-import co.anitrend.support.crunchyroll.domain.authentication.models.LoginQuery
+import co.anitrend.support.crunchyroll.domain.authentication.models.CrunchyLoginQuery
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 
 class LoginViewModel(
     override val useCase: LoginUseCaseImpl
-) : SupportViewModel<LoginQuery, CrunchyUser?>() {
+) : SupportViewModel<CrunchyLoginQuery, CrunchyUser?>() {
 
     val loginQuery =
-        LoginQuery(
+        CrunchyLoginQuery(
             account = String.empty(),
             password = String.empty()
         )
@@ -37,7 +37,7 @@ class LoginViewModel(
      *
      * @param parameter request payload
      */
-    override fun invoke(parameter: LoginQuery) {
+    override fun invoke(parameter: CrunchyLoginQuery) {
         val result = useCase(parameter)
         useCaseResult.value = result
     }

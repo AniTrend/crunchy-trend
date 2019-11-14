@@ -20,7 +20,7 @@ import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.contract.JSON
 import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpointFactory
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
-import co.anitrend.support.crunchyroll.data.locale.model.CrunchyLocale
+import co.anitrend.support.crunchyroll.data.locale.model.CrunchyLocaleModel
 import retrofit2.Response
 import retrofit2.http.GET
 
@@ -29,7 +29,7 @@ interface CrunchyLocaleEndpoint {
     @JSON
     @GET("/list_locales.${BuildConfig.apiExtension}.json")
     suspend fun fetchLocales():
-            Response<CrunchyContainer<List<CrunchyLocale>>>
+            Response<CrunchyContainer<List<CrunchyLocaleModel>>>
 
     companion object : CrunchyEndpointFactory<CrunchyLocaleEndpoint>(
         endpoint = CrunchyLocaleEndpoint::class,

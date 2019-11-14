@@ -21,10 +21,10 @@ import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.adapter.contract.ISupportViewAdapter
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.data.media.model.contract.ICrunchyMedia
+import co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia
 import org.koin.android.ext.android.inject
 
-class SearchContentScreen : SupportFragmentPagedList<ICrunchyMedia, CrunchyCorePresenter, ICrunchyMedia>() {
+class SearchContentScreen : SupportFragmentPagedList<CrunchyMedia, CrunchyCorePresenter, CrunchyMedia>() {
 
     /**
      * Should be created lazily through injection or lazy delegate
@@ -33,7 +33,7 @@ class SearchContentScreen : SupportFragmentPagedList<ICrunchyMedia, CrunchyCoreP
      */
     override val supportPresenter by inject<CrunchyCorePresenter>()
 
-    override val supportViewAdapter: ISupportViewAdapter<ICrunchyMedia>
+    override val supportViewAdapter: ISupportViewAdapter<CrunchyMedia>
         get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
 
     /**

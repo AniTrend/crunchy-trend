@@ -28,7 +28,7 @@ import co.anitrend.arch.ui.view.widget.SupportStateLayout
 import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.domain.stream.models.MediaStreamQuery
+import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.feature.player.R
 import co.anitrend.support.crunchyroll.feature.player.presenter.StreamPresenter
@@ -163,7 +163,7 @@ class MediaStreamContent : SupportFragment<MediaStream?, CrunchyCorePresenter, L
     override fun onFetchDataInitialize() {
         payload?.also {
             supportViewModel(
-                parameter = MediaStreamQuery(
+                parameter = CrunchyMediaStreamQuery(
                     mediaId = it.mediaId
                 )
             )

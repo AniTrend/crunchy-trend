@@ -21,12 +21,12 @@ import androidx.paging.PagingRequestHelper
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.data.source.paging.SupportPagingDataSource
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
-import co.anitrend.support.crunchyroll.domain.news.entities.News
+import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import kotlinx.coroutines.launch
 
-abstract class NewsSource : SupportPagingDataSource<News>() {
+abstract class NewsSource : SupportPagingDataSource<CrunchyNews>() {
 
-    abstract val newsObservable: ISourceObservable<RssQuery, PagedList<News>>
+    abstract val newsObservable: ISourceObservable<RssQuery, PagedList<CrunchyNews>>
 
     protected abstract suspend fun getNewsCatalogue(
         callback: PagingRequestHelper.Request.Callback
@@ -57,7 +57,7 @@ abstract class NewsSource : SupportPagingDataSource<News>() {
      *
      * @param itemAtFront The first item of PagedList
      */
-    override fun onItemAtFrontLoaded(itemAtFront: News) {
+    override fun onItemAtFrontLoaded(itemAtFront: CrunchyNews) {
         pagingRequestHelper.runIfNotRunning(
             PagingRequestHelper.RequestType.BEFORE
         ) {

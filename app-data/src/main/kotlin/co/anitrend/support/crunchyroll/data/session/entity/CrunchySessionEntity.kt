@@ -26,7 +26,7 @@ import co.anitrend.support.crunchyroll.data.user.entity.CrunchyUserEntity
 
 @Entity(
     indices = [
-        Index(value = ["auth"], unique = true)
+        Index(value = ["authenticationKey"], unique = true)
     ]
 )
 data class CrunchySessionEntity(

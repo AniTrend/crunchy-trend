@@ -17,7 +17,7 @@
 package co.anitrend.support.crunchyroll.data.session.koin
 
 
-import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthEndpoint
+import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthenticationEndpoint
 import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
 import co.anitrend.support.crunchyroll.data.session.datasource.remote.CrunchySessionEndpoint
 import co.anitrend.support.crunchyroll.data.session.mapper.CoreSessionResponseMapper
@@ -42,7 +42,7 @@ private val dataSourceModule = module {
     }
     factory {
         NormalSessionSourceImpl(
-            endpoint = CrunchyAuthEndpoint.create(),
+            endpoint = CrunchyAuthenticationEndpoint.create(),
             dao = get<CrunchyDatabase>().crunchySessionDao(),
             coreSessionDao = get<CrunchyDatabase>().crunchySessionCoreDao(),
             loginDao = get<CrunchyDatabase>().crunchyLoginDao(),

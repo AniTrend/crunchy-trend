@@ -25,19 +25,20 @@ import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEntity
 import co.anitrend.support.crunchyroll.data.collection.datasource.local.CrunchyCollectionDao
-import co.anitrend.support.crunchyroll.data.collection.model.CrunchyCollection
-import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyEnumsTypeCoverter
+import co.anitrend.support.crunchyroll.data.collection.entity.CrunchyCollectionEntity
+import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyEnumsTypeConverter
+import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyTypeCoverters
 import co.anitrend.support.crunchyroll.data.dao.migrations.migrations
 import co.anitrend.support.crunchyroll.data.episode.datasource.local.CrunchyRssEpisodeDao
 import co.anitrend.support.crunchyroll.data.episode.entity.EpisodeFeedEntity
 import co.anitrend.support.crunchyroll.data.locale.datasource.local.CrunchyLocaleDao
 import co.anitrend.support.crunchyroll.data.locale.entity.CrunchyLocaleEntity
 import co.anitrend.support.crunchyroll.data.media.datasource.local.CrunchyMediaDao
-import co.anitrend.support.crunchyroll.data.media.model.CrunchyMedia
+import co.anitrend.support.crunchyroll.data.media.entity.CrunchyMediaEntity
 import co.anitrend.support.crunchyroll.data.news.datasource.local.CrunchyRssNewsDao
 import co.anitrend.support.crunchyroll.data.news.entity.NewsEntity
 import co.anitrend.support.crunchyroll.data.series.datasource.local.CrunchySeriesDao
-import co.anitrend.support.crunchyroll.data.series.model.CrunchySeries
+import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesEntity
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionDao
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionCoreEntity
@@ -50,15 +51,18 @@ import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
 
         CrunchyLocaleEntity::class,
 
-        CrunchySeries::class, CrunchyCollection::class,
-        CrunchyMedia::class,
+        CrunchySeriesEntity::class, CrunchyCollectionEntity::class,
+        CrunchyMediaEntity::class,
 
         NewsEntity::class, EpisodeFeedEntity::class
     ],
     version = BuildConfig.DATABASE_SCHEMA_VERSION
 )
 @TypeConverters(
-    value = [CrunchyEnumsTypeCoverter::class]
+    value = [
+        CrunchyEnumsTypeConverter::class,
+        CrunchyTypeCoverters::class
+    ]
 )
 abstract class CrunchyDatabase: RoomDatabase() {
 

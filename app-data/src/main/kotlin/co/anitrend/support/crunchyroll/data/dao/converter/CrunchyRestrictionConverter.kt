@@ -20,9 +20,9 @@ import androidx.room.TypeConverter
 import co.anitrend.arch.data.dao.RoomConverter
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
 import co.anitrend.support.crunchyroll.data.arch.extension.typeTokenOf
-import co.anitrend.support.crunchyroll.data.episode.model.CrunchyEpisodeRestriction
+import co.anitrend.support.crunchyroll.data.episode.model.CrunchyEpisodeRestrictionModel
 
-class CrunchyRestrictionConverter : RoomConverter<CrunchyEpisodeRestriction> {
+class CrunchyRestrictionConverter : RoomConverter<CrunchyEpisodeRestrictionModel> {
 
     /**
      * Convert database types back to the original type
@@ -31,10 +31,10 @@ class CrunchyRestrictionConverter : RoomConverter<CrunchyEpisodeRestriction> {
      * @param dbValue saved database value type
      */
     @TypeConverter
-    override fun fromDatabaseValue(dbValue: String): CrunchyEpisodeRestriction? {
+    override fun fromDatabaseValue(dbValue: String): CrunchyEpisodeRestrictionModel? {
 
         return CrunchyConverterFactory.GSON_BUILDER.create().fromJson(
-            dbValue, typeTokenOf<CrunchyEpisodeRestriction>()
+            dbValue, typeTokenOf<CrunchyEpisodeRestrictionModel>()
         )
     }
 
@@ -46,7 +46,7 @@ class CrunchyRestrictionConverter : RoomConverter<CrunchyEpisodeRestriction> {
      * @param entity item which room should convert
      */
     @TypeConverter
-    override fun toDatabaseValue(entity: CrunchyEpisodeRestriction?): String {
+    override fun toDatabaseValue(entity: CrunchyEpisodeRestrictionModel?): String {
         return CrunchyConverterFactory.GSON_BUILDER.create().toJson(entity)
     }
 }

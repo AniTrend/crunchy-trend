@@ -17,19 +17,17 @@
 package co.anitrend.support.crunchyroll.data.session.datasource.local.transformer
 
 import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
-import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyAccessType
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
-import co.anitrend.support.crunchyroll.data.session.model.CrunchySession
+import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionModel
 import co.anitrend.support.crunchyroll.data.user.datasource.local.transformer.UserEntityTransformer
-import co.anitrend.support.crunchyroll.data.user.entity.CrunchyUserEntity
 import co.anitrend.support.crunchyroll.data.util.extension.iso8601ToUnixTime
 
-object SessionEntityTransformer : ISupportMapperHelper<CrunchySession, CrunchySessionEntity> {
+object SessionEntityTransformer : ISupportMapperHelper<CrunchySessionModel, CrunchySessionEntity> {
 
     /**
      * Transforms the the [source] to the target type
      */
-    override fun transform(source: CrunchySession): CrunchySessionEntity {
+    override fun transform(source: CrunchySessionModel): CrunchySessionEntity {
         return CrunchySessionEntity(
             authenticatedUser = UserEntityTransformer.transform(
                 source.user

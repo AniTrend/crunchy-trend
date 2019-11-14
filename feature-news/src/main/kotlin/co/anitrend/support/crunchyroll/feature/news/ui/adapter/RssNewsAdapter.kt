@@ -24,7 +24,7 @@ import co.anitrend.arch.core.presenter.SupportPresenter
 import co.anitrend.arch.ui.recycler.adapter.SupportPagedListAdapter
 import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.support.crunchyroll.domain.news.entities.News
+import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import co.anitrend.support.crunchyroll.feature.news.databinding.AdapterNewsFeedBinding
 import io.noties.markwon.Markwon
 import org.koin.core.KoinComponent
@@ -32,8 +32,8 @@ import org.koin.core.inject
 
 class RssNewsAdapter(
     presenter: SupportPresenter<*>,
-    private val clickListener: ItemClickListener<News>
-) : SupportPagedListAdapter<News>(presenter), KoinComponent {
+    private val clickListener: ItemClickListener<CrunchyNews>
+) : SupportPagedListAdapter<CrunchyNews>(presenter), KoinComponent {
 
     private val markwon by inject<Markwon>()
 
@@ -44,7 +44,7 @@ class RssNewsAdapter(
      * The identifiable id of each item should unique, and if non exists
      * then this function should return [androidx.recyclerview.widget.RecyclerView.NO_ID]
      */
-    override fun getStableIdFor(item: News?): Long {
+    override fun getStableIdFor(item: CrunchyNews?): Long {
         return item?.title?.hashCode()?.toLong() ?: RecyclerView.NO_ID
     }
 
@@ -56,20 +56,20 @@ class RssNewsAdapter(
         parent: ViewGroup,
         viewType: Int,
         layoutInflater: LayoutInflater
-    ): SupportViewHolder<News> {
+    ): SupportViewHolder<CrunchyNews> {
         return NewsRssViewHolder(AdapterNewsFeedBinding.inflate(layoutInflater, parent, false))
     }
 
     inner class NewsRssViewHolder(
         private val binding: AdapterNewsFeedBinding
-    ): SupportViewHolder<News>(binding.root) {
+    ): SupportViewHolder<CrunchyNews>(binding.root) {
 
         /**
          * Load images, text, buttons, etc. in this method from the given parameter
          *
          * @param model Is the liveData at the current adapter position
          */
-        override fun invoke(model: News?) {
+        override fun invoke(model: CrunchyNews?) {
             with (binding) {
                 entity = model
                 markwon.setMarkdown(

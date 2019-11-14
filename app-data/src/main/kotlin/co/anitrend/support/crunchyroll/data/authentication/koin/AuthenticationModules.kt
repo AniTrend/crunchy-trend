@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.authentication.koin
 
-import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthEndpoint
+import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthenticationEndpoint
 import co.anitrend.support.crunchyroll.data.authentication.helper.CrunchyAuthentication
 import co.anitrend.support.crunchyroll.data.authentication.mapper.LoginResponseMapper
 import co.anitrend.support.crunchyroll.data.authentication.mapper.LogoutResponseMapper
@@ -48,7 +48,7 @@ private val dataSourceModule = module {
     factory {
         LoginSourceImpl(
             dao = get<CrunchyDatabase>().crunchyLoginDao(),
-            endpoint = CrunchyAuthEndpoint.create(),
+            endpoint = CrunchyAuthenticationEndpoint.create(),
             responseMapper = get(),
             settings = get()
         )
@@ -58,7 +58,7 @@ private val dataSourceModule = module {
             sessionCoreDao = get<CrunchyDatabase>().crunchySessionCoreDao(),
             sessionDao = get<CrunchyDatabase>().crunchySessionDao(),
             dao = get<CrunchyDatabase>().crunchyLoginDao(),
-            endpoint = CrunchyAuthEndpoint.create(),
+            endpoint = CrunchyAuthenticationEndpoint.create(),
             responseMapper = get(),
             settings = get()
         )

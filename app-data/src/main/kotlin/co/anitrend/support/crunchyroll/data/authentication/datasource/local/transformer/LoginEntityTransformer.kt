@@ -18,16 +18,16 @@ package co.anitrend.support.crunchyroll.data.authentication.datasource.local.tra
 
 import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
 import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEntity
-import co.anitrend.support.crunchyroll.data.authentication.model.CrunchyLogin
+import co.anitrend.support.crunchyroll.data.authentication.model.CrunchyLoginModel
 import co.anitrend.support.crunchyroll.data.user.datasource.local.transformer.UserEntityTransformer
 import co.anitrend.support.crunchyroll.data.util.extension.iso8601ToUnixTime
 
-object LoginEntityTransformer : ISupportMapperHelper<CrunchyLogin, CrunchyLoginEntity> {
+object LoginEntityTransformer : ISupportMapperHelper<CrunchyLoginModel, CrunchyLoginEntity> {
 
     /**
      * Transforms the the [source] to the target type
      */
-    override fun transform(source: CrunchyLogin): CrunchyLoginEntity {
+    override fun transform(source: CrunchyLoginModel): CrunchyLoginEntity {
         val userEntity = UserEntityTransformer.transform(source.user)
         return CrunchyLoginEntity(
             userId = userEntity.userId,

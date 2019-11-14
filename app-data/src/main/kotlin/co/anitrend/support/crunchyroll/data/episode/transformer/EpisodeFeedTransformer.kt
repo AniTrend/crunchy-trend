@@ -18,15 +18,15 @@ package co.anitrend.support.crunchyroll.data.episode.transformer
 
 import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
 import co.anitrend.support.crunchyroll.data.episode.entity.EpisodeFeedEntity
-import co.anitrend.support.crunchyroll.domain.episode.entities.EpisodeFeed
+import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 
-object EpisodeFeedTransformer: ISupportMapperHelper<EpisodeFeedEntity, EpisodeFeed> {
+object EpisodeFeedTransformer: ISupportMapperHelper<EpisodeFeedEntity, CrunchyEpisodeFeed> {
 
     /**
      * Transforms the the [source] to the target type
      */
-    override fun transform(source: EpisodeFeedEntity): EpisodeFeed {
-        return EpisodeFeed(
+    override fun transform(source: EpisodeFeedEntity): CrunchyEpisodeFeed {
+        return CrunchyEpisodeFeed(
             id = source.mediaId,
             title = source.title,
             description = source.description,

@@ -29,25 +29,25 @@ interface CrunchyTrackingEndpoint {
     @JSON
     @GET("/add_to_queue.${BuildConfig.apiExtension}.json")
     suspend fun addToQueue(
-        @Query("series_id") seriesId: Int?
+        @Query("series_id") seriesId: Long
     ) : Response<CrunchyContainer<Any>>
 
     @JSON
     @GET("/remove_from_queue.${BuildConfig.apiExtension}.json")
     suspend fun removeFromQueue(
-        @Query("series_id") seriesId: Int?
+        @Query("series_id") seriesId: Long
     ) : Response<CrunchyContainer<Any>>
 
     @JSON
     @GET("/queue.${BuildConfig.apiExtension}.json")
     suspend fun getQueue(
-        @Query("series_id") seriesId: Int?
+        @Query("series_id") seriesId: Long
     ) : Response<CrunchyContainer<Any>>
 
     @JSON
     @GET("/recently_watched.${BuildConfig.apiExtension}.json")
     suspend fun getRecentlyWatched(
-        @Query("series_id") seriesId: Int?
+        @Query("series_id") seriesId: Long
     ) : Response<CrunchyContainer<Any>>
 
     @JSON
@@ -55,7 +55,7 @@ interface CrunchyTrackingEndpoint {
     suspend fun savePlayProgress(
         @Query("event") event: String = "playback_status",
         @Query("playhead") playHead: Int,
-        @Query("media_id") mediaId: Int?
+        @Query("media_id") mediaId: Long
     ) : Response<CrunchyContainer<Any>>
 
 

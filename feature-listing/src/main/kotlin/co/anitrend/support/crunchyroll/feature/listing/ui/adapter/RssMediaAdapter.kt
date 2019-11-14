@@ -24,13 +24,13 @@ import co.anitrend.arch.core.presenter.SupportPresenter
 import co.anitrend.arch.ui.recycler.adapter.SupportPagedListAdapter
 import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.support.crunchyroll.domain.episode.entities.EpisodeFeed
+import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 import co.anitrend.support.crunchyroll.feature.feed.databinding.AdapterMediaFeedBinding
 
 class RssMediaAdapter(
     presenter: SupportPresenter<*>,
-    private val clickListener: ItemClickListener<EpisodeFeed>
-) : SupportPagedListAdapter<EpisodeFeed>(presenter) {
+    private val clickListener: ItemClickListener<CrunchyEpisodeFeed>
+) : SupportPagedListAdapter<CrunchyEpisodeFeed>(presenter) {
 
     /**
      * Used to get stable ids for [androidx.recyclerview.widget.RecyclerView.Adapter] but only if
@@ -39,7 +39,7 @@ class RssMediaAdapter(
      * The identifiable id of each item should unique, and if non exists
      * then this function should return [androidx.recyclerview.widget.RecyclerView.NO_ID]
      */
-    override fun getStableIdFor(item: EpisodeFeed?): Long {
+    override fun getStableIdFor(item: CrunchyEpisodeFeed?): Long {
         return item?.id ?: RecyclerView.NO_ID
     }
 
@@ -51,7 +51,7 @@ class RssMediaAdapter(
         parent: ViewGroup,
         viewType: Int,
         layoutInflater: LayoutInflater
-    ): SupportViewHolder<EpisodeFeed> {
+    ): SupportViewHolder<CrunchyEpisodeFeed> {
         return MediaRssViewHolder(
             AdapterMediaFeedBinding.inflate(
                 layoutInflater,
@@ -64,14 +64,14 @@ class RssMediaAdapter(
 
     inner class MediaRssViewHolder(
         private val binding: AdapterMediaFeedBinding
-    ): SupportViewHolder<EpisodeFeed>(binding.root) {
+    ): SupportViewHolder<CrunchyEpisodeFeed>(binding.root) {
 
         /**
          * Load images, text, buttons, etc. in this method from the given parameter
          *
          * @param model Is the liveData at the current adapter position
          */
-        override fun invoke(model: EpisodeFeed?) {
+        override fun invoke(model: CrunchyEpisodeFeed?) {
             with (binding) {
                 entity = model
                 mediaThumbnail.setOnClickListener {

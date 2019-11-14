@@ -22,7 +22,7 @@
     <data>
         <variable
                 name="entity"
-                type="co.anitrend.support.crunchyroll.domain.episode.entities.EpisodeFeed"
+                type="co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed"
         />
     </data>
 

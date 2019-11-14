@@ -22,7 +22,7 @@
     <data>
         <variable
                 name="entity"
-                type="co.anitrend.support.crunchyroll.domain.news.entities.News"
+                type="co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews"
         />
     </data>
 

@@ -19,16 +19,16 @@ package co.anitrend.support.crunchyroll.data.episode.datasource.local.transforme
 import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
 import co.anitrend.support.crunchyroll.data.episode.entity.EpisodeFeedEntity
 import co.anitrend.support.crunchyroll.data.episode.helper.EpisodeFeedHelper
-import co.anitrend.support.crunchyroll.data.episode.model.CrunchyRssEpisode
+import co.anitrend.support.crunchyroll.data.episode.model.CrunchyEpisodeModel
 import co.anitrend.support.crunchyroll.data.util.extension.rcf822ToUnixTime
 import java.util.*
 
-object EpisodeFeedEntityTransformer : ISupportMapperHelper<CrunchyRssEpisode, EpisodeFeedEntity> {
+object EpisodeFeedEntityTransformer : ISupportMapperHelper<CrunchyEpisodeModel, EpisodeFeedEntity> {
 
     /**
      * Transforms the the [source] to the target type
      */
-    override fun transform(source: CrunchyRssEpisode): EpisodeFeedEntity {
+    override fun transform(source: CrunchyEpisodeModel): EpisodeFeedEntity {
         return EpisodeFeedEntity(
             mediaId = source.mediaId.toLong(),
             title = source.title,
@@ -51,7 +51,7 @@ object EpisodeFeedEntityTransformer : ISupportMapperHelper<CrunchyRssEpisode, Ep
         )
     }
 
-    fun transform(source: CrunchyRssEpisode, locale: Locale, hasPremiumAccess: Boolean): EpisodeFeedEntity {
+    fun transform(source: CrunchyEpisodeModel, locale: Locale, hasPremiumAccess: Boolean): EpisodeFeedEntity {
         return transform(source).copy(
             subtitles = EpisodeFeedHelper.getSubtitles(
                 source.subtitleLanguages,

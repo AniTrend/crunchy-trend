@@ -18,8 +18,8 @@ package co.anitrend.support.crunchyroll.data.session.datasource.remote
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpointFactory
-import co.anitrend.support.crunchyroll.data.session.model.CrunchySession
-import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionCore
+import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionModel
+import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionCoreModel
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import retrofit2.Response
 import retrofit2.http.GET
@@ -31,12 +31,12 @@ interface CrunchySessionEndpoint {
     suspend fun startUnblockedSession(
         @Query("auth") auth: String,
         @Query("version") version: String = BuildConfig.apiVersion,
-        @Query("user_id") userId: Int
-    ): Response<CrunchyContainer<CrunchySession>>
+        @Query("user_id") userId: Long
+    ): Response<CrunchyContainer<CrunchySessionModel>>
 
     @GET("/start_session")
     suspend fun startCoreSession()
-            : Response<CrunchyContainer<CrunchySessionCore>>
+            : Response<CrunchyContainer<CrunchySessionCoreModel>>
 
     companion object : CrunchyEndpointFactory<CrunchySessionEndpoint>(
         endpoint = CrunchySessionEndpoint::class,

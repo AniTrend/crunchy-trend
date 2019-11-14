@@ -20,9 +20,9 @@ import androidx.room.TypeConverter
 import co.anitrend.arch.data.dao.RoomConverter
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory.Companion.GSON_BUILDER
 import co.anitrend.support.crunchyroll.data.arch.extension.typeTokenOf
-import co.anitrend.support.crunchyroll.data.episode.model.EpisodeThumbnail
+import co.anitrend.support.crunchyroll.data.episode.model.EpisodeThumbnailModel
 
-class CrunchyThumbnailConverter : RoomConverter<List<EpisodeThumbnail>> {
+class CrunchyThumbnailConverter : RoomConverter<List<EpisodeThumbnailModel>> {
 
     /**
      * Convert database types back to the original type
@@ -31,8 +31,8 @@ class CrunchyThumbnailConverter : RoomConverter<List<EpisodeThumbnail>> {
      * @param dbValue saved database value type
      */
     @TypeConverter
-    override fun fromDatabaseValue(dbValue: String): List<EpisodeThumbnail>? {
-        return GSON_BUILDER.create().fromJson(dbValue, typeTokenOf<List<EpisodeThumbnail>>())
+    override fun fromDatabaseValue(dbValue: String): List<EpisodeThumbnailModel>? {
+        return GSON_BUILDER.create().fromJson(dbValue, typeTokenOf<List<EpisodeThumbnailModel>>())
     }
 
     /**
@@ -43,7 +43,7 @@ class CrunchyThumbnailConverter : RoomConverter<List<EpisodeThumbnail>> {
      * @param entity item which room should convert
      */
     @TypeConverter
-    override fun toDatabaseValue(entity: List<EpisodeThumbnail>?): String {
+    override fun toDatabaseValue(entity: List<EpisodeThumbnailModel>?): String {
         return GSON_BUILDER.create().toJson(entity)
     }
 

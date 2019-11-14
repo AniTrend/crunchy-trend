@@ -34,6 +34,11 @@ enum class CrunchyMediaField(
     MEDIA_SERIES_NAME("media.series_name"),
     MEDIA_COLLECTION_ID("media.collection_id"),
     MEDIA_URL("media.url"),
+    MEDIA_ETP_GUID("media.etp_guid"),
+    MEDIA_AVAILABLE_TIME("media.available_time"),
+    MEDIA_PREMIUM_AVAILABLE_TIME("media.premium_available_time"),
+    MEDIA_FREE_AVAILABLE_TIME("media.free_available_time"),
+    MEDIA_AVAILABILITY_NOTES("media.availability_notes"),
     MEDIA_STREAM_DATA("media.stream_data");
 
     companion object {
@@ -50,7 +55,12 @@ enum class CrunchyMediaField(
             MEDIA_SERIES_ID.attribute,
             MEDIA_SERIES_NAME.attribute,
             MEDIA_COLLECTION_ID.attribute,
-            MEDIA_URL.attribute
+            MEDIA_URL.attribute,
+            MEDIA_ETP_GUID.attribute,
+            MEDIA_AVAILABLE_TIME.attribute,
+            MEDIA_PREMIUM_AVAILABLE_TIME.attribute,
+            MEDIA_FREE_AVAILABLE_TIME.attribute,
+            MEDIA_AVAILABILITY_NOTES.attribute
         ).joinToString(separator = ",")
 
         val streamFields = listOf(

@@ -21,12 +21,12 @@ import androidx.paging.PagingRequestHelper
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.data.source.paging.SupportPagingDataSource
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
-import co.anitrend.support.crunchyroll.domain.episode.entities.EpisodeFeed
+import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 import kotlinx.coroutines.launch
 
-abstract class EpisodeFeedSource : SupportPagingDataSource<EpisodeFeed>() {
+abstract class EpisodeFeedSource : SupportPagingDataSource<CrunchyEpisodeFeed>() {
 
-    abstract val episodeListingsObservable: ISourceObservable<RssQuery, PagedList<EpisodeFeed>>
+    abstract val episodeListingsObservable: ISourceObservable<RssQuery, PagedList<CrunchyEpisodeFeed>>
 
     protected abstract suspend fun getMediaListingsCatalogue(
         callback: PagingRequestHelper.Request.Callback
@@ -57,7 +57,7 @@ abstract class EpisodeFeedSource : SupportPagingDataSource<EpisodeFeed>() {
      *
      * @param itemAtFront The first item of PagedList
      */
-    override fun onItemAtFrontLoaded(itemAtFront: EpisodeFeed) {
+    override fun onItemAtFrontLoaded(itemAtFront: CrunchyEpisodeFeed) {
         pagingRequestHelper.runIfNotRunning(
             PagingRequestHelper.RequestType.BEFORE
         ) {

@@ -17,14 +17,14 @@
 package co.anitrend.support.crunchyroll.data.session.mapper
 
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
-import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionCore
+import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionCoreModel
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.session.datasource.local.transformer.CoreSessionEntityTransformer
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionCoreEntity
 
 class CoreSessionResponseMapper(
     private val dao: CrunchySessionCoreDao
-) : CrunchyMapper<CrunchySessionCore, CrunchySessionCoreEntity>() {
+) : CrunchyMapper<CrunchySessionCoreModel, CrunchySessionCoreEntity>() {
 
     /**
      * Creates mapped objects and handles the database operations which may be required to map various objects,
@@ -33,7 +33,7 @@ class CoreSessionResponseMapper(
      * @param source the incoming data source type
      * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
      */
-    override suspend fun onResponseMapFrom(source: CrunchySessionCore): CrunchySessionCoreEntity {
+    override suspend fun onResponseMapFrom(source: CrunchySessionCoreModel): CrunchySessionCoreEntity {
         return CoreSessionEntityTransformer.transform(source)
     }
 

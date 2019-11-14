@@ -32,7 +32,7 @@ import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.feature.listing.viewmodel.MediaListingViewModel
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
-import co.anitrend.support.crunchyroll.domain.episode.entities.EpisodeFeed
+import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 import co.anitrend.support.crunchyroll.feature.feed.R
 import co.anitrend.support.crunchyroll.feature.listing.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.listing.presenter.ListingPresenter
@@ -40,7 +40,7 @@ import co.anitrend.support.crunchyroll.feature.listing.ui.adapter.RssMediaAdapte
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MediaFeedContent : SupportFragmentPagedList<EpisodeFeed, CrunchyCorePresenter, PagedList<EpisodeFeed>>() {
+class MediaFeedContent : SupportFragmentPagedList<CrunchyEpisodeFeed, CrunchyCorePresenter, PagedList<CrunchyEpisodeFeed>>() {
 
     override val supportStateConfiguration by inject<SupportStateLayoutConfiguration>()
 
@@ -61,8 +61,8 @@ class MediaFeedContent : SupportFragmentPagedList<EpisodeFeed, CrunchyCorePresen
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         RssMediaAdapter(
             presenter = supportPresenter,
-            clickListener = object : ItemClickListener<EpisodeFeed> {
-                override fun onItemClick(target: View, data: Pair<Int, EpisodeFeed?>) {
+            clickListener = object : ItemClickListener<CrunchyEpisodeFeed> {
+                override fun onItemClick(target: View, data: Pair<Int, CrunchyEpisodeFeed?>) {
                     val mediaPlayerPayload = NavigationTargets.MediaPlayer.Payload(
                         mediaId = data.second?.id ?: 0,
                         episodeThumbnail = data.second?.episodeThumbnail
@@ -72,7 +72,7 @@ class MediaFeedContent : SupportFragmentPagedList<EpisodeFeed, CrunchyCorePresen
                     )
                 }
 
-                override fun onItemLongClick(target: View, data: Pair<Int, EpisodeFeed?>) {
+                override fun onItemLongClick(target: View, data: Pair<Int, CrunchyEpisodeFeed?>) {
 
                 }
             }

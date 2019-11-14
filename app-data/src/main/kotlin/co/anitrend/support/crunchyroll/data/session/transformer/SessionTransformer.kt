@@ -18,8 +18,6 @@ package co.anitrend.support.crunchyroll.data.session.transformer
 
 import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
-import co.anitrend.support.crunchyroll.data.session.model.CrunchySession
-import co.anitrend.support.crunchyroll.data.util.extension.iso8601ToUnixTime
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
 
 object SessionTransformer : ISupportMapperHelper<CrunchySessionEntity?, Session?> {

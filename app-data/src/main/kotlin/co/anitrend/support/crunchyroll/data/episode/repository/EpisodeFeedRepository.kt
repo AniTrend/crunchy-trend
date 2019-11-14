@@ -21,13 +21,13 @@ import co.anitrend.arch.data.model.UserInterfaceState
 import co.anitrend.arch.data.repository.SupportRepository
 import co.anitrend.support.crunchyroll.data.episode.source.contract.EpisodeFeedSource
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
-import co.anitrend.support.crunchyroll.domain.episode.entities.EpisodeFeed
+import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 import co.anitrend.support.crunchyroll.domain.episode.repositories.IEpisodeFeedRepository
 
 class EpisodeFeedRepository(
     private val source: EpisodeFeedSource
 ) : SupportRepository(source),
-    IEpisodeFeedRepository<UserInterfaceState<PagedList<EpisodeFeed>>> {
+    IEpisodeFeedRepository<UserInterfaceState<PagedList<CrunchyEpisodeFeed>>> {
 
     override fun getMediaListings(query: RssQuery) =
         UserInterfaceState.create(

@@ -23,7 +23,7 @@ import co.anitrend.support.crunchyroll.data.stream.datasource.remote.CrunchyStre
 import co.anitrend.support.crunchyroll.data.stream.source.contract.CrunchyStreamSource
 import co.anitrend.support.crunchyroll.data.stream.mapper.CrunchyStreamResponseMapper
 import co.anitrend.support.crunchyroll.data.stream.transformer.MediaStreamTransformer
-import co.anitrend.support.crunchyroll.domain.stream.models.MediaStreamQuery
+import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -33,7 +33,7 @@ class CrunchyStreamSourceImpl(
     private val responseMapper: CrunchyStreamResponseMapper
 ) : CrunchyStreamSource() {
 
-    override fun getMediaStream(query: MediaStreamQuery): LiveData<List<MediaStream>?> {
+    override fun getMediaStream(query: CrunchyMediaStreamQuery): LiveData<List<MediaStream>?> {
         retry = { getMediaStream(query) }
         networkState.value = NetworkState.Loading
         val deferred = async {

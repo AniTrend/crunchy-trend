@@ -16,5 +16,20 @@
 
 package co.anitrend.support.crunchyroll.domain.media.entities
 
-class CrunchyMedia {
-}
+data class CrunchyMedia(
+    val mediaId: Long,
+    val collectionId: Long,
+    val seriesId: Long,
+    val episodeNumber: Int,
+    val name: String,
+    val description: String,
+    val screenshotImage: String?,
+    val url: String,
+    val availableTime: Long,
+    val premiumAvailableTime: Long,
+    val freeAvailableTime: Long,
+    val availabilityNotes: String,
+    val duration: Int,
+    val seriesName: String,
+    val isSpecialEpisode: Boolean
+)

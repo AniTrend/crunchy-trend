@@ -17,9 +17,9 @@
 package co.anitrend.support.crunchyroll.domain.stream.repositories
 
 import co.anitrend.arch.domain.common.IUserInterfaceState
-import co.anitrend.support.crunchyroll.domain.stream.models.MediaStreamQuery
+import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 
 interface IStreamRepository<R : IUserInterfaceState<*>> {
 
-    fun getStream(query: MediaStreamQuery) : R
+    fun getStream(query: CrunchyMediaStreamQuery) : R
 }

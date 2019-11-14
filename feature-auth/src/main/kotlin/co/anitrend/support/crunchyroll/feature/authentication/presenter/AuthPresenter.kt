@@ -20,7 +20,7 @@ import android.content.Context
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
-import co.anitrend.support.crunchyroll.domain.authentication.models.LoginQuery
+import co.anitrend.support.crunchyroll.domain.authentication.models.CrunchyLoginQuery
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLoginBinding
 
@@ -38,7 +38,7 @@ class AuthPresenter(
     /**
      * validate form and invoke action on success
      */
-    fun onSubmit(loginQuery: LoginQuery, binding: FragmentLoginBinding, onSuccess: () -> Unit) {
+    fun onSubmit(loginQuery: CrunchyLoginQuery, binding: FragmentLoginBinding, onSuccess: () -> Unit) {
         var errors = 0
         if (loginQuery.account.isBlank()) {
             binding.userEmailInputLayout.error = "Field cannot be empty"

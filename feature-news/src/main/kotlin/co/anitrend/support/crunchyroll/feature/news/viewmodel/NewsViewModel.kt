@@ -20,8 +20,8 @@ import androidx.paging.PagedList
 import co.anitrend.arch.core.viewmodel.SupportPagingViewModel
 import co.anitrend.support.crunchyroll.data.news.usecase.NewsUseCaseImpl
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
-import co.anitrend.support.crunchyroll.domain.news.entities.News
+import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 
 class NewsViewModel(
     override val useCase: NewsUseCaseImpl
-) : SupportPagingViewModel<RssQuery, PagedList<News>>()
+) : SupportPagingViewModel<RssQuery, PagedList<CrunchyNews>>()

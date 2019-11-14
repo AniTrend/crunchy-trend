@@ -28,7 +28,7 @@ import co.anitrend.support.crunchyroll.data.news.datasource.remote.CrunchyNewsFe
 import co.anitrend.support.crunchyroll.data.news.mapper.NewsResponseMapper
 import co.anitrend.support.crunchyroll.data.news.transformer.NewsTransformer
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
-import co.anitrend.support.crunchyroll.domain.news.entities.News
+import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import kotlinx.coroutines.async
 
 class NewsSourceImpl(
@@ -40,7 +40,7 @@ class NewsSourceImpl(
     private lateinit var rssQuery: RssQuery
 
     override val newsObservable =
-        object : ISourceObservable<RssQuery, PagedList<News>> {
+        object : ISourceObservable<RssQuery, PagedList<CrunchyNews>> {
             /**
              * Returns the appropriate observable which we will monitor for updates,
              * common implementation may include but not limited to returning
@@ -48,7 +48,7 @@ class NewsSourceImpl(
              *
              * @param parameter to use when executing
              */
-            override fun invoke(parameter: RssQuery): LiveData<PagedList<News>> {
+            override fun invoke(parameter: RssQuery): LiveData<PagedList<CrunchyNews>> {
                 rssQuery = parameter
 
                 val localSource = dao.findByAllFactory()
