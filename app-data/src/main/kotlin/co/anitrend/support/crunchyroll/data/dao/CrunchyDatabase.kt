@@ -27,7 +27,7 @@ import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEn
 import co.anitrend.support.crunchyroll.data.collection.datasource.local.CrunchyCollectionDao
 import co.anitrend.support.crunchyroll.data.collection.entity.CrunchyCollectionEntity
 import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyEnumsTypeConverter
-import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyTypeCoverters
+import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyTypeConverters
 import co.anitrend.support.crunchyroll.data.dao.migrations.migrations
 import co.anitrend.support.crunchyroll.data.episode.datasource.local.CrunchyRssEpisodeDao
 import co.anitrend.support.crunchyroll.data.episode.entity.EpisodeFeedEntity
@@ -61,7 +61,7 @@ import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
 @TypeConverters(
     value = [
         CrunchyEnumsTypeConverter::class,
-        CrunchyTypeCoverters::class
+        CrunchyTypeConverters::class
     ]
 )
 abstract class CrunchyDatabase: RoomDatabase() {

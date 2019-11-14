@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.data.dao.converter
 
 import androidx.room.TypeConverter
 
-class CrunchyTypeCoverters {
+class CrunchyTypeConverters {
 
     @TypeConverter fun fromList(value: List<String>) = value.joinToString(separator = ",")
     @TypeConverter fun toList(value: String) = value.split(',')
