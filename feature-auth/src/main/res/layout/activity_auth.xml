@@ -27,6 +27,7 @@
             android:id="@+id/contentFrame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/avatar_size_lg"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <com.google.android.material.bottomappbar.BottomAppBar
@@ -36,8 +37,7 @@
             android:layout_gravity="bottom"
             android:hapticFeedbackEnabled="true"
             android:backgroundTint="@color/primaryColor"
-            app:fabAlignmentMode="end"
-            app:hideOnScroll="true"/>
+            app:fabAlignmentMode="end"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floatingShortcutButton"

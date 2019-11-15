@@ -64,9 +64,5 @@ ext {
     tapTarget = '3.0.0'
     okHttpLogger = '4.0.1'
 
-    exoMedia = '4.3.0'
-    markwon = '4.1.2'
-    exo = '2.10.3'
-
     threetenabp = '1.2.1'
 }

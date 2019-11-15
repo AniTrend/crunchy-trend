@@ -31,18 +31,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <com.iammert.library.ui.multisearchviewlib.MultiSearchView
-                android:id="@+id/multiSearchView"
+        <androidx.appcompat.widget.LinearLayoutCompat
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:searchTextStyle="@style/SearchTextStyle" />
+                android:layout_height="match_parent">
 
-        <FrameLayout
-                android:id="@+id/search_content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            <com.iammert.library.ui.multisearchviewlib.MultiSearchView
+                    android:id="@+id/multiSearchView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:searchTextStyle="@style/SearchTextStyle" />
 
+            <FrameLayout
+                    android:id="@+id/search_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <com.google.android.material.bottomappbar.BottomAppBar
                 android:id="@+id/bottomAppBar"

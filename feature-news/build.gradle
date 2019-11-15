@@ -32,6 +32,10 @@ android {
     }
 }
 
+ext {
+    markwon = '4.1.2'
+}
+
 dependencies {
     /** Platform Dependencies */
     implementation project(":support-ui")

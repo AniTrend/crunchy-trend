@@ -38,7 +38,7 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
         where seriesId = :seriesId
         """)
     suspend fun findBySeriesId(
-        seriesId: Int
+        seriesId: Long
     ): CrunchySeriesEntity?
 
     @Query("""
@@ -47,7 +47,7 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
         where seriesId = :seriesId
     """)
     fun findBySeriesIdX(
-        seriesId: Int
+        seriesId: Long
     ): LiveData<CrunchySeriesEntity?>
 
 

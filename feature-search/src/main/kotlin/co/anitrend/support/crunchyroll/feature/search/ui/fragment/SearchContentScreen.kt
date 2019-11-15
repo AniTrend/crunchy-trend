@@ -17,30 +17,98 @@
 package co.anitrend.support.crunchyroll.feature.search.ui.fragment
 
 import android.os.Bundle
+import android.view.View
+import androidx.lifecycle.Observer
+import androidx.paging.PagedList
+import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
+import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.adapter.contract.ISupportViewAdapter
+import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
-import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia
+import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
+import co.anitrend.support.crunchyroll.feature.search.R
+import co.anitrend.support.crunchyroll.feature.search.presenter.SeriesPresenter
+import co.anitrend.support.crunchyroll.feature.search.ui.adapter.SeriesViewAdapter
+import co.anitrend.support.crunchyroll.feature.search.viewmodel.SeriesSearchViewModel
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class SearchContentScreen : SupportFragmentPagedList<CrunchyMedia, CrunchyCorePresenter, CrunchyMedia>() {
+class SearchContentScreen : SupportFragmentPagedList<CrunchySeries, SeriesPresenter, PagedList<CrunchySeries>>() {
+
+    override val columnSize = R.integer.single_list_size
 
     /**
      * Should be created lazily through injection or lazy delegate
      *
      * @return supportPresenter of the generic type specified
      */
-    override val supportPresenter by inject<CrunchyCorePresenter>()
+    override val supportPresenter by inject<SeriesPresenter>()
 
-    override val supportViewAdapter: ISupportViewAdapter<CrunchyMedia>
-        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+    /**
+     * Should be created lazily through injection or lazy delegate
+     *
+     * @return view model of the given type
+     */
+    override val supportViewModel by sharedViewModel<SeriesSearchViewModel>()
+
+    override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
+        SeriesViewAdapter(
+            supportPresenter,
+            object : ItemClickListener<CrunchySeries> {
+                /**
+                 * When the target view from [View.OnClickListener]
+                 * is clicked from a view holder this method will be called
+                 *
+                 * @param target view that has been clicked
+                 * @param data the liveData that at the click index
+                 */
+                override fun onItemClick(target: View, data: Pair<Int, CrunchySeries?>) {
+
+                }
+
+                /**
+                 * When the target view from [View.OnLongClickListener]
+                 * is clicked from a view holder this method will be called
+                 *
+                 * @param target view that has been long clicked
+                 * @param data the liveData that at the long click index
+                 */
+                override fun onItemLongClick(target: View, data: Pair<Int, CrunchySeries?>) {
+
+                }
+            }
+        )
+    }
 
     /**
      * Invoke view model observer to watch for changes
      */
     override fun setUpViewModelObserver() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        supportViewModel.model.observe(
+            this,
+            Observer {
+                onPostModelChange(it)
+            }
+        )
+    }
+
+    /**
+     * Called immediately after [.onCreateView]
+     * has returned, but before any saved state has been restored in to the view.
+     * This gives subclasses a chance to initialize themselves once
+     * they know their view hierarchy has been completely created.  The fragment's
+     * view hierarchy is not however attached to its parent at this point.
+     * @param view The View returned by [.onCreateView].
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        supportStateLayout?.setNetworkState(
+            NetworkState.Success
+        )
     }
 
     /**

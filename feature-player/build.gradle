@@ -32,6 +32,10 @@ android {
     }
 }
 
+ext {
+    exoMedia = '4.3.0'
+}
+
 dependencies {
     /** Platform Dependencies */
     implementation project(":support-ui")

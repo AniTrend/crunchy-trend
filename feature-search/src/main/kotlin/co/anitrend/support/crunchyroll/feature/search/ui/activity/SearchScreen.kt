@@ -17,27 +17,71 @@
 package co.anitrend.support.crunchyroll.feature.search.ui.activity
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.paging.PagedList
+import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
+import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
+import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
+import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesSearchQuery
 import co.anitrend.support.crunchyroll.feature.search.R
 import co.anitrend.support.crunchyroll.feature.search.koin.injectFeatureModules
+import co.anitrend.support.crunchyroll.feature.search.presenter.SeriesPresenter
 import co.anitrend.support.crunchyroll.feature.search.ui.fragment.SearchContentScreen
+import co.anitrend.support.crunchyroll.feature.search.viewmodel.SeriesSearchViewModel
+import com.iammert.library.ui.multisearchviewlib.MultiSearchView
 import kotlinx.android.synthetic.main.search_activity.*
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
+class SearchScreen : CrunchyActivity<PagedList<CrunchySeries>, SeriesPresenter>() {
 
     private lateinit var systemChromeFader: ElasticDragDismissFrameLayout.SystemChromeFader
+
+    private val multiSearchViewListener =
+        object : MultiSearchView.MultiSearchViewListener {
+            override fun onItemSelected(index: Int, s: CharSequence) {
+                supportViewModel(
+                    CrunchySeriesSearchQuery(
+                        query = s.toString()
+                    )
+                )
+            }
+
+            override fun onSearchComplete(index: Int, s: CharSequence) {
+                supportViewModel(
+                    CrunchySeriesSearchQuery(
+                        query = s.toString()
+                    )
+                )
+            }
+
+            override fun onSearchItemRemoved(index: Int) {
+
+            }
+
+            override fun onTextChanged(index: Int, s: CharSequence) {
+
+            }
+    }
 
     /**
      * Should be created lazily through injection or lazy delegate
      *
      * @return supportPresenter of the generic type specified
      */
-    override val supportPresenter by inject<CrunchyCorePresenter>()
+    override val supportPresenter by inject<SeriesPresenter>()
+
+    /**
+     * Should be created lazily through injection or lazy delegate
+     *
+     * @return view model of the given type
+     */
+    override val supportViewModel by viewModel<SeriesSearchViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +108,7 @@ class SearchScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
                     closeScreen()
                 }
             }
+        multiSearchView.setSearchViewListener(multiSearchViewListener)
     }
 
     /**
@@ -91,8 +136,11 @@ class SearchScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        /*supportFragmentManager.commit {
-            replace(R.id.search_content, SearchContentScreen())
-        }*/
+        supportFragmentActivity = SearchContentScreen()
+        val target = supportFragmentActivity as SupportFragment<*, *, *>
+
+        supportFragmentManager.commit {
+            replace(R.id.search_content, target, target.tag)
+        }
     }
 }

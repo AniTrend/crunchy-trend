@@ -25,6 +25,7 @@ import co.anitrend.support.crunchyroll.data.authentication.koin.authenticationMo
 import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
 import co.anitrend.support.crunchyroll.data.episode.koin.episodeModules
 import co.anitrend.support.crunchyroll.data.news.koin.newsModules
+import co.anitrend.support.crunchyroll.data.series.koin.seriesModules
 import co.anitrend.support.crunchyroll.data.session.koin.sessionModules
 import co.anitrend.support.crunchyroll.data.stream.koin.streamModules
 import org.koin.android.ext.koin.androidContext
@@ -65,4 +66,5 @@ val crunchDataModules = listOf(
         newsModules +
         episodeModules +
         streamModules +
-        sessionModules
+        sessionModules +
+        seriesModules

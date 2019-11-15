@@ -17,22 +17,54 @@
 package co.anitrend.support.crunchyroll.data.series.koin
 
 
+import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
+import co.anitrend.support.crunchyroll.data.series.datasource.remote.CrunchySeriesEndpoint
+import co.anitrend.support.crunchyroll.data.series.mapper.SeriesResponseMapper
+import co.anitrend.support.crunchyroll.data.series.repository.SeriesRepository
+import co.anitrend.support.crunchyroll.data.series.source.SeriesSourceImpl
+import co.anitrend.support.crunchyroll.data.series.usecase.SeriesInfoUseCaseImpl
+import co.anitrend.support.crunchyroll.data.series.usecase.SeriesSearchUseCaseImpl
+import co.anitrend.support.crunchyroll.domain.series.interactors.SeriesInfoUseCase
+import co.anitrend.support.crunchyroll.domain.series.interactors.SeriesSearchUseCase
 import org.koin.dsl.module
 
 private val dataSourceModule = module {
-
+    factory {
+        SeriesSourceImpl(
+            mapper = get(),
+            seriesDao = get<CrunchyDatabase>().crunchySeriesDao(),
+            seriesEndpoint = CrunchySeriesEndpoint.create()
+        )
+    }
 }
 
 private val mapperModule = module {
-
+    single {
+        SeriesResponseMapper(
+            dao = get<CrunchyDatabase>().crunchySeriesDao()
+        )
+    }
 }
 
 private val repositoryModule = module {
-
+    factory {
+        SeriesRepository(
+            source = get<SeriesSourceImpl>()
+        )
+    }
 }
 
 private val useCaseModule = module {
-
+    factory {
+        SeriesInfoUseCaseImpl(
+            repository = get()
+        )
+    }
+    factory {
+        SeriesSearchUseCaseImpl(
+            repository = get()
+        )
+    }
 }
 
 val seriesModules = listOf(
