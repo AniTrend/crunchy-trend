@@ -49,7 +49,7 @@ private val dataSourceModule = module {
         LoginSourceImpl(
             dao = get<CrunchyDatabase>().crunchyLoginDao(),
             endpoint = CrunchyAuthenticationEndpoint.create(),
-            responseMapper = get(),
+            mapper = get(),
             settings = get()
         )
     }
@@ -59,7 +59,7 @@ private val dataSourceModule = module {
             sessionDao = get<CrunchyDatabase>().crunchySessionDao(),
             dao = get<CrunchyDatabase>().crunchyLoginDao(),
             endpoint = CrunchyAuthenticationEndpoint.create(),
-            responseMapper = get(),
+            mapper = get(),
             settings = get()
         )
     }

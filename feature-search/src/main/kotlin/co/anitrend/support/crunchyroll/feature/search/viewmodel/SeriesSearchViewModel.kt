@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.feature.search.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
 import co.anitrend.arch.core.viewmodel.SupportPagingViewModel
 import co.anitrend.support.crunchyroll.data.series.usecase.SeriesSearchUseCaseImpl
@@ -24,4 +25,7 @@ import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesSearchQ
 
 class SeriesSearchViewModel(
     override val useCase: SeriesSearchUseCaseImpl
-) : SupportPagingViewModel<CrunchySeriesSearchQuery, PagedList<CrunchySeries>>()
+) : SupportPagingViewModel<CrunchySeriesSearchQuery, PagedList<CrunchySeries>>() {
+
+    val searchQueryLiveData: MutableLiveData<CrunchySeriesSearchQuery> = MutableLiveData()
+}

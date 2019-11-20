@@ -19,18 +19,18 @@ package co.anitrend.support.crunchyroll.feature.search.viewmodel
 import co.anitrend.arch.core.viewmodel.SupportViewModel
 import co.anitrend.support.crunchyroll.data.series.usecase.SeriesInfoUseCaseImpl
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
-import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesQuery
+import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesInfoQuery
 
 class SeriesInfoViewModel(
     override val useCase: SeriesInfoUseCaseImpl
-) : SupportViewModel<CrunchySeriesQuery, CrunchySeries?>() {
+) : SupportViewModel<CrunchySeriesInfoQuery, CrunchySeries?>() {
 
     /**
      * Starts view model operations
      *
      * @param parameter request payload
      */
-    override fun invoke(parameter: CrunchySeriesQuery) {
+    override fun invoke(parameter: CrunchySeriesInfoQuery) {
         useCaseResult.value = useCase(parameter)
     }
 }

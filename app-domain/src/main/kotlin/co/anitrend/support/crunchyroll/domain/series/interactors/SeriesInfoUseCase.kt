@@ -18,19 +18,19 @@ package co.anitrend.support.crunchyroll.domain.series.interactors
 
 import co.anitrend.arch.domain.common.IUserInterfaceState
 import co.anitrend.arch.domain.usecases.ISupportUseCase
-import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesQuery
+import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesInfoQuery
 import co.anitrend.support.crunchyroll.domain.series.repositories.ISeriesInfoRepository
 
 abstract class SeriesInfoUseCase<R: IUserInterfaceState<*>>(
     protected val repository: ISeriesInfoRepository<R>
-) : ISupportUseCase<CrunchySeriesQuery, R> {
+) : ISupportUseCase<CrunchySeriesInfoQuery, R> {
 
     /**
      * Solves a given use case in the implementation target
      *
      * @param param input for solving a given use case
      */
-    override fun invoke(param: CrunchySeriesQuery): R {
+    override fun invoke(param: CrunchySeriesInfoQuery): R {
         return repository.getSeries(param)
     }
 }

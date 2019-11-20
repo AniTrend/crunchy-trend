@@ -17,16 +17,18 @@
 package co.anitrend.support.crunchyroll.feature.authentication.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.liveData
 import co.anitrend.arch.core.viewmodel.SupportViewModel
-import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
-import co.anitrend.support.crunchyroll.data.authentication.transformer.CrunchyUserTransformer
+import co.anitrend.arch.data.model.UserInterfaceState
+import co.anitrend.support.crunchyroll.data.authentication.usecase.LoginUseCaseImpl
 import co.anitrend.support.crunchyroll.data.authentication.usecase.LogoutUseCaseImpl
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 
 class LogoutViewModel(
     override val useCase: LogoutUseCaseImpl,
-    private val loginDao: CrunchyLoginDao
+    private val loginUseCase: LoginUseCaseImpl
 ) : SupportViewModel<Nothing?, Boolean>() {
 
     /**
@@ -39,10 +41,13 @@ class LogoutViewModel(
         useCaseResult.value = result
     }
 
-    fun getUserByIdLiveData(userId: Long): LiveData<CrunchyUser?> {
-        val liveData = loginDao.findByUserIdX(userId)
-        return Transformations.map(liveData) {
-            CrunchyUserTransformer.transform(it)
-        }
+    fun getCurrentUser(): LiveData<CrunchyUser?> {
+        val result = loginUseCase.getLoggedInUser()
+        val loginUseCaseResult = MutableLiveData<UserInterfaceState<CrunchyUser?>>()
+        loginUseCaseResult.value = result
+
+        return Transformations.switchMap(
+            loginUseCaseResult
+        ) { it.model }
     }
 }

@@ -38,7 +38,7 @@ interface CrunchyCollectionDao : ISupportQuery<CrunchyCollectionEntity> {
         where collectionId = :collectionId
         """)
     fun findByCollectionIdX(
-        collectionId: Int
+        collectionId: Long
     ): LiveData<CrunchyCollectionEntity?>
 
     @Query("""
@@ -47,7 +47,7 @@ interface CrunchyCollectionDao : ISupportQuery<CrunchyCollectionEntity> {
         where collectionId = :collectionId
         """)
     fun findByCollectionId(
-        collectionId: Int
+        collectionId: Long
     ): CrunchyCollectionEntity?
 
 
@@ -58,7 +58,7 @@ interface CrunchyCollectionDao : ISupportQuery<CrunchyCollectionEntity> {
         where seriesId = :seriesId
         """)
     suspend fun findBySeriesId(
-        seriesId: Int
+        seriesId: Long
     ): List<CrunchyCollectionEntity>
 
     @Query("""
@@ -67,7 +67,7 @@ interface CrunchyCollectionDao : ISupportQuery<CrunchyCollectionEntity> {
         where seriesId = :seriesId
         """)
     fun findBySeriesIdX(
-        seriesId: Int
+        seriesId: Long
     ): LiveData<List<CrunchyCollectionEntity>>
 
     @Query("""
@@ -76,6 +76,6 @@ interface CrunchyCollectionDao : ISupportQuery<CrunchyCollectionEntity> {
         where seriesId = :seriesId
         """)
     fun findBySeriesIdFactory(
-        seriesId: Int
+        seriesId: Long
     ): DataSource.Factory<Int, CrunchyCollectionEntity>
 }

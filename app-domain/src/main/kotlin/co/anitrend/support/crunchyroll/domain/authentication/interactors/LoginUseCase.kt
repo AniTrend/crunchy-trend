@@ -33,4 +33,8 @@ abstract class LoginUseCase<R : IUserInterfaceState<*>>(
     override fun invoke(param: CrunchyLoginQuery): R {
         return repository.loginUser(param)
     }
+
+    fun getLoggedInUser(): R {
+        return repository.loggedInUser()
+    }
 }

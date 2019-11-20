@@ -38,7 +38,7 @@ object CrunchyMediaEntityTransformer : ISupportMapperHelper<CrunchyMediaModel, C
             episodeNumber = CrunchyMediaHelper.getActualEpisodeNumber(source),
             name = source.name,
             description = source.description,
-            screenshotImage = source.screenshot_image?.fwide_url,
+            screenshotImage = source.screenshot_image?.full_url,
             url = source.url,
             availableTime = source.available_time.iso8601ToUnixTime(),
             premiumAvailableTime = source.premium_available_time.iso8601ToUnixTime(),

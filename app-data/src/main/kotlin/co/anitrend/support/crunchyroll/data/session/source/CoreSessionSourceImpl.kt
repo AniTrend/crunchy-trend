@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.data.session.source
 
 import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.session.datasource.remote.CrunchySessionEndpoint
 import co.anitrend.support.crunchyroll.data.session.source.contract.SessionSource
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
@@ -31,7 +32,7 @@ class CoreSessionSourceImpl(
     private val settings: IAuthenticationSettings,
     private val dao: CrunchySessionCoreDao,
     private val endpoint: CrunchySessionEndpoint,
-    private val responseMapper: CoreSessionResponseMapper
+    private val mapper: CoreSessionResponseMapper
 ) : SessionSource() {
 
     /**
@@ -49,7 +50,10 @@ class CoreSessionSourceImpl(
         }
 
         val session = runBlocking {
-            responseMapper(deferred, networkState)
+            val controller =
+                mapper.controller(connectivityHelper)
+
+            controller(deferred, networkState)
         }
         if (session != null)
             settings.sessionId = session.sessionId

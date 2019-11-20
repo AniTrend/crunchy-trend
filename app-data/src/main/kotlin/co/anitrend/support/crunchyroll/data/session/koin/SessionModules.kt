@@ -36,7 +36,7 @@ private val dataSourceModule = module {
         CoreSessionSourceImpl(
             dao = get<CrunchyDatabase>().crunchySessionCoreDao(),
             endpoint = CrunchySessionEndpoint.create(),
-            responseMapper = get(),
+            mapper = get(),
             settings = get()
         )
     }
@@ -46,7 +46,7 @@ private val dataSourceModule = module {
             dao = get<CrunchyDatabase>().crunchySessionDao(),
             coreSessionDao = get<CrunchyDatabase>().crunchySessionCoreDao(),
             loginDao = get<CrunchyDatabase>().crunchyLoginDao(),
-            responseMapper = get(),
+            mapper = get(),
             settings = get()
         )
     }
@@ -56,7 +56,7 @@ private val dataSourceModule = module {
             endpoint = CrunchySessionEndpoint.create(),
             coreSessionDao = get<CrunchyDatabase>().crunchySessionCoreDao(),
             loginDao = get<CrunchyDatabase>().crunchyLoginDao(),
-            responseMapper = get(),
+            mapper = get(),
             settings = get()
         )
     }

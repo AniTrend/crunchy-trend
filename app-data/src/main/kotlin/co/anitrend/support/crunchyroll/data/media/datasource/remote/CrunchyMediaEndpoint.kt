@@ -19,7 +19,7 @@ package co.anitrend.support.crunchyroll.data.media.datasource.remote
 import co.anitrend.arch.extension.util.SupportExtKeyStore
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.contract.JSON
-import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyMediaField
+import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyModelField
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.media.model.CrunchyMediaModel
 import retrofit2.Response
@@ -32,13 +32,13 @@ interface CrunchyMediaEndpoint {
     @GET("/info.${BuildConfig.apiExtension}.json")
     suspend fun getMediaInfo(
         @Query("media_id") mediaId: Long,
-        @Query("fields") mediaFields: String = CrunchyMediaField.mediaFields
+        @Query("fields") mediaFields: String = CrunchyModelField.mediaFields
     ) : Response<CrunchyContainer<CrunchyMediaModel>>
 
     @JSON
     @GET("/list_media.${BuildConfig.apiExtension}.json")
     suspend fun getMediaList(
-        @Query("fields") mediaFields: String = CrunchyMediaField.mediaFields,
+        @Query("fields") mediaFields: String = CrunchyModelField.mediaFields,
         @Query("collection_id") collectionId: Long,
         @Query("offset") offset: Int,
         @Query("limit") limit: Int = SupportExtKeyStore.pagingLimit

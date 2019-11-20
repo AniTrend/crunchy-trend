@@ -16,15 +16,28 @@
 
 package co.anitrend.support.crunchyroll.feature.discover.koin
 
+import co.anitrend.support.crunchyroll.feature.discover.presenter.SeriesPresenter
+import co.anitrend.support.crunchyroll.feature.discover.viewmodel.SeriesDiscoverViewModel
+import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 
 private val presenterModule = module {
-
+    factory {
+        SeriesPresenter(
+            context = androidContext(),
+            settings = get()
+        )
+    }
 }
 
 private val viewModelModule = module {
-
+    viewModel {
+        SeriesDiscoverViewModel(
+            useCase = get()
+        )
+    }
 }
 
 private val featureModules = listOf(presenterModule, viewModelModule)

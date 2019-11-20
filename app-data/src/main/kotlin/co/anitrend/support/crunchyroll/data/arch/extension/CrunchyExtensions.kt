@@ -16,7 +16,10 @@
 
 package co.anitrend.support.crunchyroll.data.arch.extension
 
+import co.anitrend.arch.extension.network.SupportConnectivity
+import co.anitrend.support.crunchyroll.data.arch.controller.CrunchyController
 import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyResponseStatus
+import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import com.google.gson.reflect.TypeToken
 import okhttp3.Response
@@ -50,6 +53,15 @@ fun CrunchyContainer<*>.composeWith(response: Response, responseBody: ResponseBo
 
 inline fun <reified T> typeTokenOf(): Type =
     object : TypeToken<T>() {}.type
+
+/**
+ * Extension to help us create a controller from a a mapper instance
+ */
+internal fun <S, D> CrunchyMapper<S, D>.controller(
+    supportConnectivity: SupportConnectivity
+) = CrunchyController.newInstance(
+    responseMapper = this, supportConnectivity = supportConnectivity
+)
 
 /**
  * Uses system locale to generate a locale string which crunchyroll can use

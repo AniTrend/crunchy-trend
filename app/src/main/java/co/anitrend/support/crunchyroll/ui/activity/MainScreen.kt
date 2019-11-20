@@ -144,6 +144,10 @@ class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(), NavigationV
     private fun onNavigate(@IdRes menu: Int) {
         var supportFragment: SupportFragment<*, *, *>? = null
         when (menu) {
+            R.id.nav_series_discover -> {
+                selectedTitle = R.string.nav_discover
+                supportFragment = NavigationTargets.Discover.forFragment()
+            }
             R.id.nav_show_latest -> {
                 selectedTitle = R.string.nav_shows
                 supportFragment = NavigationTargets.Listing.forFragment()

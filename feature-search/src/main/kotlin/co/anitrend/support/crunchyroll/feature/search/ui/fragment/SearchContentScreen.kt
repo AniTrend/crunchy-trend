@@ -92,6 +92,12 @@ class SearchContentScreen : SupportFragmentPagedList<CrunchySeries, SeriesPresen
                 onPostModelChange(it)
             }
         )
+        supportViewModel.searchQueryLiveData.observe(
+            this,
+            Observer {
+                onFetchDataInitialize()
+            }
+        )
     }
 
     /**
@@ -107,7 +113,10 @@ class SearchContentScreen : SupportFragmentPagedList<CrunchySeries, SeriesPresen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         supportStateLayout?.setNetworkState(
-            NetworkState.Success
+            NetworkState.Error(
+                heading = "No Search Results",
+                message = "Please enter a search term to look for"
+            )
         )
     }
 
@@ -143,7 +152,12 @@ class SearchContentScreen : SupportFragmentPagedList<CrunchySeries, SeriesPresen
      * @see [ISupportViewModel.invoke]
      */
     override fun onFetchDataInitialize() {
-
+        val searchQuery = supportViewModel.searchQueryLiveData.value
+        if (searchQuery != null) {
+            supportViewModel(
+                parameter = searchQuery
+            )
+        }
     }
 
     /**

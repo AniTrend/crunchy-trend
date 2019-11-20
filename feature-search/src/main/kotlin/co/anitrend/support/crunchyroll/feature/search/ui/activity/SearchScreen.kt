@@ -45,7 +45,7 @@ class SearchScreen : CrunchyActivity<PagedList<CrunchySeries>, SeriesPresenter>(
     private val multiSearchViewListener =
         object : MultiSearchView.MultiSearchViewListener {
             override fun onItemSelected(index: Int, s: CharSequence) {
-                supportViewModel(
+                supportViewModel.searchQueryLiveData.postValue(
                     CrunchySeriesSearchQuery(
                         query = s.toString()
                     )
@@ -53,11 +53,11 @@ class SearchScreen : CrunchyActivity<PagedList<CrunchySeries>, SeriesPresenter>(
             }
 
             override fun onSearchComplete(index: Int, s: CharSequence) {
-                supportViewModel(
+                /*supportViewModel.searchQueryLiveData.postValue(
                     CrunchySeriesSearchQuery(
                         query = s.toString()
                     )
-                )
+                )*/
             }
 
             override fun onSearchItemRemoved(index: Int) {
@@ -65,7 +65,12 @@ class SearchScreen : CrunchyActivity<PagedList<CrunchySeries>, SeriesPresenter>(
             }
 
             override fun onTextChanged(index: Int, s: CharSequence) {
-
+                if (s.isNotBlank())
+                    supportViewModel.searchQueryLiveData.postValue(
+                        CrunchySeriesSearchQuery(
+                            query = s.toString()
+                        )
+                    )
             }
     }
 

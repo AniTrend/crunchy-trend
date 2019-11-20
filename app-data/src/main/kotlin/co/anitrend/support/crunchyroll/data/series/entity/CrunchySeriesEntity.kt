@@ -22,11 +22,21 @@ import co.anitrend.support.crunchyroll.domain.series.enums.CrunchyMediaType
 @Fts4
 @Entity
 data class CrunchySeriesEntity(
+    @PrimaryKey
+    @ColumnInfo(name = "rowid")
+    val rowId: Int,
     val seriesId: Long,
     val url: String,
     val name: String,
     val mediaType: CrunchyMediaType,
     val landscapeImage: String?,
     val portraitImage: String?,
-    val description: String
+    val description: String,
+    val queued: Boolean,
+    val rating: Int,
+    val mediaCount: Int,
+    val collectionCount: Int,
+    val publisher: String,
+    val year: Int,
+    val genres: List<String>
 )

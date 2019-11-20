@@ -28,7 +28,7 @@ import org.koin.dsl.module
 private val dataSourceModule = module {
     factory {
         NewsSourceImpl(
-            responseMapper = get(),
+            mapper = get(),
             endpoint = CrunchyNewsFeedEndpoint.create(),
             dao = get<CrunchyDatabase>().crunchyRssNewsDao()
         )

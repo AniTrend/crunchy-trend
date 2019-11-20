@@ -25,4 +25,6 @@ interface ILoginRepository<R : IUserInterfaceState<*>> {
      * Authenticates a user
      */
     fun loginUser(query: CrunchyLoginQuery): R
+
+    fun loggedInUser(): R
 }

@@ -22,7 +22,7 @@ import androidx.fragment.app.FragmentActivity
 import co.anitrend.arch.core.analytic.contract.ISupportAnalytics
 import timber.log.Timber
 
-class AnalyticsLogger(): Timber.Tree(), ISupportAnalytics {
+class AnalyticsLogger: Timber.Tree(), ISupportAnalytics {
 
     /**
      * Write a log message to its destination. Called for all level-specific methods by default.

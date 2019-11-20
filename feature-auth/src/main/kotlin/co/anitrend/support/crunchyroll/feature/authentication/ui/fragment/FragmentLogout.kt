@@ -154,8 +154,7 @@ class FragmentLogout : SupportFragment<Boolean, CrunchyCorePresenter, Boolean>()
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        val userId = supportPresenter.supportPreference.authenticatedUserId
-        val liveData = supportViewModel.getUserByIdLiveData(userId)
+        val liveData = supportViewModel.getCurrentUser()
         liveData.observe(this, Observer {
             binding.currentUserModel = it
         })

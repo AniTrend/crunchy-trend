@@ -22,8 +22,10 @@ import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyRequestInterceptor
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyResponseInterceptor
 import co.anitrend.support.crunchyroll.data.authentication.koin.authenticationModules
+import co.anitrend.support.crunchyroll.data.collection.koin.collectionModules
 import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
 import co.anitrend.support.crunchyroll.data.episode.koin.episodeModules
+import co.anitrend.support.crunchyroll.data.media.koin.mediaModules
 import co.anitrend.support.crunchyroll.data.news.koin.newsModules
 import co.anitrend.support.crunchyroll.data.series.koin.seriesModules
 import co.anitrend.support.crunchyroll.data.session.koin.sessionModules
@@ -67,4 +69,6 @@ val crunchDataModules = listOf(
         episodeModules +
         streamModules +
         sessionModules +
-        seriesModules
+        seriesModules +
+        collectionModules +
+        mediaModules

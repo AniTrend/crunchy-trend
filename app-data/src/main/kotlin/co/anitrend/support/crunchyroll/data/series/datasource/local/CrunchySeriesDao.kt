@@ -33,7 +33,7 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
 
 
     @Query("""
-        select *
+        select *, rowid
         from CrunchySeriesEntity 
         where seriesId = :seriesId
         """)
@@ -42,7 +42,7 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
     ): CrunchySeriesEntity?
 
     @Query("""
-        select *
+        select *, rowid
         from CrunchySeriesEntity 
         where seriesId = :seriesId
     """)
@@ -53,30 +53,30 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
 
 
     @Query("""
-        select *
+        select *, rowid
         from CrunchySeriesEntity 
         where name match :seriesName 
-        order by name desc
+        order by name asc
     """)
     suspend fun findBySeriesName(
         seriesName: String
     ): List<CrunchySeriesEntity>
 
     @Query("""
-        select *
+        select *, rowid
         from CrunchySeriesEntity 
         where name match :seriesName 
-        order by name desc
+        order by name asc
     """)
     fun findBySeriesNameX(
         seriesName: String
     ): LiveData<List<CrunchySeriesEntity>>
 
     @Query("""
-        select *
+        select *, rowid
         from CrunchySeriesEntity 
         where name match :seriesName 
-        order by name desc
+        order by name asc
     """)
     fun findBySeriesNameFactory(
         seriesName: String
@@ -85,23 +85,23 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
 
 
     @Query("""
-        select *
+        select *, rowid
         from CrunchySeriesEntity 
-        order by name desc
+        order by name asc
         """)
     suspend fun findAll(): List<CrunchySeriesEntity>
 
     @Query("""
-        select *
+        select *, rowid
         from CrunchySeriesEntity 
-        order by name desc
+        order by name asc
         """)
     fun findAllX(): LiveData<List<CrunchySeriesEntity>>
 
     @Query("""
-        select *
+        select *, rowid
         from CrunchySeriesEntity 
-        order by name desc
+        order by name asc
         """)
     fun findAllFactory(): DataSource.Factory<Int, CrunchySeriesEntity>
 }

@@ -21,8 +21,10 @@ import co.anitrend.arch.data.model.UserInterfaceState
 import co.anitrend.arch.data.repository.SupportRepository
 import co.anitrend.support.crunchyroll.data.series.source.contract.SeriesSource
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
-import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesQuery
+import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesBrowseQuery
+import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesInfoQuery
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesSearchQuery
+import co.anitrend.support.crunchyroll.domain.series.repositories.ISeriesBrowseRepository
 import co.anitrend.support.crunchyroll.domain.series.repositories.ISeriesInfoRepository
 import co.anitrend.support.crunchyroll.domain.series.repositories.ISeriesSearchRepository
 
@@ -30,13 +32,22 @@ class SeriesRepository(
     private val source: SeriesSource
 ) : SupportRepository(source),
     ISeriesSearchRepository<UserInterfaceState<PagedList<CrunchySeries>>>,
-    ISeriesInfoRepository<UserInterfaceState<CrunchySeries?>> {
+    ISeriesBrowseRepository<UserInterfaceState<PagedList<CrunchySeries>>>,
+    ISeriesInfoRepository<UserInterfaceState<CrunchySeries?>>{
 
     override fun getSeries(
-        seriesQuery: CrunchySeriesQuery
+        seriesInfoQuery: CrunchySeriesInfoQuery
     ) =
         UserInterfaceState.create(
-            model = source.seriesObservable(seriesQuery),
+            model = source.seriesInfoObservable(seriesInfoQuery),
+            source = source
+        )
+
+    override fun browseSeries(
+        browseQuery: CrunchySeriesBrowseQuery
+    ) =
+        UserInterfaceState.create(
+            model = source.seriesBrowseObservable(browseQuery),
             source = source
         )
 

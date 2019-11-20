@@ -22,6 +22,7 @@ import co.anitrend.support.crunchyroll.data.series.datasource.remote.CrunchySeri
 import co.anitrend.support.crunchyroll.data.series.mapper.SeriesResponseMapper
 import co.anitrend.support.crunchyroll.data.series.repository.SeriesRepository
 import co.anitrend.support.crunchyroll.data.series.source.SeriesSourceImpl
+import co.anitrend.support.crunchyroll.data.series.usecase.SeriesBrowseUseCaseImpl
 import co.anitrend.support.crunchyroll.data.series.usecase.SeriesInfoUseCaseImpl
 import co.anitrend.support.crunchyroll.data.series.usecase.SeriesSearchUseCaseImpl
 import co.anitrend.support.crunchyroll.domain.series.interactors.SeriesInfoUseCase
@@ -62,6 +63,11 @@ private val useCaseModule = module {
     }
     factory {
         SeriesSearchUseCaseImpl(
+            repository = get()
+        )
+    }
+    factory {
+        SeriesBrowseUseCaseImpl(
             repository = get()
         )
     }

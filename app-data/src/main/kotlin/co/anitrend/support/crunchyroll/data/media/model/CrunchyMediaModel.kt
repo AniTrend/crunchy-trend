@@ -24,6 +24,7 @@ data class CrunchyMediaModel(
     val etp_guid: String,
     val collection_id: Long,
     val collection_etp_guid: String,
+    val collection_name: String?,
     val series_id: Long,
     val series_etp_guid: String,
     val episode_number: String,

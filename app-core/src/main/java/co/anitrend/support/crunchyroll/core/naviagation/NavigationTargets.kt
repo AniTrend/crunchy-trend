@@ -71,7 +71,7 @@ object NavigationTargets {
         const val PAYLOAD = "MediaFeedContent:Payload"
     }
 
-    object MediaDetail : INavigationRouter, INavigationTarget {
+    object Media : INavigationRouter, INavigationTarget {
         override val packageName = "feature.media.ui.activity"
         override val className = "MediaDetailScreen"
 
@@ -104,6 +104,27 @@ object NavigationTargets {
     object Search : INavigationRouter, INavigationTarget {
         override val packageName = "feature.search.ui.activity"
         override val className = "SearchScreen"
+
+        override val navRouterIntent = forIntent()
+    }
+
+    object Discover : INavigationRouter, INavigationTarget {
+        override val packageName = "feature.discover.ui.fragment"
+        override val className = "SeriesDiscoverContent"
+
+        override val navRouterIntent = forIntent()
+    }
+
+    object Series : INavigationRouter, INavigationTarget {
+        override val packageName = "feature.series.ui.activity"
+        override val className = "SeriesScreen"
+
+        override val navRouterIntent = forIntent()
+    }
+
+    object Collection : INavigationRouter, INavigationTarget {
+        override val packageName = "feature.collection.ui.activity"
+        override val className = "MediaCollectionScreen"
 
         override val navRouterIntent = forIntent()
     }

@@ -20,6 +20,7 @@ import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchyMediaType
 import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesEntity
 import co.anitrend.support.crunchyroll.data.series.model.CrunchySeriesModel
+import java.util.*
 
 object CrunchySeriesEntityTransformer : ISupportMapperHelper<CrunchySeriesModel, CrunchySeriesEntity> {
 
@@ -28,15 +29,23 @@ object CrunchySeriesEntityTransformer : ISupportMapperHelper<CrunchySeriesModel,
      */
     override fun transform(source: CrunchySeriesModel): CrunchySeriesEntity {
         return CrunchySeriesEntity(
+            rowId = source.series_id.toInt(),
             seriesId = source.series_id,
             url = source.url,
             name = source.name,
             mediaType = CrunchyMediaType.valueOf(
                 source.media_type
             ),
-            landscapeImage = source.landscape_image?.fwide_url,
+            landscapeImage = source.landscape_image?.full_url,
             portraitImage = source.portrait_image?.full_url,
-            description = source.description
+            description = source.description,
+            queued = source.in_queue,
+            rating = source.rating,
+            mediaCount = source.media_count,
+            collectionCount = source.collection_count,
+            publisher = source.publisher_name,
+            year = source.year,
+            genres = source.genres
         )
     }
 }

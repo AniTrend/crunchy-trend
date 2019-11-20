@@ -32,7 +32,7 @@ import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import kotlinx.coroutines.async
 
 class NewsSourceImpl(
-    private val responseMapper: NewsResponseMapper,
+    private val mapper: NewsResponseMapper,
     private val endpoint: CrunchyNewsFeedEndpoint,
     private val dao: CrunchyRssNewsDao
 ) : NewsSource() {
@@ -69,7 +69,7 @@ class NewsSourceImpl(
             endpoint.getMediaNews(rssQuery.language)
         }
 
-        responseMapper.news(deferred, callback)
+        mapper.news(deferred, callback)
     }
 
     /**

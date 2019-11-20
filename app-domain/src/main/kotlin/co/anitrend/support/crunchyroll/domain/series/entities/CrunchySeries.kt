@@ -22,5 +22,12 @@ data class CrunchySeries(
     val name: String,
     val landscapeImage: String?,
     val portraitImage: String?,
-    val description: String
+    val description: String,
+    val queued: Boolean,
+    val rating: Int,
+    val mediaCount: Int,
+    val collectionCount: Int,
+    val publisher: String,
+    val year: Int,
+    val genres: List<String>
 )

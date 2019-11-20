@@ -20,7 +20,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import co.anitrend.arch.extension.getLayoutInflater
 import co.anitrend.arch.ui.recycler.adapter.SupportPagedListAdapter
 import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
@@ -87,7 +86,7 @@ class SeriesViewAdapter(
          * @see com.bumptech.glide.Glide
          */
         override fun onViewRecycled() {
-
+            binding.container.setOnClickListener(null)
         }
 
         /**

@@ -18,6 +18,7 @@ package co.anitrend.support.crunchyroll.data.authentication.repository
 
 import co.anitrend.arch.data.model.UserInterfaceState
 import co.anitrend.arch.data.repository.SupportRepository
+import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.data.authentication.source.contract.LoginSource
 import co.anitrend.support.crunchyroll.data.authentication.source.contract.LogoutSource
 import co.anitrend.support.crunchyroll.domain.authentication.models.CrunchyLoginQuery
@@ -31,6 +32,13 @@ class AuthenticationRepository(
 ) : SupportRepository(loginSource),
     ILoginRepository<UserInterfaceState<CrunchyUser?>>,
     ILogoutRepository<UserInterfaceState<Boolean>> {
+
+
+    override fun loggedInUser() =
+        UserInterfaceState.create(
+            model = loginSource.loggedInUser(),
+            source = loginSource
+        )
 
     /**
      * Authenticates a user

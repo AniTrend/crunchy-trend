@@ -26,4 +26,5 @@ abstract class LoginSource : SupportCoreDataSource() {
 
     protected abstract val observable: ISourceObservable<CrunchyLoginQuery, CrunchyUser?>
     abstract fun loginUser(query: CrunchyLoginQuery): LiveData<CrunchyUser?>
+    abstract fun loggedInUser(): LiveData<CrunchyUser?>
 }

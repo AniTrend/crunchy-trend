@@ -14,8 +14,21 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.domain.series.models
+package co.anitrend.support.crunchyroll.domain.tracker.entities
 
-data class CrunchySeriesQuery(
-    val seriesId: Long
-)
+import co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia
+import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
+
+data class CrunchyQueueEntry(
+    val lastWatchedMedia: CrunchyMediaPlayHead?,
+    val mostLikelyMedia: CrunchyMediaPlayHead?,
+    val ordering: Int,
+    val queueEntryId: Long,
+    val playHead: Int,
+    val series: CrunchySeries
+) {
+    data class CrunchyMediaPlayHead(
+        val media: CrunchyMedia,
+        val playHead: Int
+    )
+}

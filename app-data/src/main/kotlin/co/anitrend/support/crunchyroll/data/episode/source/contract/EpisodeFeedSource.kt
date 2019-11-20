@@ -68,7 +68,7 @@ abstract class EpisodeFeedSource : SupportPagingDataSource<CrunchyEpisodeFeed>()
                         supportPagingHelper.onPageNext()
                     }
                 else it.recordSuccess()
-            } else it.recordSuccess()
+            } else it.recordFailure(Throwable("No internet connection"))
         }
     }
 }

@@ -19,7 +19,7 @@ package co.anitrend.support.crunchyroll.data.stream.datasource.remote
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.contract.JSON
 import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpointFactory
-import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyMediaField
+import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyModelField
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.stream.model.CrunchyStreamInfoModel
 import retrofit2.Response
@@ -32,7 +32,7 @@ interface CrunchyStreamEndpoint {
     @GET("/info.${BuildConfig.apiExtension}.json")
     suspend fun getStreamInfo(
         @Query("media_id") mediaId: Long,
-        @Query("fields") mediaFields: String = CrunchyMediaField.streamFields
+        @Query("fields") mediaFields: String = CrunchyModelField.streamFields
     ) : Response<CrunchyContainer<CrunchyStreamInfoModel>>
 
 

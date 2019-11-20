@@ -20,7 +20,7 @@ import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
 import co.anitrend.support.crunchyroll.data.collection.entity.CrunchyCollectionEntity
 import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
 
-object CollectionMediaTransformer :
+object CollectionTransformer :
     ISupportMapperHelper<CrunchyCollectionEntity, CrunchyCollection> {
 
     /**

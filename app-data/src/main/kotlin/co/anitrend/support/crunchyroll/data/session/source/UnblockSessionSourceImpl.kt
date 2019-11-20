@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.data.session.source
 
 import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.session.datasource.remote.CrunchySessionEndpoint
 import co.anitrend.support.crunchyroll.data.session.source.contract.SessionSource
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
@@ -37,7 +38,7 @@ class UnblockSessionSourceImpl(
     private val settings: IAuthenticationSettings,
     private val endpoint: CrunchySessionEndpoint,
     private val coreSessionDao: CrunchySessionCoreDao,
-    private val responseMapper: SessionResponseMapper
+    private val mapper: SessionResponseMapper
 ) : SessionSource() {
 
     private fun buildQuery(): CrunchyUnBlockedSessionQuery? {
@@ -83,7 +84,10 @@ class UnblockSessionSourceImpl(
             }
 
             val session = runBlocking {
-                responseMapper(deferred, networkState)
+                val controller =
+                    mapper.controller(connectivityHelper)
+
+                controller(deferred, networkState)
             }
             if (session != null)
                 settings.sessionId = session.sessionId

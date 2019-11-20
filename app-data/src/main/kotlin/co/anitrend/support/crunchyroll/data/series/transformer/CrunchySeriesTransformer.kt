@@ -32,7 +32,14 @@ object CrunchySeriesTransformer : ISupportMapperHelper<CrunchySeriesEntity, Crun
             name = source.name,
             landscapeImage = source.landscapeImage,
             portraitImage = source.portraitImage,
-            description = source.description
+            description = source.description,
+            queued = source.queued,
+            rating = source.rating,
+            mediaCount = source.mediaCount,
+            collectionCount = source.collectionCount,
+            publisher = source.publisher,
+            year = source.year,
+            genres = source.genres
         )
     }
 }

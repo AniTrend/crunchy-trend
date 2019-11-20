@@ -17,9 +17,9 @@
 package co.anitrend.support.crunchyroll.domain.series.repositories
 
 import co.anitrend.arch.domain.common.IUserInterfaceState
-import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesQuery
+import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesInfoQuery
 
 interface ISeriesInfoRepository<R: IUserInterfaceState<*>> {
 
-    fun getSeries(seriesQuery: CrunchySeriesQuery): R
+    fun getSeries(seriesInfoQuery: CrunchySeriesInfoQuery): R
 }

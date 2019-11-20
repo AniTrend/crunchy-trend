@@ -18,7 +18,8 @@ package co.anitrend.support.crunchyroll.data.stream.source
 
 import androidx.lifecycle.LiveData
 import co.anitrend.arch.domain.entities.NetworkState
-import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyMediaField
+import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyModelField
+import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.stream.datasource.remote.CrunchyStreamEndpoint
 import co.anitrend.support.crunchyroll.data.stream.source.contract.CrunchyStreamSource
 import co.anitrend.support.crunchyroll.data.stream.mapper.CrunchyStreamResponseMapper
@@ -30,7 +31,7 @@ import kotlinx.coroutines.launch
 
 class CrunchyStreamSourceImpl(
     private val endpoint: CrunchyStreamEndpoint,
-    private val responseMapper: CrunchyStreamResponseMapper
+    private val mapper: CrunchyStreamResponseMapper
 ) : CrunchyStreamSource() {
 
     override fun getMediaStream(query: CrunchyMediaStreamQuery): LiveData<List<MediaStream>?> {
@@ -39,12 +40,15 @@ class CrunchyStreamSourceImpl(
         val deferred = async {
             endpoint.getStreamInfo(
                 mediaId = query.mediaId,
-                mediaFields = CrunchyMediaField.streamFields
+                mediaFields = CrunchyModelField.streamFields
             )
         }
 
         launch {
-            val result = responseMapper(deferred, networkState)
+            val controller =
+                mapper.controller(connectivityHelper)
+
+            val result = controller(deferred, networkState)
 
             observable.postValue(
                 MediaStreamTransformer.transform(result)

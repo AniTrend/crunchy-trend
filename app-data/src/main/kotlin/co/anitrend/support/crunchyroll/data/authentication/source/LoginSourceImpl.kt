@@ -20,6 +20,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthenticationEndpoint
 import co.anitrend.support.crunchyroll.data.authentication.source.contract.LoginSource
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
@@ -36,7 +37,7 @@ class LoginSourceImpl(
     private val dao: CrunchyLoginDao,
     private val settings: IAuthenticationSettings,
     private val endpoint: CrunchyAuthenticationEndpoint,
-    private val responseMapper: LoginResponseMapper
+    private val mapper: LoginResponseMapper
 ) : LoginSource() {
 
     override val observable =
@@ -69,11 +70,22 @@ class LoginSourceImpl(
         }
 
         launch {
-            val response = responseMapper(deferred, networkState)
+            val controller =
+                mapper.controller(connectivityHelper)
+
+            val response = controller(deferred, networkState)
             Timber.tag(moduleTag).i("Logged in userId: ${response?.userId}")
         }
 
         return observable(query)
+    }
+
+    override fun loggedInUser(): LiveData<CrunchyUser?> {
+        val userId = settings.authenticatedUserId
+        val crunchyLogin = dao.findByUserIdX(userId)
+        return Transformations.map(crunchyLogin) {
+            CrunchyUserTransformer.transform(it)
+        }
     }
 
     /**

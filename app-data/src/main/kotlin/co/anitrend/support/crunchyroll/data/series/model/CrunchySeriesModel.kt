@@ -23,11 +23,18 @@ import co.anitrend.support.crunchyroll.data.arch.model.CrunchyImageSet
 @Entity
 @Fts4
 data class CrunchySeriesModel(
-    val media_type: String,
     val series_id: Long,
-    val name: String,
-    val description: String,
     val url: String,
+    val name: String,
+    val media_type: String,
     val landscape_image: CrunchyImageSet?,
-    val portrait_image: CrunchyImageSet?
+    val portrait_image: CrunchyImageSet?,
+    val description: String,
+    val in_queue: Boolean,
+    val rating: Int,
+    val media_count: Int,
+    val collection_count: Int,
+    val publisher_name: String,
+    val year: Int,
+    val genres: List<String>
 )

@@ -41,7 +41,7 @@ object CrunchyCollectionEntityTransformer :
             ),
             season = source.season,
             complete = source.complete,
-            landscapeImage = source.landscape_image?.fwide_url,
+            landscapeImage = source.landscape_image?.full_url,
             portraitImage = source.portrait_image?.full_url,
             availabilityNotes = source.availability_notes,
             created = source.created.iso8601ToUnixTime()

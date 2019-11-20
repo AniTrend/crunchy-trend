@@ -16,7 +16,6 @@
 
 package co.anitrend.support.crunchyroll.feature.authentication.koin
 
-import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
 import co.anitrend.support.crunchyroll.feature.authentication.presenter.AuthPresenter
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.LoginViewModel
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.LogoutViewModel
@@ -43,7 +42,7 @@ private val viewModelModule = module {
     viewModel {
         LogoutViewModel(
             useCase = get(),
-            loginDao = get<CrunchyDatabase>().crunchyLoginDao()
+            loginUseCase = get()
         )
     }
 }

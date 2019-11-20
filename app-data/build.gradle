@@ -29,7 +29,11 @@ android {
         consumerProguardFiles 'consumer-rules.pro'
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+                arguments = [
+                        "room.schemaLocation": "$projectDir/schemas".toString(),
+                        "room.expandingProjections": "true",
+                        "room.incremental": "true"
+                ]
             }
         }
     }
@@ -69,6 +73,8 @@ dependencies {
 
     /** Architecture Components */
     implementation "androidx.core:core-ktx:$ktx"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleX"
+    implementation "androidx.lifecycle:lifecycle-livedata-core-ktx:$lifecycleX"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleX"
     implementation "androidx.paging:paging-runtime-ktx:$pagingKtx"
     implementation "androidx.paging:paging-runtime:$paging"

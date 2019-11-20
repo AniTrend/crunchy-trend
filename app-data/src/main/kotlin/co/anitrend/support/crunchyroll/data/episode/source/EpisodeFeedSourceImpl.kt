@@ -32,7 +32,7 @@ import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFee
 import kotlinx.coroutines.async
 
 class EpisodeFeedSourceImpl(
-    private val responseMapper: EpisodeFeedResponseMapper,
+    private val mapper: EpisodeFeedResponseMapper,
     private val endpoint: CrunchyEpisodeFeedEndpoint,
     private val dao: CrunchyRssEpisodeDao
 ) : EpisodeFeedSource() {
@@ -68,7 +68,7 @@ class EpisodeFeedSourceImpl(
             endpoint.getLatestMediaFeed(rssQuery.language)
         }
 
-        responseMapper.media(deferred, callback)
+        mapper.media(deferred, callback)
     }
 
     /**

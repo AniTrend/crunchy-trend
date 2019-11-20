@@ -28,7 +28,7 @@ private val dataSourceModule = module {
     factory {
         CrunchyStreamSourceImpl(
             endpoint = CrunchyStreamEndpoint.create(),
-            responseMapper = get()
+            mapper = get()
         )
     }
 }

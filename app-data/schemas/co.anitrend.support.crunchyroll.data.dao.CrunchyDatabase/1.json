@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "860377102dea28c575153d63da80d206",
+    "identityHash": "4f80738b64eff54e26111f79265b749c",
     "entities": [
       {
         "tableName": "CrunchySessionEntity",
@@ -215,8 +215,14 @@
         },
         "contentSyncTriggers": [],
         "tableName": "CrunchySeriesEntity",
-        "createSql": "CREATE VIRTUAL TABLE IF NOT EXISTS `${TABLE_NAME}` USING FTS4(`seriesId` INTEGER NOT NULL, `url` TEXT NOT NULL, `name` TEXT NOT NULL, `mediaType` INTEGER NOT NULL, `landscapeImage` TEXT, `portraitImage` TEXT, `description` TEXT NOT NULL)",
+        "createSql": "CREATE VIRTUAL TABLE IF NOT EXISTS `${TABLE_NAME}` USING FTS4(`seriesId` INTEGER NOT NULL, `url` TEXT NOT NULL, `name` TEXT NOT NULL, `mediaType` INTEGER NOT NULL, `landscapeImage` TEXT, `portraitImage` TEXT, `description` TEXT NOT NULL, `queued` INTEGER NOT NULL, `rating` INTEGER NOT NULL, `mediaCount` INTEGER NOT NULL, `collectionCount` INTEGER NOT NULL, `publisher` TEXT NOT NULL, `year` INTEGER NOT NULL, `genres` TEXT NOT NULL)",
         "fields": [
+          {
+            "fieldPath": "rowId",
+            "columnName": "rowid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
           {
             "fieldPath": "seriesId",
             "columnName": "seriesId",
@@ -258,11 +264,55 @@
             "columnName": "description",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "queued",
+            "columnName": "queued",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rating",
+            "columnName": "rating",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mediaCount",
+            "columnName": "mediaCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "collectionCount",
+            "columnName": "collectionCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "publisher",
+            "columnName": "publisher",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "year",
+            "columnName": "year",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "genres",
+            "columnName": "genres",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
-          "columnNames": [],
-          "autoGenerate": false
+          "columnNames": [
+            "rowid"
+          ],
+          "autoGenerate": true
         },
         "indices": [],
         "foreignKeys": []
@@ -677,7 +727,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '860377102dea28c575153d63da80d206')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4f80738b64eff54e26111f79265b749c')"
     ]
   }
 }

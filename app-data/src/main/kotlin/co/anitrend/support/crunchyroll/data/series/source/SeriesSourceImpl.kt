@@ -23,14 +23,15 @@ import androidx.paging.PagingRequestHelper
 import androidx.paging.toLiveData
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.data.util.SupportDataKeyStore
+import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.series.datasource.local.CrunchySeriesDao
 import co.anitrend.support.crunchyroll.data.series.datasource.remote.CrunchySeriesEndpoint
-import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesEntity
 import co.anitrend.support.crunchyroll.data.series.mapper.SeriesResponseMapper
 import co.anitrend.support.crunchyroll.data.series.source.contract.SeriesSource
 import co.anitrend.support.crunchyroll.data.series.transformer.CrunchySeriesTransformer
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
-import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesQuery
+import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesBrowseQuery
+import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesInfoQuery
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesSearchQuery
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -41,10 +42,18 @@ class SeriesSourceImpl(
     private val seriesEndpoint: CrunchySeriesEndpoint
 ) : SeriesSource() {
 
+    private var previousSearchQuery: CrunchySeriesSearchQuery? = null
+
     private fun searchForSeries(
         callback: PagingRequestHelper.Request.Callback,
         param: CrunchySeriesSearchQuery
     ) {
+        // if we have changed the search query we need to reset our pagination count
+        if (previousSearchQuery?.query != param.query)
+            supportPagingHelper.onPageRefresh()
+
+        previousSearchQuery = param
+
         val deferred = async {
             seriesEndpoint.getSeriesAutoComplete(
                 offset = supportPagingHelper.pageOffset,
@@ -54,7 +63,30 @@ class SeriesSourceImpl(
         }
 
         launch {
-            mapper(deferred, callback)
+            val controller =
+                mapper.controller(connectivityHelper)
+
+            controller(deferred, callback)
+        }
+    }
+
+    private fun browseSeries(
+        callback: PagingRequestHelper.Request.Callback,
+        param: CrunchySeriesBrowseQuery
+    ) {
+        val deferred = async {
+            seriesEndpoint.getSeriesList(
+                offset = supportPagingHelper.pageOffset,
+                limit = supportPagingHelper.pageSize,
+                filter = param.filter
+            )
+        }
+
+        launch {
+            val controller =
+                mapper.controller(connectivityHelper)
+
+            controller(deferred, callback)
         }
     }
 
@@ -83,8 +115,8 @@ class SeriesSourceImpl(
             }
         }
 
-    override val seriesObservable =
-        object : ISourceObservable<CrunchySeriesQuery, CrunchySeries?> {
+    override val seriesBrowseObservable =
+        object : ISourceObservable<CrunchySeriesBrowseQuery, PagedList<CrunchySeries>> {
             /**
              * Returns the appropriate observable which we will monitor for updates,
              * common implementation may include but not limited to returning
@@ -92,7 +124,33 @@ class SeriesSourceImpl(
              *
              * @param parameter to use when executing
              */
-            override fun invoke(parameter: CrunchySeriesQuery): LiveData<CrunchySeries?> {
+            override fun invoke(parameter: CrunchySeriesBrowseQuery): LiveData<PagedList<CrunchySeries>> {
+                executionTarget = { browseSeries(it, parameter) }
+
+                val localSource =
+                    seriesDao.findAllFactory()
+
+                val result = localSource.map {
+                    CrunchySeriesTransformer.transform(it)
+                }
+
+                return result.toLiveData(
+                    config = SupportDataKeyStore.PAGING_CONFIGURATION,
+                    boundaryCallback = this@SeriesSourceImpl
+                )
+            }
+        }
+
+    override val seriesInfoObservable =
+        object : ISourceObservable<CrunchySeriesInfoQuery, CrunchySeries?> {
+            /**
+             * Returns the appropriate observable which we will monitor for updates,
+             * common implementation may include but not limited to returning
+             * data source live data for a database
+             *
+             * @param parameter to use when executing
+             */
+            override fun invoke(parameter: CrunchySeriesInfoQuery): LiveData<CrunchySeries?> {
                 val localSource = seriesDao.findBySeriesIdX(parameter.seriesId)
 
                 return Transformations.map(localSource) {
@@ -100,7 +158,6 @@ class SeriesSourceImpl(
                 }
             }
         }
-
 
     /**
      * Clears data sources (databases, preferences, e.t.c)
