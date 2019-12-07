@@ -33,7 +33,7 @@ ext {
     viewPager2X = "1.0.0-beta04"
 
     lifecycleStateX = '1.0.0-rc02'
-    lifecycleX = '2.2.0-rc02'
+    lifecycleX = '2.2.0-rc03'
     room = '2.2.2'
     paging = '2.1.0'
     pagingKtx = '2.1.0'
