@@ -22,6 +22,8 @@ import androidx.paging.PagingRequestHelper
 import androidx.paging.toLiveData
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.data.util.SupportDataKeyStore
+import co.anitrend.arch.extension.SupportDispatchers
+import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.news.source.contract.NewsSource
 import co.anitrend.support.crunchyroll.data.news.datasource.local.CrunchyRssNewsDao
 import co.anitrend.support.crunchyroll.data.news.datasource.remote.CrunchyNewsFeedEndpoint
@@ -30,12 +32,15 @@ import co.anitrend.support.crunchyroll.data.news.transformer.NewsTransformer
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class NewsSourceImpl(
     private val mapper: NewsResponseMapper,
     private val endpoint: CrunchyNewsFeedEndpoint,
-    private val dao: CrunchyRssNewsDao
-) : NewsSource() {
+    private val dao: CrunchyRssNewsDao,
+    private val supportConnectivity: SupportConnectivity,
+    supportDispatchers: SupportDispatchers
+) : NewsSource(supportDispatchers) {
 
     private lateinit var rssQuery: RssQuery
 
@@ -69,7 +74,12 @@ class NewsSourceImpl(
             endpoint.getMediaNews(rssQuery.language)
         }
 
-        mapper.news(deferred, callback)
+        launch {
+            val controller =
+                mapper.controller(supportConnectivity)
+
+            controller(deferred, callback)
+        }
     }
 
     /**

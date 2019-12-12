@@ -20,11 +20,18 @@ import androidx.paging.PagedList
 import androidx.paging.PagingRequestHelper
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.data.source.paging.SupportPagingDataSource
+import co.anitrend.arch.extension.SupportDispatchers
+import co.anitrend.arch.extension.network.SupportConnectivity
+import co.anitrend.support.crunchyroll.data.arch.controller.CrunchyRssMediaController
+import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyRssMapper
+import co.anitrend.support.crunchyroll.data.rss.contract.IRssCopyright
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 import kotlinx.coroutines.launch
 
-abstract class EpisodeFeedSource : SupportPagingDataSource<CrunchyEpisodeFeed>() {
+abstract class EpisodeFeedSource(
+    supportDispatchers: SupportDispatchers
+) : SupportPagingDataSource<CrunchyEpisodeFeed>(supportDispatchers) {
 
     abstract val episodeListingsObservable: ISourceObservable<RssQuery, PagedList<CrunchyEpisodeFeed>>
 
@@ -61,14 +68,23 @@ abstract class EpisodeFeedSource : SupportPagingDataSource<CrunchyEpisodeFeed>()
         pagingRequestHelper.runIfNotRunning(
             PagingRequestHelper.RequestType.BEFORE
         ) {
-            if (connectivityHelper.isConnected) {
-                if (supportPagingHelper.isFirstPage())
-                    launch {
-                        getMediaListingsCatalogue(it)
-                        supportPagingHelper.onPageNext()
-                    }
-                else it.recordSuccess()
-            } else it.recordFailure(Throwable("No internet connection"))
+            if (supportPagingHelper.isFirstPage())
+                launch {
+                    getMediaListingsCatalogue(it)
+                    supportPagingHelper.onPageNext()
+                }
+            else it.recordSuccess()
         }
     }
+
+    /**
+     * Extension to help us create a controller from a a mapper instance
+     */
+    internal fun <S: IRssCopyright, D> CrunchyRssMapper<S, D>.controller(
+        supportConnectivity: SupportConnectivity
+    ) = CrunchyRssMediaController.newInstance(
+        responseMapper = this,
+        supportConnectivity = supportConnectivity,
+        supportDispatchers = dispatchers
+    )
 }

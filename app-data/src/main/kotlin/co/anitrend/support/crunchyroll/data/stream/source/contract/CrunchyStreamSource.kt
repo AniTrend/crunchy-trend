@@ -19,10 +19,13 @@ package co.anitrend.support.crunchyroll.data.stream.source.contract
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import co.anitrend.arch.data.source.core.SupportCoreDataSource
+import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 
-abstract class CrunchyStreamSource : SupportCoreDataSource() {
+abstract class CrunchyStreamSource(
+    supportDispatchers: SupportDispatchers
+) : SupportCoreDataSource(supportDispatchers) {
 
     protected val observable = MutableLiveData<List<MediaStream>?>()
     abstract fun getMediaStream(query: CrunchyMediaStreamQuery): LiveData<List<MediaStream>?>

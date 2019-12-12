@@ -30,7 +30,9 @@ private val dataSourceModule = module {
         NewsSourceImpl(
             mapper = get(),
             endpoint = CrunchyNewsFeedEndpoint.create(),
-            dao = get<CrunchyDatabase>().crunchyRssNewsDao()
+            dao = get<CrunchyDatabase>().crunchyRssNewsDao(),
+            supportDispatchers = get(),
+            supportConnectivity = get()
         )
     }
 }

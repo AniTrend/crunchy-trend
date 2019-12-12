@@ -18,13 +18,16 @@ package co.anitrend.support.crunchyroll.data.series.source.contract
 
 import androidx.paging.PagedList
 import co.anitrend.arch.data.source.contract.ISourceObservable
+import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.support.crunchyroll.data.arch.common.CrunchyPagedSource
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesBrowseQuery
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesInfoQuery
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesSearchQuery
 
-abstract class SeriesSource : CrunchyPagedSource<CrunchySeries>() {
+abstract class SeriesSource(
+    supportDispatchers: SupportDispatchers
+) : CrunchyPagedSource<CrunchySeries>(supportDispatchers) {
 
     abstract val seriesSearchObservable:
             ISourceObservable<CrunchySeriesSearchQuery, PagedList<CrunchySeries>>

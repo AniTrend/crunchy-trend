@@ -18,9 +18,12 @@ package co.anitrend.support.crunchyroll.data.session.source.contract
 
 import co.anitrend.arch.data.source.core.SupportCoreDataSource
 import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
 
-abstract class SessionSource : SupportCoreDataSource() {
+abstract class SessionSource(
+    supportDispatchers: SupportDispatchers
+) : SupportCoreDataSource(supportDispatchers) {
 
     /**
      * Handles the requesting data from a the network source and returns

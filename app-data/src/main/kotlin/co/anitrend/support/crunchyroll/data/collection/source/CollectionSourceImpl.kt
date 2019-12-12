@@ -22,6 +22,8 @@ import androidx.paging.PagingRequestHelper
 import androidx.paging.toLiveData
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.data.util.SupportDataKeyStore
+import co.anitrend.arch.extension.SupportDispatchers
+import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.collection.datasource.local.CrunchyCollectionDao
 import co.anitrend.support.crunchyroll.data.collection.datasource.local.transformer.CrunchyCollectionEntityTransformer
@@ -38,8 +40,10 @@ import kotlinx.coroutines.launch
 class CollectionSourceImpl(
     private val mapper: CollectionResponseMapper,
     private val collectionDao: CrunchyCollectionDao,
-    private val collectionEndpoint: CrunchyCollectionEndpoint
-) : CollectionSource() {
+    private val collectionEndpoint: CrunchyCollectionEndpoint,
+    private val supportConnectivity: SupportConnectivity,
+    supportDispatchers: SupportDispatchers
+) : CollectionSource(supportDispatchers) {
 
     private fun getCollectionsForSeries(
         callback: PagingRequestHelper.Request.Callback,
@@ -55,7 +59,7 @@ class CollectionSourceImpl(
 
         launch {
             val controller =
-                mapper.controller(connectivityHelper)
+                mapper.controller(supportConnectivity, dispatchers)
 
             controller(deferred, callback)
         }

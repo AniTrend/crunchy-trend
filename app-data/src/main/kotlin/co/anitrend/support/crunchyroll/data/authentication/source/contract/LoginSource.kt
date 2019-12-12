@@ -19,10 +19,13 @@ package co.anitrend.support.crunchyroll.data.authentication.source.contract
 import androidx.lifecycle.LiveData
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.data.source.core.SupportCoreDataSource
+import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.support.crunchyroll.domain.authentication.models.CrunchyLoginQuery
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 
-abstract class LoginSource : SupportCoreDataSource() {
+abstract class LoginSource(
+    supportDispatchers: SupportDispatchers
+) : SupportCoreDataSource(supportDispatchers) {
 
     protected abstract val observable: ISourceObservable<CrunchyLoginQuery, CrunchyUser?>
     abstract fun loginUser(query: CrunchyLoginQuery): LiveData<CrunchyUser?>

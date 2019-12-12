@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.core.koin
 
+import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.util.contract.ISupportDateHelper
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.core.util.theme.ThemeUtil
@@ -54,6 +55,9 @@ private val coreModule = module {
         ConfigurationUtil(
             settings = get()
         )
+    }
+    single {
+        SupportDispatchers()
     }
 }
 

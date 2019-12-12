@@ -19,11 +19,14 @@ package co.anitrend.support.crunchyroll.data.arch.common
 import androidx.paging.PagedList
 import androidx.paging.PagingRequestHelper
 import co.anitrend.arch.data.source.paging.SupportPagingDataSource
+import co.anitrend.arch.extension.SupportDispatchers
 
 /**
  * Helper for prototyping quick sources
  */
-abstract class CrunchyPagedSource<T> : SupportPagingDataSource<T>() {
+abstract class CrunchyPagedSource<T>(
+    supportDispatchers: SupportDispatchers
+) : SupportPagingDataSource<T>(supportDispatchers) {
 
     protected lateinit var executionTarget: (PagingRequestHelper.Request.Callback) -> Unit
 

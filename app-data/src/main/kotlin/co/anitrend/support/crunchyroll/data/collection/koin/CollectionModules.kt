@@ -30,7 +30,9 @@ private val dataSourceModule = module {
         CollectionSourceImpl(
             mapper = get(),
             collectionDao = get<CrunchyDatabase>().crunchyCollectionDao(),
-            collectionEndpoint = CrunchyCollectionEndpoint.create()
+            collectionEndpoint = CrunchyCollectionEndpoint.create(),
+            supportDispatchers = get(),
+            supportConnectivity = get()
         )
     }
 }

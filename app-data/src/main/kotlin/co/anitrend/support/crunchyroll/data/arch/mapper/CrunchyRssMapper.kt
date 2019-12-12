@@ -16,93 +16,9 @@
 
 package co.anitrend.support.crunchyroll.data.arch.mapper
 
-import androidx.paging.PagingRequestHelper
-import co.anitrend.arch.data.common.ISupportPagingResponse
 import co.anitrend.arch.data.mapper.SupportResponseMapper
-import co.anitrend.arch.extension.capitalizeWords
 import co.anitrend.support.crunchyroll.data.rss.contract.ICrunchyRssChannel
 import co.anitrend.support.crunchyroll.data.rss.contract.IRssCopyright
-import co.anitrend.support.crunchyroll.data.rss.core.CrunchyRssEpisodeContainer
-import co.anitrend.support.crunchyroll.data.rss.core.CrunchyRssNewsContainer
-import kotlinx.coroutines.Deferred
-import retrofit2.Response
-import timber.log.Timber
 
-@Suppress("UNCHECKED_CAST")
 abstract class CrunchyRssMapper<S : IRssCopyright, D> :
-    SupportResponseMapper<ICrunchyRssChannel<S>, List<D>>() {
-
-    val news =
-        object : ISupportPagingResponse<Deferred<Response<CrunchyRssNewsContainer>>> {
-
-            /**
-             * Response handler for coroutine contexts, mainly for paging
-             *
-             * @param resource awaiting execution
-             * @param pagingRequestHelper optional paging request callback
-             */
-            override suspend operator fun invoke(
-                resource: Deferred<Response<CrunchyRssNewsContainer>>,
-                pagingRequestHelper: PagingRequestHelper.Request.Callback
-            ) {
-                val result = runCatching {
-                    val response = resource.await()
-                    val responseBody = response.body()
-                    if (response.isSuccessful && responseBody?.channel != null) {
-                        val mapped = onResponseMapFrom(
-                            responseBody.channel as ICrunchyRssChannel<S>
-                        )
-                        onResponseDatabaseInsert(mapped)
-                        pagingRequestHelper.recordSuccess()
-                    } else {
-                        pagingRequestHelper.recordFailure(
-                            Throwable(response.message().capitalizeWords())
-                        )
-                    }
-                }
-
-                result.getOrElse {
-                    it.printStackTrace()
-                    Timber.tag(moduleTag).e(it)
-                    pagingRequestHelper.recordFailure(it)
-                }
-            }
-        }
-
-    val media =
-        object : ISupportPagingResponse<Deferred<Response<CrunchyRssEpisodeContainer>>> {
-
-            /**
-             * Response handler for coroutine contexts, mainly for paging
-             *
-             * @param resource awaiting execution
-             * @param pagingRequestHelper optional paging request callback
-             */
-            override suspend operator fun invoke(
-                resource: Deferred<Response<CrunchyRssEpisodeContainer>>,
-                pagingRequestHelper: PagingRequestHelper.Request.Callback
-            ) {
-                val result = runCatching {
-                    val response = resource.await()
-                    val responseBody = response.body()
-                    if (response.isSuccessful && responseBody?.channel != null) {
-                        val mapped = onResponseMapFrom(
-                            responseBody.channel as ICrunchyRssChannel<S>
-                        )
-                        onResponseDatabaseInsert(mapped)
-                        pagingRequestHelper.recordSuccess()
-                    } else {
-                        pagingRequestHelper.recordFailure(
-                            Throwable(response.errorBody()?.string())
-                        )
-                    }
-                }
-
-                result.getOrElse {
-                    it.printStackTrace()
-                    Timber.tag(moduleTag).e(it)
-                    pagingRequestHelper.recordFailure(it)
-                }
-            }
-        }
-}
+    SupportResponseMapper<ICrunchyRssChannel<S>, List<D>>()

@@ -50,7 +50,9 @@ private val dataSourceModule = module {
             dao = get<CrunchyDatabase>().crunchyLoginDao(),
             endpoint = CrunchyAuthenticationEndpoint.create(),
             mapper = get(),
-            settings = get()
+            settings = get(),
+            supportDispatchers = get(),
+            supportConnectivity = get()
         )
     }
     factory {
@@ -60,7 +62,8 @@ private val dataSourceModule = module {
             dao = get<CrunchyDatabase>().crunchyLoginDao(),
             endpoint = CrunchyAuthenticationEndpoint.create(),
             mapper = get(),
-            settings = get()
+            settings = get(),
+            supportDispatchers = get()
         )
     }
 }

@@ -19,8 +19,11 @@ package co.anitrend.support.crunchyroll.data.authentication.source.contract
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import co.anitrend.arch.data.source.core.SupportCoreDataSource
+import co.anitrend.arch.extension.SupportDispatchers
 
-abstract class LogoutSource : SupportCoreDataSource() {
+abstract class LogoutSource(
+    supportDispatchers: SupportDispatchers
+) : SupportCoreDataSource(supportDispatchers) {
 
     protected val observable = MutableLiveData<Boolean>()
     abstract fun logoutUser(): LiveData<Boolean>

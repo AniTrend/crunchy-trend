@@ -23,6 +23,8 @@ import androidx.paging.PagingRequestHelper
 import androidx.paging.toLiveData
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.data.util.SupportDataKeyStore
+import co.anitrend.arch.extension.SupportDispatchers
+import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.series.datasource.local.CrunchySeriesDao
 import co.anitrend.support.crunchyroll.data.series.datasource.remote.CrunchySeriesEndpoint
@@ -39,8 +41,10 @@ import kotlinx.coroutines.launch
 class SeriesSourceImpl(
     private val mapper: SeriesResponseMapper,
     private val seriesDao: CrunchySeriesDao,
-    private val seriesEndpoint: CrunchySeriesEndpoint
-) : SeriesSource() {
+    private val seriesEndpoint: CrunchySeriesEndpoint,
+    private val supportConnectivity: SupportConnectivity,
+    supportDispatchers: SupportDispatchers
+) : SeriesSource(supportDispatchers) {
 
     private var previousSearchQuery: CrunchySeriesSearchQuery? = null
 
@@ -64,7 +68,7 @@ class SeriesSourceImpl(
 
         launch {
             val controller =
-                mapper.controller(connectivityHelper)
+                mapper.controller(supportConnectivity, dispatchers)
 
             controller(deferred, callback)
         }
@@ -84,7 +88,7 @@ class SeriesSourceImpl(
 
         launch {
             val controller =
-                mapper.controller(connectivityHelper)
+                mapper.controller(supportConnectivity, dispatchers)
 
             controller(deferred, callback)
         }

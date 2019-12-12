@@ -30,7 +30,9 @@ private val dataSourceModule = module {
         EpisodeFeedSourceImpl(
             mapper = get(),
             endpoint = CrunchyEpisodeFeedEndpoint.create(),
-            dao = get<CrunchyDatabase>().crunchyRssMediaDao()
+            dao = get<CrunchyDatabase>().crunchyRssMediaDao(),
+            supportDispatchers = get(),
+            supportConnectivity = get()
         )
     }
 }

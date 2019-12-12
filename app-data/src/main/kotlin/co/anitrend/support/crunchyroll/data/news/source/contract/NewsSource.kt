@@ -20,11 +20,18 @@ import androidx.paging.PagedList
 import androidx.paging.PagingRequestHelper
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.data.source.paging.SupportPagingDataSource
+import co.anitrend.arch.extension.SupportDispatchers
+import co.anitrend.arch.extension.network.SupportConnectivity
+import co.anitrend.support.crunchyroll.data.arch.controller.CrunchyRssNewsController
+import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyRssMapper
+import co.anitrend.support.crunchyroll.data.rss.contract.IRssCopyright
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import kotlinx.coroutines.launch
 
-abstract class NewsSource : SupportPagingDataSource<CrunchyNews>() {
+abstract class NewsSource(
+    supportDispatchers: SupportDispatchers
+) : SupportPagingDataSource<CrunchyNews>(supportDispatchers) {
 
     abstract val newsObservable: ISourceObservable<RssQuery, PagedList<CrunchyNews>>
 
@@ -69,4 +76,15 @@ abstract class NewsSource : SupportPagingDataSource<CrunchyNews>() {
             else it.recordSuccess()
         }
     }
+
+    /**
+     * Extension to help us create a controller from a a mapper instance
+     */
+    internal fun <S: IRssCopyright, D> CrunchyRssMapper<S, D>.controller(
+        supportConnectivity: SupportConnectivity
+    ) = CrunchyRssNewsController.newInstance(
+        responseMapper = this,
+        supportConnectivity = supportConnectivity,
+        supportDispatchers = dispatchers
+    )
 }

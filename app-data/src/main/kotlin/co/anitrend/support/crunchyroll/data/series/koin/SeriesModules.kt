@@ -34,7 +34,9 @@ private val dataSourceModule = module {
         SeriesSourceImpl(
             mapper = get(),
             seriesDao = get<CrunchyDatabase>().crunchySeriesDao(),
-            seriesEndpoint = CrunchySeriesEndpoint.create()
+            seriesEndpoint = CrunchySeriesEndpoint.create(),
+            supportDispatchers = get(),
+            supportConnectivity = get()
         )
     }
 }

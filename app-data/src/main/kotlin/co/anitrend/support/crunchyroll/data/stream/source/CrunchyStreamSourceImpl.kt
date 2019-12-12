@@ -18,6 +18,8 @@ package co.anitrend.support.crunchyroll.data.stream.source
 
 import androidx.lifecycle.LiveData
 import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.arch.extension.SupportDispatchers
+import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyModelField
 import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.stream.datasource.remote.CrunchyStreamEndpoint
@@ -31,8 +33,10 @@ import kotlinx.coroutines.launch
 
 class CrunchyStreamSourceImpl(
     private val endpoint: CrunchyStreamEndpoint,
-    private val mapper: CrunchyStreamResponseMapper
-) : CrunchyStreamSource() {
+    private val mapper: CrunchyStreamResponseMapper,
+    private val supportConnectivity: SupportConnectivity,
+    supportDispatchers: SupportDispatchers
+) : CrunchyStreamSource(supportDispatchers) {
 
     override fun getMediaStream(query: CrunchyMediaStreamQuery): LiveData<List<MediaStream>?> {
         retry = { getMediaStream(query) }
@@ -46,7 +50,7 @@ class CrunchyStreamSourceImpl(
 
         launch {
             val controller =
-                mapper.controller(connectivityHelper)
+                mapper.controller(supportConnectivity, dispatchers)
 
             val result = controller(deferred, networkState)
 

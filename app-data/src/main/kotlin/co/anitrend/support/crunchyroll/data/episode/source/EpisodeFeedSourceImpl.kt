@@ -22,6 +22,8 @@ import androidx.paging.PagingRequestHelper
 import androidx.paging.toLiveData
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.data.util.SupportDataKeyStore
+import co.anitrend.arch.extension.SupportDispatchers
+import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.episode.datasource.local.CrunchyRssEpisodeDao
 import co.anitrend.support.crunchyroll.data.episode.datasource.remote.CrunchyEpisodeFeedEndpoint
 import co.anitrend.support.crunchyroll.data.episode.mapper.EpisodeFeedResponseMapper
@@ -30,12 +32,15 @@ import co.anitrend.support.crunchyroll.data.episode.transformer.EpisodeFeedTrans
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class EpisodeFeedSourceImpl(
     private val mapper: EpisodeFeedResponseMapper,
     private val endpoint: CrunchyEpisodeFeedEndpoint,
-    private val dao: CrunchyRssEpisodeDao
-) : EpisodeFeedSource() {
+    private val dao: CrunchyRssEpisodeDao,
+    private val supportConnectivity: SupportConnectivity,
+    supportDispatchers: SupportDispatchers
+) : EpisodeFeedSource(supportDispatchers) {
 
     private lateinit var rssQuery: RssQuery
 
@@ -68,7 +73,12 @@ class EpisodeFeedSourceImpl(
             endpoint.getLatestMediaFeed(rssQuery.language)
         }
 
-        mapper.media(deferred, callback)
+        launch {
+            val controller =
+                mapper.controller(supportConnectivity)
+
+            controller(deferred, callback)
+        }
     }
 
     /**

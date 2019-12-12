@@ -19,6 +19,8 @@ package co.anitrend.support.crunchyroll.data.authentication.source
 import androidx.lifecycle.LiveData
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.domain.entities.isSuccess
+import co.anitrend.arch.extension.SupportDispatchers
+import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthenticationEndpoint
 import co.anitrend.support.crunchyroll.data.authentication.source.contract.LogoutSource
@@ -36,8 +38,9 @@ class LogoutSourceImpl(
     private val sessionDao: CrunchySessionDao,
     private val endpoint: CrunchyAuthenticationEndpoint,
     private val settings: IAuthenticationSettings,
-    private val dao: CrunchyLoginDao
-) : LogoutSource() {
+    private val dao: CrunchyLoginDao,
+    supportDispatchers: SupportDispatchers
+) : LogoutSource(supportDispatchers) {
 
     override fun logoutUser(): LiveData<Boolean> {
         retry = { logoutUser() }

@@ -58,15 +58,10 @@ class AnalyticsLogger: Timber.Tree(), ISupportAnalytics {
 
     }
 
-    override fun clearUserSession() {
+    override fun clearCrashAnalyticsSession() {
 
     }
 
-    override fun setCrashAnalyticUser(userIdentifier: String) {
-
-    }
-
-    override fun resetAnalyticsData() {
-
+    override fun setCrashAnalyticIdentifier(identifier: String) {
     }
 }
