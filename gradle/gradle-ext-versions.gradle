@@ -24,7 +24,7 @@ ext {
 
     coil = '0.8.0'
     glide = '4.10.0'
-    retrofit = '2.6.2'
+    retrofit = '2.7.0'
 
     material = '1.1.0-beta02'
     preferenceX = "1.1.0"
