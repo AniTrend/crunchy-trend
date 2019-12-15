@@ -27,6 +27,7 @@ import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.adapter.contract.ISupportViewAdapter
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
+import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.feature.search.R
 import co.anitrend.support.crunchyroll.feature.search.presenter.SeriesPresenter
@@ -65,7 +66,12 @@ class SearchContentScreen : SupportFragmentPagedList<CrunchySeries, SeriesPresen
                  * @param data the liveData that at the click index
                  */
                 override fun onItemClick(target: View, data: Pair<Int, CrunchySeries?>) {
-
+                    val seriesPayload = NavigationTargets.Series.Payload(
+                        seriesId = data.second?.seriesId ?: 0
+                    )
+                    NavigationTargets.Series(
+                        target.context, seriesPayload
+                    )
                 }
 
                 /**

@@ -15,5 +15,14 @@
   -->
 
 <resources>
-    <string name="app_name">Series Info</string>
+    <string name="label_information">Information</string>
+    <string name="label_seasons">Seasons</string>
+    <string name="label_genres">Genres</string>
+    <string name="label_season">Season</string>
+
+    <string name="label_total_seasons">Total seasons</string>
+    <string name="label_total_episodes">Total episodes</string>
+    <string name="label_rating">Popularity rating</string>
+    <string name="label_publisher">Publisher</string>
+    <string name="label_year_published">Year</string>
 </resources>

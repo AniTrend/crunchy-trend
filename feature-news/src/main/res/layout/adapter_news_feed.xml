@@ -27,6 +27,7 @@
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/container"
             android:clickable="true"
             android:focusable="true"
             android:background="?cardColor"
@@ -35,22 +36,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/media_news_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                 android:text="@{entity.title}"
                 tools:text="@sample/news.json/title"/>
 
         <Space android:layout_width="wrap_content"
                android:layout_height="@dimen/md_margin"/>
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <co.anitrend.arch.ui.view.text.SingleLineTextView
                 android:id="@+id/media_news_sub_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:text="@{entity.subTitle}"
                 tools:text="@sample/news.json/subTitle"/>
 
@@ -73,25 +74,32 @@
             <Space android:layout_width="@dimen/xl_margin"
                     android:layout_height="wrap_content"/>
 
-            <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/media_news_description"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="@sample/news.json/description" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/media_news_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="@sample/news.json/description" />
+
+
+                <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/media_news_publication"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:longDate="@{entity.publishedOn}"
+                        tools:text="@sample/news.json/publishDate" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <Space android:layout_width="wrap_content"
-               android:layout_height="@dimen/lg_margin"/>
-
-        <androidx.appcompat.widget.AppCompatTextView
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                android:id="@+id/media_news_publication"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:textStyle="italic"
-                app:longDate="@{entity.publishedOn}"
-                tools:text="@sample/news.json/publishDate"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

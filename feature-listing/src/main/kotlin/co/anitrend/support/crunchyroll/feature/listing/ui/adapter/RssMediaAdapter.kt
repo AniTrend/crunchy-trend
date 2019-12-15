@@ -24,13 +24,14 @@ import co.anitrend.arch.core.presenter.SupportPresenter
 import co.anitrend.arch.ui.recycler.adapter.SupportPagedListAdapter
 import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
+import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 import co.anitrend.support.crunchyroll.feature.feed.databinding.AdapterMediaFeedBinding
 
 class RssMediaAdapter(
     presenter: SupportPresenter<*>,
     private val clickListener: ItemClickListener<CrunchyEpisodeFeed>
-) : SupportPagedListAdapter<CrunchyEpisodeFeed>(presenter) {
+) : SupportPagedListAdapter<CrunchyEpisodeFeed>(presenter, koinOf()) {
 
     /**
      * Used to get stable ids for [androidx.recyclerview.widget.RecyclerView.Adapter] but only if

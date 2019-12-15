@@ -18,6 +18,7 @@ package co.anitrend.support.crunchyroll.core.naviagation
 
 import android.content.Context
 import android.os.Parcelable
+import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets.MediaPlayer.navRouterIntent
 import co.anitrend.support.crunchyroll.core.naviagation.contract.INavigationRouter
 import co.anitrend.support.crunchyroll.core.naviagation.contract.INavigationTarget
 import co.anitrend.support.crunchyroll.core.naviagation.extensions.forIntent
@@ -60,6 +61,19 @@ object NavigationTargets {
         override val navRouterIntent = forIntent()
 
         const val PAYLOAD = "NewsFeedContent:Payload"
+
+        /**
+         * Starts the target [navRouterIntent] for the implementation
+         */
+        operator fun invoke(context: Context?, payload: Payload) {
+            navRouterIntent?.putExtra(PAYLOAD, payload)
+            super.invoke(context)
+        }
+
+        @Parcelize
+        data class Payload(
+            val content: String?
+        ) : Parcelable
     }
 
     object Listing : INavigationRouter, INavigationTarget {
@@ -84,6 +98,8 @@ object NavigationTargets {
 
         override val navRouterIntent = forIntent()
 
+        const val PAYLOAD = "MediaStreamContent:Payload"
+
         /**
          * Starts the target [navRouterIntent] for the implementation
          */
@@ -91,8 +107,6 @@ object NavigationTargets {
             navRouterIntent?.putExtra(PAYLOAD, payload)
             super.invoke(context)
         }
-
-        const val PAYLOAD = "MediaStreamContent:Payload"
 
         @Parcelize
         data class Payload(
@@ -120,6 +134,21 @@ object NavigationTargets {
         override val className = "SeriesScreen"
 
         override val navRouterIntent = forIntent()
+
+        const val PAYLOAD = "SeriesScreen:Payload"
+
+        /**
+         * Starts the target [navRouterIntent] for the implementation
+         */
+        operator fun invoke(context: Context?, payload: Payload) {
+            navRouterIntent?.putExtra(PAYLOAD, payload)
+            super.invoke(context)
+        }
+
+        @Parcelize
+        data class Payload(
+            val seriesId: Long
+        ) : Parcelable
     }
 
     object Collection : INavigationRouter, INavigationTarget {
@@ -127,5 +156,20 @@ object NavigationTargets {
         override val className = "MediaCollectionScreen"
 
         override val navRouterIntent = forIntent()
+
+        const val PAYLOAD = "MediaCollectionScreen:Payload"
+
+        /**
+         * Starts the target [navRouterIntent] for the implementation
+         */
+        operator fun invoke(context: Context?, payload: Payload) {
+            navRouterIntent?.putExtra(PAYLOAD, payload)
+            super.invoke(context)
+        }
+
+        @Parcelize
+        data class Payload(
+            val collectionId: Long
+        ) : Parcelable
     }
 }

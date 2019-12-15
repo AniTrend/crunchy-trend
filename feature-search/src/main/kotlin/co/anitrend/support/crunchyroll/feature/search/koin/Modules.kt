@@ -17,7 +17,6 @@
 package co.anitrend.support.crunchyroll.feature.search.koin
 
 import co.anitrend.support.crunchyroll.feature.search.presenter.SeriesPresenter
-import co.anitrend.support.crunchyroll.feature.search.viewmodel.SeriesInfoViewModel
 import co.anitrend.support.crunchyroll.feature.search.viewmodel.SeriesSearchViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -34,11 +33,6 @@ private val presenterModule = module {
 }
 
 private val viewModelModule = module {
-    viewModel {
-        SeriesInfoViewModel(
-            useCase = get()
-        )
-    }
     viewModel {
         SeriesSearchViewModel(
             useCase = get()

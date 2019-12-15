@@ -23,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView
 import co.anitrend.arch.ui.recycler.adapter.SupportPagedListAdapter
 import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
+import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
+import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.feature.search.databinding.AdapterSeriesBinding
 import co.anitrend.support.crunchyroll.feature.search.presenter.SeriesPresenter
@@ -30,7 +32,7 @@ import co.anitrend.support.crunchyroll.feature.search.presenter.SeriesPresenter
 class SeriesViewAdapter(
     presenter: SeriesPresenter,
     private val clickListener: ItemClickListener<CrunchySeries>
-) : SupportPagedListAdapter<CrunchySeries>(presenter) {
+) : SupportPagedListAdapter<CrunchySeries>(presenter, koinOf()) {
 
     /**
      * Used to get stable ids for [androidx.recyclerview.widget.RecyclerView.Adapter] but only if

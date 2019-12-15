@@ -21,10 +21,12 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
+import co.anitrend.arch.extension.startNewActivity
 import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.core.extensions.koinOf
+import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
@@ -32,6 +34,7 @@ import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import co.anitrend.support.crunchyroll.feature.news.R
 import co.anitrend.support.crunchyroll.feature.news.koin.injectFeatureModules
+import co.anitrend.support.crunchyroll.feature.news.ui.activity.NewsScreen
 import co.anitrend.support.crunchyroll.feature.news.ui.adapter.RssNewsAdapter
 import co.anitrend.support.crunchyroll.feature.news.viewmodel.NewsViewModel
 import org.koin.android.ext.android.inject
@@ -68,7 +71,13 @@ class NewsFeedContent : SupportFragmentPagedList<CrunchyNews, CrunchyCorePresent
                  * @param data the liveData that at the click index
                  */
                 override fun onItemClick(target: View, data: Pair<Int, CrunchyNews?>) {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    val payload = NavigationTargets.News.Payload(
+                        data.second?.content
+                    )
+                    val bundle = Bundle().apply {
+                        putParcelable(NavigationTargets.News.PAYLOAD, payload)
+                    }
+                    target.context.startNewActivity<NewsScreen>(bundle)
                 }
 
                 /**
@@ -79,7 +88,7 @@ class NewsFeedContent : SupportFragmentPagedList<CrunchyNews, CrunchyCorePresent
                  * @param data the liveData that at the long click index
                  */
                 override fun onItemLongClick(target: View, data: Pair<Int, CrunchyNews?>) {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
                 }
             }
         )

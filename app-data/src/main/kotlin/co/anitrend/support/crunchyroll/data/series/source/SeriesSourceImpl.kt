@@ -158,7 +158,9 @@ class SeriesSourceImpl(
                 val localSource = seriesDao.findBySeriesIdX(parameter.seriesId)
 
                 return Transformations.map(localSource) {
-                    it?.let { s-> CrunchySeriesTransformer.transform(s) }
+                    it?.let { s->
+                        CrunchySeriesTransformer.transform(s)
+                    }
                 }
             }
         }

@@ -1,0 +1,35 @@
+{
+    "class": "series",
+    "series_id": "277768",
+    "url": "http://www.crunchyroll.com/demon-slayer-kimetsu-no-yaiba",
+    "name": "Demon Slayer: Kimetsu no Yaiba",
+    "media_type": "anime",
+    "landscape_image": {
+        "full_url": "https://img1.ak.crunchyroll.com/i/banner/0bd87e87ea2f954c240522f2a7b79e0f1554508872_full.jpg",
+        "width": "1127",
+        "height": "634"
+    },
+    "portrait_image": {
+        "full_url": "https://img1.ak.crunchyroll.com/i/poster/f1fe5c7a43cb2f38f4152a58f89479821554508873_full.jpg",
+        "width": "1064",
+        "height": "1596"
+    },
+    "description": "It is the Taisho Period in Japan. Tanjiro, a kindhearted boy who sells charcoal for a living, finds his family slaughtered by a demon. To make matters worse, his younger sister Nezuko, the sole survivor, has been transformed into a demon herself. \r\n \r\nThough devastated by this grim reality, Tanjiro resolves to become a “demon slayer” so that he can turn his sister back into a human, and kill the demon that massacred his family.",
+    "in_queue": false,
+    "rating": 98,
+    "media_count": 26,
+    "collection_count": 1,
+    "publisher_name": "Aniplex of America",
+    "year": 2019,
+    "genres": [
+        {
+            "name": "Action"
+        },
+        {
+            "name": "Supernatural"
+        },
+        {
+            "name": "Drama"
+        }
+    ]
+} 

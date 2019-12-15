@@ -31,6 +31,7 @@ object NewsTransformer : ISupportMapperHelper<NewsEntity, CrunchyNews> {
             image = source.image,
             author = source.author,
             subTitle = source.subTitle,
+
             description = source.description,
             content = source.content,
             publishedOn = source.publishedOn

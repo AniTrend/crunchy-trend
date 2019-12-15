@@ -73,7 +73,7 @@ class MediaPlayerScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
         if (supportFragmentActivity == null) {
             supportFragmentActivity = MediaStreamContent.newInstance(intent.extras).apply {
                 supportFragmentManager.commit {
-                    setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     replace(R.id.contentFrame, this@apply, tag)
                 }
             }

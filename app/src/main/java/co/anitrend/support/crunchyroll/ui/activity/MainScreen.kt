@@ -22,6 +22,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.ui.activity.SupportActivity
@@ -163,6 +164,7 @@ class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(), NavigationV
         supportFragment?.apply {
             supportFragmentActivity = this@apply
             supportFragmentManager.commit {
+                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 replace(R.id.contentFrame, this@apply, tag)
             }
         }

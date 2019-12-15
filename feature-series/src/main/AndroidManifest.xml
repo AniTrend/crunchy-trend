@@ -15,4 +15,9 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        package="co.anitrend.support.crunchyroll.feature.series" />
+        package="co.anitrend.support.crunchyroll.feature.series" >
+
+    <application>
+        <activity android:name=".ui.activity.SeriesScreen" />
+    </application>
+</manifest>

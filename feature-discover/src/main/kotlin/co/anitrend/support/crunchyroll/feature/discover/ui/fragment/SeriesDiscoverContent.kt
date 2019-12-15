@@ -25,6 +25,7 @@ import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
+import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesFilter
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesBrowseQuery
@@ -65,24 +66,15 @@ class SeriesDiscoverContent : SupportFragmentPagedList<CrunchySeries, SeriesPres
                  * @param target view that has been clicked
                  * @param data the liveData that at the click index
                  */
-                /**
-                 * When the target view from [View.OnClickListener]
-                 * is clicked from a view holder this method will be called
-                 *
-                 * @param target view that has been clicked
-                 * @param data the liveData that at the click index
-                 */
                 override fun onItemClick(target: View, data: Pair<Int, CrunchySeries?>) {
-
+                    val seriesPayload = NavigationTargets.Series.Payload(
+                        seriesId = data.second?.seriesId ?: 0
+                    )
+                    NavigationTargets.Series(
+                        target.context, seriesPayload
+                    )
                 }
 
-                /**
-                 * When the target view from [View.OnLongClickListener]
-                 * is clicked from a view holder this method will be called
-                 *
-                 * @param target view that has been long clicked
-                 * @param data the liveData that at the long click index
-                 */
                 /**
                  * When the target view from [View.OnLongClickListener]
                  * is clicked from a view holder this method will be called
@@ -143,7 +135,7 @@ class SeriesDiscoverContent : SupportFragmentPagedList<CrunchySeries, SeriesPres
     override fun onFetchDataInitialize() {
         supportViewModel(
             parameter = CrunchySeriesBrowseQuery(
-                filter = CrunchySeriesFilter.NEWEST.attribute
+                filter = CrunchySeriesFilter.UPDATED.attribute
             )
         )
     }

@@ -24,6 +24,7 @@ import co.anitrend.arch.core.presenter.SupportPresenter
 import co.anitrend.arch.ui.recycler.adapter.SupportPagedListAdapter
 import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
+import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import co.anitrend.support.crunchyroll.feature.news.databinding.AdapterNewsFeedBinding
 import io.noties.markwon.Markwon
@@ -33,7 +34,7 @@ import org.koin.core.inject
 class RssNewsAdapter(
     presenter: SupportPresenter<*>,
     private val clickListener: ItemClickListener<CrunchyNews>
-) : SupportPagedListAdapter<CrunchyNews>(presenter), KoinComponent {
+) : SupportPagedListAdapter<CrunchyNews>(presenter, koinOf()), KoinComponent {
 
     private val markwon by inject<Markwon>()
 
@@ -76,6 +77,9 @@ class RssNewsAdapter(
                     binding.mediaNewsDescription,
                     entity?.description ?: "No description available"
                 )
+                binding.container.setOnClickListener{
+                    onItemClick(it)
+                }
                 executePendingBindings()
             }
         }

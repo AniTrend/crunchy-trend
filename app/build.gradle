@@ -51,11 +51,12 @@ dependencies {
     implementation project(':feature-auth')
     implementation project(':feature-listing')
     implementation project(':feature-discover')
-    // implementation project(':feature-collection')
+    implementation project(':feature-collection')
     implementation project(':feature-news')
     implementation project(':feature-player')
     implementation project(':feature-search')
     implementation project(':feature-settings')
+    implementation project(':feature-series')
     // this is our application starting point
     implementation project(':feature-splash')
 
@@ -79,9 +80,6 @@ dependencies {
     implementation "com.afollestad.material-dialogs:input:$materialDialogs"
     implementation "com.afollestad.material-dialogs:lifecycle:$materialDialogs"
     implementation "com.afollestad.material-dialogs:bottomsheets:$materialDialogs"
-
-    /** Flex Box */
-    implementation "com.google.android:flexbox:$flexBox"
 
     /** Smart Tab Layout */
     implementation "com.ogaclejapan.smarttablayout:library:$smartTab"
