@@ -38,9 +38,9 @@ ext {
     paging = '2.1.0'
     pagingKtx = '2.1.0'
     ktx = '1.2.0-rc01'
-    fragmentKtx = '1.2.0-rc02'
+    fragmentKtx = '1.2.0-rc03'
     workerKtx = '2.3.0-beta01'
-    navigation = '2.2.0-rc02'
+    navigation = '2.2.0-rc03'
     firebase = '17.2.0'
 
     koin = '2.0.1'
