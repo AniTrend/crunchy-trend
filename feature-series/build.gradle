@@ -50,6 +50,9 @@ dependencies {
     /** Material Design */
     implementation "com.google.android.material:material:$material"
 
+    /** Flex Box */
+    implementation "com.google.android:flexbox:$flexBox"
+
     /** Architecture Components */
     implementation "androidx.core:core-ktx:$ktx"
 
