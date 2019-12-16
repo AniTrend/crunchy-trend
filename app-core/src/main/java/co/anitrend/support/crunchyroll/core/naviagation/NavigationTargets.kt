@@ -81,15 +81,28 @@ object NavigationTargets {
         override val className = "MediaFeedContent"
 
         override val navRouterIntent = forIntent()
-
-        const val PAYLOAD = "MediaFeedContent:Payload"
     }
 
     object Media : INavigationRouter, INavigationTarget {
         override val packageName = "feature.media.ui.activity"
-        override val className = "MediaDetailScreen"
+        override val className = "MediaScreen"
 
         override val navRouterIntent = forIntent()
+
+        const val PAYLOAD = "MediaContent:Payload"
+
+        /**
+         * Starts the target [navRouterIntent] for the implementation
+         */
+        operator fun invoke(context: Context?, payload: Payload) {
+            navRouterIntent?.putExtra(PAYLOAD, payload)
+            super.invoke(context)
+        }
+
+        @Parcelize
+        data class Payload(
+            val collectionId: Long
+        ) : Parcelable
     }
 
     object MediaPlayer : INavigationRouter, INavigationTarget {
@@ -148,28 +161,6 @@ object NavigationTargets {
         @Parcelize
         data class Payload(
             val seriesId: Long
-        ) : Parcelable
-    }
-
-    object Collection : INavigationRouter, INavigationTarget {
-        override val packageName = "feature.collection.ui.activity"
-        override val className = "MediaCollectionScreen"
-
-        override val navRouterIntent = forIntent()
-
-        const val PAYLOAD = "MediaCollectionScreen:Payload"
-
-        /**
-         * Starts the target [navRouterIntent] for the implementation
-         */
-        operator fun invoke(context: Context?, payload: Payload) {
-            navRouterIntent?.putExtra(PAYLOAD, payload)
-            super.invoke(context)
-        }
-
-        @Parcelize
-        data class Payload(
-            val collectionId: Long
         ) : Parcelable
     }
 }

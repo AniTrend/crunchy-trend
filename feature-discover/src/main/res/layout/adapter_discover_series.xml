@@ -51,8 +51,7 @@
         <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/lg_margin">
+                android:layout_height="wrap_content">
 
             <co.anitrend.arch.ui.view.text.SingleLineTextView
                     android:layout_width="wrap_content"
@@ -70,7 +69,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                     android:text="@{entity.description}"
-                    android:maxLines="3"
+                    android:maxLines="4"
                     android:ellipsize="end"
                     tools:text="@sample/search_response.json/description" />
 

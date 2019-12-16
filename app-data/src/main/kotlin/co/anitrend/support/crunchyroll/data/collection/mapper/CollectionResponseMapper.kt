@@ -46,6 +46,7 @@ class CollectionResponseMapper(
      * @param mappedData mapped object from [onResponseMapFrom] to insert into the database
      */
     override suspend fun onResponseDatabaseInsert(mappedData: List<CrunchyCollectionEntity>) {
-        dao.upsert(mappedData)
+        if (mappedData.isNotEmpty())
+            dao.upsert(mappedData)
     }
 }

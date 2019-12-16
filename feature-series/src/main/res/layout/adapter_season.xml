@@ -41,18 +41,6 @@
             android:focusable="true"
             android:background="?selectableItemBackground">
 
-        <co.anitrend.arch.ui.view.image.SupportImageView
-                android:layout_width="@dimen/avatar_size_xl"
-                android:layout_height="wrap_content"
-                android:scaleType="centerCrop"
-                app:aspectRatio="1.35"
-                app:imageUrl="@{entity.portraitImage}"
-                tools:src="@sample/poster" />
-
-        <Space
-                android:layout_width="@dimen/lg_margin"
-                android:layout_height="wrap_content" />
-
         <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
@@ -65,20 +53,6 @@
                     android:text="@{presenter.seasonTitle(entity.season)}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                     tools:text="@sample/collection_list.json/data/season"/>
-
-            <Space
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/lg_margin" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                    android:text="@{entity.description}"
-                    android:maxLines="3"
-                    android:ellipsize="end"
-                    tools:text="@sample/collection_list.json/data/description" />
-
         </LinearLayout>
 
     </LinearLayout>

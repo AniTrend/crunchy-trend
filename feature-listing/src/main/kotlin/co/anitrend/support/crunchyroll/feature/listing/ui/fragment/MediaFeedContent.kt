@@ -60,8 +60,8 @@ class MediaFeedContent : SupportFragmentPagedList<CrunchyEpisodeFeed, CrunchyCor
 
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         RssMediaAdapter(
-            presenter = supportPresenter,
-            clickListener = object : ItemClickListener<CrunchyEpisodeFeed> {
+            supportPresenter,
+            object : ItemClickListener<CrunchyEpisodeFeed> {
                 override fun onItemClick(target: View, data: Pair<Int, CrunchyEpisodeFeed?>) {
                     val mediaPlayerPayload = NavigationTargets.MediaPlayer.Payload(
                         mediaId = data.second?.id ?: 0,

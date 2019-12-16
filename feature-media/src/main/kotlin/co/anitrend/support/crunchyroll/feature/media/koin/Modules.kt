@@ -16,21 +16,38 @@
 
 package co.anitrend.support.crunchyroll.feature.media.koin
 
+import co.anitrend.support.crunchyroll.feature.media.presenter.MediaPresenter
+import co.anitrend.support.crunchyroll.feature.media.viewmodel.MediaViewModel
+import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 
 private val presenterModule = module {
-
+    factory {
+        MediaPresenter(
+            settings = get(),
+            context = androidContext()
+        )
+    }
 }
 
 private val viewModelModule = module {
-
+    viewModel {
+        MediaViewModel(
+            useCase = get()
+        )
+    }
 }
 
-private val featureModules = listOf(presenterModule, viewModelModule)
+private val featureModules = listOf(
+    presenterModule,
+    viewModelModule
+)
 
 private val koinModules by lazy {
     loadKoinModules(featureModules)
 }
 
-fun injectFeatureModules() = koinModules
+fun injectFeatureModules() =
+    koinModules

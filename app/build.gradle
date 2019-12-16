@@ -51,7 +51,7 @@ dependencies {
     implementation project(':feature-auth')
     implementation project(':feature-listing')
     implementation project(':feature-discover')
-    implementation project(':feature-collection')
+    implementation project(':feature-media')
     implementation project(':feature-news')
     implementation project(':feature-player')
     implementation project(':feature-search')

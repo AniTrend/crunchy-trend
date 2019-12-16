@@ -30,7 +30,7 @@ import co.anitrend.support.crunchyroll.feature.discover.presenter.SeriesPresente
 
 class SeriesViewAdapter(
     presenter: SeriesPresenter,
-    private val clickListener: ItemClickListener<CrunchySeries>
+    private val itemClickListener: ItemClickListener<CrunchySeries>
 ) : SupportPagedListAdapter<CrunchySeries>(presenter, koinOf()) {
 
     /**
@@ -53,16 +53,24 @@ class SeriesViewAdapter(
         viewType: Int,
         layoutInflater: LayoutInflater
     ): SupportViewHolder<CrunchySeries> {
-        return SeriesViewHolder(
-            AdapterDiscoverSeriesBinding.inflate(
-                layoutInflater,
-                parent,
-                false
-            )
+        val binding = AdapterDiscoverSeriesBinding.inflate(
+            layoutInflater,
+            parent,
+            false
         )
+
+        val viewHolder = SeriesViewHolder(
+            binding
+        )
+
+        binding.container.setOnClickListener {
+            viewHolder.onItemClick(it, itemClickListener)
+        }
+
+        return viewHolder
     }
 
-    internal inner class SeriesViewHolder(
+    internal class SeriesViewHolder(
         private val binding: AdapterDiscoverSeriesBinding
     ) : SupportViewHolder<CrunchySeries>(binding.root) {
 
@@ -72,12 +80,8 @@ class SeriesViewAdapter(
          * @param model Is the liveData at the current adapter position
          */
         override fun invoke(model: CrunchySeries?) {
-            model?.apply {
-                binding.entity = model
-                binding.container.setOnClickListener {
-                    onItemClick(it)
-                }
-            }
+            binding.entity = model
+            binding.executePendingBindings()
         }
 
         /**
@@ -96,8 +100,8 @@ class SeriesViewAdapter(
          *
          * @param view the view that has been clicked
          */
-        override fun onItemClick(view: View) {
-            performClick(binding.entity, view, clickListener)
+        override fun onItemClick(view: View, itemClickListener: ItemClickListener<CrunchySeries>) {
+            performClick(binding.entity, view, itemClickListener)
         }
     }
 }

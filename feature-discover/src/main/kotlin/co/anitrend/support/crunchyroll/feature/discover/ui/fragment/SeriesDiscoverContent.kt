@@ -135,7 +135,7 @@ class SeriesDiscoverContent : SupportFragmentPagedList<CrunchySeries, SeriesPres
     override fun onFetchDataInitialize() {
         supportViewModel(
             parameter = CrunchySeriesBrowseQuery(
-                filter = CrunchySeriesFilter.UPDATED.attribute
+                filter = CrunchySeriesFilter.NEWEST.attribute
             )
         )
     }

@@ -22,6 +22,8 @@ import co.anitrend.support.crunchyroll.data.media.model.CrunchyMediaModel
 object CrunchyMediaHelper {
     fun getActualEpisodeNumber(model: CrunchyMediaModel): Int {
         val regex = Regex("[^\\d.]")
+        if (model.episode_number.isBlank())
+            return 0
         val filtered = model.episode_number.replace(regex, "")
         return filtered.toInt()
     }

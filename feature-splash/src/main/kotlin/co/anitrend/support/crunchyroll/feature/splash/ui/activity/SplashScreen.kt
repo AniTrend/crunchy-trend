@@ -80,10 +80,17 @@ class SplashScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
         launch {
             delay(500)
             if (isStateAtLeast(Lifecycle.State.RESUMED)) {
-                if (supportPresenter.supportPreference.isAuthenticated)
+                val settings = supportPresenter.supportPreference
+                if (!settings.isNewInstallation)
                     NavigationTargets.Main(applicationContext)
-                else
-                    NavigationTargets.Authentication(applicationContext)
+                else {
+                    if (settings.isAuthenticated)
+                        NavigationTargets.Main(applicationContext)
+                    else {
+                        settings.isNewInstallation = false
+                        NavigationTargets.Authentication(applicationContext)
+                    }
+                }
                 closeScreen()
             }
         }

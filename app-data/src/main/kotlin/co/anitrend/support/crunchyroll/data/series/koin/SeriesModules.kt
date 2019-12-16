@@ -25,8 +25,6 @@ import co.anitrend.support.crunchyroll.data.series.source.SeriesSourceImpl
 import co.anitrend.support.crunchyroll.data.series.usecase.SeriesBrowseUseCaseImpl
 import co.anitrend.support.crunchyroll.data.series.usecase.SeriesInfoUseCaseImpl
 import co.anitrend.support.crunchyroll.data.series.usecase.SeriesSearchUseCaseImpl
-import co.anitrend.support.crunchyroll.domain.series.interactors.SeriesInfoUseCase
-import co.anitrend.support.crunchyroll.domain.series.interactors.SeriesSearchUseCase
 import org.koin.dsl.module
 
 private val dataSourceModule = module {
@@ -42,7 +40,7 @@ private val dataSourceModule = module {
 }
 
 private val mapperModule = module {
-    single {
+    factory {
         SeriesResponseMapper(
             dao = get<CrunchyDatabase>().crunchySeriesDao()
         )

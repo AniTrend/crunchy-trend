@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.feature.news.ui.activity
 
 import android.os.Bundle
+import android.text.util.Linkify
 import co.anitrend.arch.extension.extra
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
@@ -27,6 +28,7 @@ import co.anitrend.support.crunchyroll.feature.news.koin.injectFeatureModules
 import io.noties.markwon.Markwon
 import kotlinx.android.synthetic.main.news_screen.*
 import kotlinx.android.synthetic.main.news_screen_content.*
+import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import org.koin.android.ext.android.inject
 
 class NewsScreen : CrunchyActivity<CrunchyNews, CrunchyCorePresenter>() {
@@ -47,6 +49,12 @@ class NewsScreen : CrunchyActivity<CrunchyNews, CrunchyCorePresenter>() {
     }
 
     override fun initializeComponents(savedInstanceState: Bundle?) {
+        BetterLinkMovementMethod.linkify(
+            Linkify.ALL,
+            this
+        ).setOnLinkClickListener { textView, url ->
+            true
+        }
         injectFeatureModules()
         onUpdateUserInterface()
     }

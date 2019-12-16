@@ -41,7 +41,7 @@
                 android:scaleType="centerCrop"
                 app:aspectRatio="1.35"
                 app:imageUrl="@{entity.portraitImage}"
-                tools:src="@sample/sword_art_online_poster.png" />
+                tools:src="@sample/poster" />
 
         <Space
                 android:layout_width="@dimen/lg_margin"
@@ -50,15 +50,14 @@
         <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/lg_margin">
+                android:layout_height="wrap_content">
 
             <co.anitrend.arch.ui.view.text.SingleLineTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{entity.name}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    tools:text="Sword art online"/>
+                    tools:text="@sample/search_response.json/name"/>
 
             <Space
                     android:layout_width="wrap_content"
@@ -69,9 +68,9 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                     android:text="@{entity.description}"
-                    android:maxLines="3"
+                    android:maxLines="4"
                     android:ellipsize="end"
-                    tools:text="Tomoya’s father remarries to another woman, giving him a stepsister, Ichika.  However Ichika is 17-years old " />
+                    tools:text="@sample/search_response.json/description" />
 
         </LinearLayout>
 

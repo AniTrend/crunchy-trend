@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~    Copyright 2019 AniTrend
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  -->
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia" />
+        <import type="co.anitrend.support.crunchyroll.feature.media.presenter.MediaPresenter" />
+
+        <variable
+                name="presenter"
+                type="MediaPresenter" />
+        <variable
+                name="entity"
+                type="CrunchyMedia" />
+    </data>
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/container"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/xl_margin"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?selectableItemBackground">
+
+        <co.anitrend.arch.ui.view.image.SupportImageView
+                android:layout_width="@dimen/series_image_sm"
+                android:layout_height="0dp"
+                android:scaleType="centerCrop"
+                app:aspectRatio="0.6"
+                app:imageUrl="@{entity.screenshotImage}"
+                tools:src="@sample/poster" />
+
+        <Space
+                android:layout_width="@dimen/lg_margin"
+                android:layout_height="wrap_content" />
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <co.anitrend.arch.ui.view.text.SingleLineTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{presenter.mediaDisplayName(entity)}"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    tools:text="@sample/media_response.json/data/name" />
+
+            <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/lg_margin" />
+
+            <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                    android:text="@{entity.description}"
+                    android:maxLines="3"
+                    android:ellipsize="end"
+                    tools:text="@sample/media_response.json/data/description" />
+
+        </LinearLayout>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</layout>

@@ -21,10 +21,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/avatar_size_lg"
+        android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:showIn="@layout/news_screen">
 
-    <com.google.android.material.textview.MaterialTextView
+    <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/mediaNewsContent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

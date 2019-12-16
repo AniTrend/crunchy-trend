@@ -17,22 +17,48 @@
 package co.anitrend.support.crunchyroll.data.media.koin
 
 
+import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
+import co.anitrend.support.crunchyroll.data.media.datasource.remote.CrunchyMediaEndpoint
+import co.anitrend.support.crunchyroll.data.media.mapper.MediaResponseMapper
+import co.anitrend.support.crunchyroll.data.media.repository.MediaRepository
+import co.anitrend.support.crunchyroll.data.media.source.MediaSourceImpl
+import co.anitrend.support.crunchyroll.data.media.usecase.MediaUseCaseImpl
 import org.koin.dsl.module
 
 private val dataSourceModule = module {
-
+    factory {
+        MediaSourceImpl(
+            supportConnectivity = get(),
+            supportDispatchers = get(),
+            mapper = get(),
+            mediaDao = get<CrunchyDatabase>().crunchyMediaDao(),
+            mediaEndpoint = CrunchyMediaEndpoint.create()
+        )
+    }
 }
 
 private val mapperModule = module {
-
+    factory {
+        MediaResponseMapper(
+            dao = get<CrunchyDatabase>().crunchyMediaDao()
+        )
+    }
 }
 
 private val repositoryModule = module {
-
+    factory {
+        MediaRepository(
+            source = get<MediaSourceImpl>()
+        )
+    }
 }
 
 private val useCaseModule = module {
-
+    factory {
+        MediaUseCaseImpl(
+            repository = get()
+        )
+    }
 }
 
 val mediaModules = listOf(

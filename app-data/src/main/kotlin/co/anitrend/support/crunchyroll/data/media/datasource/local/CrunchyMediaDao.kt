@@ -56,29 +56,29 @@ interface CrunchyMediaDao : ISupportQuery<CrunchyMediaEntity> {
         select * 
         from CrunchyMediaEntity 
         where collectionId = :collectionId 
-        order by mediaId desc
+        order by episodeNumber desc
         """)
     suspend fun findByCollectionId(
-        collectionId: Int
+        collectionId: Long
     ): List<CrunchyMediaEntity>
 
     @Query("""
         select * 
         from CrunchyMediaEntity 
         where collectionId = :collectionId 
-        order by mediaId desc
+        order by episodeNumber desc
         """)
     fun findByCollectionIdX(
-        collectionId: Int
+        collectionId: Long
     ): LiveData<List<CrunchyMediaEntity>>
 
     @Query("""
         select * 
         from CrunchyMediaEntity 
         where collectionId = :collectionId 
-        order by mediaId desc
+        order by episodeNumber desc
         """)
     fun findByCollectionIdFactory(
-        collectionId: Int
+        collectionId: Long
     ): DataSource.Factory<Int, CrunchyMediaEntity>
 }

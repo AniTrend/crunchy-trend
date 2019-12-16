@@ -53,16 +53,23 @@ class SeriesSeasonAdapter(
         viewType: Int,
         layoutInflater: LayoutInflater
     ): SupportViewHolder<CrunchyCollection> {
-        return SeriesSeasonViewHolder(
-            AdapterSeasonBinding.inflate(
-                layoutInflater,
-                parent,
-                false
-            )
+        val binding = AdapterSeasonBinding.inflate(
+            layoutInflater,
+            parent,
+            false
         )
+
+        val viewHolder = SeriesSeasonViewHolder(binding)
+
+        binding.presenter = presenter as SeriesDetailPresenter
+        binding.container.setOnClickListener {
+            viewHolder.onItemClick(it, itemClickListener)
+        }
+
+        return viewHolder
     }
 
-    internal inner class SeriesSeasonViewHolder(
+    internal class SeriesSeasonViewHolder(
         private val binding: AdapterSeasonBinding
     ) : SupportViewHolder<CrunchyCollection>(binding.root) {
 
@@ -73,7 +80,6 @@ class SeriesSeasonAdapter(
          */
         override fun invoke(model: CrunchyCollection?) {
             binding.entity = model
-            binding.presenter = presenter as SeriesDetailPresenter
             binding.executePendingBindings()
         }
 
@@ -93,12 +99,8 @@ class SeriesSeasonAdapter(
          *
          * @param view the view that has been clicked
          */
-        override fun onItemClick(view: View) {
-            performClick(
-                binding.entity,
-                view,
-                itemClickListener
-            )
+        override fun onItemClick(view: View, itemClickListener: ItemClickListener<CrunchyCollection>) {
+            performClick(binding.entity, view, itemClickListener)
         }
     }
 }

@@ -30,7 +30,7 @@ import co.anitrend.support.crunchyroll.feature.feed.databinding.AdapterMediaFeed
 
 class RssMediaAdapter(
     presenter: SupportPresenter<*>,
-    private val clickListener: ItemClickListener<CrunchyEpisodeFeed>
+    private val itemClickListener: ItemClickListener<CrunchyEpisodeFeed>
 ) : SupportPagedListAdapter<CrunchyEpisodeFeed>(presenter, koinOf()) {
 
     /**
@@ -53,17 +53,23 @@ class RssMediaAdapter(
         viewType: Int,
         layoutInflater: LayoutInflater
     ): SupportViewHolder<CrunchyEpisodeFeed> {
-        return MediaRssViewHolder(
-            AdapterMediaFeedBinding.inflate(
-                layoutInflater,
-                parent,
-                false
-            )
+        val binding = AdapterMediaFeedBinding.inflate(
+            layoutInflater,
+            parent,
+            false
         )
+
+        val viewHolder = MediaRssViewHolder(binding)
+
+        binding.mediaThumbnail.setOnClickListener {
+            viewHolder.onItemClick(it, itemClickListener)
+        }
+
+        return viewHolder
     }
 
 
-    inner class MediaRssViewHolder(
+    internal class MediaRssViewHolder(
         private val binding: AdapterMediaFeedBinding
     ): SupportViewHolder<CrunchyEpisodeFeed>(binding.root) {
 
@@ -73,13 +79,8 @@ class RssMediaAdapter(
          * @param model Is the liveData at the current adapter position
          */
         override fun invoke(model: CrunchyEpisodeFeed?) {
-            with (binding) {
-                entity = model
-                mediaThumbnail.setOnClickListener {
-                    onItemClick(it)
-                }
-                executePendingBindings()
-            }
+            binding.entity = model
+            binding.executePendingBindings()
         }
 
         /**
@@ -89,10 +90,8 @@ class RssMediaAdapter(
          * @see com.bumptech.glide.Glide
          */
         override fun onViewRecycled() {
-            with(binding) {
-                mediaThumbnail.onViewRecycled()
-                unbind()
-            }
+            binding.mediaThumbnail.onViewRecycled()
+            binding.unbind()
         }
 
         /**
@@ -101,12 +100,8 @@ class RssMediaAdapter(
          *
          * @param view the view that has been clicked
          */
-        override fun onItemClick(view: View) {
-            performClick(
-                clickListener = clickListener,
-                entity = binding.entity,
-                view = view
-            )
+        override fun onItemClick(view: View, itemClickListener: ItemClickListener<CrunchyEpisodeFeed>) {
+            performClick(binding.entity, view, itemClickListener)
         }
     }
 }

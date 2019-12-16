@@ -26,6 +26,7 @@ import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.core.extensions.koinOf
+import co.anitrend.support.crunchyroll.core.extensions.toBundle
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
@@ -37,10 +38,13 @@ import co.anitrend.support.crunchyroll.feature.news.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.news.ui.activity.NewsScreen
 import co.anitrend.support.crunchyroll.feature.news.ui.adapter.RssNewsAdapter
 import co.anitrend.support.crunchyroll.feature.news.viewmodel.NewsViewModel
+import io.noties.markwon.Markwon
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NewsFeedContent : SupportFragmentPagedList<CrunchyNews, CrunchyCorePresenter, PagedList<CrunchyNews>>() {
+
+    private val markwon by inject<Markwon>()
 
     override val supportStateConfiguration
             by inject<SupportStateLayoutConfiguration>()
@@ -61,32 +65,18 @@ class NewsFeedContent : SupportFragmentPagedList<CrunchyNews, CrunchyCorePresent
 
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         RssNewsAdapter(
-            presenter = supportPresenter,
-            clickListener = object : ItemClickListener<CrunchyNews> {
-                /**
-                 * When the target view from [View.OnClickListener]
-                 * is clicked from a view holder this method will be called
-                 *
-                 * @param target view that has been clicked
-                 * @param data the liveData that at the click index
-                 */
+            supportPresenter,
+            markwon,
+            object : ItemClickListener<CrunchyNews> {
+
                 override fun onItemClick(target: View, data: Pair<Int, CrunchyNews?>) {
                     val payload = NavigationTargets.News.Payload(
                         data.second?.content
-                    )
-                    val bundle = Bundle().apply {
-                        putParcelable(NavigationTargets.News.PAYLOAD, payload)
-                    }
-                    target.context.startNewActivity<NewsScreen>(bundle)
+                    ).toBundle(NavigationTargets.News.PAYLOAD)
+
+                    target.context.startNewActivity<NewsScreen>(payload)
                 }
 
-                /**
-                 * When the target view from [View.OnLongClickListener]
-                 * is clicked from a view holder this method will be called
-                 *
-                 * @param target view that has been long clicked
-                 * @param data the liveData that at the long click index
-                 */
                 override fun onItemLongClick(target: View, data: Pair<Int, CrunchyNews?>) {
 
                 }

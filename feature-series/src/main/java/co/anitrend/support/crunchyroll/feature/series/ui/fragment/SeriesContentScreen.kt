@@ -63,7 +63,10 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
             supportPresenter,
             object : ItemClickListener<CrunchyCollection> {
                 override fun onItemClick(target: View, data: Pair<Int, CrunchyCollection?>) {
-                    // TODO: Open collection activity to view episodes for the current collection
+                    val payload = NavigationTargets.Media.Payload(
+                        collectionId = data.second?.collectionId ?: 0
+                    )
+                    NavigationTargets.Media.invoke(target.context, payload)
                 }
 
                 override fun onItemLongClick(
@@ -259,7 +262,7 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
             )
         } ?: binding.supportStateLayout.setNetworkState(
             NetworkState.Error(
-                heading = "Invalid Fragment Parameters",
+                heading = "Invalid Parameter/s State",
                 message = "Invalid or missing payload"
             )
         )

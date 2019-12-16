@@ -46,6 +46,7 @@ class SeriesResponseMapper(
      * @param mappedData mapped object from [onResponseMapFrom] to insert into the database
      */
     override suspend fun onResponseDatabaseInsert(mappedData: List<CrunchySeriesEntity>) {
-        dao.upsert(mappedData)
+        if (mappedData.isNotEmpty())
+            dao.upsert(mappedData)
     }
 }

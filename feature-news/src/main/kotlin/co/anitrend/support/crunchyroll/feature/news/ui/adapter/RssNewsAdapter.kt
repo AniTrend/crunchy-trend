@@ -33,10 +33,10 @@ import org.koin.core.inject
 
 class RssNewsAdapter(
     presenter: SupportPresenter<*>,
-    private val clickListener: ItemClickListener<CrunchyNews>
-) : SupportPagedListAdapter<CrunchyNews>(presenter, koinOf()), KoinComponent {
+    private val markwon: Markwon,
+    private val itemClickListener: ItemClickListener<CrunchyNews>
+) : SupportPagedListAdapter<CrunchyNews>(presenter, koinOf()) {
 
-    private val markwon by inject<Markwon>()
 
     /**
      * Used to get stable ids for [androidx.recyclerview.widget.RecyclerView.Adapter] but only if
@@ -58,11 +58,24 @@ class RssNewsAdapter(
         viewType: Int,
         layoutInflater: LayoutInflater
     ): SupportViewHolder<CrunchyNews> {
-        return NewsRssViewHolder(AdapterNewsFeedBinding.inflate(layoutInflater, parent, false))
+        val binding = AdapterNewsFeedBinding.inflate(
+            layoutInflater,
+            parent,
+            false
+        )
+
+        val viewHolder = NewsRssViewHolder(binding, markwon)
+
+        binding.container.setOnClickListener{
+            viewHolder.onItemClick(it, itemClickListener)
+        }
+
+        return viewHolder
     }
 
-    inner class NewsRssViewHolder(
-        private val binding: AdapterNewsFeedBinding
+    internal class NewsRssViewHolder(
+        private val binding: AdapterNewsFeedBinding,
+        private val markwon: Markwon
     ): SupportViewHolder<CrunchyNews>(binding.root) {
 
         /**
@@ -71,17 +84,13 @@ class RssNewsAdapter(
          * @param model Is the liveData at the current adapter position
          */
         override fun invoke(model: CrunchyNews?) {
-            with (binding) {
-                entity = model
-                markwon.setMarkdown(
-                    binding.mediaNewsDescription,
-                    entity?.description ?: "No description available"
-                )
-                binding.container.setOnClickListener{
-                    onItemClick(it)
-                }
-                executePendingBindings()
-            }
+            binding.entity = model
+            markwon.setMarkdown(
+                binding.mediaNewsDescription,
+                model?.description ?: "No description available"
+            )
+            binding.executePendingBindings()
+
         }
 
         /**
@@ -91,9 +100,7 @@ class RssNewsAdapter(
          * @see com.bumptech.glide.Glide
          */
         override fun onViewRecycled() {
-            with(binding) {
-                unbind()
-            }
+            binding.unbind()
         }
 
         /**
@@ -102,12 +109,8 @@ class RssNewsAdapter(
          *
          * @param view the view that has been clicked
          */
-        override fun onItemClick(view: View) {
-            performClick(
-                clickListener = clickListener,
-                entity = binding.entity,
-                view = view
-            )
+        override fun onItemClick(view: View, itemClickListener: ItemClickListener<CrunchyNews>) {
+            performClick(binding.entity, view, itemClickListener)
         }
     }
 }

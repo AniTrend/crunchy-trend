@@ -22,6 +22,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import co.anitrend.arch.ui.recycler.adapter.SupportListAdapter
 import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
+import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.feature.series.databinding.AdapterGenreBinding
 import co.anitrend.support.crunchyroll.feature.series.presenter.SeriesDetailPresenter
@@ -57,7 +58,7 @@ class SeriesGenreAdapter(
         )
     }
 
-    internal inner class SeriesGenreViewHolder(
+    internal class SeriesGenreViewHolder(
         private val binding: AdapterGenreBinding
     ) : SupportViewHolder<String>(binding.root) {
 
@@ -67,10 +68,8 @@ class SeriesGenreAdapter(
          * @param model Is the liveData at the current adapter position
          */
         override fun invoke(model: String?) {
-            with (binding) {
-                entity = model
-                executePendingBindings()
-            }
+            binding.entity = model
+            binding.executePendingBindings()
         }
 
         /**
@@ -88,8 +87,9 @@ class SeriesGenreAdapter(
          * [performClick] to dispatch [Pair]<[Int], T> on the [ItemClickListener]
          *
          * @param view the view that has been clicked
+         * @param itemClickListener callback for handing clicks
          */
-        override fun onItemClick(view: View) {
+        override fun onItemClick(view: View, itemClickListener: ItemClickListener<String>) {
 
         }
     }

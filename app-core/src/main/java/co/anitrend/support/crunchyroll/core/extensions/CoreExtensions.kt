@@ -16,6 +16,8 @@
 
 package co.anitrend.support.crunchyroll.core.extensions
 
+import android.os.Bundle
+import android.os.Parcelable
 import androidx.fragment.app.FragmentActivity
 import co.anitrend.arch.core.analytic.contract.ISupportAnalytics
 import co.anitrend.support.crunchyroll.core.CrunchyApplication
@@ -54,4 +56,13 @@ fun FragmentActivity?.createDialog(
     MaterialDialog(this, dialogBehavior)
         .lifecycleOwner(this)
         .cancelOnTouchOutside(false)
+}
+
+/**
+ * Helper extension for changing parcels to bundles
+ */
+fun Parcelable.toBundle(key: String): Bundle {
+    val bundle = Bundle()
+    bundle.putParcelable(key, this)
+    return bundle
 }

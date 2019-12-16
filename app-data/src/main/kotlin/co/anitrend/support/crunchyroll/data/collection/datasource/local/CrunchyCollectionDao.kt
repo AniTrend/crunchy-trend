@@ -56,6 +56,7 @@ interface CrunchyCollectionDao : ISupportQuery<CrunchyCollectionEntity> {
         select * 
         from CrunchyCollectionEntity 
         where seriesId = :seriesId
+        order by season desc
         """)
     suspend fun findBySeriesId(
         seriesId: Long
@@ -65,6 +66,7 @@ interface CrunchyCollectionDao : ISupportQuery<CrunchyCollectionEntity> {
         select * 
         from CrunchyCollectionEntity 
         where seriesId = :seriesId
+        order by season desc
         """)
     fun findBySeriesIdX(
         seriesId: Long
@@ -74,6 +76,7 @@ interface CrunchyCollectionDao : ISupportQuery<CrunchyCollectionEntity> {
         select * 
         from CrunchyCollectionEntity 
         where seriesId = :seriesId
+        order by season desc
         """)
     fun findBySeriesIdFactory(
         seriesId: Long
