@@ -16,9 +16,12 @@
 
 package co.anitrend.support.crunchyroll.feature.news.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.util.Linkify
+import androidx.core.net.toUri
 import co.anitrend.arch.extension.extra
+import co.anitrend.arch.extension.startNewActivity
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
@@ -52,7 +55,12 @@ class NewsScreen : CrunchyActivity<CrunchyNews, CrunchyCorePresenter>() {
         BetterLinkMovementMethod.linkify(
             Linkify.ALL,
             this
-        ).setOnLinkClickListener { textView, url ->
+        ).setOnLinkClickListener { _, url ->
+            runCatching {
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.data = url.toUri()
+                startActivity(intent)
+            }.exceptionOrNull()?.printStackTrace()
             true
         }
         injectFeatureModules()
