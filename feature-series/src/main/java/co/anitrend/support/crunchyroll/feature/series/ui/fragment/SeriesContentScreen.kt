@@ -23,6 +23,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
 import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.arch.domain.entities.isSuccess
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.argument
 import co.anitrend.arch.ui.fragment.SupportFragment
@@ -102,16 +103,45 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
         collectionViewModel.model.observe(
             this,
             Observer {
-                if (!it.isNullOrEmpty()) {
-                    binding.seasonStateLayout.setNetworkState(NetworkState.Success)
-                    seriesSeasonAdapter.submitList(it)
+                seriesSeasonAdapter.submitList(it)
+
+                if (!it.isNullOrEmpty())
+                    binding.seasonStateLayout?.setNetworkState(NetworkState.Success)
+                else {
+                    if (seriesSeasonAdapter.hasExtraRow())
+                        seriesSeasonAdapter.networkState = NetworkState.Loading
+                    else
+                        binding.seasonStateLayout?.setNetworkState(NetworkState.Loading)
                 }
             }
         )
         collectionViewModel.networkState?.observe(
             this,
             Observer {
-                binding.seasonStateLayout.setNetworkState(it)
+                when (!seriesSeasonAdapter.isEmpty()) {
+                    true -> {
+                        binding.seasonStateLayout?.setNetworkState(
+                            NetworkState.Success
+                        )
+                        seriesSeasonAdapter.networkState = it
+                    }
+                    false -> {
+                        if (seriesSeasonAdapter.hasExtraRow()) {
+                            binding.seasonStateLayout?.setNetworkState(
+                                NetworkState.Success
+                            )
+                            seriesSeasonAdapter.networkState = it
+                        }
+                        else {
+                            binding.seasonStateLayout?.setNetworkState(
+                                it ?: NetworkState.Error(
+                                    heading = "Unknown State",
+                                    message = "The application is in an unknown state ¯\\_(ツ)_/¯"
+                                )
+                            )
+                        }
+                    }
+                }
             }
         )
     }
