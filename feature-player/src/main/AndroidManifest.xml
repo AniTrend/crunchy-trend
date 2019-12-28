@@ -23,7 +23,8 @@
 
     <application>
 
-        <activity android:name=".ui.activity.MediaPlayerScreen"/>
+        <activity android:name=".ui.activity.MediaPlayerScreen"
+                android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"/>
     </application>
 
 </manifest>
