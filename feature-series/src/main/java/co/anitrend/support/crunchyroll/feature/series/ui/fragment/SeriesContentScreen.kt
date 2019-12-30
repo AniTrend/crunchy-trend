@@ -126,7 +126,7 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
                         seriesSeasonAdapter.networkState = it
                     }
                     false -> {
-                        if (seriesSeasonAdapter.hasExtraRow()) {
+                        if (seriesSeasonAdapter.hasExtraRow() || it !is NetworkState.Error) {
                             binding.seasonStateLayout?.setNetworkState(
                                 NetworkState.Success
                             )
@@ -134,10 +134,7 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
                         }
                         else {
                             binding.seasonStateLayout?.setNetworkState(
-                                it ?: NetworkState.Error(
-                                    heading = "Unknown State",
-                                    message = "The application is in an unknown state ¯\\_(ツ)_/¯"
-                                )
+                                it
                             )
                         }
                     }

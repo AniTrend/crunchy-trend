@@ -18,16 +18,16 @@
 <resources>
 
     <!-- Search Text Style. -->
-    <style name="SearchTextStyle">
+    <style name="SearchTextAppearance">
         <!-- Custom values write to here for SearchEditText. -->
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
         <item name="android:enabled">true</item>
-        <item name="android:hint">@string/label_text_action_search</item>
+        <item name="android:hint">@string/search_place_holder_text</item>
         <item name="android:imeOptions">actionSearch</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:maxLength">15</item>
-        <item name="android:inputType">textCapSentences</item>
+        <item name="android:textSize">@dimen/search_text_size</item>
+        <item name="android:maxLength">30</item>
+        <item name="android:inputType">textAutoComplete</item>
         <item name="android:textColorHint">@color/secondaryTextColor</item>
         <item name="android:textColor">@color/primaryTextColor</item>
     </style>

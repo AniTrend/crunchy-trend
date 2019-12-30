@@ -17,14 +17,12 @@
 package co.anitrend.support.crunchyroll.feature.search.ui.activity
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.paging.PagedList
-import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
 import co.anitrend.arch.ui.fragment.SupportFragment
+import co.anitrend.multisearch.model.MultiSearchChangeListener
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
-import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesSearchQuery
@@ -33,7 +31,6 @@ import co.anitrend.support.crunchyroll.feature.search.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.search.presenter.SeriesPresenter
 import co.anitrend.support.crunchyroll.feature.search.ui.fragment.SearchContentScreen
 import co.anitrend.support.crunchyroll.feature.search.viewmodel.SeriesSearchViewModel
-import com.iammert.library.ui.multisearchviewlib.MultiSearchView
 import kotlinx.android.synthetic.main.search_activity.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -43,36 +40,57 @@ class SearchScreen : CrunchyActivity<PagedList<CrunchySeries>, SeriesPresenter>(
     private lateinit var systemChromeFader: ElasticDragDismissFrameLayout.SystemChromeFader
 
     private val multiSearchViewListener =
-        object : MultiSearchView.MultiSearchViewListener {
-            override fun onItemSelected(index: Int, s: CharSequence) {
+        object : MultiSearchChangeListener {
+
+            /**
+             * Called when a search item has been selected, or when an item has been removed
+             * and a new selection is made
+             *
+             * @param index character index that has been changed
+             * @param charSequence stream of characters including changes
+             */
+            override fun onItemSelected(index: Int, charSequence: CharSequence) {
                 supportViewModel.searchQueryLiveData.postValue(
                     CrunchySeriesSearchQuery(
-                        query = s.toString()
+                        query = charSequence.toString()
                     )
                 )
             }
 
-            override fun onSearchComplete(index: Int, s: CharSequence) {
-                /*supportViewModel.searchQueryLiveData.postValue(
-                    CrunchySeriesSearchQuery(
-                        query = s.toString()
-                    )
-                )*/
+            /**
+             * Called when an IME action of done is triggered
+             *
+             * @param index character index that has been changed
+             * @param charSequence stream of characters including changes
+             */
+            override fun onSearchComplete(index: Int, charSequence: CharSequence) {
+
             }
 
+            /**
+             * Called when a search item has been removed
+             *
+             * @param index
+             */
             override fun onSearchItemRemoved(index: Int) {
 
             }
 
-            override fun onTextChanged(index: Int, s: CharSequence) {
-                if (s.isNotBlank())
+            /**
+             * Called when text has been changed
+             *
+             * @param index character index that has been changed
+             * @param charSequence stream of characters including changes
+             */
+            override fun onTextChanged(index: Int, charSequence: CharSequence) {
+                if (charSequence.isNotBlank())
                     supportViewModel.searchQueryLiveData.postValue(
                         CrunchySeriesSearchQuery(
-                            query = s.toString()
+                            query = charSequence.toString()
                         )
                     )
             }
-    }
+        }
 
     /**
      * Should be created lazily through injection or lazy delegate
@@ -113,7 +131,7 @@ class SearchScreen : CrunchyActivity<PagedList<CrunchySeries>, SeriesPresenter>(
                     closeScreen()
                 }
             }
-        multiSearchView.setSearchViewListener(multiSearchViewListener)
+        multiSearch.setSearchViewListener(multiSearchViewListener)
     }
 
     /**

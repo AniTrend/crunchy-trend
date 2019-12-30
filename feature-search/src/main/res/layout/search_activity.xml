@@ -36,11 +36,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-            <com.iammert.library.ui.multisearchviewlib.MultiSearchView
-                    android:id="@+id/multiSearchView"
+            <co.anitrend.multisearch.ui.MultiSearch
+                    android:id="@+id/multiSearch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:searchTextStyle="@style/SearchTextStyle" />
+                    app:searchIcon="@drawable/ic_search_24dp"
+                    app:searchRemoveIcon="@drawable/ic_close_10dp"
+                    app:searchSelectionIndicator="@drawable/ic_search_indicator_line"
+                    app:searchTextAppearance="@style/SearchTextAppearance" />
+
 
             <FrameLayout
                     android:id="@+id/search_content"

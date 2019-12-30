@@ -19,7 +19,6 @@ plugins {
     id("kotlin-android")
     id("kotlin-kapt")
     id("kotlin-android-extensions")
-    id("androidx.navigation.safeargs.kotlin")
 }
 
 apply from: "../gradle/gradle-common-config.gradle"
@@ -52,10 +51,6 @@ dependencies {
     implementation "androidx.core:core-ktx:$ktx"
     implementation "androidx.paging:paging-runtime:$paging"
     implementation "androidx.work:work-runtime-ktx:$workerKtx"
-
-    /** Navigation Components*/
-    implementation "androidx.navigation:navigation-ui-ktx:$navigation"
-    implementation "androidx.navigation:navigation-fragment-ktx:$navigation"
 
     /** Lifecycle Components*/
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleX"
