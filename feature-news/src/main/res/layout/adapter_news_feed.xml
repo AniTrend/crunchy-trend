@@ -68,7 +68,8 @@
                     android:layout_height="@dimen/series_image_sm"
                     android:layout_gravity="center_vertical"
                     app:imageUrl="@{entity.image}"
-                    tools:src="@tools:sample/avatars"
+                    tools:src="@sample/thumbnail"
+                    tools:scaleType="centerCrop"
                     />
 
             <Space android:layout_width="@dimen/xl_margin"
@@ -78,16 +79,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                <com.google.android.material.textview.MaterialTextView
+                <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/media_news_description"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:maxLines="5"
+                        android:ellipsize="end"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="@sample/news.json/description" />
 
 
-                <com.google.android.material.textview.MaterialTextView
+                <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/media_news_publication"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

@@ -25,7 +25,7 @@
         android:keepScreenOn="true">
 
     <com.devbrackets.android.exomedia.ui.widget.VideoView
-            android:id="@+id/video_view"
+            android:id="@+id/exoMediaVideoView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:measureBasedOnAspectRatio="true"

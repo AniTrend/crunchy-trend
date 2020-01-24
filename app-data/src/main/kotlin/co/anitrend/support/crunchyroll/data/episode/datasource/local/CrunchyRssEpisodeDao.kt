@@ -35,8 +35,8 @@ interface CrunchyRssEpisodeDao : ISupportQuery<EpisodeFeedEntity> {
     @Query(
         """
         select * from EpisodeFeedEntity 
-        order by premiumAvailableTime desc, 
-        seriesTitle desc, episodeTitle desc, episodeNumber desc
+        order by premiumAvailableTime desc, seriesTitle desc, 
+        length(episodeNumber), episodeNumber
         """
     )
     suspend fun findAll(): List<EpisodeFeedEntity>
@@ -44,8 +44,8 @@ interface CrunchyRssEpisodeDao : ISupportQuery<EpisodeFeedEntity> {
     @Query(
         """
         select * from EpisodeFeedEntity 
-        order by premiumAvailableTime desc, 
-        seriesTitle desc, episodeTitle desc, episodeNumber desc
+        order by premiumAvailableTime desc, seriesTitle desc, 
+        length(episodeNumber), episodeNumber
         """
     )
     fun findAllX(): LiveData<List<EpisodeFeedEntity>>
@@ -53,8 +53,8 @@ interface CrunchyRssEpisodeDao : ISupportQuery<EpisodeFeedEntity> {
     @Query(
         """
         select * from EpisodeFeedEntity 
-        order by premiumAvailableTime desc, 
-        seriesTitle desc, episodeTitle desc, episodeNumber desc
+        order by premiumAvailableTime desc, seriesTitle desc, 
+        length(episodeNumber), episodeNumber
         """
     )
     fun findByAllFactory(): DataSource.Factory<Int, EpisodeFeedEntity>
@@ -62,9 +62,9 @@ interface CrunchyRssEpisodeDao : ISupportQuery<EpisodeFeedEntity> {
     @Query(
         """
         select * from EpisodeFeedEntity 
-        where seriesTitle = :seriesSlug 
-        order by premiumAvailableTime desc, 
-        seriesTitle desc, episodeTitle desc, episodeNumber desc
+        where seriesTitle = :seriesSlug
+        order by premiumAvailableTime desc, seriesTitle desc, 
+        length(episodeNumber), episodeNumber
         """
     )
     fun findBySlugFactory(

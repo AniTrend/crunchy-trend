@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.feature.series.ui.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,30 +24,25 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
 import co.anitrend.arch.domain.entities.NetworkState
-import co.anitrend.arch.domain.entities.isSuccess
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.argument
 import co.anitrend.arch.ui.fragment.SupportFragment
-import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
-import co.anitrend.support.crunchyroll.domain.collection.models.CrunchyCollectionQuery
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesInfoQuery
-import co.anitrend.support.crunchyroll.feature.series.R
+import co.anitrend.support.crunchyroll.feature.series.common.ISwappable
 import co.anitrend.support.crunchyroll.feature.series.databinding.SeriesContentBinding
 import co.anitrend.support.crunchyroll.feature.series.presenter.SeriesDetailPresenter
 import co.anitrend.support.crunchyroll.feature.series.ui.adpter.SeriesGenreAdapter
-import co.anitrend.support.crunchyroll.feature.series.ui.adpter.SeriesSeasonAdapter
-import co.anitrend.support.crunchyroll.feature.series.viewmodel.SeriesCollectionViewModel
 import co.anitrend.support.crunchyroll.feature.series.viewmodel.SeriesDetailViewModel
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter, CrunchySeries?>() {
+
+    private var swappable: ISwappable? = null
 
     private val payload
             by argument<NavigationTargets.Series.Payload>(
@@ -57,27 +53,6 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
 
     private val seriesGenreAdapter by lazy(LAZY_MODE_UNSAFE) {
         SeriesGenreAdapter(supportPresenter)
-    }
-
-    private val seriesSeasonAdapter by lazy(LAZY_MODE_UNSAFE) {
-        SeriesSeasonAdapter(
-            supportPresenter,
-            object : ItemClickListener<CrunchyCollection> {
-                override fun onItemClick(target: View, data: Pair<Int, CrunchyCollection?>) {
-                    val payload = NavigationTargets.Media.Payload(
-                        collectionId = data.second?.collectionId ?: 0
-                    )
-                    NavigationTargets.Media.invoke(target.context, payload)
-                }
-
-                override fun onItemLongClick(
-                    target: View,
-                    data: Pair<Int, CrunchyCollection?>
-                ) {
-
-                }
-            }
-        )
     }
 
     /**
@@ -99,48 +74,6 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
                 binding.supportStateLayout.setNetworkState(it)
             }
         )
-
-        collectionViewModel.model.observe(
-            this,
-            Observer {
-                seriesSeasonAdapter.submitList(it)
-
-                if (!it.isNullOrEmpty())
-                    binding.seasonStateLayout?.setNetworkState(NetworkState.Success)
-                else {
-                    if (seriesSeasonAdapter.hasExtraRow())
-                        seriesSeasonAdapter.networkState = NetworkState.Loading
-                    else
-                        binding.seasonStateLayout?.setNetworkState(NetworkState.Loading)
-                }
-            }
-        )
-        collectionViewModel.networkState?.observe(
-            this,
-            Observer {
-                when (!seriesSeasonAdapter.isEmpty()) {
-                    true -> {
-                        binding.seasonStateLayout?.setNetworkState(
-                            NetworkState.Success
-                        )
-                        seriesSeasonAdapter.networkState = it
-                    }
-                    false -> {
-                        if (seriesSeasonAdapter.hasExtraRow() || it !is NetworkState.Error) {
-                            binding.seasonStateLayout?.setNetworkState(
-                                NetworkState.Success
-                            )
-                            seriesSeasonAdapter.networkState = it
-                        }
-                        else {
-                            binding.seasonStateLayout?.setNetworkState(
-                                it
-                            )
-                        }
-                    }
-                }
-            }
-        )
     }
 
     /**
@@ -156,8 +89,6 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
      * @return view model of the given type
      */
     override val supportViewModel by viewModel<SeriesDetailViewModel>()
-
-    private val collectionViewModel by viewModel<SeriesCollectionViewModel>()
 
     /**
      * Additional initialization to be done in this method, if the overriding class is type of
@@ -205,7 +136,6 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
         val stateConfigurationUtil = koinOf<SupportStateLayoutConfiguration>()
 
         binding.supportStateLayout.stateConfiguration = stateConfigurationUtil
-        binding.seasonStateLayout.stateConfiguration = stateConfigurationUtil
 
         binding.lifecycleOwner = this
         return binding.root
@@ -226,20 +156,16 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
         binding.viewModel = supportViewModel
         binding.presenter = supportPresenter
 
+        binding.seriesInfo.seriesSeasons.setOnClickListener {
+            swappable?.onSwapWithCollection()
+        }
         binding.supportStateLayout.onWidgetInteraction = View.OnClickListener {
             supportViewModel.retry()
-        }
-        binding.seasonStateLayout.onWidgetInteraction = View.OnClickListener {
-            collectionViewModel.retry()
         }
 
         supportPresenter.setupGenresAdapter(
             binding.seriesGenres,
             seriesGenreAdapter
-        )
-        supportPresenter.setupSeasonsAdapter(
-            binding.seriesSeasons,
-            seriesSeasonAdapter
         )
     }
 
@@ -267,6 +193,16 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
     }
 
     /**
+     * Called when a fragment is first attached to its context.
+     * [.onCreate] will be called after this.
+     */
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is ISwappable)
+            swappable = context
+    }
+
+    /**
      * Handles the complex logic required to dispatch network request to [ISupportViewModel]
      * to either request from the network or database cache.
      *
@@ -282,11 +218,6 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
                     seriesId = it.seriesId
                 )
             )
-            collectionViewModel(
-                parameter = CrunchyCollectionQuery(
-                    seriesId = it.seriesId
-                )
-            )
         } ?: binding.supportStateLayout.setNetworkState(
             NetworkState.Error(
                 heading = "Invalid Parameter/s State",
@@ -296,6 +227,8 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
     }
 
     companion object {
+        const val FRAGMENT_TAG = "SeriesContentScreen"
+
         fun newInstance(bundle: Bundle?): SeriesContentScreen {
             return SeriesContentScreen().apply {
                 arguments = bundle

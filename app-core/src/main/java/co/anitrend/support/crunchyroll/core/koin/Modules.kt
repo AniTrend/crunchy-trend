@@ -28,9 +28,11 @@ import co.anitrend.support.crunchyroll.core.util.locale.SessionLocaleProviderHel
 import co.anitrend.support.crunchyroll.core.util.locale.LocaleUtil
 import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
+import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.binds
 import org.koin.dsl.module
+import java.io.File
 
 private val coreModule = module {
     single<ISupportDateHelper> {
@@ -40,7 +42,7 @@ private val coreModule = module {
     }
     single {
         SupportStateLayoutConfiguration(
-            loadingDrawable = R.drawable.ic_crunchyroll,
+            loadingDrawable = R.drawable.ic_launcher_foreground,
             errorDrawable = R.drawable.ic_support_empty_state,
             loadingMessage = R.string.label_text_loading,
             retryAction = R.string.label_text_action_retry

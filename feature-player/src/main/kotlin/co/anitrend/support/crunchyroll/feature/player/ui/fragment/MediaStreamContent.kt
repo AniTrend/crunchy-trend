@@ -16,28 +16,37 @@
 
 package co.anitrend.support.crunchyroll.feature.player.ui.fragment
 
+import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.argument
 import co.anitrend.arch.ui.fragment.SupportFragment
-import co.anitrend.arch.ui.view.widget.SupportStateLayout
 import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
+import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 import co.anitrend.support.crunchyroll.feature.player.R
 import co.anitrend.support.crunchyroll.feature.player.presenter.StreamPresenter
 import co.anitrend.support.crunchyroll.feature.player.viewmodel.MediaStreamViewModel
+import com.devbrackets.android.exomedia.listener.VideoControlsVisibilityListener
 import com.devbrackets.android.exomedia.ui.widget.VideoView
+import kotlinx.android.synthetic.main.fragment_media_player.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MediaStreamContent : SupportFragment<MediaStream?, CrunchyCorePresenter, List<MediaStream>?>() {
+
+    private val payload
+            by argument<NavigationTargets.MediaPlayer.Payload>(
+                NavigationTargets.MediaPlayer.PAYLOAD
+            )
+
+    private lateinit var controlsVisibilityListener: VideoControlsVisibilityListener
+
+    override val inflateLayout = R.layout.fragment_media_player
 
     /**
      * Should be created lazily through injection or lazy delegate
@@ -53,14 +62,6 @@ class MediaStreamContent : SupportFragment<MediaStream?, CrunchyCorePresenter, L
      */
     override val supportViewModel by viewModel<MediaStreamViewModel>()
 
-    private val payload
-            by argument<NavigationTargets.MediaPlayer.Payload>(
-                NavigationTargets.MediaPlayer.PAYLOAD
-            )
-
-    private lateinit var exoPlayerView: VideoView
-    private lateinit var supportStateLayout: SupportStateLayout
-
     override fun setUpViewModelObserver() {
         supportViewModel.model.observe(this, Observer {
             prepareResults()
@@ -75,13 +76,6 @@ class MediaStreamContent : SupportFragment<MediaStream?, CrunchyCorePresenter, L
 
     override fun initializeComponents(savedInstanceState: Bundle?) {
 
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_media_player, container, false)?.apply {
-            exoPlayerView = findViewById(R.id.video_view)
-            supportStateLayout = findViewById(R.id.supportStateLayout)
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -113,7 +107,16 @@ class MediaStreamContent : SupportFragment<MediaStream?, CrunchyCorePresenter, L
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        with (exoPlayerView) {
+        with (exoMediaVideoView) {
+            supportPresenter.customizeControls(
+                {
+
+                },
+                this,
+                videoControlsCore,
+                payload,
+                controlsVisibilityListener
+            )
             setOnPreparedListener {
                 start()
             }
@@ -132,11 +135,11 @@ class MediaStreamContent : SupportFragment<MediaStream?, CrunchyCorePresenter, L
 
     private fun prepareResults() {
         val model = supportViewModel.model.value
-        if (!exoPlayerView.isPlaying) {
+        if (!exoMediaVideoView.isPlaying) {
             val stream = supportPresenter.getOptimalStream(model)
             if (stream != null) {
                 supportPresenter.setupMediaSource(
-                    stream, exoPlayerView, payload?.episodeThumbnail
+                    stream, exoMediaVideoView, payload?.episodeThumbnail
                 )
                 onUpdateUserInterface()
             } else {
@@ -173,6 +176,37 @@ class MediaStreamContent : SupportFragment<MediaStream?, CrunchyCorePresenter, L
                 message = "Invalid or missing payload"
             )
         )
+    }
+
+    /**
+     * Called when a fragment is first attached to its context.
+     * [.onCreate] will be called after this.
+     */
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is VideoControlsVisibilityListener)
+            controlsVisibilityListener = context
+    }
+
+    /**
+     * Listens to the system to determine when to show the default controls
+     * for the [VideoView]
+     */
+    internal inner class FullScreenListener : View.OnSystemUiVisibilityChangeListener {
+        var lastVisibility = 0
+            private set
+
+        override fun onSystemUiVisibilityChange(visibility: Int) {
+            // NOTE: if the screen is double tapped in just the right way (or wrong way)
+            // the SYSTEM_UI_FLAG_HIDE_NAVIGATION flag is dropped. Because of this we
+            // no longer get notified of the temporary change when the screen is tapped
+            // (i.e. the VideoControls get the touch event instead of the OS). So we store
+            // the visibility off for use in the ControlsVisibilityListener for verification
+            lastVisibility = visibility
+            if (visibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0) {
+                exoMediaVideoView.showControls()
+            }
+        }
     }
 
     companion object {

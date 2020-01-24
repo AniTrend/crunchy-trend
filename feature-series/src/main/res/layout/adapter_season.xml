@@ -50,9 +50,9 @@
             <co.anitrend.arch.ui.view.text.SingleLineTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{presenter.seasonTitle(entity.season)}"
+                    android:text="@{entity.name}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    tools:text="@sample/collection_list.json/data/season"/>
+                    tools:text="@sample/collection_list.json/data/name"/>
         </LinearLayout>
 
     </LinearLayout>

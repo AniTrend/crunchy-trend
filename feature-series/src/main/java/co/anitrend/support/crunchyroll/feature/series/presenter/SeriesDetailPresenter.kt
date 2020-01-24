@@ -43,7 +43,6 @@ class SeriesDetailPresenter(
 ) : CrunchyCorePresenter(context, settings) {
 
     fun publisherYear(model: LiveData<SeriesModel?>) : String {
-        val separator = "\u2022"
         val seriesModel = model.value
         val year = seriesModel?.year
         if (year != null && year > 0)
@@ -88,17 +87,7 @@ class SeriesDetailPresenter(
         )
     }
 
-    fun setupSeasonsAdapter(seriesSeasonRecycler: SupportRecyclerView?, seasonAdapter: SeriesSeasonAdapter) {
-        seriesSeasonRecycler?.setUpWith(
-            supportAdapter = seasonAdapter,
-            recyclerLayoutManager = StaggeredGridLayoutManager(
-                context.resources.getInteger(R.integer.single_list_size),
-                StaggeredGridLayoutManager.VERTICAL
-            )
-        )
-    }
-
-    fun seasonTitle(season: String): String {
-        return "${context.getString(R.string.label_season)} $season"
+    companion object {
+        internal const val separator = "\u2022"
     }
 }

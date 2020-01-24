@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2020 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,13 +14,8 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.domain.stream.enums
+package co.anitrend.support.crunchyroll.feature.series.common
 
-@Suppress("EnumEntryName")
-enum class CrunchyStreamQuality {
-    low,
-    mid,
-    high,
-    ultra,
-    adaptive
+interface ISwappable {
+    fun onSwapWithCollection()
 }

@@ -124,6 +124,7 @@ object NavigationTargets {
         @Parcelize
         data class Payload(
             val mediaId: Long,
+            val episodeTitle: String?,
             val episodeThumbnail: String?
         ) : Parcelable
     }

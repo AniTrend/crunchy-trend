@@ -24,6 +24,7 @@
     <application>
 
         <activity android:name=".ui.activity.MediaPlayerScreen"
+                android:screenOrientation="sensorLandscape"
                 android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"/>
     </application>
 

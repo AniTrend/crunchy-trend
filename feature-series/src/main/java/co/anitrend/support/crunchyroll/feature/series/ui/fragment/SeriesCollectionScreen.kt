@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2020 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,76 +14,53 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.feature.discover.ui.fragment
+package co.anitrend.support.crunchyroll.feature.series.ui.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
+import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
+import co.anitrend.arch.extension.argument
 import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
-import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesFilter
-import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesBrowseQuery
-import co.anitrend.support.crunchyroll.feature.discover.R
-import co.anitrend.support.crunchyroll.feature.discover.koin.injectFeatureModules
-import co.anitrend.support.crunchyroll.feature.discover.presenter.SeriesPresenter
-import co.anitrend.support.crunchyroll.feature.discover.ui.adapter.SeriesViewAdapter
-import co.anitrend.support.crunchyroll.feature.discover.viewmodel.SeriesDiscoverViewModel
+import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
+import co.anitrend.support.crunchyroll.domain.collection.models.CrunchyCollectionQuery
+import co.anitrend.support.crunchyroll.feature.series.R
+import co.anitrend.support.crunchyroll.feature.series.presenter.SeriesDetailPresenter
+import co.anitrend.support.crunchyroll.feature.series.ui.adpter.SeriesSeasonAdapter
+import co.anitrend.support.crunchyroll.feature.series.viewmodel.SeriesCollectionViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SeriesDiscoverContent : SupportFragmentPagedList<CrunchySeries, SeriesPresenter, PagedList<CrunchySeries>>() {
+class SeriesCollectionScreen : SupportFragmentPagedList<CrunchyCollection, SeriesDetailPresenter, PagedList<CrunchyCollection>>() {
+
+    private val payload
+            by argument<NavigationTargets.Series.Payload>(
+                NavigationTargets.Series.PAYLOAD
+            )
 
     override val columnSize = R.integer.single_list_size
 
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return supportPresenter of the generic type specified
-     */
-    override val supportPresenter by inject<SeriesPresenter>()
-
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return view model of the given type
-     */
-    override val supportViewModel by viewModel<SeriesDiscoverViewModel>()
-
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
-        SeriesViewAdapter(
+        SeriesSeasonAdapter(
             supportPresenter,
-            object : ItemClickListener<CrunchySeries> {
-                /**
-                 * When the target view from [View.OnClickListener]
-                 * is clicked from a view holder this method will be called
-                 *
-                 * @param target view that has been clicked
-                 * @param data the liveData that at the click index
-                 */
-                override fun onItemClick(target: View, data: Pair<Int, CrunchySeries?>) {
-                    val seriesPayload = NavigationTargets.Series.Payload(
-                        seriesId = data.second?.seriesId ?: 0
+            object : ItemClickListener<CrunchyCollection> {
+                override fun onItemClick(target: View, data: Pair<Int, CrunchyCollection?>) {
+                    val payload = NavigationTargets.Media.Payload(
+                        collectionId = data.second?.collectionId ?: 0
                     )
-                    NavigationTargets.Series(
-                        target.context, seriesPayload
-                    )
+                    NavigationTargets.Media.invoke(target.context, payload)
                 }
 
-                /**
-                 * When the target view from [View.OnLongClickListener]
-                 * is clicked from a view holder this method will be called
-                 *
-                 * @param target view that has been long clicked
-                 * @param data the liveData that at the long click index
-                 */
-                override fun onItemLongClick(target: View, data: Pair<Int, CrunchySeries?>) {
+                override fun onItemLongClick(
+                    target: View,
+                    data: Pair<Int, CrunchyCollection?>
+                ) {
 
                 }
             }
@@ -103,6 +80,20 @@ class SeriesDiscoverContent : SupportFragmentPagedList<CrunchySeries, SeriesPres
     }
 
     /**
+     * Should be created lazily through injection or lazy delegate
+     *
+     * @return supportPresenter of the generic type specified
+     */
+    override val supportPresenter by inject<SeriesDetailPresenter>()
+
+    /**
+     * Should be created lazily through injection or lazy delegate
+     *
+     * @return view model of the given type
+     */
+    override val supportViewModel by viewModel<SeriesCollectionViewModel>()
+
+    /**
      * Additional initialization to be done in this method, if the overriding class is type of
      * [androidx.fragment.app.Fragment] then this method will be called in
      * [androidx.fragment.app.FragmentActivity.onCreate]. Otherwise
@@ -111,7 +102,7 @@ class SeriesDiscoverContent : SupportFragmentPagedList<CrunchySeries, SeriesPres
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        injectFeatureModules()
+
     }
 
     /**
@@ -134,9 +125,16 @@ class SeriesDiscoverContent : SupportFragmentPagedList<CrunchySeries, SeriesPres
      * @see [ISupportViewModel.invoke]
      */
     override fun onFetchDataInitialize() {
-        supportViewModel(
-            parameter = CrunchySeriesBrowseQuery(
-                filter = CrunchySeriesFilter.NEWEST.attribute
+        payload?.also {
+            supportViewModel(
+                parameter = CrunchyCollectionQuery(
+                    seriesId = it.seriesId
+                )
+            )
+        } ?: supportStateLayout?.setNetworkState(
+            NetworkState.Error(
+                heading = "Invalid Parameter/s State",
+                message = "Invalid or missing payload"
             )
         )
     }
@@ -145,4 +143,14 @@ class SeriesDiscoverContent : SupportFragmentPagedList<CrunchySeries, SeriesPres
      * State configuration for any underlying state representing widgets
      */
     override val supportStateConfiguration by inject<SupportStateLayoutConfiguration>()
+
+    companion object {
+        const val FRAGMENT_TAG = "SeriesCollectionScreen"
+
+        fun newInstance(bundle: Bundle?): SeriesCollectionScreen {
+            return SeriesCollectionScreen().apply {
+                arguments = bundle
+            }
+        }
+    }
 }

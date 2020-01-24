@@ -28,7 +28,7 @@ import coil.transform.GrayscaleTransformation
 @BindingAdapter("imageUrl")
 fun AppCompatImageView.setImageUrl(url: String?) = url?.also {
     if (url.isNullOrBlank())
-        load(R.drawable.ic_crunchyroll)
+        load(R.drawable.ic_launcher_foreground)
     else {
         load(url) {
             scale(Scale.FIT)

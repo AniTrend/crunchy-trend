@@ -157,32 +157,9 @@
                             tools:itemCount="3" />
 
                     <include layout="@layout/series_info_section"
+                            android:id="@+id/seriesInfo"
                             app:viewModel="@{viewModel}"
                             app:presenter="@{presenter}"/>
-
-                    <co.anitrend.arch.ui.view.text.SingleLineTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/xl_margin"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                            android:text="@string/label_seasons" />
-
-                    <co.anitrend.arch.ui.view.widget.SupportStateLayout
-                            android:id="@+id/seasonStateLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                        <co.anitrend.arch.ui.recycler.SupportRecyclerView
-                                android:id="@+id/seriesSeasons"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:clipToPadding="false"
-                                android:layout_marginEnd="@dimen/xl_margin"
-                                android:layout_marginStart="@dimen/xl_margin"
-                                tools:listitem="@layout/adapter_season"
-                                tools:itemCount="3" />
-
-                    </co.anitrend.arch.ui.view.widget.SupportStateLayout>
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </co.anitrend.arch.ui.view.widget.SupportStateLayout>

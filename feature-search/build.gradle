@@ -67,7 +67,6 @@ dependencies {
 
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleX"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleX"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycleStateX"
 
     /** Glide Libraries */
     implementation "com.github.bumptech.glide:glide:$glide"

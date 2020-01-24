@@ -17,24 +17,22 @@
 package co.anitrend.support.crunchyroll.feature.series.ui.activity
 
 import android.os.Bundle
-import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
-import androidx.lifecycle.Observer
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.feature.series.R
+import co.anitrend.support.crunchyroll.feature.series.common.ISwappable
 import co.anitrend.support.crunchyroll.feature.series.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.series.presenter.SeriesDetailPresenter
+import co.anitrend.support.crunchyroll.feature.series.ui.fragment.SeriesCollectionScreen
 import co.anitrend.support.crunchyroll.feature.series.ui.fragment.SeriesContentScreen
-import co.anitrend.support.crunchyroll.feature.series.viewmodel.SeriesDetailViewModel
 import kotlinx.android.synthetic.main.series_activity.*
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SeriesScreen : CrunchyActivity<CrunchySeries?, SeriesDetailPresenter>() {
+class SeriesScreen : CrunchyActivity<CrunchySeries?, SeriesDetailPresenter>(), ISwappable {
 
     private lateinit var systemChromeFader: ElasticDragDismissFrameLayout.SystemChromeFader
 
@@ -91,18 +89,59 @@ class SeriesScreen : CrunchyActivity<CrunchySeries?, SeriesDetailPresenter>() {
     }
 
     /**
+     * Take care of popping the fragment back stack or finishing the activity
+     * as appropriate.
+     */
+    override fun onBackPressed() {
+        if (supportFragmentActivity is SeriesCollectionScreen)
+            onSwapWithDetail()
+        else
+            super.onBackPressed()
+    }
+
+    /**
      * Handles the updating of views, binding, creation or state change, depending on the context
      * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
      *
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        supportFragmentActivity = SeriesContentScreen.newInstance(intent.extras)
+        onSwapWithDetail()
+    }
+
+    override fun onSwapWithCollection() {
+        val fragment = supportFragmentManager.findFragmentByTag(
+            SeriesCollectionScreen.FRAGMENT_TAG
+        )
+
+        supportFragmentActivity = if (fragment is SeriesCollectionScreen)
+            fragment
+        else
+            SeriesCollectionScreen.newInstance(intent.extras)
+
         val target = supportFragmentActivity as SupportFragment<*, *, *>
 
         supportFragmentManager.commit {
-            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-            replace(R.id.series_content, target, target.tag)
+            //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            replace(R.id.series_content, target, SeriesCollectionScreen.FRAGMENT_TAG)
+        }
+    }
+
+    private fun onSwapWithDetail() {
+        val fragment = supportFragmentManager.findFragmentByTag(
+            SeriesContentScreen.FRAGMENT_TAG
+        )
+
+        supportFragmentActivity = if (fragment is SeriesContentScreen)
+            fragment
+        else
+            SeriesContentScreen.newInstance(intent.extras)
+
+        val target = supportFragmentActivity as SupportFragment<*, *, *>
+
+        supportFragmentManager.commit {
+            //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            replace(R.id.series_content, target, SeriesContentScreen.FRAGMENT_TAG)
         }
     }
 }

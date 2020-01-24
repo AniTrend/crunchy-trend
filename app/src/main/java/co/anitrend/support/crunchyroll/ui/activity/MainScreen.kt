@@ -76,7 +76,6 @@ class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(), NavigationV
      * @param
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-
         floatingShortcutButton.setOnClickListener {
             bottomDrawerBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
@@ -127,7 +126,8 @@ class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(), NavigationV
             }
             R.id.action_login -> {
                 NavigationTargets.Authentication(applicationContext)
-                closeScreen()
+                if (!supportPresenter.supportPreference.isAuthenticated)
+                    closeScreen()
                 return true
             }
         }
@@ -164,7 +164,7 @@ class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(), NavigationV
         supportFragment?.apply {
             supportFragmentActivity = this@apply
             supportFragmentManager.commit {
-                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 replace(R.id.contentFrame, this@apply, tag)
             }
         }

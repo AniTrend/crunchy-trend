@@ -29,16 +29,26 @@ object NewsHelper {
         return null
     }
 
-    fun getContentWithoutImage(content: String): String {
-        val matches = content.replace(breakLineRegex, "").split(imageRegex)
-        return matches.firstOrNull() ?: String.empty()
-    }
-
-    fun getSubTitle(content: String): String {
+    fun getContentWithoutImage(content: String): List<String> {
         return content.replace(breakLineRegex, "")
+            .split(imageRegex)
     }
 
-    fun getShortDescription(content: String): String {
-        return content.replaceFirst(imageRegex, "")
+    fun getSubTitle(content: List<String>): String {
+        return content.firstOrNull()?.replace(
+            breakLineRegex,
+            ""
+        ) ?: String.empty()
+    }
+
+    fun getShortDescription(content: List<String>): String {
+        return if (content.size == 2)
+            content[1].replace(imageRegex, "")
+        else
+            String.empty()
+    }
+
+    fun getCombinedContent(content: String, encoded: String): String {
+        return "$content</br></br>$encoded"
     }
 }

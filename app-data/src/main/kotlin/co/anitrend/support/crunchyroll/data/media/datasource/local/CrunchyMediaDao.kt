@@ -56,7 +56,7 @@ interface CrunchyMediaDao : ISupportQuery<CrunchyMediaEntity> {
         select * 
         from CrunchyMediaEntity 
         where collectionId = :collectionId 
-        order by episodeNumber desc
+        order by length(episodeNumber), episodeNumber
         """)
     suspend fun findByCollectionId(
         collectionId: Long
@@ -66,7 +66,7 @@ interface CrunchyMediaDao : ISupportQuery<CrunchyMediaEntity> {
         select * 
         from CrunchyMediaEntity 
         where collectionId = :collectionId 
-        order by episodeNumber desc
+        order by length(episodeNumber), episodeNumber
         """)
     fun findByCollectionIdX(
         collectionId: Long
@@ -76,7 +76,7 @@ interface CrunchyMediaDao : ISupportQuery<CrunchyMediaEntity> {
         select * 
         from CrunchyMediaEntity 
         where collectionId = :collectionId 
-        order by episodeNumber desc
+        order by length(episodeNumber), episodeNumber
         """)
     fun findByCollectionIdFactory(
         collectionId: Long

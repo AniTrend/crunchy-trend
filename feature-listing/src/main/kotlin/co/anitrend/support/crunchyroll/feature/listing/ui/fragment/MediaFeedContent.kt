@@ -63,9 +63,11 @@ class MediaFeedContent : SupportFragmentPagedList<CrunchyEpisodeFeed, CrunchyCor
             supportPresenter,
             object : ItemClickListener<CrunchyEpisodeFeed> {
                 override fun onItemClick(target: View, data: Pair<Int, CrunchyEpisodeFeed?>) {
+                    val episodeFeed = data.second
                     val mediaPlayerPayload = NavigationTargets.MediaPlayer.Payload(
-                        mediaId = data.second?.id ?: 0,
-                        episodeThumbnail = data.second?.episodeThumbnail
+                        mediaId = episodeFeed?.id ?: 0,
+                        episodeTitle = "Episode ${episodeFeed?.episodeNumber}: ${episodeFeed?.title}",
+                        episodeThumbnail = episodeFeed?.episodeThumbnail
                     )
                     NavigationTargets.MediaPlayer(
                         target.context, mediaPlayerPayload

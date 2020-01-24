@@ -34,7 +34,7 @@ data class CrunchyMediaEntity(
     val collectionEtpGuid: String?,
     val seriesId: Long,
     val seriesEtpGuid: String?,
-    val episodeNumber: Int,
+    val episodeNumber: String,
     val name: String,
     val description: String,
     val screenshotImage: String?,

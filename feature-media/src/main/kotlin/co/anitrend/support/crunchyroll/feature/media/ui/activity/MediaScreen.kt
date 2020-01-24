@@ -92,7 +92,7 @@ class MediaScreen : CrunchyActivity<Nothing, MediaPresenter>() {
         val target = supportFragmentActivity as SupportFragment<*, *, *>
 
         supportFragmentManager.commit {
-            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             replace(R.id.series_content, target, target.tag)
         }
     }

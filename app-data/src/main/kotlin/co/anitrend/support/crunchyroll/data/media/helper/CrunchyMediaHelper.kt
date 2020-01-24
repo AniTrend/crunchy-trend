@@ -17,15 +17,15 @@
 package co.anitrend.support.crunchyroll.data.media.helper
 
 import androidx.annotation.VisibleForTesting
+import androidx.core.text.isDigitsOnly
 import co.anitrend.support.crunchyroll.data.media.model.CrunchyMediaModel
 
 object CrunchyMediaHelper {
-    fun getActualEpisodeNumber(model: CrunchyMediaModel): Int {
+    fun getActualEpisodeNumber(model: CrunchyMediaModel): String {
         val regex = Regex("[^\\d.]")
         if (model.episode_number.isBlank())
-            return 0
-        val filtered = model.episode_number.replace(regex, "")
-        return filtered.toInt()
+            return "0"
+        return model.episode_number.replace(regex, "")
     }
 
     @VisibleForTesting
@@ -33,8 +33,12 @@ object CrunchyMediaHelper {
         model.duration < 300
 
     @VisibleForTesting
-    fun isFullEpisode(model: CrunchyMediaModel) =
-        getActualEpisodeNumber(model) % 1 == 0
+    fun isFullEpisode(model: CrunchyMediaModel): Boolean {
+        val episodeNumber = getActualEpisodeNumber(model)
+        if (episodeNumber.isDigitsOnly())
+            return episodeNumber.toInt() % 1 == 0
+        return false
+    }
 
     @VisibleForTesting
     fun isSpecialEpisode(model: CrunchyMediaModel) =

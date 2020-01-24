@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "24dff6fcc2127a9bcc6dd20980ac7679",
+    "identityHash": "b035649e6e62fffdfa2402b2ce0dedb5",
     "entities": [
       {
         "tableName": "CrunchySessionEntity",
@@ -420,7 +420,7 @@
       },
       {
         "tableName": "CrunchyMediaEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`mediaId` INTEGER NOT NULL, `etpGuid` TEXT NOT NULL, `collectionId` INTEGER NOT NULL, `collectionEtpGuid` TEXT, `seriesId` INTEGER NOT NULL, `seriesEtpGuid` TEXT, `episodeNumber` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `screenshotImage` TEXT, `url` TEXT NOT NULL, `availableTime` INTEGER NOT NULL, `premiumAvailableTime` INTEGER NOT NULL, `freeAvailableTime` INTEGER NOT NULL, `availabilityNotes` TEXT NOT NULL, `duration` INTEGER NOT NULL, `seriesName` TEXT NOT NULL, `playhead` INTEGER NOT NULL, `isSpecialEpisode` INTEGER NOT NULL, PRIMARY KEY(`mediaId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`mediaId` INTEGER NOT NULL, `etpGuid` TEXT NOT NULL, `collectionId` INTEGER NOT NULL, `collectionEtpGuid` TEXT, `seriesId` INTEGER NOT NULL, `seriesEtpGuid` TEXT, `episodeNumber` TEXT NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `screenshotImage` TEXT, `url` TEXT NOT NULL, `availableTime` INTEGER NOT NULL, `premiumAvailableTime` INTEGER NOT NULL, `freeAvailableTime` INTEGER NOT NULL, `availabilityNotes` TEXT NOT NULL, `duration` INTEGER NOT NULL, `seriesName` TEXT NOT NULL, `playhead` INTEGER NOT NULL, `isSpecialEpisode` INTEGER NOT NULL, PRIMARY KEY(`mediaId`))",
         "fields": [
           {
             "fieldPath": "mediaId",
@@ -461,7 +461,7 @@
           {
             "fieldPath": "episodeNumber",
             "columnName": "episodeNumber",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -727,7 +727,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '24dff6fcc2127a9bcc6dd20980ac7679')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b035649e6e62fffdfa2402b2ce0dedb5')"
     ]
   }
 }

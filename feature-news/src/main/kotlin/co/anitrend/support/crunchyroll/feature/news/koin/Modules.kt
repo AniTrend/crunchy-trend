@@ -52,7 +52,7 @@ private val coreModule = module {
                         .transform(
                             CenterCrop(),
                             RoundedCorners(androidApplication().resources.getDimensionPixelSize(R.dimen.md_margin))
-                        ).placeholder(R.drawable.ic_crunchyroll)
+                        ).placeholder(R.drawable.ic_launcher_foreground)
                 }
             }))
             .build()

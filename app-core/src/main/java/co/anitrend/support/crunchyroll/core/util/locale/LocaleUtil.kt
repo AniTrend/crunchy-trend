@@ -23,6 +23,7 @@ import co.anitrend.support.crunchyroll.core.settings.common.locale.ILocaleSettin
 import co.anitrend.support.crunchyroll.core.util.locale.AniTrendLocale
 import java.util.*
 
+@Suppress("DEPRECATION")
 class LocaleUtil(private val settings: ILocaleSettings) {
 
     val locale: Locale

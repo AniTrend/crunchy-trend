@@ -32,7 +32,10 @@ android {
 }
 
 ext {
+    mediaKtx = '1.1.0'
     exoMedia = '4.3.0'
+    exoPlaylist = '2.0.1'
+    exoMediaPlayer = '2.6.0'
 }
 
 dependencies {
@@ -54,6 +57,7 @@ dependencies {
     implementation "com.google.android.material:material:$material"
 
     /** Architecture Components */
+    implementation "androidx.media:media:$mediaKtx"
     implementation "androidx.core:core-ktx:$ktx"
     implementation "androidx.work:work-runtime-ktx:$workerKtx"
     implementation "androidx.fragment:fragment-ktx:$fragmentKtx"
@@ -68,4 +72,10 @@ dependencies {
 
     /** Exo media */
     implementation "com.devbrackets.android:exomedia:$exoMedia"
+
+    /** Playlist support */
+    implementation "com.devbrackets.android:playlistcore:$exoPlaylist"
+
+    /** Exo player extensions */
+    implementation "com.google.android.exoplayer:extension-okhttp:$exoMediaPlayer"
 }

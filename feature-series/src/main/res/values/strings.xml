@@ -16,9 +16,8 @@
 
 <resources>
     <string name="label_information">Information</string>
-    <string name="label_seasons">Seasons</string>
+    <string name="label_seasons">Seasons >></string>
     <string name="label_genres">Genres</string>
-    <string name="label_season">Season</string>
 
     <string name="label_total_seasons">Total seasons</string>
     <string name="label_total_episodes">Total episodes</string>

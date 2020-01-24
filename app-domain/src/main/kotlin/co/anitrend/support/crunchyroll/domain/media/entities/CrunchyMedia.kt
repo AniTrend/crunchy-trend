@@ -20,7 +20,7 @@ data class CrunchyMedia(
     val mediaId: Long,
     val collectionId: Long,
     val seriesId: Long,
-    val episodeNumber: Int,
+    val episodeNumber: String,
     val name: String,
     val description: String,
     val screenshotImage: String?,

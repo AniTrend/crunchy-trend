@@ -16,17 +16,61 @@
 
 package co.anitrend.support.crunchyroll.feature.player.ui.activity
 
+import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.FragmentTransaction
+import android.view.View
+import android.view.WindowManager
 import androidx.fragment.app.commit
+import co.anitrend.arch.extension.getCompatColor
+import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.feature.player.ui.fragment.MediaStreamContent
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.player.R
 import co.anitrend.support.crunchyroll.feature.player.koin.injectFeatureModules
+import co.anitrend.support.crunchyroll.feature.player.ui.fragment.MediaStreamContent
+import com.devbrackets.android.exomedia.ExoMedia
+import com.devbrackets.android.exomedia.listener.VideoControlsVisibilityListener
 import org.koin.android.ext.android.inject
 
-class MediaPlayerScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
+class MediaPlayerScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(),
+    VideoControlsVisibilityListener {
+
+    private var fullScreenListener: MediaStreamContent.FullScreenListener? = null
+
+    /**
+     * Determines the appropriate fullscreen flags based on the
+     * systems API version.
+     *
+     * @return The appropriate decor view flags to enter fullscreen mode when supported
+     */
+    private val fullscreenUiFlags: Int
+        get() = (View.SYSTEM_UI_FLAG_LOW_PROFILE
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+
+    private val stableUiFlags: Int
+        get() = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+
+    /**
+     * Can be used to configure custom theme styling as desired
+     */
+    override fun configureActivity() {
+        super.configureActivity()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            with (window) {
+                clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+                clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
+                addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                statusBarColor = getCompatColor(R.color.colorScrim)
+                navigationBarColor = getCompatColor(R.color.colorScrim)
+            }
+        }
+    }
 
     /**
      * Should be created lazily through injection or lazy delegate
@@ -41,16 +85,6 @@ class MediaPlayerScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
     }
 
     /**
-     * Dispatch onResume() to fragments.  Note that for better inter-operation
-     * with older versions of the platform, at the point of this call the
-     * fragments attached to the activity are *not* resumed.
-     */
-    override fun onResume() {
-        super.onResume()
-        onUpdateUserInterface()
-    }
-
-    /**
      * Additional initialization to be done in this method, if the overriding class is type of
      * [androidx.fragment.app.Fragment] then this method will be called in
      * [androidx.fragment.app.FragmentActivity.onCreate]. Otherwise
@@ -60,6 +94,9 @@ class MediaPlayerScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
         injectFeatureModules()
+        val cacheFactory = koinOf<ExoMedia.DataSourceFactoryProvider>()
+        ExoMedia.setDataSourceFactoryProvider(cacheFactory)
+        onUpdateUserInterface()
     }
 
     /**
@@ -72,11 +109,54 @@ class MediaPlayerScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
     override fun onUpdateUserInterface() {
         if (supportFragmentActivity == null) {
             supportFragmentActivity = MediaStreamContent.newInstance(intent.extras).apply {
+                fullScreenListener = FullScreenListener()
                 supportFragmentManager.commit {
-                    setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     replace(R.id.contentFrame, this@apply, tag)
                 }
             }
         }
+        initUiFlags()
+    }
+
+    public override fun onDestroy() {
+        super.onDestroy()
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+    }
+
+    private fun goFullscreen() {
+        setUiFlags(true)
+    }
+
+    private fun exitFullscreen() {
+        setUiFlags(false)
+    }
+
+    /**
+     * Correctly sets up the fullscreen flags to avoid popping when we switch
+     * between fullscreen and not
+     */
+    private fun initUiFlags() {
+        window.decorView.systemUiVisibility = stableUiFlags
+        window.decorView.setOnSystemUiVisibilityChangeListener(fullScreenListener)
+    }
+
+    /**
+     * Applies the correct flags to the windows decor view to enter
+     * or exit fullscreen mode
+     *
+     * @param fullscreen True if entering fullscreen mode
+     */
+    private fun setUiFlags(fullscreen: Boolean) {
+        window.decorView.systemUiVisibility = if (fullscreen) fullscreenUiFlags else stableUiFlags
+    }
+
+    override fun onControlsShown() {
+        if (fullScreenListener?.lastVisibility != View.SYSTEM_UI_FLAG_VISIBLE)
+            exitFullscreen()
+    }
+
+    override fun onControlsHidden() {
+        goFullscreen()
     }
 }

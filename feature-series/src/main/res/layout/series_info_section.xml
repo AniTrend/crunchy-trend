@@ -37,11 +37,25 @@
             android:layout_margin="@dimen/xl_margin"
             android:orientation="vertical">
 
-        <co.anitrend.arch.ui.view.text.SingleLineTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                android:text="@string/label_information" />
+        <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <co.anitrend.arch.ui.view.text.SingleLineTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:text="@string/label_information" />
+
+            <co.anitrend.arch.ui.view.text.SingleLineTextView
+                    android:id="@+id/seriesSeasons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:textColor="@color/colorAccent"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:text="@string/label_seasons" />
+        </FrameLayout>
 
         <Space
                 android:layout_width="wrap_content"

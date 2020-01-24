@@ -40,7 +40,7 @@
                 android:layout_height="96dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/xl_margin"
-                app:srcCompat="@drawable/ic_crunchyroll" />
+                app:srcCompat="@drawable/ic_launcher_foreground" />
 
         <Space
                 android:layout_width="wrap_content"
