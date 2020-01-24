@@ -60,6 +60,5 @@ dependencies {
 
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleX"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleX"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycleStateX"
     implementation 'androidx.preference:preference:1.1.0'
 }

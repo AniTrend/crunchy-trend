@@ -32,7 +32,7 @@ ext {
     constraintX = '2.0.0-beta4'
     viewPager2X = "1.0.0-beta04"
 
-    lifecycleStateX = '1.0.0-rc02'
+    lifecycleX = '2.2.0'
     lifecycleX = '2.2.0-rc03'
     room = '2.2.3'
     paging = '2.1.1'
