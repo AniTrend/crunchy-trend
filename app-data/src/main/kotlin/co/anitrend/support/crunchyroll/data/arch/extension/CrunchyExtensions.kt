@@ -19,13 +19,9 @@ package co.anitrend.support.crunchyroll.data.arch.extension
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.controller.CrunchyController
-import co.anitrend.support.crunchyroll.data.arch.controller.CrunchyRssMediaController
-import co.anitrend.support.crunchyroll.data.arch.controller.CrunchyRssNewsController
 import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyResponseStatus
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
-import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyRssMapper
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
-import co.anitrend.support.crunchyroll.data.rss.contract.IRssCopyright
 import com.google.gson.reflect.TypeToken
 import okhttp3.Response
 import okhttp3.ResponseBody
