@@ -78,7 +78,7 @@ class SplashScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
      */
     override fun onUpdateUserInterface() {
         launch {
-            delay(500)
+            delay(250)
             if (isStateAtLeast(Lifecycle.State.RESUMED)) {
                 val settings = supportPresenter.supportPreference
                 if (!settings.isNewInstallation)
