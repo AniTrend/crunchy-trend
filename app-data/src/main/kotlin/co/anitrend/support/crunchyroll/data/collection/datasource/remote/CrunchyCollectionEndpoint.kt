@@ -19,9 +19,8 @@ package co.anitrend.support.crunchyroll.data.collection.datasource.remote
 import co.anitrend.arch.extension.util.SupportExtKeyStore
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.contract.JSON
-import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpointFactory
-import co.anitrend.support.crunchyroll.data.collection.model.CrunchyCollectionModel
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
+import co.anitrend.support.crunchyroll.data.collection.model.CrunchyCollectionModel
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -35,9 +34,4 @@ interface CrunchyCollectionEndpoint {
         @Query("offset") offset: Int,
         @Query("limit") limit: Int = SupportExtKeyStore.pagingLimit
     ) : Response<CrunchyContainer<List<CrunchyCollectionModel>>>
-
-    companion object : CrunchyEndpointFactory<CrunchyCollectionEndpoint>(
-        endpoint = CrunchyCollectionEndpoint::class,
-        url = BuildConfig.apiUrl
-    )
 }

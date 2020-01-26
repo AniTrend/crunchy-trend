@@ -16,9 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.api.endpoint.xml
 
-import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.contract.XML
-import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpointFactory
 import co.anitrend.support.crunchyroll.data.rss.core.CrunchyRssEpisodeContainer
 import retrofit2.Response
 import retrofit2.http.GET
@@ -33,10 +31,4 @@ interface CrunchySeriesFeedEndpoint {
         @Path("media_slug") mediaSlug: String?,
         @Query("locale") crunchyLocale: String
     ): Response<CrunchyRssEpisodeContainer>
-
-    companion object : CrunchyEndpointFactory<CrunchySeriesFeedEndpoint>(
-        url = BuildConfig.crunchyUrl,
-        injectInterceptor = false,
-        endpoint = CrunchySeriesFeedEndpoint::class
-    )
 }

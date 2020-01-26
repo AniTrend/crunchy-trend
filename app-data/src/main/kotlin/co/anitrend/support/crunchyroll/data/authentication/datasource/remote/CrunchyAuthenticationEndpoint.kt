@@ -18,10 +18,9 @@ package co.anitrend.support.crunchyroll.data.authentication.datasource.remote
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.contract.JSON
-import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpointFactory
+import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.authentication.model.CrunchyLoginModel
 import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionModel
-import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -52,10 +51,4 @@ interface CrunchyAuthenticationEndpoint {
         @Query("auth") auth: String,
         @Query("version") version: String = BuildConfig.apiVersion
     ): Response<CrunchyContainer<CrunchySessionModel>>
-
-    companion object : CrunchyEndpointFactory<CrunchyAuthenticationEndpoint>(
-        endpoint = CrunchyAuthenticationEndpoint::class,
-        injectInterceptor = false,
-        url = BuildConfig.apiUrl
-    )
 }
