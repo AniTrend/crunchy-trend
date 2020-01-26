@@ -45,7 +45,7 @@ android {
                 stream -> secretsProps.load(stream)
             }
             it.buildConfigField("String", "clientToken", secretsProps['clientToken'])
-            it.buildConfigField("String", "apiAuthUrl", secretsProps['apiAuthUrl'])
+            it.buildConfigField("String", "apiSessionUrl", secretsProps['apiSessionUrl'])
             it.buildConfigField("String", "apiUrl", secretsProps['apiUrl'])
 
             def configProps = new Properties()
