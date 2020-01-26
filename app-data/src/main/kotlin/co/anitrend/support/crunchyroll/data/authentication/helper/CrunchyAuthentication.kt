@@ -18,13 +18,13 @@ package co.anitrend.support.crunchyroll.data.authentication.helper
 
 import co.anitrend.arch.data.auth.contract.ISupportAuthentication
 import co.anitrend.arch.extension.network.SupportConnectivity
-import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
-import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionDao
 import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
+import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
+import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
+import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionDao
 import co.anitrend.support.crunchyroll.data.session.transformer.CoreSessionTransformer
 import co.anitrend.support.crunchyroll.data.session.transformer.SessionTransformer
-import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
 import co.anitrend.support.crunchyroll.domain.session.interactors.CoreSessionUseCase
 import co.anitrend.support.crunchyroll.domain.session.interactors.UnblockSessionUseCase

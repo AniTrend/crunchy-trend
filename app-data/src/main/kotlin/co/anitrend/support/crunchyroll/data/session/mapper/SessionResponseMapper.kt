@@ -17,10 +17,10 @@
 package co.anitrend.support.crunchyroll.data.session.mapper
 
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
-import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionModel
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionDao
 import co.anitrend.support.crunchyroll.data.session.datasource.local.transformer.SessionEntityTransformer
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
+import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionModel
 
 class SessionResponseMapper(
     private val dao: CrunchySessionDao

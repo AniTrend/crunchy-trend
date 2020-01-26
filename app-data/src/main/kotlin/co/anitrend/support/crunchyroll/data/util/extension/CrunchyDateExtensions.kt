@@ -24,7 +24,7 @@ import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper.Companion.RCF
 import org.koin.core.context.GlobalContext
 
 val supportDateHelper by lazy {
-    GlobalContext.get().koin.get<ISupportDateHelper>()
+    GlobalContext.get().get<ISupportDateHelper>()
 }
 
 fun ISO8601Date.iso8601ToUnixTime() =

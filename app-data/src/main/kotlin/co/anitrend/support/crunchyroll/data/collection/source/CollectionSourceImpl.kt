@@ -26,12 +26,10 @@ import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.collection.datasource.local.CrunchyCollectionDao
-import co.anitrend.support.crunchyroll.data.collection.datasource.local.transformer.CrunchyCollectionEntityTransformer
 import co.anitrend.support.crunchyroll.data.collection.datasource.remote.CrunchyCollectionEndpoint
 import co.anitrend.support.crunchyroll.data.collection.mapper.CollectionResponseMapper
 import co.anitrend.support.crunchyroll.data.collection.source.contract.CollectionSource
 import co.anitrend.support.crunchyroll.data.collection.transformer.CollectionTransformer
-import co.anitrend.support.crunchyroll.data.series.transformer.CrunchySeriesTransformer
 import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
 import co.anitrend.support.crunchyroll.domain.collection.models.CrunchyCollectionQuery
 import kotlinx.coroutines.async

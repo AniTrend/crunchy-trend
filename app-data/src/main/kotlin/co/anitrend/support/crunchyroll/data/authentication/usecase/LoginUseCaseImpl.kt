@@ -18,8 +18,8 @@ package co.anitrend.support.crunchyroll.data.authentication.usecase
 
 import co.anitrend.arch.data.model.UserInterfaceState
 import co.anitrend.support.crunchyroll.data.authentication.repository.AuthenticationRepository
-import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 import co.anitrend.support.crunchyroll.domain.authentication.interactors.LoginUseCase
+import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 
 class LoginUseCaseImpl(
     repository: AuthenticationRepository

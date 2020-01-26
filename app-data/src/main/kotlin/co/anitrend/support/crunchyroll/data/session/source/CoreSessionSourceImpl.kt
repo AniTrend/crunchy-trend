@@ -20,11 +20,11 @@ import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.extension.controller
-import co.anitrend.support.crunchyroll.data.session.datasource.remote.CrunchySessionEndpoint
-import co.anitrend.support.crunchyroll.data.session.source.contract.SessionSource
-import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
-import co.anitrend.support.crunchyroll.data.session.mapper.CoreSessionResponseMapper
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
+import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
+import co.anitrend.support.crunchyroll.data.session.datasource.remote.CrunchySessionEndpoint
+import co.anitrend.support.crunchyroll.data.session.mapper.CoreSessionResponseMapper
+import co.anitrend.support.crunchyroll.data.session.source.contract.SessionSource
 import co.anitrend.support.crunchyroll.data.session.transformer.CoreSessionTransformer
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
 import kotlinx.coroutines.async

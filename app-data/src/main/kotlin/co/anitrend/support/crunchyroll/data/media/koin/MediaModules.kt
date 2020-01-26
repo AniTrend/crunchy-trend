@@ -17,8 +17,6 @@
 package co.anitrend.support.crunchyroll.data.media.koin
 
 
-import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
-import co.anitrend.support.crunchyroll.data.media.datasource.remote.CrunchyMediaEndpoint
 import co.anitrend.support.crunchyroll.data.media.mapper.MediaResponseMapper
 import co.anitrend.support.crunchyroll.data.media.repository.MediaRepository
 import co.anitrend.support.crunchyroll.data.media.source.MediaSourceImpl
@@ -31,8 +29,8 @@ private val dataSourceModule = module {
             supportConnectivity = get(),
             supportDispatchers = get(),
             mapper = get(),
-            mediaDao = get<CrunchyDatabase>().crunchyMediaDao(),
-            mediaEndpoint = CrunchyMediaEndpoint.create()
+            mediaDao = get(),
+            mediaEndpoint = get()
         )
     }
 }
@@ -40,7 +38,7 @@ private val dataSourceModule = module {
 private val mapperModule = module {
     factory {
         MediaResponseMapper(
-            dao = get<CrunchyDatabase>().crunchyMediaDao()
+            dao = get()
         )
     }
 }

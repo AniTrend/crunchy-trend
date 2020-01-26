@@ -18,13 +18,12 @@ package co.anitrend.support.crunchyroll.data.authentication.repository
 
 import co.anitrend.arch.data.model.UserInterfaceState
 import co.anitrend.arch.data.repository.SupportRepository
-import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.data.authentication.source.contract.LoginSource
 import co.anitrend.support.crunchyroll.data.authentication.source.contract.LogoutSource
 import co.anitrend.support.crunchyroll.domain.authentication.models.CrunchyLoginQuery
-import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 import co.anitrend.support.crunchyroll.domain.authentication.repositories.ILoginRepository
 import co.anitrend.support.crunchyroll.domain.authentication.repositories.ILogoutRepository
+import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 
 class AuthenticationRepository(
     private val loginSource: LoginSource,

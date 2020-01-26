@@ -16,8 +16,6 @@
 
 package co.anitrend.support.crunchyroll.data.collection.helper
 
-import co.anitrend.support.crunchyroll.data.arch.model.CrunchyImageSet
-
 object CollectionHelper {
 
 }

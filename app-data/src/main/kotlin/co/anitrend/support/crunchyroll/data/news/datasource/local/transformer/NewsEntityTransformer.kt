@@ -17,7 +17,6 @@
 package co.anitrend.support.crunchyroll.data.news.datasource.local.transformer
 
 import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
-import co.anitrend.arch.extension.empty
 import co.anitrend.support.crunchyroll.data.news.entity.NewsEntity
 import co.anitrend.support.crunchyroll.data.news.helper.NewsHelper
 import co.anitrend.support.crunchyroll.data.news.model.CrunchyNewsModel

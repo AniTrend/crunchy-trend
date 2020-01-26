@@ -17,8 +17,6 @@
 package co.anitrend.support.crunchyroll.data.series.koin
 
 
-import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
-import co.anitrend.support.crunchyroll.data.series.datasource.remote.CrunchySeriesEndpoint
 import co.anitrend.support.crunchyroll.data.series.mapper.SeriesResponseMapper
 import co.anitrend.support.crunchyroll.data.series.repository.SeriesRepository
 import co.anitrend.support.crunchyroll.data.series.source.SeriesSourceImpl
@@ -31,8 +29,8 @@ private val dataSourceModule = module {
     factory {
         SeriesSourceImpl(
             mapper = get(),
-            seriesDao = get<CrunchyDatabase>().crunchySeriesDao(),
-            seriesEndpoint = CrunchySeriesEndpoint.create(),
+            seriesDao = get(),
+            seriesEndpoint = get(),
             supportDispatchers = get(),
             supportConnectivity = get()
         )
@@ -42,7 +40,7 @@ private val dataSourceModule = module {
 private val mapperModule = module {
     factory {
         SeriesResponseMapper(
-            dao = get<CrunchyDatabase>().crunchySeriesDao()
+            dao = get()
         )
     }
 }

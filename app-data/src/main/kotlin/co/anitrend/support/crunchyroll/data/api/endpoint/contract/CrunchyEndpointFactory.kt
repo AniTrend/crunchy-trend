@@ -17,56 +17,15 @@
 package co.anitrend.support.crunchyroll.data.api.endpoint.contract
 
 import co.anitrend.arch.data.factory.SupportEndpointFactory
-import co.anitrend.support.crunchyroll.data.BuildConfig
-import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
-import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyRequestInterceptor
-import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyResponseInterceptor
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.core.KoinComponent
-import org.koin.core.inject
 import retrofit2.Retrofit
-import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
 /**
  * Generates retrofit service classes
  *
- * @param url The url to use when create a service endpoint
  * @param endpoint The interface class method representing your request to use
  */
 open class CrunchyEndpointFactory<S: Any>(
-    url: String,
     endpoint: KClass<S>,
-    private val injectInterceptor: Boolean = true
-) : SupportEndpointFactory<S>(url, endpoint), KoinComponent {
-
-    private val responseInterceptor by inject<CrunchyResponseInterceptor>()
-    private val requestInterceptor by inject<CrunchyRequestInterceptor>()
-
-    override val retrofit: Retrofit by lazy {
-        val httpClient = OkHttpClient.Builder()
-            .apply {
-                if (injectInterceptor) {
-                    addInterceptor(responseInterceptor)
-                    addInterceptor(requestInterceptor)
-                }
-                readTimeout(10, TimeUnit.SECONDS)
-                connectTimeout(10, TimeUnit.SECONDS)
-                retryOnConnectionFailure(true)
-                when {
-                    BuildConfig.DEBUG -> {
-                        val httpLoggingInterceptor = HttpLoggingInterceptor()
-                        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.HEADERS
-                        addInterceptor(httpLoggingInterceptor)
-                    }
-                }
-            }.build()
-
-        Retrofit.Builder().client(httpClient).apply {
-            addConverterFactory(
-                CrunchyConverterFactory.create()
-            ).baseUrl(url)
-        }.build()
-    }
-}
+    override val retrofit: Retrofit
+) : SupportEndpointFactory<S>("", endpoint)
