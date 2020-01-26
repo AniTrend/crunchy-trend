@@ -32,7 +32,7 @@ val analytics by lazy {
 }
 
 inline fun <reified T> koinOf() =
-    GlobalContext.get().koin.get<T>()
+    GlobalContext.get().get<T>()
 
 
 fun CrunchyActivity<*, *>.recreateModules() {
