@@ -17,22 +17,13 @@
 package co.anitrend.support.crunchyroll.feature.series.presenter
 
 import android.content.Context
-import android.view.View
 import androidx.lifecycle.LiveData
-import androidx.paging.PagedList
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.ui.extension.setUpWith
 import co.anitrend.arch.ui.recycler.SupportRecyclerView
-import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
-import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
-import co.anitrend.support.crunchyroll.feature.series.R
 import co.anitrend.support.crunchyroll.feature.series.model.SeriesModel
 import co.anitrend.support.crunchyroll.feature.series.ui.adpter.SeriesGenreAdapter
-import co.anitrend.support.crunchyroll.feature.series.ui.adpter.SeriesSeasonAdapter
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent

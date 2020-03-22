@@ -17,9 +17,7 @@
 package co.anitrend.support.crunchyroll.data.session.koin
 
 
-import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthenticationEndpoint
 import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
-import co.anitrend.support.crunchyroll.data.session.datasource.remote.CrunchySessionEndpoint
 import co.anitrend.support.crunchyroll.data.session.mapper.CoreSessionResponseMapper
 import co.anitrend.support.crunchyroll.data.session.mapper.SessionResponseMapper
 import co.anitrend.support.crunchyroll.data.session.repository.SessionRepository
@@ -34,8 +32,8 @@ import org.koin.dsl.module
 private val dataSourceModule = module {
     factory {
         CoreSessionSourceImpl(
-            dao = get<CrunchyDatabase>().crunchySessionCoreDao(),
-            endpoint = CrunchySessionEndpoint.create(),
+            dao = get(),
+            endpoint = get(),
             mapper = get(),
             settings = get(),
             supportDispatchers = get(),
@@ -44,10 +42,10 @@ private val dataSourceModule = module {
     }
     factory {
         NormalSessionSourceImpl(
-            endpoint = CrunchyAuthenticationEndpoint.create(),
-            dao = get<CrunchyDatabase>().crunchySessionDao(),
-            coreSessionDao = get<CrunchyDatabase>().crunchySessionCoreDao(),
-            loginDao = get<CrunchyDatabase>().crunchyLoginDao(),
+            endpoint = get(),
+            dao = get(),
+            coreSessionDao = get(),
+            loginDao = get(),
             mapper = get(),
             settings = get(),
             supportDispatchers = get(),
@@ -56,10 +54,10 @@ private val dataSourceModule = module {
     }
     factory {
         UnblockSessionSourceImpl(
-            dao = get<CrunchyDatabase>().crunchySessionDao(),
-            endpoint = CrunchySessionEndpoint.create(),
-            coreSessionDao = get<CrunchyDatabase>().crunchySessionCoreDao(),
-            loginDao = get<CrunchyDatabase>().crunchyLoginDao(),
+            dao = get(),
+            endpoint = get(),
+            coreSessionDao = get(),
+            loginDao = get(),
             mapper = get(),
             settings = get(),
             supportDispatchers = get(),
@@ -71,12 +69,12 @@ private val dataSourceModule = module {
 private val mapperModule = module {
     factory {
         CoreSessionResponseMapper(
-            dao = get<CrunchyDatabase>().crunchySessionCoreDao()
+            dao = get()
         )
     }
     factory {
         SessionResponseMapper(
-            dao = get<CrunchyDatabase>().crunchySessionDao()
+            dao = get()
         )
     }
 }

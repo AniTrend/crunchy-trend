@@ -16,12 +16,14 @@
 
 package co.anitrend.support.crunchyroll.data.api.interceptor
 
+import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
-import co.anitrend.support.crunchyroll.data.authentication.helper.CrunchyAuthentication
+import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyResponseStatus
 import co.anitrend.support.crunchyroll.data.arch.extension.composeWith
 import co.anitrend.support.crunchyroll.data.arch.extension.typeTokenOf
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
+import co.anitrend.support.crunchyroll.data.authentication.helper.CrunchyAuthentication
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import okhttp3.*
@@ -35,7 +37,8 @@ import java.util.concurrent.atomic.AtomicInteger
  */
 class CrunchyResponseInterceptor(
     private val connectivityHelper: SupportConnectivity,
-    private val authentication: CrunchyAuthentication
+    private val authentication: CrunchyAuthentication,
+    private val dispatchers: SupportDispatchers
 ) : Interceptor {
 
     private val json by lazy {
@@ -45,7 +48,19 @@ class CrunchyResponseInterceptor(
     private val retryCount: AtomicInteger = AtomicInteger(0)
 
     private fun convertResponse(body: String?) : CrunchyContainer<Any?>? {
-        return json.fromJson(body, typeTokenOf<CrunchyContainer<Any?>?>())
+        return try {
+            json.fromJson(body, typeTokenOf<CrunchyContainer<Any?>?>())
+        } catch (e: Exception) {
+            Timber.tag("convertResponse").e(
+                Exception(e.message, Throwable(body))
+            )
+            CrunchyContainer(
+                CrunchyResponseStatus.bad_request,
+                true,
+                null,
+                body
+            )
+        }
     }
 
     private fun buildResponseBody(content: String?, mediaType: MediaType?): ResponseBody? {
@@ -97,14 +112,14 @@ class CrunchyResponseInterceptor(
             if (response.priorResponse?.isSuccessful != true) {
                 val retries = retryCount.incrementAndGet()
                 if (retries >= 3) {
-                    runBlocking(Dispatchers.IO) {
+                    runBlocking(dispatchers.io) {
                         authentication.invalidateSession()
                     }
                     retryCount.set(0)
                 }
             }
 
-            return runBlocking(Dispatchers.IO) {
+            return runBlocking(dispatchers.io) {
                 authentication.refreshSession(origin).build()
             }
         }

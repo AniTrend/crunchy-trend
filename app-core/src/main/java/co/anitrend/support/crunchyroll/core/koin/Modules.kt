@@ -55,7 +55,9 @@ private val coreModule = module {
     } binds(CrunchySettings.BINDINGS)
     factory {
         ConfigurationUtil(
-            settings = get()
+            settings = get(),
+            localeUtil = get(),
+            themeUtil = get()
         )
     }
     single {

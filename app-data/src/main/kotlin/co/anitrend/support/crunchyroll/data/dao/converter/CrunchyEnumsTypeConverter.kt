@@ -17,8 +17,8 @@
 package co.anitrend.support.crunchyroll.data.dao.converter
 
 import androidx.room.TypeConverter
-import co.anitrend.support.crunchyroll.domain.user.enums.CrunchyAccessType
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchyMediaType
+import co.anitrend.support.crunchyroll.domain.user.enums.CrunchyAccessType
 
 class CrunchyEnumsTypeConverter {
 

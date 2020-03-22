@@ -24,7 +24,7 @@ import co.anitrend.arch.core.presenter.SupportPresenter
 import co.anitrend.arch.ui.recycler.adapter.SupportPagedListAdapter
 import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.support.crunchyroll.core.extensions.koinOf
+import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import co.anitrend.support.crunchyroll.feature.news.databinding.AdapterNewsFeedBinding
 import io.noties.markwon.Markwon
@@ -32,10 +32,10 @@ import org.koin.core.KoinComponent
 import org.koin.core.inject
 
 class RssNewsAdapter(
-    presenter: SupportPresenter<*>,
     private val markwon: Markwon,
+    override val stateConfiguration: SupportStateLayoutConfiguration,
     private val itemClickListener: ItemClickListener<CrunchyNews>
-) : SupportPagedListAdapter<CrunchyNews>(presenter, koinOf()) {
+) : SupportPagedListAdapter<CrunchyNews>() {
 
 
     /**

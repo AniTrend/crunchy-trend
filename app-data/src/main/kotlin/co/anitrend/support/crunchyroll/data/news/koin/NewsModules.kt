@@ -17,8 +17,6 @@
 package co.anitrend.support.crunchyroll.data.news.koin
 
 
-import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
-import co.anitrend.support.crunchyroll.data.news.datasource.remote.CrunchyNewsFeedEndpoint
 import co.anitrend.support.crunchyroll.data.news.mapper.NewsResponseMapper
 import co.anitrend.support.crunchyroll.data.news.repository.NewsRepository
 import co.anitrend.support.crunchyroll.data.news.source.NewsSourceImpl
@@ -29,8 +27,8 @@ private val dataSourceModule = module {
     factory {
         NewsSourceImpl(
             mapper = get(),
-            endpoint = CrunchyNewsFeedEndpoint.create(),
-            dao = get<CrunchyDatabase>().crunchyRssNewsDao(),
+            endpoint = get(),
+            dao = get(),
             supportDispatchers = get(),
             supportConnectivity = get()
         )
@@ -40,7 +38,7 @@ private val dataSourceModule = module {
 private val mapperModule = module {
     factory {
         NewsResponseMapper(
-            dao = get<CrunchyDatabase>().crunchyRssNewsDao()
+            dao = get()
         )
     }
 }

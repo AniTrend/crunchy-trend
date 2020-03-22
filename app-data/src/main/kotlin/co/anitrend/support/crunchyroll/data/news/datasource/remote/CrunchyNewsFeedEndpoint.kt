@@ -16,9 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.news.datasource.remote
 
-import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.contract.XML
-import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpointFactory
 import co.anitrend.support.crunchyroll.data.rss.core.CrunchyRssNewsContainer
 import retrofit2.Response
 import retrofit2.http.GET
@@ -31,10 +29,4 @@ interface CrunchyNewsFeedEndpoint {
     suspend fun getMediaNews(
         @Query("locale") crunchyLocale: String
     ): Response<CrunchyRssNewsContainer>
-
-    companion object : CrunchyEndpointFactory<CrunchyNewsFeedEndpoint>(
-        url = BuildConfig.apiFeed,
-        injectInterceptor = false,
-        endpoint = CrunchyNewsFeedEndpoint::class
-    )
 }

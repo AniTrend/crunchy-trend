@@ -18,17 +18,21 @@ package co.anitrend.support.crunchyroll.data.authentication.source
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import co.anitrend.arch.data.auth.SupportAuthentication
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.extension.controller
-import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthenticationEndpoint
-import co.anitrend.support.crunchyroll.data.authentication.source.contract.LoginSource
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
+import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthenticationEndpoint
+import co.anitrend.support.crunchyroll.data.authentication.helper.CrunchyAuthentication
 import co.anitrend.support.crunchyroll.data.authentication.mapper.LoginResponseMapper
-import co.anitrend.support.crunchyroll.data.authentication.transformer.CrunchyUserTransformer
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
+import co.anitrend.support.crunchyroll.data.authentication.source.contract.LoginSource
+import co.anitrend.support.crunchyroll.data.authentication.transformer.CrunchyUserTransformer
+import co.anitrend.support.crunchyroll.data.session.repository.SessionRepository
+import co.anitrend.support.crunchyroll.data.session.source.CoreSessionSourceImpl
 import co.anitrend.support.crunchyroll.domain.authentication.models.CrunchyLoginQuery
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 import kotlinx.coroutines.async
@@ -41,6 +45,7 @@ class LoginSourceImpl(
     private val endpoint: CrunchyAuthenticationEndpoint,
     private val mapper: LoginResponseMapper,
     private val supportConnectivity: SupportConnectivity,
+    private val sessionRepository: SessionRepository,
     supportDispatchers: SupportDispatchers
 ) : LoginSource(supportDispatchers) {
 
@@ -64,12 +69,12 @@ class LoginSourceImpl(
 
     override fun loginUser(query: CrunchyLoginQuery): LiveData<CrunchyUser?> {
         retry = { loginUser(query) }
-        networkState.value = NetworkState.Loading
         val deferred = async {
+            val session = sessionRepository.getCoreSession()
             endpoint.loginUser(
                 account = query.account,
                 password = query.password,
-                sessionId = settings.sessionId
+                sessionId = session?.sessionId
             )
         }
 

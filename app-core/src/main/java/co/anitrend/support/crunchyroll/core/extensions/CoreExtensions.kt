@@ -19,21 +19,11 @@ package co.anitrend.support.crunchyroll.core.extensions
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.fragment.app.FragmentActivity
-import co.anitrend.arch.core.analytic.contract.ISupportAnalytics
 import co.anitrend.support.crunchyroll.core.CrunchyApplication
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import com.afollestad.materialdialogs.DialogBehavior
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
-import org.koin.core.context.GlobalContext
-
-val analytics by lazy {
-    koinOf<ISupportAnalytics>()
-}
-
-inline fun <reified T> koinOf() =
-    GlobalContext.get().koin.get<T>()
-
 
 fun CrunchyActivity<*, *>.recreateModules() {
     val coreApplication = applicationContext as CrunchyApplication

@@ -20,15 +20,14 @@ import androidx.lifecycle.LiveData
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.domain.entities.isSuccess
 import co.anitrend.arch.extension.SupportDispatchers
-import co.anitrend.arch.extension.network.SupportConnectivity
-import co.anitrend.support.crunchyroll.data.arch.extension.controller
-import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthenticationEndpoint
-import co.anitrend.support.crunchyroll.data.authentication.source.contract.LogoutSource
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
-import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
-import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionDao
+import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthenticationEndpoint
 import co.anitrend.support.crunchyroll.data.authentication.mapper.LogoutResponseMapper
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
+import co.anitrend.support.crunchyroll.data.authentication.source.contract.LogoutSource
+import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
+import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionDao
+import co.anitrend.support.crunchyroll.data.session.repository.SessionRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
@@ -39,6 +38,7 @@ class LogoutSourceImpl(
     private val endpoint: CrunchyAuthenticationEndpoint,
     private val settings: IAuthenticationSettings,
     private val dao: CrunchyLoginDao,
+    private val sessionRepository: SessionRepository,
     supportDispatchers: SupportDispatchers
 ) : LogoutSource(supportDispatchers) {
 
@@ -46,6 +46,11 @@ class LogoutSourceImpl(
         retry = { logoutUser() }
         networkState.postValue(NetworkState.Loading)
         val deferred = async {
+            if (settings.sessionId == null) {
+                val unblocked = sessionRepository.getUnblockedSession()
+                if (unblocked == null)
+                    sessionRepository.getCoreSession()
+            }
             endpoint.logoutUser(
                 sessionId = settings.sessionId
             )

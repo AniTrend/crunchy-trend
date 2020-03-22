@@ -21,7 +21,6 @@ import co.anitrend.arch.data.common.ISupportPagingResponse
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.capitalizeWords
 import co.anitrend.arch.extension.network.SupportConnectivity
-import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyRssMapper
 import co.anitrend.support.crunchyroll.data.rss.contract.ICrunchyRssChannel
 import co.anitrend.support.crunchyroll.data.rss.contract.IRssCopyright

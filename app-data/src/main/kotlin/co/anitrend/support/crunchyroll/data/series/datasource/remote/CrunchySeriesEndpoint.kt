@@ -19,11 +19,10 @@ package co.anitrend.support.crunchyroll.data.series.datasource.remote
 import co.anitrend.arch.extension.util.SupportExtKeyStore
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.contract.JSON
-import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpointFactory
 import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyModelField
-import co.anitrend.support.crunchyroll.domain.series.enums.CrunchyMediaType
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.series.model.CrunchySeriesModel
+import co.anitrend.support.crunchyroll.domain.series.enums.CrunchyMediaType
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesFilter
 import retrofit2.Response
 import retrofit2.http.GET
@@ -56,9 +55,4 @@ interface CrunchySeriesEndpoint {
         @Query("offset") offset: Int,
         @Query("limit") limit: Int = SupportExtKeyStore.pagingLimit
     ) : Response<CrunchyContainer<List<CrunchySeriesModel>>>
-
-    companion object : CrunchyEndpointFactory<CrunchySeriesEndpoint>(
-        endpoint = CrunchySeriesEndpoint::class,
-        url = BuildConfig.apiUrl
-    )
 }

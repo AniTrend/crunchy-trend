@@ -18,7 +18,6 @@ package co.anitrend.support.crunchyroll.data.tracker.datasource.remote
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.contract.JSON
-import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpointFactory
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import retrofit2.Response
 import retrofit2.http.GET
@@ -57,10 +56,4 @@ interface CrunchyTrackingEndpoint {
         @Query("playhead") playHead: Int,
         @Query("media_id") mediaId: Long
     ) : Response<CrunchyContainer<Any>>
-
-
-    companion object : CrunchyEndpointFactory<CrunchyTrackingEndpoint>(
-        endpoint = CrunchyTrackingEndpoint::class,
-        url = BuildConfig.apiUrl
-    )
 }

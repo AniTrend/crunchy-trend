@@ -17,7 +17,6 @@
 package co.anitrend.support.crunchyroll.data.stream.koin
 
 
-import co.anitrend.support.crunchyroll.data.stream.datasource.remote.CrunchyStreamEndpoint
 import co.anitrend.support.crunchyroll.data.stream.mapper.CrunchyStreamResponseMapper
 import co.anitrend.support.crunchyroll.data.stream.repository.CrunchyStreamRepository
 import co.anitrend.support.crunchyroll.data.stream.source.CrunchyStreamSourceImpl
@@ -27,7 +26,7 @@ import org.koin.dsl.module
 private val dataSourceModule = module {
     factory {
         CrunchyStreamSourceImpl(
-            endpoint = CrunchyStreamEndpoint.create(),
+            endpoint = get(),
             mapper = get(),
             supportDispatchers = get(),
             supportConnectivity = get()

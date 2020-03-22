@@ -19,18 +19,21 @@ package co.anitrend.support.crunchyroll.core
 import android.app.Application
 import android.util.Log
 import androidx.work.Configuration
+import co.anitrend.arch.core.analytic.contract.ISupportAnalytics
 import co.anitrend.arch.extension.isLowRamDevice
 import co.anitrend.support.crunchyroll.core.util.theme.ThemeUtil
 import co.anitrend.support.crunchyroll.core.analytics.AnalyticsLogger
-import co.anitrend.support.crunchyroll.core.extensions.analytics
-import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import coil.Coil
 import coil.ImageLoader
 import coil.util.CoilUtils
 import okhttp3.OkHttpClient
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 abstract class CrunchyApplication : Application(), Configuration.Provider {
+
+    private val analytics by inject<ISupportAnalytics>()
+    private val themeUtil by inject<ThemeUtil>()
 
     /** [Koin](https://insert-koin.io/docs/2.0/getting-started/)
      *
@@ -80,7 +83,7 @@ abstract class CrunchyApplication : Application(), Configuration.Provider {
      */
     protected open fun applyNightMode() {
         // apply application theme on application instance
-        koinOf<ThemeUtil>().applyNightMode()
+        themeUtil.applyNightMode()
     }
 
     /**

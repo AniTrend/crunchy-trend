@@ -17,10 +17,10 @@
 package co.anitrend.support.crunchyroll.data.authentication.mapper
 
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
-import co.anitrend.support.crunchyroll.data.authentication.model.CrunchyLoginModel
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.transformer.LoginEntityTransformer
 import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEntity
+import co.anitrend.support.crunchyroll.data.authentication.model.CrunchyLoginModel
 
 class LoginResponseMapper(
     private val dao: CrunchyLoginDao

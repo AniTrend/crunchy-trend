@@ -24,7 +24,7 @@ import co.anitrend.support.crunchyroll.data.collection.model.CrunchyCollectionMo
 
 class CollectionResponseMapper(
     private val dao: CrunchyCollectionDao
-) : CrunchyMapper<List<CrunchyCollectionModel>, List<CrunchyCollectionEntity>>()  {
+) : CrunchyMapper<List<CrunchyCollectionModel>, List<CrunchyCollectionEntity>>() {
 
     /**
      * Creates mapped objects and handles the database operations which may be required to map various objects,

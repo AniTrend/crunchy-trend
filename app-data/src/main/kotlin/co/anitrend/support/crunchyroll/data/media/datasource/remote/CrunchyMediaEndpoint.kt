@@ -19,7 +19,6 @@ package co.anitrend.support.crunchyroll.data.media.datasource.remote
 import co.anitrend.arch.extension.util.SupportExtKeyStore
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.contract.JSON
-import co.anitrend.support.crunchyroll.data.api.endpoint.contract.CrunchyEndpointFactory
 import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyModelField
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.media.model.CrunchyMediaModel
@@ -44,9 +43,4 @@ interface CrunchyMediaEndpoint {
         @Query("offset") offset: Int,
         @Query("limit") limit: Int = SupportExtKeyStore.pagingLimit
     ) : Response<CrunchyContainer<List<CrunchyMediaModel>>>
-
-    companion object : CrunchyEndpointFactory<CrunchyMediaEndpoint>(
-        endpoint = CrunchyMediaEndpoint::class,
-        url = BuildConfig.apiUrl
-    )
 }

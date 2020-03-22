@@ -17,10 +17,9 @@
 package co.anitrend.support.crunchyroll.data.series.datasource.local.transformer
 
 import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
-import co.anitrend.support.crunchyroll.domain.series.enums.CrunchyMediaType
 import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesEntity
 import co.anitrend.support.crunchyroll.data.series.model.CrunchySeriesModel
-import java.util.*
+import co.anitrend.support.crunchyroll.domain.series.enums.CrunchyMediaType
 
 object CrunchySeriesEntityTransformer : ISupportMapperHelper<CrunchySeriesModel, CrunchySeriesEntity> {
 

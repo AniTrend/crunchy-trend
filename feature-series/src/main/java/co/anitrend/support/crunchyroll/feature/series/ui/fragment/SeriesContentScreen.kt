@@ -28,7 +28,6 @@ import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.argument
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
-import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesInfoQuery
@@ -37,6 +36,7 @@ import co.anitrend.support.crunchyroll.feature.series.databinding.SeriesContentB
 import co.anitrend.support.crunchyroll.feature.series.presenter.SeriesDetailPresenter
 import co.anitrend.support.crunchyroll.feature.series.ui.adpter.SeriesGenreAdapter
 import co.anitrend.support.crunchyroll.feature.series.viewmodel.SeriesDetailViewModel
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -52,7 +52,7 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
     private lateinit var binding: SeriesContentBinding
 
     private val seriesGenreAdapter by lazy(LAZY_MODE_UNSAFE) {
-        SeriesGenreAdapter(supportPresenter)
+        SeriesGenreAdapter(get())
     }
 
     /**
@@ -133,7 +133,7 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
     ): View? {
         binding = SeriesContentBinding.inflate(inflater, container, false)
 
-        val stateConfigurationUtil = koinOf<SupportStateLayoutConfiguration>()
+        val stateConfigurationUtil = get<SupportStateLayoutConfiguration>()
 
         binding.supportStateLayout.stateConfiguration = stateConfigurationUtil
 

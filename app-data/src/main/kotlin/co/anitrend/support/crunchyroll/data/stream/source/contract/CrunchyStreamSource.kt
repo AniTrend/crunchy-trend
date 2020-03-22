@@ -20,8 +20,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import co.anitrend.arch.data.source.core.SupportCoreDataSource
 import co.anitrend.arch.extension.SupportDispatchers
-import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
+import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 
 abstract class CrunchyStreamSource(
     supportDispatchers: SupportDispatchers

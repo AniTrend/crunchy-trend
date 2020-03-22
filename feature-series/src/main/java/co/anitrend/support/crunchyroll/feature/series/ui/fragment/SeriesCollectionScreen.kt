@@ -49,6 +49,7 @@ class SeriesCollectionScreen : SupportFragmentPagedList<CrunchyCollection, Serie
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         SeriesSeasonAdapter(
             supportPresenter,
+            supportStateConfiguration,
             object : ItemClickListener<CrunchyCollection> {
                 override fun onItemClick(target: View, data: Pair<Int, CrunchyCollection?>) {
                     val payload = NavigationTargets.Media.Payload(

@@ -25,7 +25,6 @@ import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
-import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
@@ -37,6 +36,7 @@ import co.anitrend.support.crunchyroll.feature.feed.R
 import co.anitrend.support.crunchyroll.feature.listing.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.listing.presenter.ListingPresenter
 import co.anitrend.support.crunchyroll.feature.listing.ui.adapter.RssMediaAdapter
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -60,7 +60,7 @@ class MediaFeedContent : SupportFragmentPagedList<CrunchyEpisodeFeed, CrunchyCor
 
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         RssMediaAdapter(
-            supportPresenter,
+            supportStateConfiguration,
             object : ItemClickListener<CrunchyEpisodeFeed> {
                 override fun onItemClick(target: View, data: Pair<Int, CrunchyEpisodeFeed?>) {
                     val episodeFeed = data.second
@@ -122,7 +122,7 @@ class MediaFeedContent : SupportFragmentPagedList<CrunchyEpisodeFeed, CrunchyCor
      * @see [SupportPagingViewModel.requestBundleLiveData]
      */
     override fun onFetchDataInitialize() {
-        val currentLocale = koinOf<ICrunchySessionLocale>().sessionLocale
+        val currentLocale = get<ICrunchySessionLocale>().sessionLocale
         supportViewModel(
             RssQuery(
                 language = currentLocale.toCrunchyLocale()

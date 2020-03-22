@@ -24,10 +24,10 @@ import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.data.util.SupportDataKeyStore
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
-import co.anitrend.support.crunchyroll.data.news.source.contract.NewsSource
 import co.anitrend.support.crunchyroll.data.news.datasource.local.CrunchyRssNewsDao
 import co.anitrend.support.crunchyroll.data.news.datasource.remote.CrunchyNewsFeedEndpoint
 import co.anitrend.support.crunchyroll.data.news.mapper.NewsResponseMapper
+import co.anitrend.support.crunchyroll.data.news.source.contract.NewsSource
 import co.anitrend.support.crunchyroll.data.news.transformer.NewsTransformer
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
@@ -69,7 +69,7 @@ class NewsSourceImpl(
             }
         }
 
-    override suspend fun getNewsCatalogue(callback: PagingRequestHelper.Request.Callback) {
+    override fun getNewsCatalogue(callback: PagingRequestHelper.Request.Callback) {
         val deferred = async {
             endpoint.getMediaNews(rssQuery.language)
         }

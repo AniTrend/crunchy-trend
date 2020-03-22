@@ -30,7 +30,6 @@ import co.anitrend.support.crunchyroll.data.media.datasource.remote.CrunchyMedia
 import co.anitrend.support.crunchyroll.data.media.mapper.MediaResponseMapper
 import co.anitrend.support.crunchyroll.data.media.source.contract.MediaSource
 import co.anitrend.support.crunchyroll.data.media.transformer.MediaTransformer
-import co.anitrend.support.crunchyroll.domain.collection.models.CrunchyCollectionQuery
 import co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia
 import co.anitrend.support.crunchyroll.domain.media.models.CrunchyMediaQuery
 import kotlinx.coroutines.async

@@ -23,11 +23,11 @@ import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyModelField
 import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.stream.datasource.remote.CrunchyStreamEndpoint
-import co.anitrend.support.crunchyroll.data.stream.source.contract.CrunchyStreamSource
 import co.anitrend.support.crunchyroll.data.stream.mapper.CrunchyStreamResponseMapper
+import co.anitrend.support.crunchyroll.data.stream.source.contract.CrunchyStreamSource
 import co.anitrend.support.crunchyroll.data.stream.transformer.MediaStreamTransformer
-import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
+import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 

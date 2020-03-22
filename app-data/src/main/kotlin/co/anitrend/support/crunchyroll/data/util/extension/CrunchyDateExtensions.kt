@@ -21,10 +21,15 @@ import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
 import co.anitrend.support.crunchyroll.data.arch.RCF822Date
 import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper.Companion.ISO8601_PATTERN
 import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper.Companion.RCF822_PATTERN
+import org.koin.core.KoinComponent
 import org.koin.core.context.GlobalContext
+import org.koin.core.get
+import org.koin.core.inject
+
+internal val koin = object : KoinComponent {}
 
 val supportDateHelper by lazy {
-    GlobalContext.get().koin.get<ISupportDateHelper>()
+    koin.get<ISupportDateHelper>()
 }
 
 fun ISO8601Date.iso8601ToUnixTime() =

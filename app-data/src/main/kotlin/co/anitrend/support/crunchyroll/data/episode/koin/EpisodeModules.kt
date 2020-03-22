@@ -17,8 +17,6 @@
 package co.anitrend.support.crunchyroll.data.episode.koin
 
 
-import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
-import co.anitrend.support.crunchyroll.data.episode.datasource.remote.CrunchyEpisodeFeedEndpoint
 import co.anitrend.support.crunchyroll.data.episode.mapper.EpisodeFeedResponseMapper
 import co.anitrend.support.crunchyroll.data.episode.repository.EpisodeFeedRepository
 import co.anitrend.support.crunchyroll.data.episode.source.EpisodeFeedSourceImpl
@@ -29,8 +27,8 @@ private val dataSourceModule = module {
     factory {
         EpisodeFeedSourceImpl(
             mapper = get(),
-            endpoint = CrunchyEpisodeFeedEndpoint.create(),
-            dao = get<CrunchyDatabase>().crunchyRssMediaDao(),
+            endpoint = get(),
+            dao = get(),
             supportDispatchers = get(),
             supportConnectivity = get()
         )
@@ -40,7 +38,7 @@ private val dataSourceModule = module {
 private val mapperModule = module {
     factory {
         EpisodeFeedResponseMapper(
-            dao = get<CrunchyDatabase>().crunchyRssMediaDao(),
+            dao = get(),
             localeHelper = get(),
             settings = get()
         )
