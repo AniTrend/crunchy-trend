@@ -18,9 +18,9 @@ package co.anitrend.support.crunchyroll.domain.stream.enums
 
 @Suppress("EnumEntryName")
 enum class CrunchyStreamQuality {
+    adaptive,
     low,
     mid,
     high,
-    ultra,
-    adaptive
+    ultra
 }

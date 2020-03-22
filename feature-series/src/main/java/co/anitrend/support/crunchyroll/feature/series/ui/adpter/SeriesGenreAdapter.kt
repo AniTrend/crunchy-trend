@@ -23,13 +23,13 @@ import androidx.recyclerview.widget.RecyclerView
 import co.anitrend.arch.ui.recycler.adapter.SupportListAdapter
 import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.support.crunchyroll.core.extensions.koinOf
+import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.feature.series.databinding.AdapterGenreBinding
 import co.anitrend.support.crunchyroll.feature.series.presenter.SeriesDetailPresenter
 
 class SeriesGenreAdapter(
-    presenter: SeriesDetailPresenter
-) : SupportListAdapter<String>(presenter, koinOf()) {
+    override val stateConfiguration: SupportStateLayoutConfiguration
+) : SupportListAdapter<String>() {
 
     /**
      * Used to get stable ids for [androidx.recyclerview.widget.RecyclerView.Adapter] but only if

@@ -31,6 +31,10 @@ android {
     }
 }
 
+ext {
+    leakCanary = '2.2'
+}
+
 dependencies {
 
     /** Platform Dependencies */
@@ -86,6 +90,9 @@ dependencies {
 
     /** Testing-only dependencies */
     testImplementation "org.koin:koin-test:$koin"
+
+    // debugImplementation because LeakCanary should only run in debug builds.
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanary"
 }
 
 repositories {

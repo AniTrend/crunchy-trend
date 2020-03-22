@@ -56,7 +56,7 @@ class SearchContentScreen : SupportFragmentPagedList<CrunchySeries, SeriesPresen
 
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         SeriesViewAdapter(
-            supportPresenter,
+            supportStateConfiguration,
             object : ItemClickListener<CrunchySeries> {
                 /**
                  * When the target view from [View.OnClickListener]

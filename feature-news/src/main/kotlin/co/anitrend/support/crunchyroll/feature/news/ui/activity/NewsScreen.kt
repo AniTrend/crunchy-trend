@@ -19,6 +19,7 @@ package co.anitrend.support.crunchyroll.feature.news.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.util.Linkify
+import androidx.core.app.ShareCompat
 import androidx.core.net.toUri
 import co.anitrend.arch.extension.extra
 import co.anitrend.arch.extension.startNewActivity
@@ -62,6 +63,17 @@ class NewsScreen : CrunchyActivity<CrunchyNews, CrunchyCorePresenter>() {
                 startActivity(intent)
             }.exceptionOrNull()?.printStackTrace()
             true
+        }
+        floatingShortcutButton.setOnClickListener {
+            val shareCompat = ShareCompat.IntentBuilder
+                .from(this)
+                .setType("text/plain")
+                .setSubject(payload?.title)
+                .setHtmlText(payload?.description)
+                .createChooserIntent()
+            runCatching {
+                startActivity(shareCompat)
+            }.exceptionOrNull()?.printStackTrace()
         }
         injectFeatureModules()
         onUpdateUserInterface()

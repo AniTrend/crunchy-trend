@@ -23,7 +23,6 @@ import co.anitrend.support.crunchyroll.core.util.locale.LocaleUtil
 import co.anitrend.support.crunchyroll.core.util.theme.AniTrendTheme
 import co.anitrend.support.crunchyroll.core.util.theme.ThemeUtil
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
-import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.core.settings.common.IConfigurationSettings
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 
@@ -31,7 +30,10 @@ import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
  * Configuration helper for the application
  */
 class ConfigurationUtil(
-    private val settings: IConfigurationSettings
+    private val settings: IConfigurationSettings,
+    private val localeUtil: LocaleUtil,
+    private val themeUtil: ThemeUtil
+
 ) : IConfigurationUtil {
 
     override val moduleTag: String = this::class.java.simpleName
@@ -48,8 +50,8 @@ class ConfigurationUtil(
     override fun onCreate(activity: CrunchyActivity<*, *>) {
         applicationTheme = settings.theme
         applicationLocale = settings.locale
-        koinOf<LocaleUtil>().applyApplicationLocale(activity)
-        koinOf<ThemeUtil>().applyApplicationTheme(activity)
+        localeUtil.applyApplicationLocale(activity)
+        themeUtil.applyApplicationTheme(activity)
     }
 
     /**

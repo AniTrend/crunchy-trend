@@ -69,7 +69,7 @@ class NewsSourceImpl(
             }
         }
 
-    override suspend fun getNewsCatalogue(callback: PagingRequestHelper.Request.Callback) {
+    override fun getNewsCatalogue(callback: PagingRequestHelper.Request.Callback) {
         val deferred = async {
             endpoint.getMediaNews(rssQuery.language)
         }

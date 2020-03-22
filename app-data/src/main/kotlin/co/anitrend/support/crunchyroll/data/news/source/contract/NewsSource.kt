@@ -35,7 +35,7 @@ abstract class NewsSource(
 
     abstract val newsObservable: ISourceObservable<RssQuery, PagedList<CrunchyNews>>
 
-    protected abstract suspend fun getNewsCatalogue(
+    protected abstract fun getNewsCatalogue(
         callback: PagingRequestHelper.Request.Callback
     )
 
@@ -46,11 +46,10 @@ abstract class NewsSource(
         pagingRequestHelper.runIfNotRunning(
             PagingRequestHelper.RequestType.INITIAL
         ) {
-            if (supportPagingHelper.isFirstPage())
-                launch {
-                    getNewsCatalogue(it)
-                    supportPagingHelper.onPageNext()
-                }
+            if (supportPagingHelper.isFirstPage()) {
+                getNewsCatalogue(it)
+                supportPagingHelper.onPageNext()
+            }
             else it.recordSuccess()
         }
     }
@@ -68,11 +67,10 @@ abstract class NewsSource(
         pagingRequestHelper.runIfNotRunning(
             PagingRequestHelper.RequestType.BEFORE
         ) {
-            if (supportPagingHelper.isFirstPage())
-                launch {
-                    getNewsCatalogue(it)
-                    supportPagingHelper.onPageNext()
-                }
+            if (supportPagingHelper.isFirstPage()) {
+                getNewsCatalogue(it)
+                supportPagingHelper.onPageNext()
+            }
             else it.recordSuccess()
         }
     }

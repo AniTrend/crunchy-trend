@@ -25,7 +25,6 @@ import co.anitrend.arch.extension.startNewActivity
 import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
-import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.core.extensions.toBundle
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
@@ -39,6 +38,7 @@ import co.anitrend.support.crunchyroll.feature.news.ui.activity.NewsScreen
 import co.anitrend.support.crunchyroll.feature.news.ui.adapter.RssNewsAdapter
 import co.anitrend.support.crunchyroll.feature.news.viewmodel.NewsViewModel
 import io.noties.markwon.Markwon
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -65,12 +65,15 @@ class NewsFeedContent : SupportFragmentPagedList<CrunchyNews, CrunchyCorePresent
 
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         RssNewsAdapter(
-            supportPresenter,
             markwon,
+            supportStateConfiguration,
             object : ItemClickListener<CrunchyNews> {
 
                 override fun onItemClick(target: View, data: Pair<Int, CrunchyNews?>) {
                     val payload = NavigationTargets.News.Payload(
+                        data.second?.title,
+                        data.second?.subTitle,
+                        data.second?.description,
                         data.second?.content
                     ).toBundle(NavigationTargets.News.PAYLOAD)
 
@@ -125,7 +128,7 @@ class NewsFeedContent : SupportFragmentPagedList<CrunchyNews, CrunchyCorePresent
      * @see [SupportViewModel.requestBundleLiveData]
      */
     override fun onFetchDataInitialize() {
-        val currentLocale = koinOf<ICrunchySessionLocale>().sessionLocale
+        val currentLocale = get<ICrunchySessionLocale>().sessionLocale
         supportViewModel(
             RssQuery(
                 language = currentLocale.toCrunchyLocale()

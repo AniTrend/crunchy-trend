@@ -35,7 +35,7 @@ abstract class EpisodeFeedSource(
 
     abstract val episodeListingsObservable: ISourceObservable<RssQuery, PagedList<CrunchyEpisodeFeed>>
 
-    protected abstract suspend fun getMediaListingsCatalogue(
+    protected abstract fun getMediaListingsCatalogue(
         callback: PagingRequestHelper.Request.Callback
     )
 
@@ -46,11 +46,10 @@ abstract class EpisodeFeedSource(
         pagingRequestHelper.runIfNotRunning(
             PagingRequestHelper.RequestType.INITIAL
         ) {
-            if (supportPagingHelper.isFirstPage())
-                launch {
-                    getMediaListingsCatalogue(it)
-                    supportPagingHelper.onPageNext()
-                }
+            if (supportPagingHelper.isFirstPage()) {
+                getMediaListingsCatalogue(it)
+                supportPagingHelper.onPageNext()
+            }
             else it.recordSuccess()
         }
     }
@@ -68,11 +67,10 @@ abstract class EpisodeFeedSource(
         pagingRequestHelper.runIfNotRunning(
             PagingRequestHelper.RequestType.BEFORE
         ) {
-            if (supportPagingHelper.isFirstPage())
-                launch {
-                    getMediaListingsCatalogue(it)
-                    supportPagingHelper.onPageNext()
-                }
+            if (supportPagingHelper.isFirstPage()) {
+                getMediaListingsCatalogue(it)
+                supportPagingHelper.onPageNext()
+            }
             else it.recordSuccess()
         }
     }

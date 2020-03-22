@@ -23,7 +23,6 @@ import androidx.lifecycle.Observer
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.argument
 import co.anitrend.arch.ui.fragment.SupportFragment
-import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
@@ -34,6 +33,7 @@ import co.anitrend.support.crunchyroll.feature.player.viewmodel.MediaStreamViewM
 import com.devbrackets.android.exomedia.listener.VideoControlsVisibilityListener
 import com.devbrackets.android.exomedia.ui.widget.VideoView
 import kotlinx.android.synthetic.main.fragment_media_player.*
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -80,7 +80,7 @@ class MediaStreamContent : SupportFragment<MediaStream?, CrunchyCorePresenter, L
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        supportStateLayout.stateConfiguration = koinOf()
+        supportStateLayout.stateConfiguration = get()
         supportStateLayout.onWidgetInteraction = View.OnClickListener {
             supportViewModel.retry()
         }

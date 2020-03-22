@@ -22,7 +22,6 @@ import android.view.View
 import android.view.WindowManager
 import androidx.fragment.app.commit
 import co.anitrend.arch.extension.getCompatColor
-import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.player.R
@@ -30,6 +29,7 @@ import co.anitrend.support.crunchyroll.feature.player.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.player.ui.fragment.MediaStreamContent
 import com.devbrackets.android.exomedia.ExoMedia
 import com.devbrackets.android.exomedia.listener.VideoControlsVisibilityListener
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
 class MediaPlayerScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(),
@@ -94,7 +94,7 @@ class MediaPlayerScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(),
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
         injectFeatureModules()
-        val cacheFactory = koinOf<ExoMedia.DataSourceFactoryProvider>()
+        val cacheFactory = get<ExoMedia.DataSourceFactoryProvider>()
         ExoMedia.setDataSourceFactoryProvider(cacheFactory)
         onUpdateUserInterface()
     }

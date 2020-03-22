@@ -72,6 +72,9 @@ object NavigationTargets {
 
         @Parcelize
         data class Payload(
+            val title: String?,
+            val subTitle: String?,
+            val description: String?,
             val content: String?
         ) : Parcelable
     }

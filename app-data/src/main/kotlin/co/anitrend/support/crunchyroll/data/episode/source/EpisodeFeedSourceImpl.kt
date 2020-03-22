@@ -68,7 +68,7 @@ class EpisodeFeedSourceImpl(
             }
         }
 
-    override suspend fun getMediaListingsCatalogue(callback: PagingRequestHelper.Request.Callback) {
+    override fun getMediaListingsCatalogue(callback: PagingRequestHelper.Request.Callback) {
         val deferred = async {
             endpoint.getLatestMediaFeed(rssQuery.language)
         }

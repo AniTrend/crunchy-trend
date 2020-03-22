@@ -50,6 +50,7 @@ class MediaContent : SupportFragmentPagedList<CrunchyMedia, MediaPresenter, Page
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         MediaAdapter(
             presenter = supportPresenter,
+            stateConfiguration = supportStateConfiguration,
             itemClickListener = object : ItemClickListener<CrunchyMedia> {
 
                 override fun onItemClick(target: View, data: Pair<Int, CrunchyMedia?>) {

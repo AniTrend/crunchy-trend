@@ -24,7 +24,6 @@ import androidx.lifecycle.Observer
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
-import co.anitrend.support.crunchyroll.core.extensions.koinOf
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
@@ -32,6 +31,7 @@ import co.anitrend.support.crunchyroll.feature.authentication.databinding.Fragme
 import co.anitrend.support.crunchyroll.feature.authentication.presenter.AuthPresenter
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.LoginViewModel
 import kotlinx.android.synthetic.main.login_anonymous_controls.view.*
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
 class FragmentLogin : SupportFragment<CrunchyUser?, CrunchyCorePresenter, CrunchyUser?>() {
@@ -130,7 +130,7 @@ class FragmentLogin : SupportFragment<CrunchyUser?, CrunchyCorePresenter, Crunch
             NavigationTargets.Main(context)
             activity?.closeScreen()
         }
-        binding.supportStateLayout.stateConfiguration = koinOf()
+        binding.supportStateLayout.stateConfiguration = get()
         binding.supportStateLayout.onWidgetInteraction = View.OnClickListener {
             supportViewModel.retry()
         }
