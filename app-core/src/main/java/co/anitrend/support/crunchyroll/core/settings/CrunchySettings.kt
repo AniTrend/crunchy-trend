@@ -17,17 +17,16 @@
 package co.anitrend.support.crunchyroll.core.settings
 
 import android.content.Context
-import androidx.annotation.StringRes
-import androidx.core.content.edit
-import co.anitrend.arch.extension.preference.SupportPreference
+import co.anitrend.arch.extension.preference.*
 import co.anitrend.arch.extension.preference.contract.ISupportPreference
-import co.anitrend.support.crunchyroll.core.util.locale.AniTrendLocale
-import co.anitrend.support.crunchyroll.core.util.theme.AniTrendTheme
 import co.anitrend.support.crunchyroll.core.R
+import co.anitrend.support.crunchyroll.core.extensions.NullableStringPreference
 import co.anitrend.support.crunchyroll.core.settings.common.IConfigurationSettings
 import co.anitrend.support.crunchyroll.core.settings.common.locale.ILocaleSettings
 import co.anitrend.support.crunchyroll.core.settings.common.privacy.IPrivacySettings
 import co.anitrend.support.crunchyroll.core.settings.common.theme.IThemeSettings
+import co.anitrend.support.crunchyroll.core.util.locale.AniTrendLocale
+import co.anitrend.support.crunchyroll.core.util.theme.AniTrendTheme
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings.Companion.INVALID_USER_ID
 
@@ -35,134 +34,67 @@ class CrunchySettings(context: Context) : SupportPreference(context),
     IAuthenticationSettings,
     IConfigurationSettings, IPrivacySettings {
 
-    override var sessionId: String? = null
-        get() = sharedPreferences.getString(
-            stringOf(R.string.settings_authentication_session_id),
-            null
-        )
-        set(value) {
-            field = value
-            sharedPreferences.edit(commit = true) {
-                putString(
-                    stringOf(R.string.settings_authentication_session_id),
-                    value
-                )
-            }
-        }
+    override var isNewInstallation by BooleanPreference(
+        R.string.settings_is_new_installation,
+        true,
+        context.resources
+    )
 
-    override var hasAccessToPremium: Boolean = false
-        get() = sharedPreferences.getBoolean(
-            stringOf(R.string.settings_authentication_premium_access),
-            false
-        )
-        set(value) {
-            field = value
-            sharedPreferences.edit {
-                putBoolean(
-                    stringOf(R.string.settings_authentication_premium_access),
-                    value
-                )
-            }
-        }
+    override var versionCode by IntPreference(
+        R.string.settings_version_code,
+        0,
+        context.resources
+    )
 
-    override var authenticatedUserId: Long = INVALID_USER_ID
-        get() = sharedPreferences.getLong(
-            stringOf(R.string.settings_authentication_id),
-            INVALID_USER_ID
-        )
-        set(value) {
-            field = value
-            sharedPreferences.edit {
-                putLong(
-                    stringOf(R.string.settings_authentication_id),
-                    value
-                )
-            }
-        }
+    override var sessionId by NullableStringPreference(
+        R.string.settings_authentication_session_id,
+        null,
+        context.resources
+    )
 
-    override var isAuthenticated: Boolean = false
-        get() = sharedPreferences.getBoolean(
-            stringOf(R.string.settings_authentication_logged_in),
-            false
-        )
-        set(value) {
-            field = value
-            sharedPreferences.edit {
-                putBoolean(
-                    stringOf(R.string.settings_authentication_logged_in),
-                    value
-                )
-            }
-        }
+    override var hasAccessToPremium by BooleanPreference(
+        R.string.settings_authentication_premium_access,
+        false,
+        context.resources
+    )
 
-    override var locale: AniTrendLocale = AniTrendLocale.AUTOMATIC
-        get() = AniTrendLocale.valueOf(
-            sharedPreferences.getString(
-                stringOf(R.string.settings_configuration_locale),
-                null
-            ) ?: AniTrendLocale.AUTOMATIC.name
-        )
-        set(value) {
-            field = value
-            sharedPreferences.edit {
-                putString(
-                    stringOf(R.string.settings_configuration_locale),
-                    value.name
-                )
-            }
-        }
+    override var authenticatedUserId by LongPreference(
+        R.string.settings_authentication_id,
+        INVALID_USER_ID,
+        context.resources
+    )
 
-    override var theme: AniTrendTheme = AniTrendTheme.SYSTEM
-        get() = AniTrendTheme.valueOf(
-            sharedPreferences.getString(
-                stringOf(R.string.settings_configuration_theme),
-                null
-            ) ?: AniTrendTheme.SYSTEM.name
-        )
-        set(value) {
-            field = value
-            sharedPreferences.edit {
-                putString(
-                    stringOf(R.string.settings_configuration_theme),
-                    value.name
-                )
-            }
-        }
+    override var isAuthenticated by BooleanPreference(
+        R.string.settings_authentication_logged_in,
+        false,
+        context.resources
+    )
 
-    override var isAnalyticsEnabled: Boolean = false
-        get() = sharedPreferences.getBoolean(
-            stringOf(R.string.settings_privacy_usage_analytics),
-            false
-        )
-        set(value) {
-            field = value
-            sharedPreferences.edit {
-                putBoolean(
-                    stringOf(R.string.settings_privacy_usage_analytics),
-                    value
-                )
-            }
-        }
+    override var locale by EnumPreference(
+        R.string.settings_configuration_locale,
+        AniTrendLocale.AUTOMATIC,
+        context.resources
+    )
 
-    override var isCrashlyticsEnabled: Boolean = true
-        get() = sharedPreferences.getBoolean(
-            stringOf(R.string.settings_privacy_crash_analytics),
-            true
-        )
-        set(value) {
-            field = value
-            sharedPreferences.edit {
-                putBoolean(
-                    stringOf(R.string.settings_privacy_crash_analytics),
-                    value
-                )
-            }
-        }
+    override var theme by EnumPreference(
+        R.string.settings_configuration_theme,
+        AniTrendTheme.SYSTEM,
+        context.resources
+    )
+
+    override var isAnalyticsEnabled by BooleanPreference(
+        R.string.settings_privacy_usage_analytics,
+        false,
+        context.resources
+    )
+
+    override var isCrashlyticsEnabled by BooleanPreference(
+        R.string.settings_privacy_crash_analytics,
+        true,
+        context.resources
+    )
 
     companion object  {
-        private fun CrunchySettings.stringOf(
-            @StringRes resource: Int
-        ) = context.getString(resource)
 
         /**
          * Binding types for [CrunchySettings]
