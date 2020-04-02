@@ -32,7 +32,7 @@ android {
 }
 
 ext {
-    markwon = '4.2.0'
+    markwon = '4.3.0'
     betterLinkMovement = '2.2.0'
 }
 
