@@ -31,6 +31,14 @@ android {
     }
 }
 
+kapt {
+    correctErrorTypes = true
+}
+
+ext {
+    epoxy = "3.9.0"
+}
+
 dependencies {
     /** Platform Dependencies */
     implementation project(":support-ui")
@@ -67,4 +75,7 @@ dependencies {
     /** Glide Libraries */
     implementation "com.github.bumptech.glide:glide:$glide"
     kapt "com.github.bumptech.glide:compiler:$glide"
+
+    implementation "com.airbnb.android:epoxy:$epoxy"
+    kapt "com.airbnb.android:epoxy-processor:$epoxy"
 }

@@ -16,29 +16,34 @@
 
 package co.anitrend.support.crunchyroll.data.collection.koin
 
+import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
+import co.anitrend.support.crunchyroll.data.arch.extension.api
+import co.anitrend.support.crunchyroll.data.arch.extension.db
 import co.anitrend.support.crunchyroll.data.collection.mapper.CollectionResponseMapper
 import co.anitrend.support.crunchyroll.data.collection.repository.CollectionRepository
 import co.anitrend.support.crunchyroll.data.collection.source.CollectionSourceImpl
 import co.anitrend.support.crunchyroll.data.collection.source.contract.CollectionSource
 import co.anitrend.support.crunchyroll.data.collection.usecase.CollectionUseCaseImpl
+import co.anitrend.support.crunchyroll.domain.collection.interactors.CollectionUseCase
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 private val dataSourceModule = module {
-    factory<CollectionSource> {
+    factory {
         CollectionSourceImpl(
             mapper = get(),
-            collectionDao = get(),
-            collectionEndpoint = get(),
+            collectionDao = db().crunchyCollectionDao(),
+            collectionEndpoint = api(EndpointType.JSON),
             supportDispatchers = get(),
             supportConnectivity = get()
         )
-    }
+    } bind CollectionSource::class
 }
 
 private val mapperModule = module {
     factory {
         CollectionResponseMapper(
-            dao = get()
+            dao = db().crunchyCollectionDao()
         )
     }
 }

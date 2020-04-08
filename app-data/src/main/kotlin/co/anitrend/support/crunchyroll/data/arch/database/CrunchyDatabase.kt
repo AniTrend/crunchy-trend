@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2020 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.dao
+package co.anitrend.support.crunchyroll.data.arch.database
 
 import android.content.Context
 import androidx.room.Database
@@ -22,39 +22,34 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import co.anitrend.support.crunchyroll.data.BuildConfig
-import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEntity
-import co.anitrend.support.crunchyroll.data.collection.datasource.local.CrunchyCollectionDao
 import co.anitrend.support.crunchyroll.data.collection.entity.CrunchyCollectionEntity
-import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyEnumsTypeConverter
-import co.anitrend.support.crunchyroll.data.dao.converter.CrunchyTypeConverters
-import co.anitrend.support.crunchyroll.data.dao.migrations.migrations
-import co.anitrend.support.crunchyroll.data.episode.datasource.local.CrunchyRssEpisodeDao
+import co.anitrend.support.crunchyroll.data.arch.database.converters.CrunchyEnumsTypeConverter
+import co.anitrend.support.crunchyroll.data.arch.database.converters.CrunchyTypeConverters
+import co.anitrend.support.crunchyroll.data.arch.database.migration.migrations
+import co.anitrend.support.crunchyroll.data.catalog.entity.CrunchyCatalogEntity
 import co.anitrend.support.crunchyroll.data.episode.entity.EpisodeFeedEntity
-import co.anitrend.support.crunchyroll.data.locale.datasource.local.CrunchyLocaleDao
 import co.anitrend.support.crunchyroll.data.locale.entity.CrunchyLocaleEntity
-import co.anitrend.support.crunchyroll.data.media.datasource.local.CrunchyMediaDao
 import co.anitrend.support.crunchyroll.data.media.entity.CrunchyMediaEntity
-import co.anitrend.support.crunchyroll.data.news.datasource.local.CrunchyRssNewsDao
 import co.anitrend.support.crunchyroll.data.news.entity.NewsEntity
-import co.anitrend.support.crunchyroll.data.series.datasource.local.CrunchySeriesDao
 import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesEntity
-import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
-import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionDao
+import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesFtsEntity
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionCoreEntity
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
 
 @Database(
     entities = [
-        CrunchySessionEntity::class, CrunchySessionCoreEntity::class,
+        CrunchySessionEntity::class,
+        CrunchySessionCoreEntity::class,
         CrunchyLoginEntity::class,
-
         CrunchyLocaleEntity::class,
-
-        CrunchySeriesEntity::class, CrunchyCollectionEntity::class,
+        CrunchySeriesFtsEntity::class,
+        CrunchySeriesEntity::class,
+        CrunchyCollectionEntity::class,
         CrunchyMediaEntity::class,
-
-        NewsEntity::class, EpisodeFeedEntity::class
+        CrunchyCatalogEntity::class,
+        NewsEntity::class,
+        EpisodeFeedEntity::class
     ],
     version = BuildConfig.DATABASE_SCHEMA_VERSION
 )
@@ -64,21 +59,7 @@ import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
         CrunchyTypeConverters::class
     ]
 )
-abstract class CrunchyDatabase: RoomDatabase() {
-
-    abstract fun crunchyLocaleDao(): CrunchyLocaleDao
-
-    abstract fun crunchySessionCoreDao(): CrunchySessionCoreDao
-
-    abstract fun crunchyCollectionDao(): CrunchyCollectionDao
-    abstract fun crunchyMediaDao(): CrunchyMediaDao
-    abstract fun crunchySeriesDao(): CrunchySeriesDao
-
-    abstract fun crunchyLoginDao(): CrunchyLoginDao
-    abstract fun crunchySessionDao(): CrunchySessionDao
-
-    abstract fun crunchyRssNewsDao(): CrunchyRssNewsDao
-    abstract fun crunchyRssMediaDao(): CrunchyRssEpisodeDao
+abstract class CrunchyDatabase: RoomDatabase(), ICrunchyDatabase {
 
     companion object {
         fun newInstance(context: Context): CrunchyDatabase {
@@ -86,8 +67,8 @@ abstract class CrunchyDatabase: RoomDatabase() {
                 context,
                 CrunchyDatabase::class.java,
                 "crunchy-db"
-            ).fallbackToDestructiveMigration()
-                .addMigrations(*migrations)
+            ).addMigrations(*migrations)
+                .fallbackToDestructiveMigration()
                 .build()
         }
     }

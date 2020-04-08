@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2020 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,13 +14,11 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.dao.converter
+package co.anitrend.support.crunchyroll.domain.series.enums
 
-import androidx.room.TypeConverter
 
-class CrunchyTypeConverters {
-
-    @TypeConverter fun fromList(value: List<String>) = value.joinToString(separator = ",")
-    @TypeConverter fun toList(value: String) = value.split(',')
-
+enum class CrunchySeriesBrowseFilter(val attribute: String) {
+    ALPHA("alpha"),
+    PREFIX("prefix:"),
+    TAG("tag:"),
 }

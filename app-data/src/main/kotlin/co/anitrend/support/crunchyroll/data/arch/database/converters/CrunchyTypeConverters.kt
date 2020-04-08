@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2020 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,15 +14,14 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.domain.series.enums
+package co.anitrend.support.crunchyroll.data.arch.database.converters
 
-enum class CrunchySeriesFilter(val attribute: String) {
-    ALPHA("alpha"),
-    FEATURED("featured"),
-    NEWEST("newest"),
-    POPULAR("popular"),
-    PREFIX("prefix:"),
-    SIMULCAST("simulcast"),
-    TAG("tag:"),
-    UPDATED("updated")
+import androidx.room.TypeConverter
+import co.anitrend.support.crunchyroll.data.arch.database.extension.fromCommaSeparatedValues
+import co.anitrend.support.crunchyroll.data.arch.database.extension.toCommaSeparatedValues
+
+class CrunchyTypeConverters {
+
+    @TypeConverter fun fromList(value: List<String>) = value.toCommaSeparatedValues()
+    @TypeConverter fun toList(value: String) = value.fromCommaSeparatedValues()
 }

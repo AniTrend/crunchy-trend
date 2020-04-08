@@ -16,8 +16,9 @@
 
 package co.anitrend.support.crunchyroll.domain.series.models
 
-import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesFilter
+import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
 
 data class CrunchySeriesBrowseQuery(
-    val filter: String = CrunchySeriesFilter.NEWEST.attribute
+    val filter: CrunchySeriesBrowseFilter,
+    val option: String = ""
 )

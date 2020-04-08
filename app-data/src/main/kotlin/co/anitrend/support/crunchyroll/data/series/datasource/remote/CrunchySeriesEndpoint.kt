@@ -23,7 +23,7 @@ import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyModelField
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.series.model.CrunchySeriesModel
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchyMediaType
-import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesFilter
+import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -39,7 +39,7 @@ interface CrunchySeriesEndpoint {
     @JSON
     @GET("/list_series.${BuildConfig.apiExtension}.json")
     suspend fun getSeriesList(
-        @Query("filter") filter: String = CrunchySeriesFilter.ALPHA.attribute,
+        @Query("filter") filter: String,
         @Query("media_type") mediaType: String = CrunchyMediaType.anime.name,
         @Query("fields") seriesFields: String = CrunchyModelField.seriesFields,
         @Query("offset") offset: Int,

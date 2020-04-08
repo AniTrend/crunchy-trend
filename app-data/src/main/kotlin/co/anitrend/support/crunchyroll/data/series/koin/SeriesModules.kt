@@ -17,30 +17,35 @@
 package co.anitrend.support.crunchyroll.data.series.koin
 
 
+import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
+import co.anitrend.support.crunchyroll.data.arch.extension.api
+import co.anitrend.support.crunchyroll.data.arch.extension.db
 import co.anitrend.support.crunchyroll.data.series.mapper.SeriesResponseMapper
 import co.anitrend.support.crunchyroll.data.series.repository.SeriesRepository
 import co.anitrend.support.crunchyroll.data.series.source.SeriesSourceImpl
+import co.anitrend.support.crunchyroll.data.series.source.contract.SeriesSource
 import co.anitrend.support.crunchyroll.data.series.usecase.SeriesBrowseUseCaseImpl
 import co.anitrend.support.crunchyroll.data.series.usecase.SeriesInfoUseCaseImpl
 import co.anitrend.support.crunchyroll.data.series.usecase.SeriesSearchUseCaseImpl
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 private val dataSourceModule = module {
     factory {
         SeriesSourceImpl(
             mapper = get(),
-            seriesDao = get(),
-            seriesEndpoint = get(),
+            seriesDao = db().crunchySeriesDao(),
+            endpoint = api(EndpointType.JSON),
             supportDispatchers = get(),
             supportConnectivity = get()
         )
-    }
+    } bind SeriesSource::class
 }
 
 private val mapperModule = module {
     factory {
         SeriesResponseMapper(
-            dao = get()
+            dao = db().crunchySeriesDao()
         )
     }
 }
@@ -48,7 +53,7 @@ private val mapperModule = module {
 private val repositoryModule = module {
     factory {
         SeriesRepository(
-            source = get<SeriesSourceImpl>()
+            source = get()
         )
     }
 }

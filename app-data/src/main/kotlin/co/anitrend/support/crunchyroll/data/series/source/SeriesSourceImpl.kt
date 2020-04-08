@@ -32,6 +32,7 @@ import co.anitrend.support.crunchyroll.data.series.mapper.SeriesResponseMapper
 import co.anitrend.support.crunchyroll.data.series.source.contract.SeriesSource
 import co.anitrend.support.crunchyroll.data.series.transformer.CrunchySeriesTransformer
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
+import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesBrowseQuery
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesInfoQuery
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesSearchQuery
@@ -41,7 +42,7 @@ import kotlinx.coroutines.launch
 class SeriesSourceImpl(
     private val mapper: SeriesResponseMapper,
     private val seriesDao: CrunchySeriesDao,
-    private val seriesEndpoint: CrunchySeriesEndpoint,
+    private val endpoint: CrunchySeriesEndpoint,
     private val supportConnectivity: SupportConnectivity,
     supportDispatchers: SupportDispatchers
 ) : SeriesSource(supportDispatchers) {
@@ -59,7 +60,7 @@ class SeriesSourceImpl(
         previousSearchQuery = param
 
         val deferred = async {
-            seriesEndpoint.getSeriesAutoComplete(
+            endpoint.getSeriesAutoComplete(
                 offset = supportPagingHelper.pageOffset,
                 limit = supportPagingHelper.pageSize,
                 query = param.query
@@ -79,10 +80,10 @@ class SeriesSourceImpl(
         param: CrunchySeriesBrowseQuery
     ) {
         val deferred = async {
-            seriesEndpoint.getSeriesList(
+            endpoint.getSeriesList(
                 offset = supportPagingHelper.pageOffset,
                 limit = supportPagingHelper.pageSize,
-                filter = param.filter
+                filter = param.filter.attribute
             )
         }
 
@@ -131,8 +132,16 @@ class SeriesSourceImpl(
             override fun invoke(parameter: CrunchySeriesBrowseQuery): LiveData<PagedList<CrunchySeries>> {
                 executionTarget = { browseSeries(it, parameter) }
 
-                val localSource =
-                    seriesDao.findAllFactory()
+                val localSource = when (parameter.filter) {
+                    CrunchySeriesBrowseFilter.ALPHA ->
+                        seriesDao.findAllFactory()
+                    CrunchySeriesBrowseFilter.PREFIX -> {
+                        val prefix = "%${parameter.option}"
+                        seriesDao.findAllStartingWithFactory(prefix)
+                    }
+                    CrunchySeriesBrowseFilter.TAG ->
+                        seriesDao.findAllContainingGenre(parameter.option)
+                }
 
                 val result = localSource.map {
                     CrunchySeriesTransformer.transform(it)

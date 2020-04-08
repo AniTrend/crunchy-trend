@@ -17,21 +17,25 @@
 package co.anitrend.support.crunchyroll.data.stream.koin
 
 
+import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
+import co.anitrend.support.crunchyroll.data.arch.extension.api
 import co.anitrend.support.crunchyroll.data.stream.mapper.CrunchyStreamResponseMapper
 import co.anitrend.support.crunchyroll.data.stream.repository.CrunchyStreamRepository
 import co.anitrend.support.crunchyroll.data.stream.source.CrunchyStreamSourceImpl
+import co.anitrend.support.crunchyroll.data.stream.source.contract.CrunchyStreamSource
 import co.anitrend.support.crunchyroll.data.stream.usecase.CrunchyStreamUseCaseImpl
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 private val dataSourceModule = module {
     factory {
         CrunchyStreamSourceImpl(
-            endpoint = get(),
+            endpoint = api(EndpointType.JSON),
             mapper = get(),
             supportDispatchers = get(),
             supportConnectivity = get()
         )
-    }
+    } bind CrunchyStreamSource::class
 }
 
 private val mapperModule = module {
@@ -43,7 +47,7 @@ private val mapperModule = module {
 private val repositoryModule = module {
     factory {
         CrunchyStreamRepository(
-            source = get<CrunchyStreamSourceImpl>()
+            source = get()
         )
     }
 }

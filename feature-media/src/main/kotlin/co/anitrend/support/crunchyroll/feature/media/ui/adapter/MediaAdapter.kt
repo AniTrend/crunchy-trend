@@ -61,7 +61,7 @@ class MediaAdapter(
         )
         val viewHolder = MediaViewHolder(binding)
 
-        binding.presenter = presenter as MediaPresenter
+        binding.presenter = presenter
         binding.container.setOnClickListener {
             viewHolder.onItemClick(it, itemClickListener)
         }

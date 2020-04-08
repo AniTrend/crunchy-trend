@@ -19,20 +19,18 @@ package co.anitrend.support.crunchyroll.core.koin
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.util.contract.ISupportDateHelper
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
-import co.anitrend.support.crunchyroll.core.util.theme.ThemeUtil
 import co.anitrend.support.crunchyroll.core.R
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
 import co.anitrend.support.crunchyroll.core.util.config.ConfigurationUtil
-import co.anitrend.support.crunchyroll.core.util.locale.SessionLocaleProviderHelper
 import co.anitrend.support.crunchyroll.core.util.locale.LocaleUtil
-import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper
+import co.anitrend.support.crunchyroll.core.util.locale.SessionLocaleProviderHelper
+import co.anitrend.support.crunchyroll.core.util.theme.ThemeUtil
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
-import okhttp3.OkHttpClient
+import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.binds
 import org.koin.dsl.module
-import java.io.File
 
 private val coreModule = module {
     single<ISupportDateHelper> {

@@ -17,7 +17,9 @@
 package co.anitrend.support.crunchyroll.data.session.koin
 
 
-import co.anitrend.support.crunchyroll.data.dao.CrunchyDatabase
+import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
+import co.anitrend.support.crunchyroll.data.arch.extension.api
+import co.anitrend.support.crunchyroll.data.arch.extension.db
 import co.anitrend.support.crunchyroll.data.session.mapper.CoreSessionResponseMapper
 import co.anitrend.support.crunchyroll.data.session.mapper.SessionResponseMapper
 import co.anitrend.support.crunchyroll.data.session.repository.SessionRepository
@@ -27,13 +29,17 @@ import co.anitrend.support.crunchyroll.data.session.source.UnblockSessionSourceI
 import co.anitrend.support.crunchyroll.data.session.usecase.CoreSessionUseCaseImpl
 import co.anitrend.support.crunchyroll.data.session.usecase.NormalSessionUseCaseImpl
 import co.anitrend.support.crunchyroll.data.session.usecase.UnblockSessionUseCaseImpl
+import co.anitrend.support.crunchyroll.domain.session.interactors.CoreSessionUseCase
+import co.anitrend.support.crunchyroll.domain.session.interactors.NormalSessionUseCase
+import co.anitrend.support.crunchyroll.domain.session.interactors.UnblockSessionUseCase
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 private val dataSourceModule = module {
     factory {
         CoreSessionSourceImpl(
-            dao = get(),
-            endpoint = get(),
+            dao = db().crunchySessionCoreDao(),
+            endpoint = api(EndpointType.SESSION),
             mapper = get(),
             settings = get(),
             supportDispatchers = get(),
@@ -42,10 +48,10 @@ private val dataSourceModule = module {
     }
     factory {
         NormalSessionSourceImpl(
-            endpoint = get(),
-            dao = get(),
-            coreSessionDao = get(),
-            loginDao = get(),
+            endpoint = api(EndpointType.AUTH),
+            dao = db().crunchySessionDao(),
+            coreSessionDao = db().crunchySessionCoreDao(),
+            loginDao = db().crunchyLoginDao(),
             mapper = get(),
             settings = get(),
             supportDispatchers = get(),
@@ -54,10 +60,10 @@ private val dataSourceModule = module {
     }
     factory {
         UnblockSessionSourceImpl(
-            dao = get(),
-            endpoint = get(),
-            coreSessionDao = get(),
-            loginDao = get(),
+            dao = db().crunchySessionDao(),
+            endpoint = api(EndpointType.SESSION),
+            coreSessionDao = db().crunchySessionCoreDao(),
+            loginDao = db().crunchyLoginDao(),
             mapper = get(),
             settings = get(),
             supportDispatchers = get(),
@@ -69,12 +75,12 @@ private val dataSourceModule = module {
 private val mapperModule = module {
     factory {
         CoreSessionResponseMapper(
-            dao = get()
+            dao = db().crunchySessionCoreDao()
         )
     }
     factory {
         SessionResponseMapper(
-            dao = get()
+            dao = db().crunchySessionDao()
         )
     }
 }

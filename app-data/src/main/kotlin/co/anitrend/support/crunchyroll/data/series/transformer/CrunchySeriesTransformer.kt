@@ -27,7 +27,7 @@ object CrunchySeriesTransformer : ISupportMapperHelper<CrunchySeriesEntity, Crun
      */
     override fun transform(source: CrunchySeriesEntity): CrunchySeries {
         return CrunchySeries(
-            seriesId = source.seriesId,
+            seriesId = source.id,
             url = source.url,
             name = source.name,
             landscapeImage = source.landscapeImage,

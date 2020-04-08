@@ -16,7 +16,6 @@
 
 package co.anitrend.support.crunchyroll.feature.discover.ui.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
@@ -28,7 +27,7 @@ import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
-import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesFilter
+import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesBrowseQuery
 import co.anitrend.support.crunchyroll.feature.discover.R
 import co.anitrend.support.crunchyroll.feature.discover.koin.injectFeatureModules
@@ -38,6 +37,7 @@ import co.anitrend.support.crunchyroll.feature.discover.viewmodel.SeriesDiscover
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+@Suppress("unused")
 class SeriesDiscoverContent : SupportFragmentPagedList<CrunchySeries, SeriesPresenter, PagedList<CrunchySeries>>() {
 
     override val columnSize = R.integer.single_list_size
@@ -136,7 +136,7 @@ class SeriesDiscoverContent : SupportFragmentPagedList<CrunchySeries, SeriesPres
     override fun onFetchDataInitialize() {
         supportViewModel(
             parameter = CrunchySeriesBrowseQuery(
-                filter = CrunchySeriesFilter.NEWEST.attribute
+                filter = CrunchySeriesBrowseFilter.ALPHA
             )
         )
     }

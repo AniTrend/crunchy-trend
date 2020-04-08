@@ -17,10 +17,16 @@
 package co.anitrend.support.crunchyroll.data.media.koin
 
 
+import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
+import co.anitrend.support.crunchyroll.data.arch.extension.api
+import co.anitrend.support.crunchyroll.data.arch.extension.db
 import co.anitrend.support.crunchyroll.data.media.mapper.MediaResponseMapper
 import co.anitrend.support.crunchyroll.data.media.repository.MediaRepository
 import co.anitrend.support.crunchyroll.data.media.source.MediaSourceImpl
+import co.anitrend.support.crunchyroll.data.media.source.contract.MediaSource
 import co.anitrend.support.crunchyroll.data.media.usecase.MediaUseCaseImpl
+import co.anitrend.support.crunchyroll.domain.media.interactors.MediaUseCase
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 private val dataSourceModule = module {
@@ -29,16 +35,16 @@ private val dataSourceModule = module {
             supportConnectivity = get(),
             supportDispatchers = get(),
             mapper = get(),
-            mediaDao = get(),
-            mediaEndpoint = get()
+            mediaDao = db().crunchyMediaDao(),
+            endpoint = api(EndpointType.JSON)
         )
-    }
+    } bind MediaSource::class
 }
 
 private val mapperModule = module {
     factory {
         MediaResponseMapper(
-            dao = get()
+            dao = db().crunchyMediaDao()
         )
     }
 }
@@ -46,7 +52,7 @@ private val mapperModule = module {
 private val repositoryModule = module {
     factory {
         MediaRepository(
-            source = get<MediaSourceImpl>()
+            source = get()
         )
     }
 }

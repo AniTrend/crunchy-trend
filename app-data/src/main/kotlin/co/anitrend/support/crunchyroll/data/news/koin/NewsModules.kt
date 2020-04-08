@@ -17,28 +17,34 @@
 package co.anitrend.support.crunchyroll.data.news.koin
 
 
+import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
+import co.anitrend.support.crunchyroll.data.arch.extension.api
+import co.anitrend.support.crunchyroll.data.arch.extension.db
 import co.anitrend.support.crunchyroll.data.news.mapper.NewsResponseMapper
 import co.anitrend.support.crunchyroll.data.news.repository.NewsRepository
 import co.anitrend.support.crunchyroll.data.news.source.NewsSourceImpl
+import co.anitrend.support.crunchyroll.data.news.source.contract.NewsSource
 import co.anitrend.support.crunchyroll.data.news.usecase.NewsUseCaseImpl
+import co.anitrend.support.crunchyroll.domain.news.interactors.NewsUseCase
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 private val dataSourceModule = module {
     factory {
         NewsSourceImpl(
             mapper = get(),
-            endpoint = get(),
-            dao = get(),
+            endpoint = api(EndpointType.XML),
+            dao = db().crunchyRssNewsDao(),
             supportDispatchers = get(),
             supportConnectivity = get()
         )
-    }
+    } bind NewsSource::class
 }
 
 private val mapperModule = module {
     factory {
         NewsResponseMapper(
-            dao = get()
+            dao = db().crunchyRssNewsDao()
         )
     }
 }
@@ -46,7 +52,7 @@ private val mapperModule = module {
 private val repositoryModule = module {
     factory {
         NewsRepository(
-            source = get<NewsSourceImpl>()
+            source = get()
         )
     }
 }

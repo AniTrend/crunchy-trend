@@ -16,19 +16,13 @@
 
 package co.anitrend.support.crunchyroll.data.series.entity
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Fts4
-import androidx.room.PrimaryKey
+import androidx.room.*
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchyMediaType
 
-@Fts4
 @Entity
 data class CrunchySeriesEntity(
     @PrimaryKey
-    @ColumnInfo(name = "rowid")
-    val rowId: Int,
-    val seriesId: Long,
+    val id: Long,
     val url: String,
     val name: String,
     val mediaType: CrunchyMediaType,

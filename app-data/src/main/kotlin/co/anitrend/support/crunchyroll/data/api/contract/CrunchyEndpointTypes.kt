@@ -16,10 +16,21 @@
 
 package co.anitrend.support.crunchyroll.data.api.contract
 
+import co.anitrend.support.crunchyroll.data.BuildConfig
+
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION)
-annotation class JSON(val authenticated: Boolean = false)
+annotation class JSON
 
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION)
 annotation class XML
+
+
+enum class EndpointType(val url: String) {
+    SESSION(BuildConfig.apiSessionUrl),
+    AUTH(BuildConfig.apiUrl),
+    JSON(BuildConfig.apiUrl),
+    XML(BuildConfig.apiFeed),
+    SLUG(BuildConfig.crunchyUrl)
+}

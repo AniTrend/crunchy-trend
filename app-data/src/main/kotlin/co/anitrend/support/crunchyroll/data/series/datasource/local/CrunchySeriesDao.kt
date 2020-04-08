@@ -20,6 +20,7 @@ import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
 import co.anitrend.arch.data.dao.ISupportQuery
 import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesEntity
 
@@ -33,18 +34,18 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
 
 
     @Query("""
-        select *, rowid
+        select *
         from CrunchySeriesEntity 
-        where seriesId = :seriesId
+        where id = :seriesId
         """)
     suspend fun findBySeriesId(
         seriesId: Long
     ): CrunchySeriesEntity?
 
     @Query("""
-        select *, rowid
+        select *
         from CrunchySeriesEntity 
-        where seriesId = :seriesId
+        where id = :seriesId
     """)
     fun findBySeriesIdX(
         seriesId: Long
@@ -53,7 +54,7 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
 
 
     @Query("""
-        select *, rowid
+        select *
         from CrunchySeriesEntity 
         where name match :seriesName 
         order by name asc
@@ -63,7 +64,7 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
     ): List<CrunchySeriesEntity>
 
     @Query("""
-        select *, rowid
+        select *
         from CrunchySeriesEntity 
         where name match :seriesName 
         order by name asc
@@ -72,10 +73,12 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
         seriesName: String
     ): LiveData<List<CrunchySeriesEntity>>
 
+    @Transaction
     @Query("""
-        select *, rowid
-        from CrunchySeriesEntity 
-        where name match :seriesName 
+        select *
+        from CrunchySeriesEntity as se
+        join CrunchySeriesFtsEntity as sf on (se.id = sf.docid)
+        where sf.name match :seriesName 
         order by name asc
     """)
     fun findBySeriesNameFactory(
@@ -85,23 +88,43 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
 
 
     @Query("""
-        select *, rowid
+        select *
         from CrunchySeriesEntity 
         order by name asc
         """)
     suspend fun findAll(): List<CrunchySeriesEntity>
 
     @Query("""
-        select *, rowid
+        select *
         from CrunchySeriesEntity 
         order by name asc
         """)
     fun findAllX(): LiveData<List<CrunchySeriesEntity>>
 
     @Query("""
-        select *, rowid
+        select *
         from CrunchySeriesEntity 
         order by name asc
         """)
     fun findAllFactory(): DataSource.Factory<Int, CrunchySeriesEntity>
+
+    @Query("""
+        select *
+        from CrunchySeriesEntity
+        where name like :prefix
+        order by name asc
+        """)
+    fun findAllStartingWithFactory(
+        prefix: String
+    ): DataSource.Factory<Int, CrunchySeriesEntity>
+
+    @Query("""
+        select *
+        from CrunchySeriesEntity 
+        where genres in(:option)
+        order by name asc
+        """)
+    fun findAllContainingGenre(
+        option: String
+    ): DataSource.Factory<Int, CrunchySeriesEntity>
 }

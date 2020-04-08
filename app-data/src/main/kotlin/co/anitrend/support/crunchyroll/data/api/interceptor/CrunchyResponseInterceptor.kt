@@ -25,6 +25,7 @@ import co.anitrend.support.crunchyroll.data.arch.extension.typeTokenOf
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.authentication.helper.CrunchyAuthentication
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import okhttp3.*
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -112,7 +113,9 @@ class CrunchyResponseInterceptor(
             if (response.priorResponse?.isSuccessful != true) {
                 val retries = retryCount.incrementAndGet()
                 if (retries >= 3) {
+                    val waitDuration = (retries * retries * 100).toLong()
                     runBlocking(dispatchers.io) {
+                        delay(waitDuration)
                         authentication.invalidateSession()
                     }
                     retryCount.set(0)

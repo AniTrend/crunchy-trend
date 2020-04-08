@@ -37,5 +37,4 @@ abstract class SeriesSource(
 
     abstract val seriesInfoObservable:
             ISourceObservable<CrunchySeriesInfoQuery, CrunchySeries?>
-
 }

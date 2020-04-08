@@ -24,15 +24,16 @@ import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
-import co.anitrend.arch.ui.recycler.adapter.contract.ISupportViewAdapter
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
+import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.feature.search.R
 import co.anitrend.support.crunchyroll.feature.search.presenter.SeriesPresenter
 import co.anitrend.support.crunchyroll.feature.search.ui.adapter.SeriesViewAdapter
 import co.anitrend.support.crunchyroll.feature.search.viewmodel.SeriesSearchViewModel
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -56,7 +57,7 @@ class SearchContentScreen : SupportFragmentPagedList<CrunchySeries, SeriesPresen
 
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         SeriesViewAdapter(
-            supportStateConfiguration,
+            get(),
             object : ItemClickListener<CrunchySeries> {
                 /**
                  * When the target view from [View.OnClickListener]
@@ -120,8 +121,8 @@ class SearchContentScreen : SupportFragmentPagedList<CrunchySeries, SeriesPresen
         super.onViewCreated(view, savedInstanceState)
         supportStateLayout?.setNetworkState(
             NetworkState.Error(
-                heading = "No Search Results",
-                message = "Please enter a search term to look for"
+                heading = "Looking for something?",
+                message = "Tap the ${Emote.Search} to get started"
             )
         )
     }
@@ -169,5 +170,8 @@ class SearchContentScreen : SupportFragmentPagedList<CrunchySeries, SeriesPresen
     /**
      * State configuration for any underlying state representing widgets
      */
-    override val supportStateConfiguration by inject<SupportStateLayoutConfiguration>()
+    override val supportStateConfiguration = SupportStateLayoutConfiguration(
+        loadingDrawable = R.drawable.ic_launcher_foreground,
+        errorDrawable = R.drawable.ic_support_empty_state
+    )
 }

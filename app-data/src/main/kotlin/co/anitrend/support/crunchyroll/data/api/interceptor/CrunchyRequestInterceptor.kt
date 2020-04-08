@@ -50,5 +50,4 @@ class CrunchyRequestInterceptor(
         }
         return chain.proceed(requestBuilder.build())
     }
-
 }

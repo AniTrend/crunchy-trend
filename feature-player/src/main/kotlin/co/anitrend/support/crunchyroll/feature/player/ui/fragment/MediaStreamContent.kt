@@ -23,6 +23,7 @@ import androidx.lifecycle.Observer
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.argument
 import co.anitrend.arch.ui.fragment.SupportFragment
+import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
@@ -123,7 +124,7 @@ class MediaStreamContent : SupportFragment<MediaStream?, CrunchyCorePresenter, L
             setOnErrorListener {
                 supportStateLayout.setNetworkState(
                     NetworkState.Error(
-                        heading = "Playback Error",
+                        heading = "Playback Error ${Emote.Shocked}",
                         message = it.message
                     )
                 )
@@ -145,7 +146,7 @@ class MediaStreamContent : SupportFragment<MediaStream?, CrunchyCorePresenter, L
             } else {
                 supportStateLayout.setNetworkState(
                     NetworkState.Error(
-                        heading = "No Streams Available",
+                        heading = "No Streams Available ${Emote.Eyes}",
                         message = "Content may be unavailable, please check with original source"
                     )
                 )
@@ -172,8 +173,8 @@ class MediaStreamContent : SupportFragment<MediaStream?, CrunchyCorePresenter, L
             )
         } ?: supportStateLayout.setNetworkState(
             NetworkState.Error(
-                heading = "Invalid Fragment Parameters",
-                message = "Invalid or missing payload"
+                heading = "Invalid Fragment Parameters ${Emote.Cry} ",
+                message = "Invalid or missing payload, request will not be processed"
             )
         )
     }

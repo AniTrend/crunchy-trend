@@ -38,7 +38,7 @@ import kotlinx.coroutines.launch
 class MediaSourceImpl(
     private val mapper: MediaResponseMapper,
     private val mediaDao: CrunchyMediaDao,
-    private val mediaEndpoint: CrunchyMediaEndpoint,
+    private val endpoint: CrunchyMediaEndpoint,
     private val supportConnectivity: SupportConnectivity,
     supportDispatchers: SupportDispatchers
 ) : MediaSource(supportDispatchers) {
@@ -48,7 +48,7 @@ class MediaSourceImpl(
         param: CrunchyMediaQuery
     ) {
         val deferred = async {
-            mediaEndpoint.getMediaList(
+            endpoint.getMediaList(
                 offset = supportPagingHelper.pageOffset,
                 limit = supportPagingHelper.pageSize,
                 collectionId = param.collectionId

@@ -28,8 +28,7 @@ object CrunchySeriesEntityTransformer : ISupportMapperHelper<CrunchySeriesModel,
      */
     override fun transform(source: CrunchySeriesModel): CrunchySeriesEntity {
         return CrunchySeriesEntity(
-            rowId = source.series_id.toInt(),
-            seriesId = source.series_id,
+            id = source.series_id,
             url = source.url,
             name = source.name,
             mediaType = CrunchyMediaType.valueOf(

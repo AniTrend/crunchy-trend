@@ -17,28 +17,34 @@
 package co.anitrend.support.crunchyroll.data.episode.koin
 
 
+import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
+import co.anitrend.support.crunchyroll.data.arch.extension.api
+import co.anitrend.support.crunchyroll.data.arch.extension.db
 import co.anitrend.support.crunchyroll.data.episode.mapper.EpisodeFeedResponseMapper
 import co.anitrend.support.crunchyroll.data.episode.repository.EpisodeFeedRepository
 import co.anitrend.support.crunchyroll.data.episode.source.EpisodeFeedSourceImpl
+import co.anitrend.support.crunchyroll.data.episode.source.contract.EpisodeFeedSource
 import co.anitrend.support.crunchyroll.data.episode.usecase.EpisodeFeedUseCaseImpl
+import co.anitrend.support.crunchyroll.domain.episode.interactors.EpisodeFeedUseCase
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 private val dataSourceModule = module {
     factory {
         EpisodeFeedSourceImpl(
             mapper = get(),
-            endpoint = get(),
-            dao = get(),
+            endpoint = api(EndpointType.XML),
+            dao = db().crunchyRssMediaDao(),
             supportDispatchers = get(),
             supportConnectivity = get()
         )
-    }
+    } bind EpisodeFeedSource::class
 }
 
 private val mapperModule = module {
     factory {
         EpisodeFeedResponseMapper(
-            dao = get(),
+            dao = db().crunchyRssMediaDao(),
             localeHelper = get(),
             settings = get()
         )
@@ -48,7 +54,7 @@ private val mapperModule = module {
 private val repositoryModule = module {
     factory {
         EpisodeFeedRepository(
-            source = get<EpisodeFeedSourceImpl>()
+            source = get()
         )
     }
 }
