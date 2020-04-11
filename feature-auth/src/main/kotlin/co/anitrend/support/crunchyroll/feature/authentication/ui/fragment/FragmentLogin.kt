@@ -51,14 +51,14 @@ class FragmentLogin : SupportFragment<CrunchyUser?, CrunchyCorePresenter, Crunch
      * Invoke view model observer to watch for changes
      */
     override fun setUpViewModelObserver() {
-        supportViewModel.model.observe(this, Observer {
+        supportViewModel.model.observe(viewLifecycleOwner, Observer {
             if (it != null)
                 onUpdateUserInterface()
         })
-        supportViewModel.networkState?.observe(this, Observer {
+        supportViewModel.networkState?.observe(viewLifecycleOwner, Observer {
             binding.supportStateLayout.setNetworkState(it)
         })
-        supportViewModel.refreshState?.observe(this, Observer {
+        supportViewModel.refreshState?.observe(viewLifecycleOwner, Observer {
             binding.supportStateLayout.setNetworkState(it)
         })
         with(binding) {

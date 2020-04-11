@@ -73,7 +73,7 @@ class MediaContent : SupportFragmentPagedList<CrunchyMedia, MediaPresenter, Page
     }
 
     override fun setUpViewModelObserver() {
-        supportViewModel.model.observe(this, Observer {
+        supportViewModel.model.observe(viewLifecycleOwner, Observer {
             onPostModelChange(it)
         })
     }

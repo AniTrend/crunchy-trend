@@ -34,7 +34,7 @@
             android:padding="@dimen/xl_margin"
             android:clickable="true"
             android:focusable="true"
-            android:background="?selectableItemBackground">
+            android:foreground="?selectableItemBackground">
 
         <co.anitrend.arch.ui.view.image.SupportImageView
                 android:layout_width="@dimen/avatar_size_xl"

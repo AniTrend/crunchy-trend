@@ -17,6 +17,7 @@
             <option value="$PROJECT_DIR$/app-data" />
             <option value="$PROJECT_DIR$/app-domain" />
             <option value="$PROJECT_DIR$/feature-auth" />
+            <option value="$PROJECT_DIR$/feature-catalog" />
             <option value="$PROJECT_DIR$/feature-discover" />
             <option value="$PROJECT_DIR$/feature-listing" />
             <option value="$PROJECT_DIR$/feature-media" />

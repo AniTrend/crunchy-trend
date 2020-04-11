@@ -64,13 +64,13 @@ class MediaStreamContent : SupportFragment<MediaStream?, CrunchyCorePresenter, L
     override val supportViewModel by viewModel<MediaStreamViewModel>()
 
     override fun setUpViewModelObserver() {
-        supportViewModel.model.observe(this, Observer {
+        supportViewModel.model.observe(viewLifecycleOwner, Observer {
             prepareResults()
         })
-        supportViewModel.networkState?.observe(this, Observer {
+        supportViewModel.networkState?.observe(viewLifecycleOwner, Observer {
             supportStateLayout.setNetworkState(it)
         })
-        supportViewModel.refreshState?.observe(this, Observer {
+        supportViewModel.refreshState?.observe(viewLifecycleOwner, Observer {
             supportStateLayout.setNetworkState(it)
         })
     }

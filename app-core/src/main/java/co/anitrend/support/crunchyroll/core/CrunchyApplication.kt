@@ -27,6 +27,7 @@ import coil.Coil
 import coil.ImageLoader
 import coil.util.CoilUtils
 import okhttp3.OkHttpClient
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -49,22 +50,7 @@ abstract class CrunchyApplication : Application(), Configuration.Provider {
     abstract fun restartDependencyInjection()
 
     private fun setupCoil() {
-        val imageLoader = ImageLoader(this) {
-            availableMemoryPercentage(0.2)
-            bitmapPoolPercentage(0.2)
-            crossfade(360)
-            allowRgb565(!isLowRamDevice())
-            allowHardware(true)
-            okHttpClient {
-                OkHttpClient.Builder()
-                    .cache(
-                        CoilUtils.createDefaultCache(
-                            this@CrunchyApplication
-                        )
-                    )
-                    .build()
-            }
-        }
+        val imageLoader = get<ImageLoader>()
         Coil.setDefaultImageLoader(imageLoader)
     }
 

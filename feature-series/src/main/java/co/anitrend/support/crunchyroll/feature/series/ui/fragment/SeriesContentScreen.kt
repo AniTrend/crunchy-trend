@@ -60,7 +60,7 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
      */
     override fun setUpViewModelObserver() {
         supportViewModel.seriesModel.observe(
-            this,
+            viewLifecycleOwner,
             Observer {
                 if (it != null) {
                     binding.supportStateLayout.setNetworkState(NetworkState.Success)
@@ -69,7 +69,7 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
             }
         )
         supportViewModel.networkState?.observe(
-            this,
+            viewLifecycleOwner,
             Observer {
                 binding.supportStateLayout.setNetworkState(it)
             }

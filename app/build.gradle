@@ -22,12 +22,14 @@ plugins {
 }
 
 apply from: "../gradle/gradle-common-config.gradle"
-apply from: "../gradle/gradle-common-config-app.gradle"
 apply from: "../gradle/gradle-common-dependencies.gradle"
 
 android {
     defaultConfig {
         applicationId "co.anitrend.support.crunchyroll"
+    }
+    dataBinding {
+        enabled = true
     }
 }
 

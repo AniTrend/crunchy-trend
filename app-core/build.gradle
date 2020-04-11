@@ -22,7 +22,6 @@ plugins {
 }
 
 apply from: "../gradle/gradle-common-config.gradle"
-apply from: "../gradle/gradle-common-config-app.gradle"
 apply from: "../gradle/gradle-common-dependencies.gradle"
 
 android {
@@ -58,10 +57,6 @@ dependencies {
 
     /** Coil Library */
     implementation "io.coil-kt:coil:$coil"
-
-    /** Glide Libraries */
-    implementation "com.github.bumptech.glide:glide:$glide"
-    kapt "com.github.bumptech.glide:compiler:$glide"
 
     /** Material Dialogs */
     implementation "com.afollestad.material-dialogs:core:$materialDialogs"

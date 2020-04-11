@@ -25,13 +25,8 @@ apply from: "../gradle/gradle-common-config.gradle"
 apply from: "../gradle/gradle-common-config-app.gradle"
 apply from: "../gradle/gradle-common-dependencies.gradle"
 
-android {
-    defaultConfig {
-        consumerProguardFiles 'consumer-rules.pro'
-    }
-}
-
 ext {
+    okHttp = '4.5.0'
     mediaKtx = '1.1.0'
     exoMedia = '4.3.0'
     exoPlaylist = '2.0.1'
@@ -39,43 +34,13 @@ ext {
 }
 
 dependencies {
-    /** Platform Dependencies */
-    implementation project(":support-ui")
-    implementation project(":support-core")
-    implementation project(":support-data")
-    implementation project(":support-theme")
-    implementation project(":support-domain")
-    implementation project(":support-ext")
-
-    implementation project(':app-core')
-    implementation project(':app-data')
-    implementation project(':app-domain')
-
-    implementation project(':android-core')
-
-    /** Material Design */
-    implementation "com.google.android.material:material:$material"
-
-    /** Architecture Components */
-    implementation "androidx.media:media:$mediaKtx"
-    implementation "androidx.core:core-ktx:$ktx"
-    implementation "androidx.work:work-runtime-ktx:$workerKtx"
-    implementation "androidx.fragment:fragment-ktx:$fragmentKtx"
-    implementation "androidx.constraintlayout:constraintlayout:$constraintX"
-    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipeRefreshX"
-
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleX"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleX"
-
-    /** Coil Libraries */
-    implementation "io.coil-kt:coil:$coil"
-
+    implementation("com.squareup.okhttp3:okhttp:$okHttp")
     /** Exo media */
-    implementation "com.devbrackets.android:exomedia:$exoMedia"
+    implementation("com.devbrackets.android:exomedia:$exoMedia")
 
     /** Playlist support */
-    implementation "com.devbrackets.android:playlistcore:$exoPlaylist"
+    implementation("com.devbrackets.android:playlistcore:$exoPlaylist")
 
     /** Exo player extensions */
-    implementation "com.google.android.exoplayer:extension-okhttp:$exoMediaPlayer"
+    implementation("com.google.android.exoplayer:extension-okhttp:$exoMediaPlayer")
 }

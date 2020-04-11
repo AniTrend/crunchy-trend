@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.core.koin
 
 import co.anitrend.arch.extension.SupportDispatchers
+import co.anitrend.arch.extension.isLowRamDevice
 import co.anitrend.arch.extension.util.contract.ISupportDateHelper
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.core.R
@@ -28,6 +29,9 @@ import co.anitrend.support.crunchyroll.core.util.locale.SessionLocaleProviderHel
 import co.anitrend.support.crunchyroll.core.util.theme.ThemeUtil
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper
+import coil.ImageLoader
+import coil.util.CoilUtils
+import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.binds
 import org.koin.dsl.module
@@ -78,6 +82,22 @@ private val configurationModule = module {
         SessionLocaleProviderHelper(
             localeUtil = get()
         )
+    }
+    factory {
+        ImageLoader(androidContext()) {
+            availableMemoryPercentage(0.2)
+            bitmapPoolPercentage(0.2)
+            crossfade(360)
+            allowRgb565(!androidContext().isLowRamDevice())
+            allowHardware(true)
+            okHttpClient {
+                OkHttpClient.Builder().cache(
+                    CoilUtils.createDefaultCache(
+                        androidContext()
+                    )
+                ).build()
+            }
+        }
     }
 }
 

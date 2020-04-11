@@ -94,13 +94,13 @@ class SearchContentScreen : SupportFragmentPagedList<CrunchySeries, SeriesPresen
      */
     override fun setUpViewModelObserver() {
         supportViewModel.model.observe(
-            this,
+            viewLifecycleOwner,
             Observer {
                 onPostModelChange(it)
             }
         )
         supportViewModel.searchQueryLiveData.observe(
-            this,
+            viewLifecycleOwner,
             Observer {
                 onFetchDataInitialize()
             }

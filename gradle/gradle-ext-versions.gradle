@@ -19,11 +19,10 @@ ext {
     targetSdk = 29
     minSdk = 21
 
-    versionCode = 63
-    versionName = '0.4.4-alpha06'
+    versionCode = 64
+    versionName = '0.4.4-alpha07'
 
     coil = '0.9.5'
-    glide = '4.11.0'
     retrofit = '2.7.2'
 
     material = '1.1.0'
@@ -37,7 +36,7 @@ ext {
     paging = '2.1.2'
     pagingKtx = '2.1.2'
     ktx = '1.2.0'
-    fragmentKtx = '1.2.3'
+    fragmentKtx = '1.2.4'
     workerKtx = '2.3.4'
     firebase = '17.2.3'
 

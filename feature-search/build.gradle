@@ -25,52 +25,10 @@ apply from: "../gradle/gradle-common-config.gradle"
 apply from: "../gradle/gradle-common-config-app.gradle"
 apply from: "../gradle/gradle-common-dependencies.gradle"
 
-android {
-    defaultConfig {
-        consumerProguardFiles 'consumer-rules.pro'
-    }
-}
-
 ext {
     materialMultiSearch = '0.1.3'
 }
 
 dependencies {
-    /** Platform Dependencies */
-    implementation project(":support-ui")
-    implementation project(":support-core")
-    implementation project(":support-data")
-    implementation project(":support-theme")
-    implementation project(":support-domain")
-    implementation project(":support-ext")
-
-    implementation project(':app-core')
-    implementation project(':app-data')
-    implementation project(':app-domain')
-
-    implementation project(':android-core')
-
-    /** Material Design */
-    implementation "com.google.android.material:material:$material"
-
-    /** Architecture Components */
-    implementation "androidx.core:core-ktx:$ktx"
-
-    implementation "androidx.paging:paging-runtime:$paging"
-    implementation "androidx.paging:paging-runtime-ktx:$pagingKtx"
-
-    implementation "androidx.work:work-runtime-ktx:$workerKtx"
-    implementation "androidx.fragment:fragment-ktx:$fragmentKtx"
-
-    implementation "androidx.constraintlayout:constraintlayout:$constraintX"
-    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipeRefreshX"
-
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleX"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleX"
-
-    /** Glide Libraries */
-    implementation "com.github.bumptech.glide:glide:$glide"
-    kapt "com.github.bumptech.glide:compiler:$glide"
-
     implementation "com.github.anitrend:material-multi-search:$materialMultiSearch"
 }

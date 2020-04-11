@@ -35,6 +35,7 @@ import java.io.File
 private val coreModule = module {
     single {
         ExoMedia.DataSourceFactoryProvider { userAgent, listener ->
+
             // Updates the network data source to use the OKHttp implementation
             val upstreamFactory = OkHttpDataSourceFactory(OkHttpClient(), userAgent, listener)
 

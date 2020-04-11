@@ -114,7 +114,7 @@ class FragmentLogout : SupportFragment<Boolean, CrunchyCorePresenter, Boolean>()
      * Invoke view model observer to watch for changes
      */
     override fun setUpViewModelObserver() {
-        supportViewModel.model.observe(this, Observer {
+        supportViewModel.model.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 if (it == true) {
                     NavigationTargets.Splash(context)
@@ -122,10 +122,10 @@ class FragmentLogout : SupportFragment<Boolean, CrunchyCorePresenter, Boolean>()
                 }
             }
         })
-        supportViewModel.networkState?.observe(this, Observer {
+        supportViewModel.networkState?.observe(viewLifecycleOwner, Observer {
             binding.supportStateLayout.setNetworkState(it)
         })
-        supportViewModel.refreshState?.observe(this, Observer {
+        supportViewModel.refreshState?.observe(viewLifecycleOwner, Observer {
             binding.supportStateLayout.setNetworkState(it)
         })
     }
@@ -155,7 +155,7 @@ class FragmentLogout : SupportFragment<Boolean, CrunchyCorePresenter, Boolean>()
      */
     override fun onUpdateUserInterface() {
         val liveData = supportViewModel.getCurrentUser()
-        liveData.observe(this, Observer {
+        liveData.observe(viewLifecycleOwner, Observer {
             binding.currentUserModel = it
         })
     }

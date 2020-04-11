@@ -22,6 +22,7 @@ import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
+import co.anitrend.arch.extension.argument
 import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
@@ -39,6 +40,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @Suppress("unused")
 class SeriesDiscoverContent : SupportFragmentPagedList<CrunchySeries, SeriesPresenter, PagedList<CrunchySeries>>() {
+
+    private val payload: NavigationTargets.Discover.Payload?
+            by argument(NavigationTargets.Discover.PAYLOAD)
 
     override val columnSize = R.integer.single_list_size
 
@@ -95,7 +99,7 @@ class SeriesDiscoverContent : SupportFragmentPagedList<CrunchySeries, SeriesPres
      */
     override fun setUpViewModelObserver() {
         supportViewModel.model.observe(
-            this,
+            viewLifecycleOwner,
             Observer {
                 onPostModelChange(it)
             }
@@ -134,10 +138,17 @@ class SeriesDiscoverContent : SupportFragmentPagedList<CrunchySeries, SeriesPres
      * @see [ISupportViewModel.invoke]
      */
     override fun onFetchDataInitialize() {
-        supportViewModel(
-            parameter = CrunchySeriesBrowseQuery(
-                filter = CrunchySeriesBrowseFilter.ALPHA
+        val query = payload?.let {
+            CrunchySeriesBrowseQuery(
+                filter = it.browseFilter,
+                option = it.filterOption
             )
+        } ?: CrunchySeriesBrowseQuery(
+            filter = CrunchySeriesBrowseFilter.ALPHA
+        )
+
+        supportViewModel(
+            parameter = query
         )
     }
 

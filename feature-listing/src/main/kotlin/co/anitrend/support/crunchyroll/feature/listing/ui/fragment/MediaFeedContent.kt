@@ -85,7 +85,7 @@ class MediaFeedContent : SupportFragmentPagedList<CrunchyEpisodeFeed, CrunchyCor
      * Invoke view model observer to watch for changes
      */
     override fun setUpViewModelObserver() {
-        supportViewModel.model.observe(this, Observer {
+        supportViewModel.model.observe(viewLifecycleOwner, Observer {
             onPostModelChange(it)
         })
     }

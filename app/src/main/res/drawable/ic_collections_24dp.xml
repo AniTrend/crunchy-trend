@@ -1,5 +1,5 @@
 <!--
-  ~    Copyright 2019 AniTrend
+  ~    Copyright 2020 AniTrend
   ~
   ~    Licensed under the Apache License, Version 2.0 (the "License");
   ~    you may not use this file except in compliance with the License.
@@ -14,16 +14,12 @@
   ~    limitations under the License.
   -->
 
-<resources>
-    <string name="nav_header_navigation">Navigation</string>
-
-    <string name="nav_header_support">Support</string>
-    <string name="nav_contact">Contact</string>
-
-    <string name="nav_series_catalog">Catalog</string>
-    <string name="nav_discover">Discover</string>
-    <string name="nav_shows">Shows</string>
-    <string name="nav_show_news">News</string>
-
-    <string name="app_banner_text">CrunchyTrend - All Rights Reserved.</string>
-</resources>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="24dp"
+        android:height="24dp"
+        android:viewportWidth="24.0"
+        android:viewportHeight="24.0">
+    <path
+        android:fillColor="?attr/contentColor"
+        android:pathData="M4,6L2,6v14c0,1.1 0.9,2 2,2h14v-2L4,20L4,6zM20,2L8,2c-1.1,0 -2,0.9 -2,2v12c0,1.1 0.9,2 2,2h12c1.1,0 2,-0.9 2,-2L22,4c0,-1.1 -0.9,-2 -2,-2zM20,12l-2.5,-1.5L15,12L15,4h5v8z"/>
+</vector>
