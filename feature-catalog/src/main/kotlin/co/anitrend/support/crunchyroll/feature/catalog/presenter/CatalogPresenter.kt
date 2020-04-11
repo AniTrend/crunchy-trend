@@ -14,8 +14,13 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.feature.discover.controller
+package co.anitrend.support.crunchyroll.feature.catalog.presenter
 
+import android.content.Context
+import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
+import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
 
-class SeriesController {
-}
+class CatalogPresenter(
+    context: Context,
+    settings: CrunchySettings
+) : CrunchyCorePresenter(context, settings)

@@ -57,7 +57,7 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
         select *
         from CrunchySeriesEntity 
         where name match :seriesName 
-        order by name asc
+        order by name asc, length(name)
     """)
     suspend fun findBySeriesName(
         seriesName: String
@@ -67,7 +67,7 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
         select *
         from CrunchySeriesEntity 
         where name match :seriesName 
-        order by name asc
+        order by name asc, length(name)
     """)
     fun findBySeriesNameX(
         seriesName: String
@@ -79,7 +79,7 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
         from CrunchySeriesEntity as se
         join CrunchySeriesFtsEntity as sf on (se.id = sf.docid)
         where sf.name match :seriesName 
-        order by name asc
+        order by se.name asc, length(se.name)
     """)
     fun findBySeriesNameFactory(
         seriesName: String
@@ -90,21 +90,21 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
     @Query("""
         select *
         from CrunchySeriesEntity 
-        order by name asc
+        order by name asc, length(name)
         """)
     suspend fun findAll(): List<CrunchySeriesEntity>
 
     @Query("""
         select *
         from CrunchySeriesEntity 
-        order by name asc
+        order by name asc, length(name)
         """)
     fun findAllX(): LiveData<List<CrunchySeriesEntity>>
 
     @Query("""
         select *
         from CrunchySeriesEntity 
-        order by name asc
+        order by name asc, length(name)
         """)
     fun findAllFactory(): DataSource.Factory<Int, CrunchySeriesEntity>
 
@@ -112,7 +112,7 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
         select *
         from CrunchySeriesEntity
         where name like :prefix
-        order by name asc
+        order by name asc, length(name)
         """)
     fun findAllStartingWithFactory(
         prefix: String
@@ -122,7 +122,7 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
         select *
         from CrunchySeriesEntity 
         where genres in(:option)
-        order by name asc
+        order by name asc, length(name)
         """)
     fun findAllContainingGenre(
         option: String

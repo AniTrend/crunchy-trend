@@ -16,7 +16,6 @@
 
 package co.anitrend.support.crunchyroll.data.catalog.repository
 
-import androidx.paging.PagedList
 import co.anitrend.arch.data.model.UserInterfaceState
 import co.anitrend.arch.data.repository.SupportRepository
 import co.anitrend.support.crunchyroll.data.catalog.source.contract.CatalogSource
@@ -27,11 +26,11 @@ import co.anitrend.support.crunchyroll.domain.catalog.repositories.ICatalogRepos
 class CatalogRepository(
     private val source: CatalogSource
 ) : SupportRepository(source),
-    ICatalogRepository<UserInterfaceState<PagedList<CrunchyCatalogWithSeries>>> {
+    ICatalogRepository<UserInterfaceState<List<CrunchyCatalogWithSeries>>> {
 
     override fun catalogSeries(catalogQuery: CrunchyCatalogQuery) =
         UserInterfaceState.create(
-            model = source.catalogObservable(catalogQuery),
+            model = source.getCatalog(catalogQuery),
             source = source
         )
 }

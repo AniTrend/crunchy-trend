@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2020 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,5 +14,10 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.core.extensions
+package co.anitrend.support.crunchyroll.feature.catalog.controller.decorator
 
+import co.anitrend.support.crunchyroll.feature.catalog.R
+import co.anitrend.support.crunchyroll.feature.catalog.controller.decorator.contract.HeaderItemDecorator
+
+class HeaderDecorator(background: Int, sidePaddingPixels: Int) :
+    HeaderItemDecorator(background, sidePaddingPixels, R.layout.adapter_catalog_header)

@@ -16,17 +16,21 @@
 
 package co.anitrend.support.crunchyroll.data.catalog.source.contract
 
-import androidx.paging.PagedList
+import androidx.lifecycle.LiveData
 import co.anitrend.arch.data.source.contract.ISourceObservable
+import co.anitrend.arch.data.source.core.SupportCoreDataSource
 import co.anitrend.arch.extension.SupportDispatchers
-import co.anitrend.support.crunchyroll.data.arch.common.CrunchyPagedSource
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 import co.anitrend.support.crunchyroll.domain.catalog.models.CrunchyCatalogQuery
 
 abstract class CatalogSource(
     supportDispatchers: SupportDispatchers
-) : CrunchyPagedSource<CrunchyCatalogWithSeries>(supportDispatchers) {
+) : SupportCoreDataSource(supportDispatchers) {
 
-    abstract val catalogObservable:
-            ISourceObservable<CrunchyCatalogQuery, PagedList<CrunchyCatalogWithSeries>>
+    protected abstract val observable:
+            ISourceObservable<CrunchyCatalogQuery, List<CrunchyCatalogWithSeries>>
+
+    abstract fun getCatalog(
+        param: CrunchyCatalogQuery
+    ): LiveData<List<CrunchyCatalogWithSeries>>
 }

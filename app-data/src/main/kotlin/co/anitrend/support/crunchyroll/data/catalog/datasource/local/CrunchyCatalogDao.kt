@@ -19,6 +19,7 @@ package co.anitrend.support.crunchyroll.data.catalog.datasource.local
 import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
 import co.anitrend.arch.data.dao.ISupportQuery
 import co.anitrend.support.crunchyroll.data.catalog.entity.CrunchyCatalogEntity
 import co.anitrend.support.crunchyroll.data.catalog.entity.CrunchyCatalogWithSeriesEntity
@@ -34,6 +35,7 @@ interface CrunchyCatalogDao : ISupportQuery<CrunchyCatalogEntity> {
     suspend fun clearTable()
 
 
+    @Transaction
     @Query("""
         select *
         from CrunchyCatalogEntity
@@ -41,6 +43,7 @@ interface CrunchyCatalogDao : ISupportQuery<CrunchyCatalogEntity> {
         """)
     suspend fun findAll(catalogFilter: CrunchySeriesCatalogFilter): List<CrunchyCatalogWithSeriesEntity>
 
+    @Transaction
     @Query("""
         select *
         from CrunchyCatalogEntity 
@@ -48,6 +51,7 @@ interface CrunchyCatalogDao : ISupportQuery<CrunchyCatalogEntity> {
         """)
     fun findAllX(catalogFilter: CrunchySeriesCatalogFilter): Flow<List<CrunchyCatalogWithSeriesEntity>>
 
+    @Transaction
     @Query("""
         select *
         from CrunchyCatalogEntity 

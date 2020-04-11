@@ -16,7 +16,6 @@
 
 package co.anitrend.support.crunchyroll.data.catalog.usecase
 
-import androidx.paging.PagedList
 import co.anitrend.arch.data.model.UserInterfaceState
 import co.anitrend.support.crunchyroll.data.catalog.repository.CatalogRepository
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
@@ -24,7 +23,7 @@ import co.anitrend.support.crunchyroll.domain.catalog.interactors.CatalogUseCase
 
 class CatalogUseCaseImpl(
     repository: CatalogRepository
-) : CatalogUseCase<UserInterfaceState<PagedList<CrunchyCatalogWithSeries>>>(repository) {
+) : CatalogUseCase<UserInterfaceState<List<CrunchyCatalogWithSeries>>>(repository) {
 
     /**
      * Informs underlying repositories or related components running background operations to stop

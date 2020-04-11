@@ -18,10 +18,12 @@ package co.anitrend.support.crunchyroll.core.naviagation
 
 import android.content.Context
 import android.os.Parcelable
+import co.anitrend.arch.extension.empty
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets.MediaPlayer.navRouterIntent
 import co.anitrend.support.crunchyroll.core.naviagation.contract.INavigationRouter
 import co.anitrend.support.crunchyroll.core.naviagation.contract.INavigationTarget
 import co.anitrend.support.crunchyroll.core.naviagation.extensions.forIntent
+import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
 import kotlinx.android.parcel.Parcelize
 
 object NavigationTargets {
@@ -142,6 +144,29 @@ object NavigationTargets {
     object Discover : INavigationRouter, INavigationTarget {
         override val packageName = "feature.discover.ui.fragment"
         override val className = "SeriesDiscoverContent"
+
+        override val navRouterIntent = forIntent()
+
+        const val PAYLOAD = "SeriesDiscoverContent:Payload"
+
+        /**
+         * Starts the target [navRouterIntent] for the implementation
+         */
+        operator fun invoke(context: Context?, payload: Payload) {
+            navRouterIntent?.putExtra(PAYLOAD, payload)
+            super.invoke(context)
+        }
+
+        @Parcelize
+        data class Payload(
+            val browseFilter: CrunchySeriesBrowseFilter,
+            val filterOption: String = String.empty()
+        ) : Parcelable
+    }
+
+    object Catalog : INavigationRouter, INavigationTarget {
+        override val packageName = "feature.catalog.ui.fragment"
+        override val className = "CatalogContent"
 
         override val navRouterIntent = forIntent()
     }

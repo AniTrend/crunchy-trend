@@ -17,11 +17,8 @@
 package co.anitrend.support.crunchyroll.data.catalog.source
 
 import androidx.lifecycle.LiveData
-import androidx.paging.PagedList
-import androidx.paging.PagingRequestHelper
-import androidx.paging.toLiveData
+import androidx.lifecycle.asLiveData
 import co.anitrend.arch.data.source.contract.ISourceObservable
-import co.anitrend.arch.data.util.SupportDataKeyStore
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.extension.controller
@@ -33,6 +30,8 @@ import co.anitrend.support.crunchyroll.data.series.datasource.remote.CrunchySeri
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 import co.anitrend.support.crunchyroll.domain.catalog.models.CrunchyCatalogQuery
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.get
@@ -45,14 +44,13 @@ class CatalogSourceImpl(
     supportDispatchers: SupportDispatchers
 ) : CatalogSource(supportDispatchers), KoinComponent {
 
-    private fun getCatalog(
-        callback: PagingRequestHelper.Request.Callback,
+    override fun getCatalog(
         param: CrunchyCatalogQuery
-    ) {
+    ): LiveData<List<CrunchyCatalogWithSeries>> {
+        retry = { getCatalog(param) }
         val deferred = async {
             endpoint.getSeriesList(
-                offset = supportPagingHelper.pageOffset,
-                limit = supportPagingHelper.pageSize,
+                offset = 0,
                 filter = param.catalogFilter.attribute
             )
         }
@@ -66,12 +64,14 @@ class CatalogSourceImpl(
             val controller =
                 mapper.controller(supportConnectivity, dispatchers)
 
-            controller(deferred, callback)
+            controller(deferred, networkState)
         }
+
+        return observable(param)
     }
 
-    override val catalogObservable =
-        object :ISourceObservable<CrunchyCatalogQuery, PagedList<CrunchyCatalogWithSeries>> {
+    override val observable =
+        object :ISourceObservable<CrunchyCatalogQuery, List<CrunchyCatalogWithSeries>> {
             /**
              * Returns the appropriate observable which we will monitor for updates,
              * common implementation may include but not limited to returning
@@ -79,19 +79,20 @@ class CatalogSourceImpl(
              *
              * @param parameter to use when executing
              */
-            override fun invoke(parameter: CrunchyCatalogQuery): LiveData<PagedList<CrunchyCatalogWithSeries>> {
-                executionTarget = { getCatalog(it, parameter) }
+            override fun invoke(parameter: CrunchyCatalogQuery): LiveData<List<CrunchyCatalogWithSeries>> {
 
-                val localSource = catalogDao.findAllFactory(parameter.catalogFilter)
-
-                val result = localSource.map {
-                    CrunchyCatalogTransformer.transform(it)
-                }
-
-                return result.toLiveData(
-                    config = SupportDataKeyStore.PAGING_CONFIGURATION,
-                    boundaryCallback = this@CatalogSourceImpl
+                val catalogFlow = catalogDao.findAllX(
+                    parameter.catalogFilter
                 )
+
+                @Suppress("EXPERIMENTAL_API_USAGE")
+                return catalogFlow.map {
+                    it.map { entity ->
+                        CrunchyCatalogTransformer.transform(entity)
+                    }
+                }.flowOn(
+                    supportDispatchers.computation
+                ).asLiveData()
             }
         }
 
