@@ -21,15 +21,21 @@ import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Query
 import co.anitrend.arch.data.dao.ISupportQuery
+import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
 import co.anitrend.support.crunchyroll.data.news.entity.NewsEntity
 
 @Dao
-interface CrunchyRssNewsDao : ISupportQuery<NewsEntity> {
+interface CrunchyRssNewsDao : ISupportQuery<NewsEntity>, ISourceDao {
+
+    @Query("""
+        select count(guid) from NewsEntity
+    """)
+    override suspend fun count(): Int
 
     @Query("""
         delete from NewsEntity
         """)
-    suspend fun clearTable()
+    override suspend fun clearTable()
 
 
     @Query("""

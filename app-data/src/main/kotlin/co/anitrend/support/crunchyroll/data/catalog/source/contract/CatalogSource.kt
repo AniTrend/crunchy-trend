@@ -28,9 +28,9 @@ abstract class CatalogSource(
 ) : SupportCoreDataSource(supportDispatchers) {
 
     protected abstract val observable:
-            ISourceObservable<CrunchyCatalogQuery, List<CrunchyCatalogWithSeries>>
+            ISourceObservable<CrunchyCatalogQuery, CrunchyCatalogWithSeries>
 
     abstract fun getCatalog(
         param: CrunchyCatalogQuery
-    ): LiveData<List<CrunchyCatalogWithSeries>>
+    ): LiveData<CrunchyCatalogWithSeries>
 }

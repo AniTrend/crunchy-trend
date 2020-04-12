@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.arch.database
+package co.anitrend.support.crunchyroll.data.arch.database.common
 
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.catalog.datasource.local.CrunchyCatalogDao

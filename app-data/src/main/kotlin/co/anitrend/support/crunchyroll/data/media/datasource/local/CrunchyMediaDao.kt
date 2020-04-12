@@ -21,15 +21,21 @@ import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Query
 import co.anitrend.arch.data.dao.ISupportQuery
+import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
 import co.anitrend.support.crunchyroll.data.media.entity.CrunchyMediaEntity
 
 @Dao
-interface CrunchyMediaDao : ISupportQuery<CrunchyMediaEntity> {
+interface CrunchyMediaDao : ISupportQuery<CrunchyMediaEntity>, ISourceDao {
+
+    @Query("""
+        select count(mediaId) from CrunchyMediaEntity
+    """)
+    override suspend fun count(): Int
 
     @Query("""
         delete from CrunchyMediaEntity
         """)
-    suspend fun clearTable()
+    override suspend fun clearTable()
 
 
     @Query("""

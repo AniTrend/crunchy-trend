@@ -45,7 +45,7 @@ class SeriesSourceImpl(
     private val endpoint: CrunchySeriesEndpoint,
     private val supportConnectivity: SupportConnectivity,
     supportDispatchers: SupportDispatchers
-) : SeriesSource(supportDispatchers) {
+) : SeriesSource(supportDispatchers, seriesDao) {
 
     private var previousSearchQuery: CrunchySeriesSearchQuery? = null
 

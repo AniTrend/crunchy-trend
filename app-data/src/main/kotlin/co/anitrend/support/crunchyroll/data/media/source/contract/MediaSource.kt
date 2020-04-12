@@ -20,12 +20,14 @@ import androidx.paging.PagedList
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.support.crunchyroll.data.arch.common.CrunchyPagedSource
+import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
 import co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia
 import co.anitrend.support.crunchyroll.domain.media.models.CrunchyMediaQuery
 
 abstract class MediaSource(
-    supportDispatchers: SupportDispatchers
-) : CrunchyPagedSource<CrunchyMedia>(supportDispatchers) {
+    supportDispatchers: SupportDispatchers,
+    sourceDao: ISourceDao
+) : CrunchyPagedSource<CrunchyMedia>(supportDispatchers, sourceDao) {
 
     abstract val mediaObservable:
             ISourceObservable<CrunchyMediaQuery, PagedList<CrunchyMedia>>

@@ -23,7 +23,7 @@ import co.anitrend.arch.extension.systemServiceOf
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
 import co.anitrend.support.crunchyroll.data.arch.database.CrunchyDatabase
-import co.anitrend.support.crunchyroll.data.arch.database.ICrunchyDatabase
+import co.anitrend.support.crunchyroll.data.arch.database.common.ICrunchyDatabase
 import co.anitrend.support.crunchyroll.data.authentication.koin.authenticationModules
 import co.anitrend.support.crunchyroll.data.catalog.koin.catalogModules
 import co.anitrend.support.crunchyroll.data.collection.koin.collectionModules

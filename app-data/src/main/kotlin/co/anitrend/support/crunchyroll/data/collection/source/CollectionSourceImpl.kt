@@ -41,7 +41,7 @@ class CollectionSourceImpl(
     private val collectionEndpoint: CrunchyCollectionEndpoint,
     private val supportConnectivity: SupportConnectivity,
     supportDispatchers: SupportDispatchers
-) : CollectionSource(supportDispatchers) {
+) : CollectionSource(supportDispatchers, collectionDao) {
 
     private fun getCollectionsForSeries(
         callback: PagingRequestHelper.Request.Callback,

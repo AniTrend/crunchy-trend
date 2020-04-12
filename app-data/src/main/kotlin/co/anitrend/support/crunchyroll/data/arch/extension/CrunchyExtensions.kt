@@ -21,16 +21,14 @@ import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
 import co.anitrend.support.crunchyroll.data.api.helper.EndpointProvider
 import co.anitrend.support.crunchyroll.data.arch.controller.CrunchyController
-import co.anitrend.support.crunchyroll.data.arch.database.ICrunchyDatabase
+import co.anitrend.support.crunchyroll.data.arch.database.common.ICrunchyDatabase
 import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyResponseStatus
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import com.google.gson.reflect.TypeToken
 import okhttp3.Response
 import okhttp3.ResponseBody
-import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
-import retrofit2.Retrofit
 import java.lang.reflect.Type
 import java.util.*
 

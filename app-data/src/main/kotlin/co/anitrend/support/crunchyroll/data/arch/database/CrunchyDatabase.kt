@@ -22,6 +22,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import co.anitrend.support.crunchyroll.data.BuildConfig
+import co.anitrend.support.crunchyroll.data.arch.database.common.ICrunchyDatabase
 import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEntity
 import co.anitrend.support.crunchyroll.data.collection.entity.CrunchyCollectionEntity
 import co.anitrend.support.crunchyroll.data.arch.database.converters.CrunchyEnumsTypeConverter
@@ -59,7 +60,8 @@ import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
         CrunchyTypeConverters::class
     ]
 )
-abstract class CrunchyDatabase: RoomDatabase(), ICrunchyDatabase {
+abstract class CrunchyDatabase: RoomDatabase(),
+    ICrunchyDatabase {
 
     companion object {
         fun newInstance(context: Context): CrunchyDatabase {

@@ -20,15 +20,21 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import co.anitrend.arch.data.dao.ISupportQuery
+import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
 import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEntity
 
 @Dao
-interface CrunchyLoginDao : ISupportQuery<CrunchyLoginEntity> {
+interface CrunchyLoginDao : ISupportQuery<CrunchyLoginEntity>, ISourceDao {
+
+    @Query("""
+        select count(userId) from CrunchyLoginEntity 
+    """)
+    override suspend fun count(): Int
 
     @Query("""
         delete from CrunchyLoginEntity
         """)
-    suspend fun clearTable()
+    override suspend fun clearTable()
 
     @Query("""
         select * 

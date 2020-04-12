@@ -41,7 +41,7 @@ class MediaSourceImpl(
     private val endpoint: CrunchyMediaEndpoint,
     private val supportConnectivity: SupportConnectivity,
     supportDispatchers: SupportDispatchers
-) : MediaSource(supportDispatchers) {
+) : MediaSource(supportDispatchers, mediaDao) {
 
     fun getMediaForCollection(
         callback: PagingRequestHelper.Request.Callback,

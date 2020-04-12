@@ -21,6 +21,7 @@ import androidx.lifecycle.asLiveData
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
+import co.anitrend.arch.extension.util.SupportExtKeyStore
 import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.catalog.datasource.local.CrunchyCatalogDao
 import co.anitrend.support.crunchyroll.data.catalog.mapper.CatalogResponseMapper
@@ -32,6 +33,7 @@ import co.anitrend.support.crunchyroll.domain.catalog.models.CrunchyCatalogQuery
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.get
@@ -46,11 +48,12 @@ class CatalogSourceImpl(
 
     override fun getCatalog(
         param: CrunchyCatalogQuery
-    ): LiveData<List<CrunchyCatalogWithSeries>> {
+    ): LiveData<CrunchyCatalogWithSeries> {
         retry = { getCatalog(param) }
         val deferred = async {
             endpoint.getSeriesList(
                 offset = 0,
+                limit = SupportExtKeyStore.pagingLimit * 2,
                 filter = param.catalogFilter.attribute
             )
         }
@@ -71,7 +74,7 @@ class CatalogSourceImpl(
     }
 
     override val observable =
-        object :ISourceObservable<CrunchyCatalogQuery, List<CrunchyCatalogWithSeries>> {
+        object :ISourceObservable<CrunchyCatalogQuery, CrunchyCatalogWithSeries> {
             /**
              * Returns the appropriate observable which we will monitor for updates,
              * common implementation may include but not limited to returning
@@ -79,17 +82,15 @@ class CatalogSourceImpl(
              *
              * @param parameter to use when executing
              */
-            override fun invoke(parameter: CrunchyCatalogQuery): LiveData<List<CrunchyCatalogWithSeries>> {
+            override fun invoke(parameter: CrunchyCatalogQuery): LiveData<CrunchyCatalogWithSeries> {
 
-                val catalogFlow = catalogDao.findAllX(
+                val catalogFlow = catalogDao.findMatchingX(
                     parameter.catalogFilter
                 )
 
                 @Suppress("EXPERIMENTAL_API_USAGE")
-                return catalogFlow.map {
-                    it.map { entity ->
-                        CrunchyCatalogTransformer.transform(entity)
-                    }
+                return catalogFlow.mapNotNull {
+                    CrunchyCatalogTransformer.transform(it)
                 }.flowOn(
                     supportDispatchers.computation
                 ).asLiveData()

@@ -20,12 +20,14 @@ import androidx.paging.PagedList
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.support.crunchyroll.data.arch.common.CrunchyPagedSource
+import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
 import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
 import co.anitrend.support.crunchyroll.domain.collection.models.CrunchyCollectionQuery
 
 abstract class CollectionSource(
-    supportDispatchers: SupportDispatchers
-) : CrunchyPagedSource<CrunchyCollection>(supportDispatchers) {
+    supportDispatchers: SupportDispatchers,
+    commonSource: ISourceDao
+) : CrunchyPagedSource<CrunchyCollection>(supportDispatchers, commonSource) {
 
     abstract val collectionObservable:
             ISourceObservable<CrunchyCollectionQuery, PagedList<CrunchyCollection>>

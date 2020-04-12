@@ -22,15 +22,21 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import co.anitrend.arch.data.dao.ISupportQuery
+import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
 import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesEntity
 
 @Dao
-interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
+interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity>, ISourceDao {
+
+    @Query("""
+        select count(id) from CrunchySeriesEntity
+    """)
+    override suspend fun count(): Int
 
     @Query("""
         delete from CrunchySeriesEntity
         """)
-    suspend fun clearTable()
+    override suspend fun clearTable()
 
 
     @Query("""
@@ -57,7 +63,7 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
         select *
         from CrunchySeriesEntity 
         where name match :seriesName 
-        order by name asc, length(name)
+        order by name asc
     """)
     suspend fun findBySeriesName(
         seriesName: String
@@ -67,7 +73,7 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
         select *
         from CrunchySeriesEntity 
         where name match :seriesName 
-        order by name asc, length(name)
+        order by name asc
     """)
     fun findBySeriesNameX(
         seriesName: String
@@ -79,7 +85,7 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
         from CrunchySeriesEntity as se
         join CrunchySeriesFtsEntity as sf on (se.id = sf.docid)
         where sf.name match :seriesName 
-        order by se.name asc, length(se.name)
+        order by se.name asc
     """)
     fun findBySeriesNameFactory(
         seriesName: String
@@ -90,21 +96,21 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
     @Query("""
         select *
         from CrunchySeriesEntity 
-        order by name asc, length(name)
+        order by name asc
         """)
     suspend fun findAll(): List<CrunchySeriesEntity>
 
     @Query("""
         select *
         from CrunchySeriesEntity 
-        order by name asc, length(name)
+        order by name asc
         """)
     fun findAllX(): LiveData<List<CrunchySeriesEntity>>
 
     @Query("""
         select *
         from CrunchySeriesEntity 
-        order by name asc, length(name)
+        order by name asc
         """)
     fun findAllFactory(): DataSource.Factory<Int, CrunchySeriesEntity>
 
@@ -112,7 +118,7 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
         select *
         from CrunchySeriesEntity
         where name like :prefix
-        order by name asc, length(name)
+        order by name asc
         """)
     fun findAllStartingWithFactory(
         prefix: String
@@ -122,7 +128,7 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity> {
         select *
         from CrunchySeriesEntity 
         where genres in(:option)
-        order by name asc, length(name)
+        order by name asc
         """)
     fun findAllContainingGenre(
         option: String

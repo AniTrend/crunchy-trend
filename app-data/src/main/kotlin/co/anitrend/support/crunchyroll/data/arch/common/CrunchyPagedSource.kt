@@ -20,15 +20,41 @@ import androidx.paging.PagedList
 import androidx.paging.PagingRequestHelper
 import co.anitrend.arch.data.source.paging.SupportPagingDataSource
 import co.anitrend.arch.extension.SupportDispatchers
+import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 /**
  * Helper for prototyping quick sources
  */
 abstract class CrunchyPagedSource<T>(
-    supportDispatchers: SupportDispatchers
+    supportDispatchers: SupportDispatchers,
+    sourceDao: ISourceDao
 ) : SupportPagingDataSource<T>(supportDispatchers) {
 
+    init {
+        launch (dispatchers.io) {
+            configurePagingHelper(sourceDao)
+        }
+    }
+
     protected lateinit var executionTarget: (PagingRequestHelper.Request.Callback) -> Unit
+
+    /**
+     * Since we plan on using a paging source backed by a database, Ideally we should
+     * configure [supportPagingHelper] with the records count/paging limit to start load
+     * from the last page of results in our backend.
+     *
+     * @param sourceDao contract for all compatible data access objects
+     */
+    protected suspend fun configurePagingHelper(sourceDao: ISourceDao) {
+        val count = sourceDao.count()
+        if (count != 0) {
+            val lastLoadedPage = count / supportPagingHelper.pageSize
+            supportPagingHelper.page = lastLoadedPage
+            supportPagingHelper.pageOffset = lastLoadedPage * supportPagingHelper.pageSize
+        }
+    }
 
     /**
      * Called when zero items are returned from an initial load of the PagedList's data source.

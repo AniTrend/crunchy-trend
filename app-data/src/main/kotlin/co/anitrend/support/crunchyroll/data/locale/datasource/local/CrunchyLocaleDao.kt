@@ -20,15 +20,21 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import co.anitrend.arch.data.dao.ISupportQuery
+import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
 import co.anitrend.support.crunchyroll.data.locale.entity.CrunchyLocaleEntity
 
 @Dao
-interface CrunchyLocaleDao : ISupportQuery<CrunchyLocaleEntity> {
+interface CrunchyLocaleDao : ISupportQuery<CrunchyLocaleEntity>, ISourceDao {
+
+    @Query("""
+        select count(localeId) from CrunchyLocaleEntity
+    """)
+    override suspend fun count(): Int
 
     @Query("""
         delete from CrunchyLocaleEntity
         """)
-    suspend fun clearTable()
+    override suspend fun clearTable()
 
 
     @Query("""

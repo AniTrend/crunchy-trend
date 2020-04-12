@@ -23,7 +23,7 @@ import co.anitrend.support.crunchyroll.domain.catalog.interactors.CatalogUseCase
 
 class CatalogUseCaseImpl(
     repository: CatalogRepository
-) : CatalogUseCase<UserInterfaceState<List<CrunchyCatalogWithSeries>>>(repository) {
+) : CatalogUseCase<UserInterfaceState<CrunchyCatalogWithSeries>>(repository) {
 
     /**
      * Informs underlying repositories or related components running background operations to stop

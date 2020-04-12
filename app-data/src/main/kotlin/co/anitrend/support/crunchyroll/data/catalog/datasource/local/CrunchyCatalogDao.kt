@@ -16,23 +16,28 @@
 
 package co.anitrend.support.crunchyroll.data.catalog.datasource.local
 
-import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import co.anitrend.arch.data.dao.ISupportQuery
+import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
 import co.anitrend.support.crunchyroll.data.catalog.entity.CrunchyCatalogEntity
 import co.anitrend.support.crunchyroll.data.catalog.entity.CrunchyCatalogWithSeriesEntity
 import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalogFilter
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface CrunchyCatalogDao : ISupportQuery<CrunchyCatalogEntity> {
+interface CrunchyCatalogDao : ISupportQuery<CrunchyCatalogEntity>, ISourceDao {
+
+    @Query("""
+        select count(catalogId) from CrunchyCatalogEntity
+    """)
+    override suspend fun count(): Int
 
     @Query("""
         delete from CrunchyCatalogEntity
         """)
-    suspend fun clearTable()
+    override suspend fun clearTable()
 
 
     @Transaction
@@ -41,7 +46,7 @@ interface CrunchyCatalogDao : ISupportQuery<CrunchyCatalogEntity> {
         from CrunchyCatalogEntity
         where catalogFilter = :catalogFilter
         """)
-    suspend fun findAll(catalogFilter: CrunchySeriesCatalogFilter): List<CrunchyCatalogWithSeriesEntity>
+    suspend fun findMatching(catalogFilter: CrunchySeriesCatalogFilter): CrunchyCatalogWithSeriesEntity
 
     @Transaction
     @Query("""
@@ -49,13 +54,5 @@ interface CrunchyCatalogDao : ISupportQuery<CrunchyCatalogEntity> {
         from CrunchyCatalogEntity 
         where catalogFilter = :catalogFilter
         """)
-    fun findAllX(catalogFilter: CrunchySeriesCatalogFilter): Flow<List<CrunchyCatalogWithSeriesEntity>>
-
-    @Transaction
-    @Query("""
-        select *
-        from CrunchyCatalogEntity 
-        where catalogFilter = :catalogFilter
-        """)
-    fun findAllFactory(catalogFilter: CrunchySeriesCatalogFilter): DataSource.Factory<Int, CrunchyCatalogWithSeriesEntity>
+    fun findMatchingX(catalogFilter: CrunchySeriesCatalogFilter): Flow<CrunchyCatalogWithSeriesEntity>
 }
