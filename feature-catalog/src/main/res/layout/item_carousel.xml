@@ -16,12 +16,13 @@
   -->
 
 <layout xmlns:app="http://schemas.android.com/apk/res-auto">
-    <data class="co.anitrend.support.crunchyroll.feature.catalog.databinding" />
+
+    <data class="co.anitrend.support.crunchyroll.feature.catalog.databinding.ItemCarouselBinding" />
+
     <co.anitrend.arch.ui.recycler.SupportRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/carouselRecycler"
             android:layout_width="match_parent"
             android:clipToPadding="false"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content" />
 
-    </co.anitrend.arch.ui.recycler.SupportRecyclerView>
 </layout>

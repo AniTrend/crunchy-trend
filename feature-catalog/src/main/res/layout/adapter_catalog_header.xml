@@ -19,7 +19,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
 
-    <data class="co.anitrend.support.crunchyroll.feature.catalog.databinding">
+    <data class="co.anitrend.support.crunchyroll.feature.catalog.databinding.AdapterCatalogHeaderBinding">
         <variable
                 name="title"
                 type="String" />

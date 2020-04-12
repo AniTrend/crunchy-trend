@@ -29,7 +29,7 @@ data class CatalogViewState(
     private val parameter: CrunchyCatalogQuery,
     private val useCase: CatalogUseCaseImpl
 ) {
-    private val useCaseResult = MutableLiveData<UserInterfaceState<List<CrunchyCatalogWithSeries>>>()
+    private val useCaseResult = MutableLiveData<UserInterfaceState<CrunchyCatalogWithSeries>>()
 
     val model =
         Transformations.switchMap(useCaseResult) { it.model }

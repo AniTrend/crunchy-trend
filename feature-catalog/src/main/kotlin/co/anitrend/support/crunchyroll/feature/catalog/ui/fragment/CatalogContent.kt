@@ -24,8 +24,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.whenResumed
 import androidx.recyclerview.widget.GridLayoutManager
 import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
+import co.anitrend.arch.extension.getCompatColor
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
+import co.anitrend.support.crunchyroll.feature.catalog.R
+import co.anitrend.support.crunchyroll.feature.catalog.controller.decorator.HeaderDecorator
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
@@ -60,8 +63,8 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>, CatalogPr
      * Invoke view model observer to watch for changes
      */
     override fun setUpViewModelObserver() {
-        viewModel.mediatorLiveData.observe(viewLifecycleOwner, Observer {
-            it.forEach { catalog ->
+        viewModel.mediatorLiveData.observe(viewLifecycleOwner, Observer {  catalog ->
+            if (catalog.series.isNotEmpty()) {
                 val section = Section(
                     HeaderItem(
                         catalog.qualifier
@@ -69,7 +72,7 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>, CatalogPr
                 )
                 section.setHideWhenEmpty(true)
                 val groupAdapter = GroupAdapter<GroupieViewHolder>()
-                catalog.series.forEach() { series ->
+                catalog.series.forEach { series ->
                     groupAdapter.add(
                         CatalogItem(
                             series
@@ -82,8 +85,9 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>, CatalogPr
                     )
                 section.add(carouselGroup)
                 groupAdapter.add(section)
+
+                onUpdateUserInterface()
             }
-            onUpdateUserInterface()
         })
     }
 
@@ -184,7 +188,7 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>, CatalogPr
      * @see [ISupportViewModel.invoke]
      */
     override fun onFetchDataInitialize() {
-        if (viewModel.hasModelData()) {
+        if (!viewModel.hasModelData()) {
             viewModel.viewStateFeatured()
             viewModel.viewStateNewest()
             viewModel.viewStatePopular()
