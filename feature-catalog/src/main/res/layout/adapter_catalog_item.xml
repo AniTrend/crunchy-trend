@@ -53,12 +53,13 @@
 
         <co.anitrend.arch.ui.view.text.SingleLineTextView
                 android:id="@+id/seriesTitle"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/md_margin"
                 android:layout_marginTop="@dimen/lg_margin"
                 android:layout_marginEnd="@dimen/md_margin"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                android:text="@{entity.name}"
                 tools:text="@sample/search_response.json/name" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>

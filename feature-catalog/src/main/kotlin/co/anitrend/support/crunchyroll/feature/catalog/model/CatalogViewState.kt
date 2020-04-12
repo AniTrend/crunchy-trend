@@ -60,4 +60,6 @@ data class CatalogViewState(
         val uiModel = useCaseResult.value
         uiModel?.refresh?.invoke()
     }
+
+    fun hasData() = model.value != null
 }

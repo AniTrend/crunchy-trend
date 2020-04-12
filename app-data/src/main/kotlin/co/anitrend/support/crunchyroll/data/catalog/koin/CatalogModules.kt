@@ -44,7 +44,7 @@ private val mapperModule = module {
         CatalogResponseMapper(
             dao = db().crunchyCatalogDao(),
             seriesResponseMapper = get(),
-            seriesCatalogFilter = catalogFilter
+            catalogFilter = catalogFilter
         )
     }
 }

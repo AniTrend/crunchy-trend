@@ -27,7 +27,7 @@ import com.xwray.groupie.databinding.BindableItem
 import com.xwray.groupie.databinding.GroupieViewHolder
 import co.anitrend.support.crunchyroll.feature.catalog.databinding.ItemCarouselBinding
 
-class CatalogContainer(
+class CatalogCarouselContainer(
     private val itemDecoration: RecyclerView.ItemDecoration? = null,
     private val adapter: GroupAdapter<*>
 ) : BindableItem<ItemCarouselBinding>(), OnItemClickListener {
@@ -59,6 +59,6 @@ class CatalogContainer(
     }
 
     override fun onItemClick(item: Item<*>, view: View) {
-        TODO("Not yet implemented")
+
     }
 }

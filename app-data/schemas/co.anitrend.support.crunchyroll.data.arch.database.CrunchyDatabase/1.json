@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "a0709b4e15ad7ca621739cfdda337d91",
+    "identityHash": "704a50355fac49c7fdb316801e7f4007",
     "entities": [
       {
         "tableName": "CrunchySessionEntity",
@@ -582,7 +582,7 @@
       },
       {
         "tableName": "CrunchyCatalogEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`catalogFilter` TEXT NOT NULL, `seriesId` INTEGER NOT NULL, `catalogId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, FOREIGN KEY(`seriesId`) REFERENCES `CrunchySeriesEntity`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`catalogFilter` TEXT NOT NULL, `seriesId` INTEGER NOT NULL, `catalogId` INTEGER NOT NULL, PRIMARY KEY(`catalogId`), FOREIGN KEY(`seriesId`) REFERENCES `CrunchySeriesEntity`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "catalogFilter",
@@ -607,7 +607,7 @@
           "columnNames": [
             "catalogId"
           ],
-          "autoGenerate": true
+          "autoGenerate": false
         },
         "indices": [
           {
@@ -797,7 +797,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a0709b4e15ad7ca621739cfdda337d91')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '704a50355fac49c7fdb316801e7f4007')"
     ]
   }
 }

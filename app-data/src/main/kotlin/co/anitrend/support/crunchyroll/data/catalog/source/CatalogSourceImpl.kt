@@ -18,6 +18,8 @@ package co.anitrend.support.crunchyroll.data.catalog.source
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
@@ -32,7 +34,6 @@ import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWit
 import co.anitrend.support.crunchyroll.domain.catalog.models.CrunchyCatalogQuery
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
@@ -53,7 +54,6 @@ class CatalogSourceImpl(
         val deferred = async {
             endpoint.getSeriesList(
                 offset = 0,
-                limit = SupportExtKeyStore.pagingLimit * 2,
                 filter = param.catalogFilter.attribute
             )
         }
@@ -67,7 +67,7 @@ class CatalogSourceImpl(
             val controller =
                 mapper.controller(supportConnectivity, dispatchers)
 
-            controller(deferred, networkState)
+            val s = controller(deferred, networkState)
         }
 
         return observable(param)
@@ -84,16 +84,13 @@ class CatalogSourceImpl(
              */
             override fun invoke(parameter: CrunchyCatalogQuery): LiveData<CrunchyCatalogWithSeries> {
 
-                val catalogFlow = catalogDao.findMatchingX(
+                val catalogFlow = catalogDao.findMatchingFlow(
                     parameter.catalogFilter
                 )
 
-                @Suppress("EXPERIMENTAL_API_USAGE")
                 return catalogFlow.mapNotNull {
                     CrunchyCatalogTransformer.transform(it)
-                }.flowOn(
-                    supportDispatchers.computation
-                ).asLiveData()
+                }.flowOn(supportDispatchers.io).asLiveData()
             }
         }
 

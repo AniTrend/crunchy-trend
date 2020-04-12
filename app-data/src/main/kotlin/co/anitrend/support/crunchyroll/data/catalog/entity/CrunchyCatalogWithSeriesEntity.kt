@@ -21,9 +21,12 @@ import androidx.room.Relation
 import co.anitrend.support.crunchyroll.data.arch.common.ICrunchyRelationEntity
 import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesEntity
 
-class CrunchyCatalogWithSeriesEntity : ICrunchyRelationEntity<CrunchyCatalogEntity, CrunchySeriesEntity> {
+data class CrunchyCatalogWithSeriesEntity(
     @Embedded
-    override lateinit var entity: CrunchyCatalogEntity
-    @Relation(parentColumn = "catalogId", entityColumn = "id")
-    override var relations: List<CrunchySeriesEntity> = emptyList()
-}
+    override val entity: CrunchyCatalogEntity,
+    @Relation(
+        parentColumn = "seriesId",
+        entityColumn = "id"
+    )
+    override val relation: CrunchySeriesEntity
+) : ICrunchyRelationEntity<CrunchyCatalogEntity, CrunchySeriesEntity>

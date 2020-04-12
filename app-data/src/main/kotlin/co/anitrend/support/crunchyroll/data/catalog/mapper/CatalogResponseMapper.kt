@@ -19,6 +19,7 @@ package co.anitrend.support.crunchyroll.data.catalog.mapper
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
 import co.anitrend.support.crunchyroll.data.catalog.datasource.local.CrunchyCatalogDao
 import co.anitrend.support.crunchyroll.data.catalog.entity.CrunchyCatalogEntity
+import co.anitrend.support.crunchyroll.data.catalog.extension.generateHashCode
 import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesEntity
 import co.anitrend.support.crunchyroll.data.series.mapper.SeriesResponseMapper
 import co.anitrend.support.crunchyroll.data.series.model.CrunchySeriesModel
@@ -27,14 +28,13 @@ import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalog
 class CatalogResponseMapper(
     private val dao: CrunchyCatalogDao,
     private val seriesResponseMapper: SeriesResponseMapper,
-    private val seriesCatalogFilter: CrunchySeriesCatalogFilter
+    private val catalogFilter: CrunchySeriesCatalogFilter
 ) : CrunchyMapper<List<CrunchySeriesModel>, List<CrunchyCatalogEntity>>() {
 
     private suspend fun onResponseMapFromForSeries(source: List<CrunchySeriesModel>): List<CrunchySeriesEntity> {
         val seriesEntities = seriesResponseMapper.onResponseMapFrom(source)
         if (seriesEntities.isNotEmpty())
             seriesResponseMapper.onResponseDatabaseInsert(seriesEntities)
-
         return seriesEntities
     }
 
@@ -50,7 +50,8 @@ class CatalogResponseMapper(
         return seriesEntities.map {
             CrunchyCatalogEntity(
                 seriesId = it.id,
-                catalogFilter = seriesCatalogFilter
+                catalogFilter = catalogFilter,
+                catalogId = catalogFilter.generateHashCode(it.id)
             )
         }
     }

@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.feature.catalog.controller.group
 
 import androidx.recyclerview.widget.RecyclerView
 import com.xwray.groupie.*
-import co.anitrend.support.crunchyroll.feature.catalog.controller.CatalogContainer
+import co.anitrend.support.crunchyroll.feature.catalog.controller.CatalogCarouselContainer
 
 class CarouselGroup(
     adapter: GroupAdapter<GroupieViewHolder>
@@ -27,12 +27,11 @@ class CarouselGroup(
     private var isEmpty = true
     private val adapter: RecyclerView.Adapter<*>
     private var groupDataObserver: GroupDataObserver? = null
-    private val carouselItem: CatalogContainer
+    private val carouselItem: CatalogCarouselContainer
 
     init {
         this.adapter = adapter
-        carouselItem =
-            CatalogContainer(adapter = adapter)
+        carouselItem = CatalogCarouselContainer(adapter = adapter)
         isEmpty = adapter.itemCount == 0
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
@@ -52,6 +51,8 @@ class CarouselGroup(
             }
         })
     }
+
+
 
     override fun getItemCount(): Int = if (isEmpty) 0 else 1
 

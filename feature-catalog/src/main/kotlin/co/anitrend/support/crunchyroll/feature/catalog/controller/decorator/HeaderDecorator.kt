@@ -19,5 +19,5 @@ package co.anitrend.support.crunchyroll.feature.catalog.controller.decorator
 import co.anitrend.support.crunchyroll.feature.catalog.R
 import co.anitrend.support.crunchyroll.feature.catalog.controller.decorator.contract.HeaderItemDecorator
 
-class HeaderDecorator(background: Int, sidePaddingPixels: Int) :
-    HeaderItemDecorator(background, sidePaddingPixels, R.layout.adapter_catalog_header)
+class HeaderDecorator(sidePaddingPixels: Int) :
+    HeaderItemDecorator(sidePaddingPixels, R.layout.adapter_catalog_header)

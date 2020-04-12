@@ -17,10 +17,53 @@
 package co.anitrend.support.crunchyroll.feature.catalog.presenter
 
 import android.content.Context
+import androidx.lifecycle.LiveData
+import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
+import co.anitrend.arch.ui.view.widget.SupportStateLayout
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
+import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
+import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalogFilter
+import co.anitrend.support.crunchyroll.feature.catalog.controller.group.CarouselGroup
+import co.anitrend.support.crunchyroll.feature.catalog.controller.items.CatalogItem
+import co.anitrend.support.crunchyroll.feature.catalog.controller.items.HeaderItem
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.Section
 
 class CatalogPresenter(
     context: Context,
     settings: CrunchySettings
-) : CrunchyCorePresenter(context, settings)
+) : CrunchyCorePresenter(context, settings) {
+
+    fun setUpGroupAdapter(
+        catalog: CrunchyCatalogWithSeries,
+        groupAdapter: GroupAdapter<*>,
+        supportStateLayout: SupportStateLayout
+    ) {
+        if (!catalog.series.isNullOrEmpty()) {
+            val section = Section(
+                HeaderItem(
+                    catalog.qualifier
+                )
+            )
+            section.setHideWhenEmpty(true)
+            val adapter = GroupAdapter<GroupieViewHolder>()
+            catalog.series.forEach { series ->
+                adapter.add(
+                    CatalogItem(
+                        series
+                    )
+                )
+            }
+            val carouselGroup = CarouselGroup(adapter)
+            section.add(carouselGroup)
+
+            groupAdapter.add(section)
+            supportStateLayout.setNetworkState(
+                NetworkState.Success
+            )
+        }
+    }
+}

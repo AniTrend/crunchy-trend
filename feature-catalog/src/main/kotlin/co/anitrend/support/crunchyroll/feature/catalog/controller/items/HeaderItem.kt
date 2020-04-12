@@ -16,11 +16,10 @@
 
 package co.anitrend.support.crunchyroll.feature.catalog.controller.items
 
-import co.anitrend.arch.extension.gone
 import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalogFilter
 import co.anitrend.support.crunchyroll.feature.catalog.R
-import com.xwray.groupie.databinding.BindableItem
 import co.anitrend.support.crunchyroll.feature.catalog.databinding.AdapterCatalogHeaderBinding
+import com.xwray.groupie.databinding.BindableItem
 
 class HeaderItem(
     private val seriesCatalogFilter: CrunchySeriesCatalogFilter
@@ -36,6 +35,6 @@ class HeaderItem(
      */
     override fun bind(viewBinding: AdapterCatalogHeaderBinding, position: Int) {
         viewBinding.title = seriesCatalogFilter.attribute.capitalize()
-        viewBinding.catalogActionSeeAll.gone()
+        //viewBinding.catalogActionSeeAll.gone()
     }
 }

@@ -40,6 +40,6 @@ import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalog
 data class CrunchyCatalogEntity(
     val catalogFilter: CrunchySeriesCatalogFilter,
     val seriesId: Long,
-    @PrimaryKey(autoGenerate = true)
-    val catalogId: Long = 0
+    @PrimaryKey
+    val catalogId: Long
 )

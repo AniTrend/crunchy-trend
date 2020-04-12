@@ -24,6 +24,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.whenResumed
 import androidx.recyclerview.widget.GridLayoutManager
 import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
+import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.getCompatColor
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
@@ -38,10 +39,11 @@ import co.anitrend.support.crunchyroll.feature.catalog.controller.items.HeaderIt
 import co.anitrend.support.crunchyroll.feature.catalog.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.catalog.presenter.CatalogPresenter
 import co.anitrend.support.crunchyroll.feature.catalog.viewmodel.CatalogViewModel
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import co.anitrend.support.crunchyroll.feature.catalog.databinding.ContentSeriesCatalogBinding
+import org.koin.android.ext.android.get
+import timber.log.Timber
 
 class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>, CatalogPresenter, List<CrunchyCatalogWithSeries>>() {
 
@@ -63,31 +65,41 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>, CatalogPr
      * Invoke view model observer to watch for changes
      */
     override fun setUpViewModelObserver() {
-        viewModel.mediatorLiveData.observe(viewLifecycleOwner, Observer {  catalog ->
-            if (catalog.series.isNotEmpty()) {
-                val section = Section(
-                    HeaderItem(
-                        catalog.qualifier
-                    )
-                )
-                section.setHideWhenEmpty(true)
-                val groupAdapter = GroupAdapter<GroupieViewHolder>()
-                catalog.series.forEach { series ->
-                    groupAdapter.add(
-                        CatalogItem(
-                            series
-                        )
-                    )
-                }
-                val carouselGroup =
-                    CarouselGroup(
-                        groupAdapter
-                    )
-                section.add(carouselGroup)
-                groupAdapter.add(section)
-
-                onUpdateUserInterface()
-            }
+        viewModel.viewStateFeatured.model.observe(viewLifecycleOwner, Observer {
+            Timber.tag(moduleTag).d("State changed received from viewStateFeatured: ${it.qualifier} count ${it.series.count()}")
+            supportPresenter.setUpGroupAdapter(
+                it,
+                groupAdapter,
+                binding.supportStateLayout
+            )
+        })
+        viewModel.viewStateNewest.model.observe(viewLifecycleOwner, Observer {
+            supportPresenter.setUpGroupAdapter(
+                it,
+                groupAdapter,
+                binding.supportStateLayout
+            )
+        })
+        viewModel.viewStatePopular.model.observe(viewLifecycleOwner, Observer {
+            supportPresenter.setUpGroupAdapter(
+                it,
+                groupAdapter,
+                binding.supportStateLayout
+            )
+        })
+        viewModel.viewStateSimulcast.model.observe(viewLifecycleOwner, Observer {
+            supportPresenter.setUpGroupAdapter(
+                it,
+                groupAdapter,
+                binding.supportStateLayout
+            )
+        })
+        viewModel.viewStateUpdated.model.observe(viewLifecycleOwner, Observer {
+            supportPresenter.setUpGroupAdapter(
+                it,
+                groupAdapter,
+                binding.supportStateLayout
+            )
         })
     }
 
@@ -101,9 +113,6 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>, CatalogPr
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
         injectFeatureModules()
-        launch {
-            lifecycle.whenResumed { onFetchDataInitialize() }
-        }
     }
 
     /**
@@ -160,12 +169,27 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>, CatalogPr
             layoutManager = gridLayoutManager
             addItemDecoration(
                 HeaderDecorator(
-                    context.getCompatColor(R.color.secondaryTextColor),
                     resources.getDimensionPixelSize(R.dimen.lg_margin)
                 )
             )
             adapter = groupAdapter
         }
+        with (binding.supportStateLayout) {
+            stateConfiguration = get()
+        }
+        binding.supportRefreshLayout.setOnRefreshListener {
+            binding.supportRefreshLayout.isRefreshing = false
+            binding.supportStateLayout.setNetworkState(
+                NetworkState.Loading
+            )
+            groupAdapter.clear()
+            viewModel.viewStateFeatured.refresh()
+            viewModel.viewStateNewest.refresh()
+            viewModel.viewStatePopular.refresh()
+            viewModel.viewStateSimulcast.refresh()
+            viewModel.viewStateUpdated.refresh()
+        }
+        onFetchDataInitialize()
     }
 
     /**
@@ -188,12 +212,15 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>, CatalogPr
      * @see [ISupportViewModel.invoke]
      */
     override fun onFetchDataInitialize() {
-        if (!viewModel.hasModelData()) {
+        if (!viewModel.viewStateFeatured.hasData())
             viewModel.viewStateFeatured()
+        if (!viewModel.viewStateNewest.hasData())
             viewModel.viewStateNewest()
+        if (!viewModel.viewStatePopular.hasData())
             viewModel.viewStatePopular()
+        if (!viewModel.viewStateSimulcast.hasData())
             viewModel.viewStateSimulcast()
+        if (!viewModel.viewStateUpdated.hasData())
             viewModel.viewStateUpdated()
-        }
     }
 }

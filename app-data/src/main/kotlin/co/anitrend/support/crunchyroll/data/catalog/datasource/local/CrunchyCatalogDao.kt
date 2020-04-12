@@ -46,7 +46,7 @@ interface CrunchyCatalogDao : ISupportQuery<CrunchyCatalogEntity>, ISourceDao {
         from CrunchyCatalogEntity
         where catalogFilter = :catalogFilter
         """)
-    suspend fun findMatching(catalogFilter: CrunchySeriesCatalogFilter): CrunchyCatalogWithSeriesEntity
+    suspend fun findMatching(catalogFilter: CrunchySeriesCatalogFilter): List<CrunchyCatalogWithSeriesEntity>
 
     @Transaction
     @Query("""
@@ -54,5 +54,5 @@ interface CrunchyCatalogDao : ISupportQuery<CrunchyCatalogEntity>, ISourceDao {
         from CrunchyCatalogEntity 
         where catalogFilter = :catalogFilter
         """)
-    fun findMatchingX(catalogFilter: CrunchySeriesCatalogFilter): Flow<CrunchyCatalogWithSeriesEntity>
+    fun findMatchingFlow(catalogFilter: CrunchySeriesCatalogFilter): Flow<List<CrunchyCatalogWithSeriesEntity>>
 }

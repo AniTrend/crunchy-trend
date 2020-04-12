@@ -21,16 +21,20 @@ import co.anitrend.support.crunchyroll.data.catalog.entity.CrunchyCatalogWithSer
 import co.anitrend.support.crunchyroll.data.series.transformer.CrunchySeriesTransformer
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 
-object CrunchyCatalogTransformer : ISupportMapperHelper<CrunchyCatalogWithSeriesEntity, CrunchyCatalogWithSeries> {
+object CrunchyCatalogTransformer : ISupportMapperHelper<List<CrunchyCatalogWithSeriesEntity>, CrunchyCatalogWithSeries?> {
     /**
      * Transforms the the [source] to the target type
      */
-    override fun transform(source: CrunchyCatalogWithSeriesEntity): CrunchyCatalogWithSeries {
-        return CrunchyCatalogWithSeries(
-            qualifier = source.entity.catalogFilter,
-            series = source.relations.map {
-                CrunchySeriesTransformer.transform(it)
-            }
-        )
+    override fun transform(source: List<CrunchyCatalogWithSeriesEntity>): CrunchyCatalogWithSeries? {
+         return if (source.isNotEmpty()) {
+             val values = source.map { temp ->
+                 CrunchySeriesTransformer.transform(temp.relation)
+             }
+
+             CrunchyCatalogWithSeries(
+                 qualifier = source.first().entity.catalogFilter,
+                 series = values
+             )
+         } else null
     }
 }

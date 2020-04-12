@@ -16,23 +16,16 @@
 
 package co.anitrend.support.crunchyroll.feature.catalog.viewmodel
 
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.support.crunchyroll.data.catalog.usecase.CatalogUseCaseImpl
-import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalogFilter
 import co.anitrend.support.crunchyroll.domain.catalog.models.CrunchyCatalogQuery
 import co.anitrend.support.crunchyroll.feature.catalog.model.CatalogViewState
-import timber.log.Timber
 
 class CatalogViewModel(
-    val catalogUseCase: CatalogUseCaseImpl
+    private val catalogUseCase: CatalogUseCaseImpl
 ) : ViewModel() {
-
-    private val moduleTag = javaClass.simpleName
-
-    val mediatorLiveData = MediatorLiveData<CrunchyCatalogWithSeries>()
 
     val viewStateFeatured by lazy(LAZY_MODE_UNSAFE) {
         CatalogViewState(
@@ -78,24 +71,4 @@ class CatalogViewModel(
             catalogUseCase
         )
     }
-
-    init {
-        mediatorLiveData.addSource(viewStateFeatured.model) {
-            mediatorLiveData.postValue(it)
-        }
-        mediatorLiveData.addSource(viewStateNewest.model) {
-            mediatorLiveData.postValue(it)
-        }
-        mediatorLiveData.addSource(viewStatePopular.model) {
-            mediatorLiveData.postValue(it)
-        }
-        mediatorLiveData.addSource(viewStateSimulcast.model) {
-            mediatorLiveData.postValue(it)
-        }
-        mediatorLiveData.addSource(viewStateUpdated.model) {
-            mediatorLiveData.postValue(it)
-        }
-    }
-
-    fun hasModelData() = mediatorLiveData.value != null
 }

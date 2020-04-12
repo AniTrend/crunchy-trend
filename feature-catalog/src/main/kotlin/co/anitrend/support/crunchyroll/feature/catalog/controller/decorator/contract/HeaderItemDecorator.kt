@@ -16,22 +16,17 @@
 
 package co.anitrend.support.crunchyroll.feature.catalog.controller.decorator.contract
 
-import android.graphics.Canvas
-import android.graphics.Paint
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 
 abstract class HeaderItemDecorator(
-    private val background: Int,
     private val sidePaddingPixels: Int,
     private val headerViewType: Int
 ) : ItemDecoration() {
 
-    private val paint: Paint = Paint().apply { color = background }
-
-    fun isHeader(child: View?, parent: RecyclerView): Boolean {
+    private fun isHeader(child: View?, parent: RecyclerView): Boolean {
         val viewType = parent.layoutManager!!.getItemViewType(child!!)
         return viewType == headerViewType
     }
@@ -67,31 +62,5 @@ abstract class HeaderItemDecorator(
         if (!isHeader(view, parent)) return
         outRect.left = sidePaddingPixels
         outRect.right = sidePaddingPixels
-    }
-
-    /**
-     * Draw any appropriate decorations into the Canvas supplied to the RecyclerView.
-     * Any content drawn by this method will be drawn before the item views are drawn,
-     * and will thus appear underneath the views.
-     *
-     * @param c Canvas to draw into
-     * @param parent RecyclerView this ItemDecoration is drawing into
-     * @param state The current state of RecyclerView
-     */
-    override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-        for (i in 0 until parent.childCount) {
-            val child = parent.getChildAt(i)
-            if (!isHeader(child, parent)) continue
-            val lm = parent.layoutManager
-            val top = lm!!.getDecoratedTop(child) + child.translationY
-            var bottom = lm.getDecoratedBottom(child) + child.translationY
-            if (i == parent.childCount - 1) {
-                // Draw to bottom if last item
-                bottom = Math.max(parent.height.toFloat(), bottom)
-            }
-            val right = lm.getDecoratedRight(child) + child.translationX
-            val left = lm.getDecoratedLeft(child) + child.translationX
-            c.drawRect(left, top, right, bottom, paint!!)
-        }
     }
 }
