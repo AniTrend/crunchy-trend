@@ -63,6 +63,7 @@ dependencies {
     implementation project(':feature-search')
     implementation project(':feature-settings')
     implementation project(':feature-series')
+    implementation project(':feature-catalog')
     // this is our application starting point
     implementation project(':feature-splash')
 
