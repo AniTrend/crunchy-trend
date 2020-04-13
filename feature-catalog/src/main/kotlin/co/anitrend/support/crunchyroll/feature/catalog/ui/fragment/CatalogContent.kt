@@ -21,29 +21,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.whenResumed
 import androidx.recyclerview.widget.GridLayoutManager
 import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
 import co.anitrend.arch.domain.entities.NetworkState
-import co.anitrend.arch.extension.getCompatColor
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 import co.anitrend.support.crunchyroll.feature.catalog.R
 import co.anitrend.support.crunchyroll.feature.catalog.controller.decorator.HeaderDecorator
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.GroupieViewHolder
-import com.xwray.groupie.Section
-import co.anitrend.support.crunchyroll.feature.catalog.controller.group.CarouselGroup
-import co.anitrend.support.crunchyroll.feature.catalog.controller.items.CatalogItem
-import co.anitrend.support.crunchyroll.feature.catalog.controller.items.HeaderItem
+import co.anitrend.support.crunchyroll.feature.catalog.databinding.ContentSeriesCatalogBinding
 import co.anitrend.support.crunchyroll.feature.catalog.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.catalog.presenter.CatalogPresenter
 import co.anitrend.support.crunchyroll.feature.catalog.viewmodel.CatalogViewModel
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieViewHolder
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import co.anitrend.support.crunchyroll.feature.catalog.databinding.ContentSeriesCatalogBinding
-import org.koin.android.ext.android.get
-import timber.log.Timber
 
 class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>, CatalogPresenter, List<CrunchyCatalogWithSeries>>() {
 
@@ -66,7 +59,6 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>, CatalogPr
      */
     override fun setUpViewModelObserver() {
         viewModel.viewStateFeatured.model.observe(viewLifecycleOwner, Observer {
-            Timber.tag(moduleTag).d("State changed received from viewStateFeatured: ${it.qualifier} count ${it.series.count()}")
             supportPresenter.setUpGroupAdapter(
                 it,
                 groupAdapter,
@@ -183,6 +175,7 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>, CatalogPr
                 NetworkState.Loading
             )
             groupAdapter.clear()
+            supportPresenter.onRefresh()
             viewModel.viewStateFeatured.refresh()
             viewModel.viewStateNewest.refresh()
             viewModel.viewStatePopular.refresh()

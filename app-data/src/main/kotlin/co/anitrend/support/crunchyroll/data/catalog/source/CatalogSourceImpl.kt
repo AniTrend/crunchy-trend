@@ -67,7 +67,7 @@ class CatalogSourceImpl(
             val controller =
                 mapper.controller(supportConnectivity, dispatchers)
 
-            val s = controller(deferred, networkState)
+            controller(deferred, networkState)
         }
 
         return observable(param)
@@ -88,6 +88,7 @@ class CatalogSourceImpl(
                     parameter.catalogFilter
                 )
 
+                @Suppress("EXPERIMENTAL_API_USAGE")
                 return catalogFlow.mapNotNull {
                     CrunchyCatalogTransformer.transform(it)
                 }.flowOn(supportDispatchers.io).asLiveData()

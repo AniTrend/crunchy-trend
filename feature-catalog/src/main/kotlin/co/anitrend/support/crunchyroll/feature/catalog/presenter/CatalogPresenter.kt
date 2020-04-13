@@ -31,39 +31,49 @@ import co.anitrend.support.crunchyroll.feature.catalog.controller.items.HeaderIt
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
+import java.util.ArrayList
 
 class CatalogPresenter(
     context: Context,
     settings: CrunchySettings
 ) : CrunchyCorePresenter(context, settings) {
 
+    private val catalogCache = ArrayList<String>(5)
+
     fun setUpGroupAdapter(
         catalog: CrunchyCatalogWithSeries,
         groupAdapter: GroupAdapter<*>,
         supportStateLayout: SupportStateLayout
     ) {
-        if (!catalog.series.isNullOrEmpty()) {
-            val section = Section(
-                HeaderItem(
-                    catalog.qualifier
-                )
-            )
-            section.setHideWhenEmpty(true)
-            val adapter = GroupAdapter<GroupieViewHolder>()
-            catalog.series.forEach { series ->
-                adapter.add(
-                    CatalogItem(
-                        series
+        if (!catalog.series.isNullOrEmpty())
+            // hack around for now until I figure out how to best update sections
+            if (!catalogCache.contains(catalog.qualifier.attribute)) {
+                val section = Section(
+                    HeaderItem(
+                        catalog.qualifier
                     )
                 )
-            }
-            val carouselGroup = CarouselGroup(adapter)
-            section.add(carouselGroup)
+                section.setHideWhenEmpty(true)
+                val adapter = GroupAdapter<GroupieViewHolder>()
+                catalog.series.forEach { series ->
+                    adapter.add(
+                        CatalogItem(
+                            series
+                        )
+                    )
+                }
+                val carouselGroup = CarouselGroup(adapter)
+                section.add(carouselGroup)
 
-            groupAdapter.add(section)
-            supportStateLayout.setNetworkState(
-                NetworkState.Success
-            )
-        }
+                groupAdapter.add(section)
+                supportStateLayout.setNetworkState(
+                    NetworkState.Success
+                )
+                catalogCache.add(catalog.qualifier.attribute)
+            }
+    }
+
+    fun onRefresh() {
+        catalogCache.clear()
     }
 }
