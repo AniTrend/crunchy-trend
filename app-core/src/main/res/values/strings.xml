@@ -16,7 +16,7 @@
   -->
 
 <resources>
-    <string name="app_name">CrunchyTrend</string>
+    <string name="application_name">CrunchyTrend</string>
 
     <!-- settings keys -->
     <string name="settings_authentication_id" translatable="false">_authenticationId</string>

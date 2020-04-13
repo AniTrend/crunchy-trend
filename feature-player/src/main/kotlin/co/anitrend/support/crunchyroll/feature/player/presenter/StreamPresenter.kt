@@ -78,7 +78,7 @@ class StreamPresenter(
         }
 
         val sourceFactory = DefaultDataSourceFactory(
-            context, Util.getUserAgent(context, context.getString(R.string.app_name))
+            context, Util.getUserAgent(context, context.getString(R.string.application_name))
         )
         val streamUri = getStreamUri(mediaStream)
 
