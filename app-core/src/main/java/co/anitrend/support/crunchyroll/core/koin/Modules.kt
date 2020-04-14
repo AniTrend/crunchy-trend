@@ -31,10 +31,12 @@ import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper
 import coil.ImageLoader
 import coil.util.CoilUtils
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.binds
 import org.koin.dsl.module
+import java.io.File
 
 private val coreModule = module {
     single<ISupportDateHelper> {
@@ -92,8 +94,12 @@ private val configurationModule = module {
             allowHardware(true)
             okHttpClient {
                 OkHttpClient.Builder().cache(
-                    CoilUtils.createDefaultCache(
-                        androidContext()
+                    Cache(
+                        File(
+                            androidContext().externalCacheDir,
+                            "coil_image_cache"
+                        ).apply { mkdirs() },
+                        1024 * 1024 * 256
                     )
                 ).build()
             }
