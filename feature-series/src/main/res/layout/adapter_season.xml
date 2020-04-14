@@ -31,30 +31,43 @@
                 type="SeriesDetailPresenter" />
     </data>
 
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
             android:id="@+id/container"
-            android:orientation="horizontal"
+            android:background="?cardColor"
+            android:orientation="vertical"
+            tools:padding="@dimen/xl_margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/md_margin"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?selectableItemBackground">
+            app:contentPadding="@dimen/xl_margin"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp">
 
         <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/lg_margin">
+                android:layout_height="wrap_content">
 
-            <co.anitrend.arch.ui.view.text.SingleLineTextView
+            <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{entity.name}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                     tools:text="@sample/collection_list.json/data/name"/>
+
+            <Space
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/lg_margin" />
+
+            <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{entity.description}"
+                    android:maxLines="3"
+                    android:ellipsize="end"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                    tools:text="@sample/collection_list.json/data/description"/>
         </LinearLayout>
 
-    </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 </layout>

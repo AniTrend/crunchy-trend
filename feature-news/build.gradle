@@ -27,7 +27,7 @@ apply from: "../gradle/gradle-common-dependencies.gradle"
 
 ext {
     glide = '4.11.0'
-    markwon = '4.3.0'
+    markwon = '4.3.1'
     betterLinkMovement = '2.2.0'
 }
 

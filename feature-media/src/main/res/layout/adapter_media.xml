@@ -32,55 +32,62 @@
     </data>
 
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <com.google.android.material.card.MaterialCardView
             android:id="@+id/container"
-            android:orientation="horizontal"
+            android:background="?cardColor"
+            android:orientation="vertical"
+            tools:padding="@dimen/xl_margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/xl_margin"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?selectableItemBackground">
+            app:contentPadding="@dimen/xl_margin"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp">
 
-        <co.anitrend.arch.ui.view.image.SupportImageView
-                android:layout_width="@dimen/series_image_sm"
-                android:layout_height="0dp"
-                android:scaleType="centerCrop"
-                app:aspectRatio="0.6"
-                app:imageUrl="@{entity.screenshotImage}"
-                tools:src="@sample/poster" />
-
-        <Space
-                android:layout_width="@dimen/lg_margin"
-                android:layout_height="wrap_content" />
-
-        <LinearLayout
-                android:orientation="vertical"
+        <androidx.appcompat.widget.LinearLayoutCompat
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            <co.anitrend.arch.ui.view.text.SingleLineTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{presenter.mediaDisplayName(entity)}"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    tools:text="@sample/media_response.json/data/name" />
+            <co.anitrend.arch.ui.view.image.SupportImageView
+                    android:layout_width="@dimen/series_image_sm"
+                    android:layout_height="0dp"
+                    android:scaleType="centerCrop"
+                    app:aspectRatio="0.6"
+                    app:imageUrl="@{entity.screenshotImage}"
+                    tools:src="@sample/poster" />
 
             <Space
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/lg_margin" />
+                    android:layout_width="@dimen/lg_margin"
+                    android:layout_height="wrap_content" />
 
-            <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                    android:text="@{entity.description}"
-                    android:maxLines="3"
-                    android:ellipsize="end"
-                    tools:text="@sample/media_response.json/data/description" />
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-        </LinearLayout>
+                <co.anitrend.arch.ui.view.text.SingleLineTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{presenter.mediaDisplayName(entity)}"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        tools:text="@sample/media_response.json/data/name" />
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+                <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/lg_margin" />
+
+                <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        android:text="@{entity.description}"
+                        android:maxLines="3"
+                        android:ellipsize="end"
+                        tools:text="@sample/media_response.json/data/description" />
+
+            </LinearLayout>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </com.google.android.material.card.MaterialCardView>
 
 </layout>
