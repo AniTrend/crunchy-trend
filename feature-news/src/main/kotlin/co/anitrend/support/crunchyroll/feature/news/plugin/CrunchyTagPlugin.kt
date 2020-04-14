@@ -16,7 +16,8 @@
 
 package co.anitrend.support.crunchyroll.feature.news.plugin
 
-import co.anitrend.support.crunchyroll.feature.news.plugin.decorator.TagAlignmentDecorator
+import co.anitrend.support.crunchyroll.feature.news.plugin.decorator.EmbedTagHandler
+import co.anitrend.support.crunchyroll.feature.news.plugin.decorator.TagAlignmentHandler
 import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.MarkwonPlugin
 import io.noties.markwon.html.HtmlPlugin
@@ -25,7 +26,8 @@ class CrunchyTagPlugin private constructor(): AbstractMarkwonPlugin() {
 
     override fun configure(registry: MarkwonPlugin.Registry) {
         registry.require(HtmlPlugin::class.java) {
-            it.addHandler(TagAlignmentDecorator.create())
+            it.addHandler(EmbedTagHandler.create())
+            it.addHandler(TagAlignmentHandler.create())
         }
     }
 

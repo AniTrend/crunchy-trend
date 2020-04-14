@@ -19,6 +19,8 @@ package co.anitrend.support.crunchyroll.feature.news.koin
 import android.graphics.drawable.Drawable
 import co.anitrend.support.crunchyroll.feature.news.R
 import co.anitrend.support.crunchyroll.feature.news.plugin.CrunchyTagPlugin
+import co.anitrend.support.crunchyroll.feature.news.plugin.decorator.EmbedTagHandler
+import co.anitrend.support.crunchyroll.feature.news.plugin.decorator.TagAlignmentHandler
 import co.anitrend.support.crunchyroll.feature.news.viewmodel.NewsViewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
@@ -31,36 +33,38 @@ import io.noties.markwon.image.AsyncDrawable
 import io.noties.markwon.image.glide.GlideImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import org.koin.android.ext.koin.androidApplication
-import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 
 private val coreModule = module {
-
     single {
         Markwon.builder(androidApplication())
             .usePlugin(HtmlPlugin.create())
             .usePlugin(LinkifyPlugin.create())
             .usePlugin(CrunchyTagPlugin.create())
-            .usePlugin(GlideImagesPlugin.create(object : GlideImagesPlugin.GlideStore {
-                override fun cancel(target: Target<*>) {
-                    Glide.with(androidApplication()).clear(target)
-                }
+            .usePlugin(
+                GlideImagesPlugin.create(
+                    object : GlideImagesPlugin.GlideStore {
+                        override fun cancel(target: Target<*>) {
+                            Glide.with(androidApplication()).clear(target)
+                        }
 
-                override fun load(drawable: AsyncDrawable): RequestBuilder<Drawable> {
-                    return Glide.with(androidApplication()).load(drawable.destination)
-                        .transform(
-                            CenterCrop(),
-                            RoundedCorners(
-                                androidApplication().resources
-                                    .getDimensionPixelSize(
-                                        R.dimen.md_margin
+                        override fun load(drawable: AsyncDrawable): RequestBuilder<Drawable> {
+                            return Glide.with(androidApplication()).load(drawable.destination)
+                                .transform(
+                                    CenterCrop(),
+                                    RoundedCorners(
+                                        androidApplication().resources
+                                            .getDimensionPixelSize(
+                                                R.dimen.md_margin
+                                            )
                                     )
-                            )
-                        ).placeholder(R.drawable.ic_launcher_foreground)
-                }
-            }))
+                                ).placeholder(R.drawable.ic_launcher_foreground)
+                        }
+                    }
+                )
+            )
             .build()
     }
 }

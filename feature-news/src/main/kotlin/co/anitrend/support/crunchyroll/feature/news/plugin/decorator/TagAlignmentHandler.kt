@@ -23,7 +23,7 @@ import io.noties.markwon.RenderProps
 import io.noties.markwon.html.HtmlTag
 import io.noties.markwon.html.tag.SimpleTagHandler
 
-class TagAlignmentDecorator private constructor(): SimpleTagHandler() {
+class TagAlignmentHandler private constructor(): SimpleTagHandler() {
 
     override fun getSpans(
         configuration: MarkwonConfiguration,
@@ -34,6 +34,6 @@ class TagAlignmentDecorator private constructor(): SimpleTagHandler() {
     override fun supportedTags(): List<String> = listOf("center")
 
     companion object {
-        fun create() = TagAlignmentDecorator()
+        fun create() = TagAlignmentHandler()
     }
 }

@@ -80,9 +80,15 @@ class NewsScreen : CrunchyActivity<CrunchyNews, CrunchyCorePresenter>() {
     }
 
     override fun onUpdateUserInterface() {
+        val content = """
+            <p><h3>${payload?.title}</h3></p>
+            <p><h5>${payload?.subTitle}</h5></p>
+            <p></p>
+            <p></p>
+        """.trimIndent()
         markwon.setMarkdown(
             mediaNewsContent,
-            payload?.content ?: "No description available"
+            "$content${payload?.content ?: "No description available"}"
         )
     }
 }

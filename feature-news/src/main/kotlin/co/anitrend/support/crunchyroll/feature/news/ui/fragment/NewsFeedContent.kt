@@ -137,4 +137,18 @@ class NewsFeedContent : SupportFragmentPagedList<CrunchyNews, CrunchyCorePresent
     }
 
     override val columnSize: Int = R.integer.single_list_size
+
+    /**
+     * Called when the view previously created by [.onCreateView] has
+     * been detached from the fragment.  The next time the fragment needs
+     * to be displayed, a new view will be created.  This is called
+     * after [.onStop] and before [.onDestroy].  It is called
+     * *regardless* of whether [.onCreateView] returned a
+     * non-null view.  Internally it is called after the view's state has
+     * been saved but before it has been removed from its parent.
+     */
+    override fun onDestroyView() {
+        supportRecyclerView?.adapter = null
+        super.onDestroyView()
+    }
 }
