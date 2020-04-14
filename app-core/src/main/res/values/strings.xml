@@ -18,6 +18,14 @@
 <resources>
     <string name="application_name">CrunchyTrend</string>
 
+
+    <string name="dialog_title_permission_reason_text">Storage Permission Required</string>
+    <string name="dialog_message_permission_reason_text">
+        Access to read and write to external storage is required.
+        This allows the application to cache video to external storage to save your bandwidth
+    </string>
+    <string name="dialog_button_text_got_it">Got It!</string>
+
     <!-- settings keys -->
     <string name="settings_authentication_id" translatable="false">_authenticationId</string>
 
