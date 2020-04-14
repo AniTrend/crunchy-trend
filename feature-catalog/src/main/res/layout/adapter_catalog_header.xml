@@ -46,6 +46,6 @@
                 android:layout_gravity="end"
                 android:textColor="@color/colorAccent"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                tools:text="@string/label_text_action_see_all" />
+                android:text="@string/label_text_action_see_all" />
     </FrameLayout>
 </layout>

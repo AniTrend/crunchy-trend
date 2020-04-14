@@ -53,8 +53,11 @@ class CatalogPresenter(
                         catalog.qualifier
                     )
                 )
-                section.setHideWhenEmpty(true)
+                section.setHideWhenEmpty(false)
                 val adapter = GroupAdapter<GroupieViewHolder>()
+                supportStateLayout.setNetworkState(
+                    NetworkState.Success
+                )
                 catalog.series.forEach { series ->
                     adapter.add(
                         CatalogItem(
@@ -64,11 +67,7 @@ class CatalogPresenter(
                 }
                 val carouselGroup = CarouselGroup(adapter)
                 section.add(carouselGroup)
-
                 groupAdapter.add(section)
-                supportStateLayout.setNetworkState(
-                    NetworkState.Success
-                )
                 catalogCache.add(catalog.qualifier.attribute)
             }
     }

@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.feature.catalog.controller.items
 
+import android.widget.Toast
 import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalogFilter
 import co.anitrend.support.crunchyroll.feature.catalog.R
 import co.anitrend.support.crunchyroll.feature.catalog.databinding.AdapterCatalogHeaderBinding
@@ -35,6 +36,8 @@ class HeaderItem(
      */
     override fun bind(viewBinding: AdapterCatalogHeaderBinding, position: Int) {
         viewBinding.title = seriesCatalogFilter.attribute.capitalize()
-        //viewBinding.catalogActionSeeAll.gone()
+        viewBinding.catalogActionSeeAll.setOnClickListener {
+            Toast.makeText(it.context, "Not yet implemented", Toast.LENGTH_SHORT).show()
+        }
     }
 }

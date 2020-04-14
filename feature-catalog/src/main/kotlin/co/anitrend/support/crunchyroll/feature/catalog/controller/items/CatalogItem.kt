@@ -16,17 +16,15 @@
 
 package co.anitrend.support.crunchyroll.feature.catalog.controller.items
 
-import android.view.View
+import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.feature.catalog.R
-import com.xwray.groupie.Item
-import com.xwray.groupie.OnItemClickListener
-import com.xwray.groupie.databinding.BindableItem
 import co.anitrend.support.crunchyroll.feature.catalog.databinding.AdapterCatalogItemBinding
+import com.xwray.groupie.databinding.BindableItem
 
 class CatalogItem(
     private val series: CrunchySeries
-) : BindableItem<AdapterCatalogItemBinding>(), OnItemClickListener {
+) : BindableItem<AdapterCatalogItemBinding>() {
 
     override fun getLayout() = R.layout.adapter_catalog_item
 
@@ -38,9 +36,13 @@ class CatalogItem(
      */
     override fun bind(viewBinding: AdapterCatalogItemBinding, position: Int) {
         viewBinding.entity = series
-    }
-
-    override fun onItemClick(item: Item<*>, view: View) {
-        TODO("Not yet implemented")
+        viewBinding.seriesCard.setOnClickListener {
+            val seriesPayload = NavigationTargets.Series.Payload(
+                seriesId = series.seriesId
+            )
+            NavigationTargets.Series(
+                it.context, seriesPayload
+            )
+        }
     }
 }
