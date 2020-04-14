@@ -51,8 +51,7 @@ fun FragmentActivity?.createDialog(
 /**
  * Helper extension for changing parcels to bundles
  */
-fun Parcelable.toBundle(key: String): Bundle {
-    val bundle = Bundle()
-    bundle.putParcelable(key, this)
-    return bundle
-}
+fun Parcelable.toBundle(key: String) =
+    Bundle().apply {
+        putParcelable(key, this@toBundle)
+    }

@@ -24,6 +24,7 @@ import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.argument
+import co.anitrend.arch.extension.empty
 import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
@@ -53,6 +54,7 @@ class SeriesCollectionScreen : SupportFragmentPagedList<CrunchyCollection, Serie
             object : ItemClickListener<CrunchyCollection> {
                 override fun onItemClick(target: View, data: Pair<Int, CrunchyCollection?>) {
                     val payload = NavigationTargets.Media.Payload(
+                        collectionName = data.second?.name ?: String.empty(),
                         collectionId = data.second?.collectionId ?: 0
                     )
                     NavigationTargets.Media.invoke(target.context, payload)
@@ -144,6 +146,20 @@ class SeriesCollectionScreen : SupportFragmentPagedList<CrunchyCollection, Serie
      * State configuration for any underlying state representing widgets
      */
     override val supportStateConfiguration by inject<SupportStateLayoutConfiguration>()
+
+    /**
+     * Called when the view previously created by [.onCreateView] has
+     * been detached from the fragment.  The next time the fragment needs
+     * to be displayed, a new view will be created.  This is called
+     * after [.onStop] and before [.onDestroy].  It is called
+     * *regardless* of whether [.onCreateView] returned a
+     * non-null view.  Internally it is called after the view's state has
+     * been saved but before it has been removed from its parent.
+     */
+    override fun onDestroyView() {
+        supportRecyclerView?.adapter = null
+        super.onDestroyView()
+    }
 
     companion object {
         const val FRAGMENT_TAG = "SeriesCollectionScreen"

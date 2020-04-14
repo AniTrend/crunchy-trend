@@ -106,6 +106,7 @@ object NavigationTargets {
 
         @Parcelize
         data class Payload(
+            val collectionName: String,
             val collectionId: Long
         ) : Parcelable
     }
@@ -129,6 +130,7 @@ object NavigationTargets {
         @Parcelize
         data class Payload(
             val mediaId: Long,
+            val collectionName: String?,
             val episodeTitle: String?,
             val episodeThumbnail: String?
         ) : Parcelable
