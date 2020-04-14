@@ -159,11 +159,14 @@ class SearchScreen : CrunchyActivity<PagedList<CrunchySeries>, SeriesPresenter>(
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        supportFragmentActivity = SearchContentScreen()
-        val target = supportFragmentActivity as SupportFragment<*, *, *>
+        val target = supportFragmentManager.findFragmentByTag(
+            SearchContentScreen.FRAGMENT_TAG
+        ) ?: SearchContentScreen.newInstance()
+
+        supportFragmentActivity = target as SupportFragment<*, *, *>
 
         supportFragmentManager.commit {
-            replace(R.id.search_content, target, target.tag)
+            replace(R.id.search_content, target, SearchContentScreen.FRAGMENT_TAG)
         }
     }
 }

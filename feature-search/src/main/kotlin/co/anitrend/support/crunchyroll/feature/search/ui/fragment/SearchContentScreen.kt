@@ -174,4 +174,24 @@ class SearchContentScreen : SupportFragmentPagedList<CrunchySeries, SeriesPresen
         loadingDrawable = R.drawable.ic_launcher_foreground,
         errorDrawable = R.drawable.ic_support_empty_state
     )
+
+    /**
+     * Called when the view previously created by [.onCreateView] has
+     * been detached from the fragment.  The next time the fragment needs
+     * to be displayed, a new view will be created.  This is called
+     * after [.onStop] and before [.onDestroy].  It is called
+     * *regardless* of whether [.onCreateView] returned a
+     * non-null view.  Internally it is called after the view's state has
+     * been saved but before it has been removed from its parent.
+     */
+    override fun onDestroyView() {
+        supportRecyclerView?.adapter = null
+        super.onDestroyView()
+    }
+
+    companion object {
+        val FRAGMENT_TAG = SearchContentScreen::class.java.simpleName
+
+        fun newInstance() = SearchContentScreen()
+    }
 }
