@@ -31,7 +31,7 @@ class AuthPresenter(
 
     fun onLoginStateChange(crunchyUser: CrunchyUser?) {
         supportPreference.authenticatedUserId = crunchyUser?.userId ?: IAuthenticationSettings.INVALID_USER_ID
-        supportPreference.hasAccessToPremium = crunchyUser?.premium != null
+        supportPreference.hasAccessToPremium = !crunchyUser?.premium.isNullOrBlank()
         supportPreference.isAuthenticated = crunchyUser != null
     }
 
