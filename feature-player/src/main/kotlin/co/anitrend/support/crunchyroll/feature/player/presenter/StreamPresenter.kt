@@ -18,7 +18,10 @@ package co.anitrend.support.crunchyroll.feature.player.presenter
 
 import android.content.Context
 import android.net.Uri
+import android.webkit.WebView
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.lifecycle.LifecycleOwner
+import co.anitrend.arch.extension.attachComponent
 import co.anitrend.arch.extension.getCompatDrawable
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
@@ -26,6 +29,7 @@ import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.domain.stream.enums.CrunchyStreamQuality
 import co.anitrend.support.crunchyroll.feature.player.R
+import co.anitrend.support.crunchyroll.feature.player.component.SourceFactoryProvider
 import coil.Coil
 import coil.api.load
 import com.devbrackets.android.exomedia.listener.VideoControlsVisibilityListener
@@ -33,15 +37,17 @@ import com.devbrackets.android.exomedia.ui.widget.VideoControls
 import com.devbrackets.android.exomedia.ui.widget.VideoControlsCore
 import com.devbrackets.android.exomedia.ui.widget.VideoView
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
+import com.google.android.exoplayer2.upstream.*
 import com.google.android.exoplayer2.util.Util
+import timber.log.Timber
 import java.io.IOException
 
 class StreamPresenter(
     context: Context,
     settings: CrunchySettings
 ) : CrunchyCorePresenter(context, settings) {
+
+    private val moduleTag = StreamPresenter::class.java.simpleName
 
     private val loadErrorHandlingPolicy =
         object : LoadErrorHandlingPolicy {
@@ -72,17 +78,26 @@ class StreamPresenter(
         return Uri.parse(mediaStream.url)
     }
 
-    fun setupMediaSource(mediaStream: MediaStream, player: VideoView, thumbnail: String?) {
+    fun setupMediaSource(
+        sourceFactoryProvider: SourceFactoryProvider,
+        mediaStream: MediaStream,
+        player: VideoView,
+        thumbnail: String?,
+        lifecycleOwner: LifecycleOwner
+    ) {
+        val bandwidthMeter = DefaultBandwidthMeter.Builder(context).build()
+        val userAgent = WebView(context).settings.userAgentString
+
         Coil.load(context, thumbnail) {
             target { player.setPreviewImage(it) }
+            lifecycle(lifecycleOwner)
         }
 
-        val sourceFactory = DefaultDataSourceFactory(
-            context, Util.getUserAgent(context, context.getString(R.string.application_name))
-        )
         val streamUri = getStreamUri(mediaStream)
 
-        val source = HlsMediaSource.Factory(sourceFactory)
+        val source = HlsMediaSource.Factory(
+            sourceFactoryProvider.provide(userAgent, bandwidthMeter)
+        )
             .setLoadErrorHandlingPolicy(loadErrorHandlingPolicy)
             .setAllowChunklessPreparation(true)
             .createMediaSource(streamUri)
@@ -125,7 +140,12 @@ class StreamPresenter(
                 context.getCompatDrawable(R.drawable.ic_pause_circle_outline_white_56dp)
             )
 
-            videoControls.setTitle(payload?.episodeTitle)
+            if (payload?.collectionName.isNullOrBlank()) {
+                videoControls.setTitle(payload?.episodeTitle)
+            } else {
+                videoControls.setTitle(payload?.collectionName)
+                videoControls.setSubTitle(payload?.episodeTitle)
+            }
         }
     }
 }

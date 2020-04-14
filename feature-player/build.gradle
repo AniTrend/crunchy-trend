@@ -27,10 +27,9 @@ apply from: "../gradle/gradle-common-dependencies.gradle"
 
 ext {
     okHttp = '4.5.0'
-    mediaKtx = '1.1.0'
     exoMedia = '4.3.0'
     exoPlaylist = '2.0.1'
-    exoMediaPlayer = '2.6.0'
+    exoMediaPlayer = '2.9.6'
 }
 
 dependencies {
@@ -43,4 +42,6 @@ dependencies {
 
     /** Exo player extensions */
     implementation("com.google.android.exoplayer:extension-okhttp:$exoMediaPlayer")
+    /** Adding exo player hls since we use media formatter in exo-media */
+    implementation("com.google.android.exoplayer:exoplayer-hls:$exoMediaPlayer")
 }

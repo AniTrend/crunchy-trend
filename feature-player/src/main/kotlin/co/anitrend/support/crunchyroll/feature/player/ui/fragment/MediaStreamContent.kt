@@ -19,9 +19,15 @@ package co.anitrend.support.crunchyroll.feature.player.ui.fragment
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.webkit.WebView
 import androidx.lifecycle.Observer
+import androidx.lifecycle.whenResumed
+import androidx.lifecycle.whenStarted
 import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.argument
+import co.anitrend.arch.extension.attachComponent
+import co.anitrend.arch.extension.detachComponent
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
@@ -29,14 +35,20 @@ import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 import co.anitrend.support.crunchyroll.feature.player.R
+import co.anitrend.support.crunchyroll.feature.player.component.SourceFactoryProvider
 import co.anitrend.support.crunchyroll.feature.player.presenter.StreamPresenter
 import co.anitrend.support.crunchyroll.feature.player.viewmodel.MediaStreamViewModel
 import com.devbrackets.android.exomedia.listener.VideoControlsVisibilityListener
 import com.devbrackets.android.exomedia.ui.widget.VideoView
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DataSpec
+import com.google.android.exoplayer2.upstream.TransferListener
 import kotlinx.android.synthetic.main.fragment_media_player.*
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class MediaStreamContent : SupportFragment<MediaStream?, CrunchyCorePresenter, List<MediaStream>?>() {
 
@@ -45,7 +57,9 @@ class MediaStreamContent : SupportFragment<MediaStream?, CrunchyCorePresenter, L
                 NavigationTargets.MediaPlayer.PAYLOAD
             )
 
-    private lateinit var controlsVisibilityListener: VideoControlsVisibilityListener
+    private val sourceFactoryProvider by inject<SourceFactoryProvider>()
+
+    private var controlsVisibilityListener: VideoControlsVisibilityListener? = null
 
     override val inflateLayout = R.layout.fragment_media_player
 
@@ -76,7 +90,17 @@ class MediaStreamContent : SupportFragment<MediaStream?, CrunchyCorePresenter, L
     }
 
     override fun initializeComponents(savedInstanceState: Bundle?) {
-
+        launch {
+            lifecycle.whenStarted {
+                setUpViewModelObserver()
+            }
+            lifecycle.whenResumed {
+                if (!supportViewModel.hasModelData())
+                    onFetchDataInitialize()
+                else
+                    prepareResults()
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -87,17 +111,9 @@ class MediaStreamContent : SupportFragment<MediaStream?, CrunchyCorePresenter, L
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        setUpViewModelObserver()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (!supportViewModel.hasModelData())
-            onFetchDataInitialize()
-        else
-            prepareResults()
+    override fun onPause() {
+        exoMediaVideoView.pause()
+        super.onPause()
     }
 
     /**
@@ -116,7 +132,7 @@ class MediaStreamContent : SupportFragment<MediaStream?, CrunchyCorePresenter, L
                 this,
                 videoControlsCore,
                 payload,
-                controlsVisibilityListener
+                controlsVisibilityListener!!
             )
             setOnPreparedListener {
                 start()
@@ -136,11 +152,15 @@ class MediaStreamContent : SupportFragment<MediaStream?, CrunchyCorePresenter, L
 
     private fun prepareResults() {
         val model = supportViewModel.model.value
-        if (!exoMediaVideoView.isPlaying) {
+        if (exoMediaVideoView.videoUri == null) {
             val stream = supportPresenter.getOptimalStream(model)
             if (stream != null) {
                 supportPresenter.setupMediaSource(
-                    stream, exoMediaVideoView, payload?.episodeThumbnail
+                    sourceFactoryProvider,
+                    stream,
+                    exoMediaVideoView,
+                    payload?.episodeThumbnail,
+                    viewLifecycleOwner
                 )
                 onUpdateUserInterface()
             } else {
@@ -151,7 +171,9 @@ class MediaStreamContent : SupportFragment<MediaStream?, CrunchyCorePresenter, L
                     )
                 )
             }
-        }
+        } else
+            if (!exoMediaVideoView.isPlaying)
+                exoMediaVideoView.start()
     }
 
     /**
@@ -173,7 +195,7 @@ class MediaStreamContent : SupportFragment<MediaStream?, CrunchyCorePresenter, L
             )
         } ?: supportStateLayout.setNetworkState(
             NetworkState.Error(
-                heading = "Invalid Fragment Parameters ${Emote.Cry} ",
+                heading = "Invalid Fragment Parameters ${Emote.Cry}",
                 message = "Invalid or missing payload, request will not be processed"
             )
         )
@@ -187,6 +209,26 @@ class MediaStreamContent : SupportFragment<MediaStream?, CrunchyCorePresenter, L
         super.onAttach(context)
         if (context is VideoControlsVisibilityListener)
             controlsVisibilityListener = context
+        attachComponent(sourceFactoryProvider)
+    }
+
+    /**
+     * Called when the fragment is no longer attached to its activity.  This
+     * is called after [.onDestroy].
+     */
+    override fun onDetach() {
+        detachComponent(sourceFactoryProvider)
+        super.onDetach()
+    }
+
+    /**
+     * Called when the fragment is no longer in use.  This is called
+     * after [.onStop] and before [.onDetach].
+     */
+    override fun onDestroy() {
+        exoMediaVideoView?.release()
+        controlsVisibilityListener = null
+        super.onDestroy()
     }
 
     /**

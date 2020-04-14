@@ -16,41 +16,20 @@
 
 package co.anitrend.support.crunchyroll.feature.player.koin
 
+import co.anitrend.support.crunchyroll.feature.player.component.SourceFactoryProvider
 import co.anitrend.support.crunchyroll.feature.player.presenter.StreamPresenter
 import co.anitrend.support.crunchyroll.feature.player.viewmodel.MediaStreamViewModel
-import com.devbrackets.android.exomedia.ExoMedia
-import com.google.android.exoplayer2.ext.okhttp.OkHttpDataSourceFactory
-import com.google.android.exoplayer2.upstream.cache.CacheDataSource
-import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
-import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
-import com.google.android.exoplayer2.upstream.cache.SimpleCache
-import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
-import java.io.File
 
 private val coreModule = module {
-    single {
-        ExoMedia.DataSourceFactoryProvider { userAgent, listener ->
-
-            // Updates the network data source to use the OKHttp implementation
-            val upstreamFactory = OkHttpDataSourceFactory(OkHttpClient(), userAgent, listener)
-
-            // Adds a cache around the upstreamFactory
-            val simpleCache = SimpleCache(
-                File(androidContext().externalCacheDir, "video_manager_disk_cache"),
-                LeastRecentlyUsedCacheEvictor((256 * 1024 * 1024).toLong())
-            )
-
-            CacheDataSourceFactory(
-                simpleCache,
-                upstreamFactory,
-                CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
-            )
-        }
+    factory {
+        SourceFactoryProvider(
+            androidContext().externalCacheDir
+        )
     }
 }
 
