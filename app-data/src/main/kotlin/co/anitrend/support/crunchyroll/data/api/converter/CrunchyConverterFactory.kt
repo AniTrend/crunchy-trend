@@ -18,8 +18,8 @@
 
 package co.anitrend.support.crunchyroll.data.api.converter
 
-import co.anitrend.support.crunchyroll.data.api.contract.JSON
-import co.anitrend.support.crunchyroll.data.api.contract.XML
+import co.anitrend.support.crunchyroll.data.arch.JSON
+import co.anitrend.support.crunchyroll.data.arch.XML
 import com.google.gson.GsonBuilder
 import okhttp3.ResponseBody
 import org.simpleframework.xml.convert.AnnotationStrategy
@@ -56,13 +56,13 @@ class CrunchyConverterFactory private constructor(): Converter.Factory() {
     }
 
     companion object {
-        val GSON_BUILDER: GsonBuilder by lazy {
+        internal val GSON_BUILDER by lazy {
             GsonBuilder()
                 .generateNonExecutableJson()
                 .serializeNulls()
                 .setLenient()
         }
 
-        fun create() = CrunchyConverterFactory()
+        internal fun create() = CrunchyConverterFactory()
     }
 }

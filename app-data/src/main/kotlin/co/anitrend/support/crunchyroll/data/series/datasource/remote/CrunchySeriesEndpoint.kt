@@ -18,12 +18,11 @@ package co.anitrend.support.crunchyroll.data.series.datasource.remote
 
 import co.anitrend.arch.extension.util.SupportExtKeyStore
 import co.anitrend.support.crunchyroll.data.BuildConfig
-import co.anitrend.support.crunchyroll.data.api.contract.JSON
+import co.anitrend.support.crunchyroll.data.arch.JSON
 import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyModelField
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.series.model.CrunchySeriesModel
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchyMediaType
-import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

@@ -59,7 +59,7 @@ private val networkModule = module {
             )
         )
     }
-    single {
+    factory { (interceptorLogLevel: HttpLoggingInterceptor.Level) ->
         val okHttpClientBuilder = OkHttpClient.Builder()
             .readTimeout(10, TimeUnit.SECONDS)
             .connectTimeout(10, TimeUnit.SECONDS)
@@ -68,14 +68,14 @@ private val networkModule = module {
         when {
             BuildConfig.DEBUG -> {
                 val httpLoggingInterceptor = HttpLoggingInterceptor()
-                httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.HEADERS
+                httpLoggingInterceptor.level = interceptorLogLevel
                 okHttpClientBuilder.addInterceptor(httpLoggingInterceptor)
             }
         }
 
         okHttpClientBuilder
     }
-    single {
+    factory {
         Retrofit.Builder()
             .addConverterFactory(
                 get<CrunchyConverterFactory>()

@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.data.session.datasource.remote
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
+import co.anitrend.support.crunchyroll.data.arch.JSON
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionCoreModel
 import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionModel
@@ -26,6 +27,7 @@ import retrofit2.http.Query
 
 interface CrunchySessionEndpoint {
 
+    @JSON
     @GET("/start_session")
     suspend fun startUnblockedSession(
         @Query("auth") auth: String,
@@ -33,6 +35,7 @@ interface CrunchySessionEndpoint {
         @Query("user_id") userId: Long
     ): Response<CrunchyContainer<CrunchySessionModel>>
 
+    @JSON
     @GET("/start_session")
     suspend fun startCoreSession()
             : Response<CrunchyContainer<CrunchySessionCoreModel>>

@@ -20,6 +20,7 @@ import androidx.paging.PagedList
 import androidx.paging.PagingRequestHelper
 import co.anitrend.arch.data.source.paging.SupportPagingDataSource
 import co.anitrend.arch.extension.SupportDispatchers
+import co.anitrend.support.crunchyroll.data.arch.CrunchyExperimentalFeature
 import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -34,6 +35,7 @@ abstract class CrunchyPagedSource<T>(
 
     init {
         launch (dispatchers.io) {
+            @OptIn(CrunchyExperimentalFeature::class)
             configurePagingHelper(sourceDao)
         }
     }
@@ -46,11 +48,18 @@ abstract class CrunchyPagedSource<T>(
      * from the last page of results in our backend.
      *
      * @param sourceDao contract for all compatible data access objects
+     *
+     * @see setUpPagingHelperWithInitial
      */
-    protected suspend fun configurePagingHelper(sourceDao: ISourceDao) {
-        val count = sourceDao.count()
-        if (count != 0) {
-            val lastLoadedPage = count / supportPagingHelper.pageSize
+    @CrunchyExperimentalFeature
+    protected open suspend fun configurePagingHelper(sourceDao: ISourceDao) {
+        // Disabled for now since not all pagination can be calculated without supplying
+        // a filter clause
+    }
+
+    protected fun setUpPagingHelperWithInitial(itemsCount: Int) {
+        if (itemsCount > 0) {
+            val lastLoadedPage = itemsCount / supportPagingHelper.pageSize
             supportPagingHelper.page = lastLoadedPage
             supportPagingHelper.pageOffset = lastLoadedPage * supportPagingHelper.pageSize
         }

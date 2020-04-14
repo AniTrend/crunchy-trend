@@ -81,5 +81,4 @@ fun Locale.toCrunchyLocale(): String {
 fun Scope.db() = get<ICrunchyDatabase>()
 
 internal inline fun <reified T> Scope.api(endpointType: EndpointType): T =
-    EndpointProvider.provideRetrofit(endpointType, this)
-        .create(T::class.java)
+    EndpointProvider.provideRetrofit(endpointType, this).create(T::class.java)

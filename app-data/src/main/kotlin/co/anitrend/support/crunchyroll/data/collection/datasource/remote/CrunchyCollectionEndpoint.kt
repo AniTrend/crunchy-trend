@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.data.collection.datasource.remote
 
 import co.anitrend.arch.extension.util.SupportExtKeyStore
 import co.anitrend.support.crunchyroll.data.BuildConfig
-import co.anitrend.support.crunchyroll.data.api.contract.JSON
+import co.anitrend.support.crunchyroll.data.arch.JSON
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.collection.model.CrunchyCollectionModel
 import retrofit2.Response

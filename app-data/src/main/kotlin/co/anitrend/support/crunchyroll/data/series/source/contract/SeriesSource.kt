@@ -19,6 +19,7 @@ package co.anitrend.support.crunchyroll.data.series.source.contract
 import androidx.paging.PagedList
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.extension.SupportDispatchers
+import co.anitrend.support.crunchyroll.data.arch.CrunchyExperimentalFeature
 import co.anitrend.support.crunchyroll.data.arch.common.CrunchyPagedSource
 import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
@@ -39,4 +40,19 @@ abstract class SeriesSource(
 
     abstract val seriesInfoObservable:
             ISourceObservable<CrunchySeriesInfoQuery, CrunchySeries?>
+
+    /**
+     * Since we plan on using a paging source backed by a database, Ideally we should
+     * configure [supportPagingHelper] with the records count/paging limit to start load
+     * from the last page of results in our backend.
+     *
+     * @param sourceDao contract for all compatible data access objects
+     *
+     * @see setUpPagingHelperWithInitial
+     */
+    @CrunchyExperimentalFeature
+    override suspend fun configurePagingHelper(sourceDao: ISourceDao) {
+        val count = sourceDao.count()
+        setUpPagingHelperWithInitial(count)
+    }
 }

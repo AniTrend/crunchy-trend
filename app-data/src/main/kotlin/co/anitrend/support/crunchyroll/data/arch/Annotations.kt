@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2020 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,19 +14,20 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.news.datasource.remote
+package co.anitrend.support.crunchyroll.data.arch
 
-import co.anitrend.support.crunchyroll.data.arch.XML
-import co.anitrend.support.crunchyroll.data.rss.core.CrunchyRssNewsContainer
-import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Query
+@RequiresOptIn(
+    message = "Experimental feature, with potentially unstable API",
+    level = RequiresOptIn.Level.WARNING
+)
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+annotation class CrunchyExperimentalFeature
 
-interface CrunchyNewsFeedEndpoint {
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.FUNCTION)
+annotation class JSON
 
-    @XML
-    @GET("crunchyroll/animenews")
-    suspend fun getMediaNews(
-        @Query("locale") crunchyLocale: String
-    ): Response<CrunchyRssNewsContainer>
-}
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.FUNCTION)
+annotation class XML

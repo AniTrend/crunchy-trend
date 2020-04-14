@@ -32,9 +32,9 @@ object UserEntityTransformer : ISupportMapperHelper<CrunchyUserModel, CrunchyUse
             username = source.username,
             email = source.email,
             premium = source.premium,
-            accessType = CrunchyAccessType.valueOf(
-                source.access_type ?: ""
-            )
+            accessType = source.access_type?.let {
+                CrunchyAccessType.valueOf(it)
+            }
         )
     }
 }

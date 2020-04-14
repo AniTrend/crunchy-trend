@@ -63,7 +63,7 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity>, ISourceDao {
         select *
         from CrunchySeriesEntity 
         where name match :seriesName 
-        order by name asc
+        order by name collate nocase asc
     """)
     suspend fun findBySeriesName(
         seriesName: String
@@ -73,7 +73,7 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity>, ISourceDao {
         select *
         from CrunchySeriesEntity 
         where name match :seriesName 
-        order by name asc
+        order by name collate nocase asc
     """)
     fun findBySeriesNameX(
         seriesName: String
@@ -85,7 +85,7 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity>, ISourceDao {
         from CrunchySeriesEntity as se
         join CrunchySeriesFtsEntity as sf on (se.id = sf.docid)
         where sf.name match :seriesName 
-        order by se.name asc
+        order by se.name collate nocase asc
     """)
     fun findBySeriesNameFactory(
         seriesName: String
@@ -96,21 +96,21 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity>, ISourceDao {
     @Query("""
         select *
         from CrunchySeriesEntity 
-        order by name asc
+        order by name collate nocase asc
         """)
     suspend fun findAll(): List<CrunchySeriesEntity>
 
     @Query("""
         select *
         from CrunchySeriesEntity 
-        order by name asc
+        order by name collate nocase asc
         """)
     fun findAllX(): LiveData<List<CrunchySeriesEntity>>
 
     @Query("""
         select *
         from CrunchySeriesEntity 
-        order by name asc
+        order by name collate nocase asc
         """)
     fun findAllFactory(): DataSource.Factory<Int, CrunchySeriesEntity>
 
@@ -118,7 +118,7 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity>, ISourceDao {
         select *
         from CrunchySeriesEntity
         where name like :prefix
-        order by name asc
+        order by name collate nocase asc
         """)
     fun findAllStartingWithFactory(
         prefix: String
@@ -128,7 +128,7 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity>, ISourceDao {
         select *
         from CrunchySeriesEntity 
         where genres in(:option)
-        order by name asc
+        order by name collate nocase asc
         """)
     fun findAllContainingGenre(
         option: String

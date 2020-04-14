@@ -39,10 +39,7 @@ object NewsEntityTransformer : ISupportMapperHelper<CrunchyNewsModel, NewsEntity
             author = source.author,
             subTitle = NewsHelper.getSubTitle(content),
             description = NewsHelper.getShortDescription(content),
-            content = NewsHelper.getCombinedContent(
-                NewsHelper.getShortDescription(content),
-                source.encoded
-            ),
+            content = source.encoded,
             publishedOn = source.publishedOn.rcf822ToUnixTime()
         )
     }

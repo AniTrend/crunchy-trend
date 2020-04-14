@@ -47,8 +47,4 @@ object NewsHelper {
         else
             String.empty()
     }
-
-    fun getCombinedContent(content: String, encoded: String): String {
-        return "$content</br></br>$encoded"
-    }
 }

@@ -17,7 +17,7 @@
 package co.anitrend.support.crunchyroll.data.locale.datasource.remote
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
-import co.anitrend.support.crunchyroll.data.api.contract.JSON
+import co.anitrend.support.crunchyroll.data.arch.JSON
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.locale.model.CrunchyLocaleModel
 import retrofit2.Response

@@ -16,14 +16,19 @@
 
 package co.anitrend.support.crunchyroll.data.api.helper
 
+import co.anitrend.arch.extension.LAZY_MODE_SYNCHRONIZED
 import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyRequestInterceptor
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyResponseInterceptor
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.KoinComponent
 import org.koin.core.get
+import org.koin.core.parameter.DefinitionParameters
+import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.Scope
 import retrofit2.Retrofit
 import timber.log.Timber
@@ -32,15 +37,26 @@ import java.util.HashMap
 internal object EndpointProvider {
 
     private val module = javaClass.simpleName
-    private val retrofitInstances by lazy {
+    private val retrofitInstances by lazy(LAZY_MODE_SYNCHRONIZED) {
         HashMap<String, Retrofit>()
     }
 
     private fun provideOkHttpClient(endpointType: EndpointType, scope: Scope) : OkHttpClient {
-        val builder = scope.get<OkHttpClient.Builder>()
+        val builder = scope.get<OkHttpClient.Builder> {
+            parametersOf(
+                when (endpointType) {
+                    EndpointType.SESSION,
+                    EndpointType.AUTH,
+                    EndpointType.JSON -> HttpLoggingInterceptor.Level.BODY
+                    else -> HttpLoggingInterceptor.Level.HEADERS
+                }
+            )
+        }
 
         if (endpointType == EndpointType.JSON) {
-            Timber.tag(module).d("Building additional interceptors for request: ${endpointType.name}")
+            Timber.tag(module).d(
+                "Building additional interceptors for request: ${endpointType.name}"
+            )
             builder.addInterceptor(
                 CrunchyRequestInterceptor(
                     authentication = scope.get()

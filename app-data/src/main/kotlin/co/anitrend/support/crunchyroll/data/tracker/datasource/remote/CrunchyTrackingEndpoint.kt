@@ -17,7 +17,7 @@
 package co.anitrend.support.crunchyroll.data.tracker.datasource.remote
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
-import co.anitrend.support.crunchyroll.data.api.contract.JSON
+import co.anitrend.support.crunchyroll.data.arch.JSON
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import retrofit2.Response
 import retrofit2.http.GET
