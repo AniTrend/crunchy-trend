@@ -31,67 +31,66 @@ import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticat
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings.Companion.INVALID_USER_ID
 
 class CrunchySettings(context: Context) : SupportPreference(context),
-    IAuthenticationSettings,
-    IConfigurationSettings, IPrivacySettings {
+    IAuthenticationSettings, IConfigurationSettings, IPrivacySettings {
 
     override var isNewInstallation by BooleanPreference(
-        R.string.settings_is_new_installation,
-        true,
-        context.resources
+        key = R.string.settings_is_new_installation,
+        default = true,
+        resources = context.resources
     )
 
     override var versionCode by IntPreference(
-        R.string.settings_version_code,
-        0,
-        context.resources
+        key = R.string.settings_version_code,
+        default = 0,
+        resources = context.resources
     )
 
     override var sessionId by NullableStringPreference(
-        R.string.settings_authentication_session_id,
-        null,
-        context.resources
+        key = R.string.settings_authentication_session_id,
+        default = null,
+        resources = context.resources
     )
 
     override var hasAccessToPremium by BooleanPreference(
-        R.string.settings_authentication_premium_access,
-        false,
-        context.resources
+        key = R.string.settings_authentication_premium_access,
+        default = false,
+        resources = context.resources
     )
 
     override var authenticatedUserId by LongPreference(
-        R.string.settings_authentication_id,
-        INVALID_USER_ID,
-        context.resources
+        key = R.string.settings_authentication_id,
+        default = INVALID_USER_ID,
+        resources = context.resources
     )
 
     override var isAuthenticated by BooleanPreference(
-        R.string.settings_authentication_logged_in,
-        false,
-        context.resources
+        key = R.string.settings_authentication_logged_in,
+        default = false,
+        resources = context.resources
     )
 
     override var locale by EnumPreference(
-        R.string.settings_configuration_locale,
-        AniTrendLocale.AUTOMATIC,
-        context.resources
+        key = R.string.settings_configuration_locale,
+        default = AniTrendLocale.AUTOMATIC,
+        resources = context.resources
     )
 
     override var theme by EnumPreference(
-        R.string.settings_configuration_theme,
-        AniTrendTheme.SYSTEM,
-        context.resources
+        key = R.string.settings_configuration_theme,
+        default = AniTrendTheme.SYSTEM,
+        resources = context.resources
     )
 
     override var isAnalyticsEnabled by BooleanPreference(
-        R.string.settings_privacy_usage_analytics,
-        false,
-        context.resources
+        key = R.string.settings_privacy_usage_analytics,
+        default = false,
+        resources = context.resources
     )
 
     override var isCrashlyticsEnabled by BooleanPreference(
-        R.string.settings_privacy_crash_analytics,
-        true,
-        context.resources
+        key = R.string.settings_privacy_crash_analytics,
+        default = true,
+        resources = context.resources
     )
 
     companion object  {
