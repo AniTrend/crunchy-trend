@@ -21,14 +21,14 @@ import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.support.crunchyroll.data.catalog.usecase.CatalogUseCaseImpl
 import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalogFilter
 import co.anitrend.support.crunchyroll.domain.catalog.models.CrunchyCatalogQuery
-import co.anitrend.support.crunchyroll.feature.catalog.model.CatalogViewState
+import co.anitrend.support.crunchyroll.feature.catalog.model.CatalogViewModelState
 
 class CatalogViewModel(
     private val catalogUseCase: CatalogUseCaseImpl
 ) : ViewModel() {
 
     val viewStateFeatured by lazy(LAZY_MODE_UNSAFE) {
-        CatalogViewState(
+        CatalogViewModelState(
             CrunchyCatalogQuery(
                 CrunchySeriesCatalogFilter.FEATURED
             ),
@@ -37,7 +37,7 @@ class CatalogViewModel(
     }
 
     val viewStateNewest by lazy(LAZY_MODE_UNSAFE) {
-        CatalogViewState(
+        CatalogViewModelState(
             CrunchyCatalogQuery(
                 CrunchySeriesCatalogFilter.NEWEST
             ),
@@ -46,7 +46,7 @@ class CatalogViewModel(
     }
 
     val viewStatePopular by lazy(LAZY_MODE_UNSAFE) {
-        CatalogViewState(
+        CatalogViewModelState(
             CrunchyCatalogQuery(
                 CrunchySeriesCatalogFilter.POPULAR
             ),
@@ -55,7 +55,7 @@ class CatalogViewModel(
     }
 
     val viewStateSimulcast by lazy(LAZY_MODE_UNSAFE) {
-        CatalogViewState(
+        CatalogViewModelState(
             CrunchyCatalogQuery(
                 CrunchySeriesCatalogFilter.SIMULCAST
             ),
@@ -64,11 +64,27 @@ class CatalogViewModel(
     }
 
     val viewStateUpdated by lazy(LAZY_MODE_UNSAFE) {
-        CatalogViewState(
+        CatalogViewModelState(
             CrunchyCatalogQuery(
                 CrunchySeriesCatalogFilter.UPDATED
             ),
             catalogUseCase
         )
+    }
+
+    /**
+     * This method will be called when this ViewModel is no longer used and will be destroyed.
+     *
+     *
+     * It is useful when ViewModel observes some data and you need to clear this subscription to
+     * prevent a leak of this ViewModel.
+     */
+    override fun onCleared() {
+        viewStateFeatured.onCleared()
+        viewStateNewest.onCleared()
+        viewStatePopular.onCleared()
+        viewStateSimulcast.onCleared()
+        viewStateUpdated.onCleared()
+        super.onCleared()
     }
 }

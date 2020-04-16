@@ -19,47 +19,50 @@ package co.anitrend.support.crunchyroll.feature.catalog.model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import co.anitrend.arch.core.model.ISupportViewModelState
 import co.anitrend.arch.data.model.UserInterfaceState
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.support.crunchyroll.data.catalog.usecase.CatalogUseCaseImpl
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 import co.anitrend.support.crunchyroll.domain.catalog.models.CrunchyCatalogQuery
 
-data class CatalogViewState(
+data class CatalogViewModelState(
     private val parameter: CrunchyCatalogQuery,
     private val useCase: CatalogUseCaseImpl
-) {
+) : ISupportViewModelState<CrunchyCatalogWithSeries> {
+
     private val useCaseResult = MutableLiveData<UserInterfaceState<CrunchyCatalogWithSeries>>()
 
-    val model =
+    override val model =
         Transformations.switchMap(useCaseResult) { it.model }
 
-    val networkState: LiveData<NetworkState>? =
+    override val networkState: LiveData<NetworkState>? =
         Transformations.switchMap(useCaseResult) { it.networkState }
 
-    val refreshState: LiveData<NetworkState>? =
+    override val refreshState: LiveData<NetworkState>? =
         Transformations.switchMap(useCaseResult) { it.refreshState }
+
+    fun requestIfModelIsNotInitialized() {
+        if (model.value == null)
+            invoke()
+    }
 
     operator fun invoke() {
         val result = useCase(parameter)
         useCaseResult.postValue(result)
     }
 
-    /**
-     * Requests the repository to perform a retry operation
-     */
-    fun retry() {
+    override fun retry() {
         val uiModel = useCaseResult.value
         uiModel?.retry?.invoke()
     }
 
-    /**
-     * Requests the repository to perform a refreshAndInvalidate operation on the underlying database
-     */
-    fun refresh() {
+    override fun refresh() {
         val uiModel = useCaseResult.value
         uiModel?.refresh?.invoke()
     }
 
-    fun hasData() = model.value != null
+    override fun onCleared() {
+        useCase.onCleared()
+    }
 }

@@ -205,16 +205,11 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>, CatalogPr
      * @see [ISupportViewModel.invoke]
      */
     override fun onFetchDataInitialize() {
-        if (!viewModel.viewStateFeatured.hasData())
-            viewModel.viewStateFeatured()
-        if (!viewModel.viewStateNewest.hasData())
-            viewModel.viewStateNewest()
-        if (!viewModel.viewStatePopular.hasData())
-            viewModel.viewStatePopular()
-        if (!viewModel.viewStateSimulcast.hasData())
-            viewModel.viewStateSimulcast()
-        if (!viewModel.viewStateUpdated.hasData())
-            viewModel.viewStateUpdated()
+        viewModel.viewStateFeatured.requestIfModelIsNotInitialized()
+        viewModel.viewStateNewest.requestIfModelIsNotInitialized()
+        viewModel.viewStatePopular.requestIfModelIsNotInitialized()
+        viewModel.viewStateSimulcast.requestIfModelIsNotInitialized()
+        viewModel.viewStateUpdated.requestIfModelIsNotInitialized()
     }
 
     /**
