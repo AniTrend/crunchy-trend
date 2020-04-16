@@ -27,6 +27,7 @@ import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
+import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.feature.settings.R
 import co.anitrend.support.crunchyroll.feature.settings.koin.injectFeatureModules
@@ -103,8 +104,12 @@ class SettingsScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
+        val target = supportFragmentManager.findFragmentByTag(
+            SettingsFragment.FRAGMENT_TAG
+        ) ?: SettingsFragment.newInstance()
+
         supportFragmentManager.commit {
-            replace(R.id.settings_content, SettingsFragment())
+            replace(R.id.settings_content, target, SettingsFragment.FRAGMENT_TAG)
         }
     }
 
@@ -138,6 +143,12 @@ class SettingsScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
                         }
                     }
             }
+        }
+
+        companion object : IFragmentFactory<SettingsFragment> {
+            override val FRAGMENT_TAG = SettingsFragment::class.java.simpleName
+
+            override fun newInstance(bundle: Bundle?) = SettingsFragment()
         }
     }
 }

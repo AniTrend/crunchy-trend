@@ -88,12 +88,15 @@ class MediaScreen : CrunchyActivity<Nothing, MediaPresenter>() {
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        supportFragmentActivity = MediaContent.newInstance(intent.extras)
-        val target = supportFragmentActivity as SupportFragment<*, *, *>
+        val target = supportFragmentManager.findFragmentByTag(
+            MediaContent.FRAGMENT_TAG
+        ) ?: MediaContent.newInstance(intent.extras)
+
+        supportFragmentActivity = target as SupportFragment<*, *, *>
 
         supportFragmentManager.commit {
-            //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-            replace(R.id.series_content, target, target.tag)
+            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            replace(R.id.series_content, target, MediaContent.FRAGMENT_TAG)
         }
     }
 }

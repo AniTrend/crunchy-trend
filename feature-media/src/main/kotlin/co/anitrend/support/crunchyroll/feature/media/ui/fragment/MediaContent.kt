@@ -26,7 +26,9 @@ import co.anitrend.arch.extension.argument
 import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
+import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
+import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
 import co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia
 import co.anitrend.support.crunchyroll.domain.media.models.CrunchyMediaQuery
 import co.anitrend.support.crunchyroll.feature.media.R
@@ -58,6 +60,7 @@ class MediaContent : SupportFragmentPagedList<CrunchyMedia, MediaPresenter, Page
                     val mediaPlayerPayload = NavigationTargets.MediaPlayer.Payload(
                         mediaId = media?.mediaId ?: 0,
                         collectionName = payload?.collectionName,
+                        collectionThumbnail = payload?.collectionThumbnail,
                         episodeTitle = "Episode ${media?.episodeNumber}: ${media?.name}",
                         episodeThumbnail = media?.screenshotImage
                     )
@@ -96,8 +99,8 @@ class MediaContent : SupportFragmentPagedList<CrunchyMedia, MediaPresenter, Page
             )
         } ?: supportStateLayout?.setNetworkState(
             NetworkState.Error(
-                heading = "Invalid Parameter/s State",
-                message = "Invalid or missing payload"
+                heading = "Invalid fragment parameters ${Emote.Cry}",
+                message = "Invalid or missing payload, request cannot be processed"
             )
         )
     }
@@ -120,11 +123,12 @@ class MediaContent : SupportFragmentPagedList<CrunchyMedia, MediaPresenter, Page
         super.onDestroyView()
     }
 
-    companion object {
-        fun newInstance(bundle: Bundle?): MediaContent {
-            return MediaContent().apply {
+    companion object : IFragmentFactory<MediaContent> {
+        override val FRAGMENT_TAG = MediaContent::class.java.simpleName
+
+        override fun newInstance(bundle: Bundle?) =
+            MediaContent().apply {
                 arguments = bundle
             }
-        }
     }
 }

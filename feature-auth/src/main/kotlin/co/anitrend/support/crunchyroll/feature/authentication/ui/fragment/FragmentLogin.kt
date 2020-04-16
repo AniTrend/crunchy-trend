@@ -26,6 +26,7 @@ import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
+import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLoginBinding
 import co.anitrend.support.crunchyroll.feature.authentication.presenter.AuthPresenter
@@ -174,9 +175,9 @@ class FragmentLogin : SupportFragment<CrunchyUser?, CrunchyCorePresenter, Crunch
         return super.hasBackPressableAction()
     }
 
-    companion object {
-        fun newInstance(): FragmentLogin {
-            return FragmentLogin()
-        }
+    companion object : IFragmentFactory<FragmentLogin> {
+        override val FRAGMENT_TAG = FragmentLogin::class.java.simpleName
+
+        override fun newInstance(bundle: Bundle?) = FragmentLogin()
     }
 }

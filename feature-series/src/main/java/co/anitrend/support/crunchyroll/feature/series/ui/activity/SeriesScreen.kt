@@ -110,16 +110,11 @@ class SeriesScreen : CrunchyActivity<CrunchySeries?, SeriesDetailPresenter>(), I
     }
 
     override fun onSwapWithCollection() {
-        val fragment = supportFragmentManager.findFragmentByTag(
+        val target = supportFragmentManager.findFragmentByTag(
             SeriesCollectionScreen.FRAGMENT_TAG
-        )
+        ) ?: SeriesCollectionScreen.newInstance(intent.extras)
 
-        supportFragmentActivity = if (fragment is SeriesCollectionScreen)
-            fragment
-        else
-            SeriesCollectionScreen.newInstance(intent.extras)
-
-        val target = supportFragmentActivity as SupportFragment<*, *, *>
+        supportFragmentActivity = target as SupportFragment<*, *, *>
 
         supportFragmentManager.commit {
             //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -128,16 +123,11 @@ class SeriesScreen : CrunchyActivity<CrunchySeries?, SeriesDetailPresenter>(), I
     }
 
     private fun onSwapWithDetail() {
-        val fragment = supportFragmentManager.findFragmentByTag(
+        val target = supportFragmentManager.findFragmentByTag(
             SeriesContentScreen.FRAGMENT_TAG
-        )
+        ) ?: SeriesContentScreen.newInstance(intent.extras)
 
-        supportFragmentActivity = if (fragment is SeriesContentScreen)
-            fragment
-        else
-            SeriesContentScreen.newInstance(intent.extras)
-
-        val target = supportFragmentActivity as SupportFragment<*, *, *>
+        supportFragmentActivity = target as SupportFragment<*, *, *>
 
         supportFragmentManager.commit {
             //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)

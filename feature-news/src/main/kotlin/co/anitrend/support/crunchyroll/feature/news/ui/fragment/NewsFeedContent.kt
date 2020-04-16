@@ -28,6 +28,7 @@ import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.core.extensions.toBundle
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
+import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
 import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
@@ -150,5 +151,11 @@ class NewsFeedContent : SupportFragmentPagedList<CrunchyNews, CrunchyCorePresent
     override fun onDestroyView() {
         supportRecyclerView?.adapter = null
         super.onDestroyView()
+    }
+
+    companion object : IFragmentFactory<NewsFeedContent> {
+        override val FRAGMENT_TAG = NewsFeedContent::class.java.simpleName
+
+        override fun newInstance(bundle: Bundle?) = NewsFeedContent()
     }
 }

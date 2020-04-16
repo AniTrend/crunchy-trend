@@ -27,6 +27,7 @@ import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.feature.authentication.presenter.AuthPresenter
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
+import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
 import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLogoutBinding
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.LogoutViewModel
 import org.koin.android.ext.android.get
@@ -182,9 +183,9 @@ class FragmentLogout : SupportFragment<Boolean, CrunchyCorePresenter, Boolean>()
     }
 
 
-    companion object {
-        fun newInstance(): FragmentLogout {
-            return FragmentLogout()
-        }
+    companion object : IFragmentFactory<FragmentLogout> {
+        override val FRAGMENT_TAG = FragmentLogout::class.java.simpleName
+
+        override fun newInstance(bundle: Bundle?) = FragmentLogout()
     }
 }

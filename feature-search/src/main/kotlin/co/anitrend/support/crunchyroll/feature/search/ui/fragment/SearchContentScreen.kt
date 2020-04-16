@@ -28,6 +28,7 @@ import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
+import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.feature.search.R
 import co.anitrend.support.crunchyroll.feature.search.presenter.SeriesPresenter
@@ -189,9 +190,9 @@ class SearchContentScreen : SupportFragmentPagedList<CrunchySeries, SeriesPresen
         super.onDestroyView()
     }
 
-    companion object {
-        val FRAGMENT_TAG = SearchContentScreen::class.java.simpleName
+    companion object : IFragmentFactory<SearchContentScreen> {
+        override val FRAGMENT_TAG = SearchContentScreen::class.java.simpleName
 
-        fun newInstance() = SearchContentScreen()
+        override fun newInstance(bundle: Bundle?) = SearchContentScreen()
     }
 }

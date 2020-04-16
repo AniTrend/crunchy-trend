@@ -27,6 +27,7 @@ import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
+import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
 import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.feature.listing.viewmodel.MediaListingViewModel
@@ -66,8 +67,9 @@ class MediaFeedContent : SupportFragmentPagedList<CrunchyEpisodeFeed, CrunchyCor
                     val episodeFeed = data.second
                     val mediaPlayerPayload = NavigationTargets.MediaPlayer.Payload(
                         mediaId = episodeFeed?.id ?: 0,
-                        collectionName = null,
-                        episodeTitle = "Episode ${episodeFeed?.episodeNumber}: ${episodeFeed?.title}",
+                        collectionName = episodeFeed?.title,
+                        collectionThumbnail = null,
+                        episodeTitle = "Episode ${episodeFeed?.episodeNumber}: ${episodeFeed?.episodeTitle}",
                         episodeThumbnail = episodeFeed?.episodeThumbnail
                     )
                     NavigationTargets.MediaPlayer(
@@ -145,5 +147,11 @@ class MediaFeedContent : SupportFragmentPagedList<CrunchyEpisodeFeed, CrunchyCor
     override fun onDestroyView() {
         supportRecyclerView?.adapter = null
         super.onDestroyView()
+    }
+
+    companion object : IFragmentFactory<MediaFeedContent> {
+        override val FRAGMENT_TAG = MediaFeedContent::class.java.simpleName
+
+        override fun newInstance(bundle: Bundle?) = MediaFeedContent()
     }
 }

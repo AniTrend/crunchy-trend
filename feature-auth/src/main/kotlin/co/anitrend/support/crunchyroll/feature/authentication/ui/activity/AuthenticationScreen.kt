@@ -64,16 +64,29 @@ class AuthenticationScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        supportFragmentActivity = when (supportPresenter.supportPreference.isAuthenticated) {
-            true -> FragmentLogout.newInstance()
-            else -> FragmentLogin.newInstance()
+        val target = when (supportPresenter.supportPreference.isAuthenticated) {
+            true -> {
+                supportFragmentManager.findFragmentByTag(
+                    FragmentLogout.FRAGMENT_TAG
+                ) ?: FragmentLogout.newInstance()
+            }
+            else -> {
+                supportFragmentManager.findFragmentByTag(
+                    FragmentLogin.FRAGMENT_TAG
+                ) ?: FragmentLogin.newInstance()
+            }
+        }
+        
+        val tag = when (supportPresenter.supportPreference.isAuthenticated) {
+            true -> FragmentLogout.FRAGMENT_TAG
+            else -> FragmentLogin.FRAGMENT_TAG
         }
 
-        val targetFragment = supportFragmentActivity as SupportFragment<*, *, *>
+        supportFragmentActivity = target as SupportFragment<*, *, *>
 
         supportFragmentManager.commit {
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            replace(R.id.contentFrame, targetFragment, targetFragment.tag)
+            replace(R.id.contentFrame, target, tag)
         }
     }
 }

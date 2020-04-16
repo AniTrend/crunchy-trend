@@ -29,6 +29,7 @@ import co.anitrend.arch.extension.argument
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
+import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesInfoQuery
 import co.anitrend.support.crunchyroll.feature.series.common.ISwappable
@@ -226,13 +227,12 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
         )
     }
 
-    companion object {
-        const val FRAGMENT_TAG = "SeriesContentScreen"
+    companion object : IFragmentFactory<SeriesContentScreen> {
+        override val FRAGMENT_TAG = SeriesContentScreen::class.java.simpleName
 
-        fun newInstance(bundle: Bundle?): SeriesContentScreen {
-            return SeriesContentScreen().apply {
+        override fun newInstance(bundle: Bundle?) =
+            SeriesContentScreen().apply {
                 arguments = bundle
             }
-        }
     }
 }

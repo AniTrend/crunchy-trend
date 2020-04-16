@@ -28,7 +28,9 @@ import co.anitrend.arch.extension.empty
 import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
+import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
+import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
 import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
 import co.anitrend.support.crunchyroll.domain.collection.models.CrunchyCollectionQuery
 import co.anitrend.support.crunchyroll.feature.series.R
@@ -54,6 +56,7 @@ class SeriesCollectionScreen : SupportFragmentPagedList<CrunchyCollection, Serie
             object : ItemClickListener<CrunchyCollection> {
                 override fun onItemClick(target: View, data: Pair<Int, CrunchyCollection?>) {
                     val payload = NavigationTargets.Media.Payload(
+                        collectionThumbnail = data.second?.portraitImage,
                         collectionName = data.second?.name ?: String.empty(),
                         collectionId = data.second?.collectionId ?: 0
                     )
@@ -136,8 +139,8 @@ class SeriesCollectionScreen : SupportFragmentPagedList<CrunchyCollection, Serie
             )
         } ?: supportStateLayout?.setNetworkState(
             NetworkState.Error(
-                heading = "Invalid Parameter/s State",
-                message = "Invalid or missing payload"
+                heading = "Invalid fragment parameters ${Emote.Cry}",
+                message = "Invalid or missing payload, request cannot be processed"
             )
         )
     }
@@ -161,13 +164,12 @@ class SeriesCollectionScreen : SupportFragmentPagedList<CrunchyCollection, Serie
         super.onDestroyView()
     }
 
-    companion object {
-        const val FRAGMENT_TAG = "SeriesCollectionScreen"
+    companion object : IFragmentFactory<SeriesCollectionScreen> {
+        override val FRAGMENT_TAG = SeriesCollectionScreen::class.java.simpleName
 
-        fun newInstance(bundle: Bundle?): SeriesCollectionScreen {
-            return SeriesCollectionScreen().apply {
+        override fun newInstance(bundle: Bundle?)=
+            SeriesCollectionScreen().apply {
                 arguments = bundle
             }
-        }
     }
 }
