@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.cache.model
 
-enum class CacheRequest(alias: String) {
+enum class CacheRequest(val alias: String) {
     COLLECTION("collection"),
     EPISODE("episode"),
     LOCALE("locale"),

@@ -16,4 +16,8 @@
 
 <resources>
 
+    <string name="media_notification_channel">Downloads</string>
+    <string name="player_text_unavailable_video_tracks">No alternative video tracks available</string>
+    <string name="player_text_unavailable_audio_tracks">No alternative audio tracks available</string>
+    <string name="player_text_unavailable_caption_tracks">No alternative caption tracks available</string>
 </resources>

@@ -16,63 +16,50 @@
 
 package co.anitrend.support.crunchyroll.feature.player.component
 
-import co.anitrend.arch.extension.lifecycle.SupportLifecycle
 import com.devbrackets.android.exomedia.ExoMedia
 import com.google.android.exoplayer2.ext.okhttp.OkHttpDataSourceFactory
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.TransferListener
+import com.google.android.exoplayer2.upstream.cache.Cache
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
-import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
-import com.google.android.exoplayer2.upstream.cache.SimpleCache
 import okhttp3.OkHttpClient
 import timber.log.Timber
-import java.io.File
 import java.util.concurrent.TimeUnit
 
-class SourceFactoryProvider(cache: File?) : ExoMedia.DataSourceFactoryProvider, SupportLifecycle {
+class SourceFactoryProvider(
+    private val cache: Cache
+) : ExoMedia.DataSourceFactoryProvider {
 
-    // Adds a cache around the upstreamFactory
-    private val simpleCache = SimpleCache(
-        File(cache, "exo_video_cache"),
-        LeastRecentlyUsedCacheEvictor(
-            // Setting maximum storage cache to 2GB
-            1024L * 1024L * 2048L
-        )
-    )
+    private var cacheFactory: CacheDataSourceFactory? = null
 
-    override val moduleTag = SourceFactoryProvider::class.java.simpleName
-
-    private fun releaseResources() {
-        runCatching {
-            simpleCache.release()
-        }.exceptionOrNull()?.also {
-            Timber.tag(moduleTag).e(it)
-        }
-    }
+    private val moduleTag = SourceFactoryProvider::class.java.simpleName
 
     override fun provide(userAgent: String, listener: TransferListener?): DataSource.Factory {
-        val okHtpClient = OkHttpClient.Builder()
-            .readTimeout(10, TimeUnit.SECONDS)
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .retryOnConnectionFailure(true)
-            .build()
+        if (cacheFactory == null) {
+            val okHtpClient = OkHttpClient.Builder()
+                .readTimeout(10, TimeUnit.SECONDS)
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(true)
+                .build()
 
-        // Updates the network data source to use the OKHttp implementation
-        val upstreamFactory = OkHttpDataSourceFactory(okHtpClient, userAgent, listener)
+            // Updates the network data source to use the OKHttp implementation
+            val upstreamFactory = OkHttpDataSourceFactory(okHtpClient, userAgent, listener)
+            Timber.tag(moduleTag).d(
+                "Initializing cache factory backed by okhttp client. $userAgent"
+            )
 
-        return CacheDataSourceFactory(
-            simpleCache,
-            upstreamFactory,
-            CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
-        )
+            cacheFactory = CacheDataSourceFactory(
+                cache,
+                upstreamFactory,
+                CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
+            )
+        }
+
+        return cacheFactory!!
     }
 
-    /**
-     * Triggered when the [androidx.lifecycle.LifecycleOwner] reaches it's onPause state
-     */
-    override fun onPause() {
-        super.onPause()
-        releaseResources()
+    companion object {
+        const val CACHE_NAME = "exo_video_cache"
     }
 }

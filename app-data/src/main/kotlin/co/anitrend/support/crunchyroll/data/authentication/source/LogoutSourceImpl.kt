@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.data.authentication.source
 
 import androidx.lifecycle.LiveData
 import co.anitrend.arch.domain.entities.NetworkState
-import co.anitrend.arch.domain.entities.isSuccess
+import co.anitrend.arch.domain.extensions.isSuccess
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthenticationEndpoint
@@ -57,7 +57,7 @@ class LogoutSourceImpl(
         }
 
         launch {
-            val state = mapper(deferred)
+            val state = mapper(deferred, dispatchers.io)
             if (state.isSuccess()) {
                 clearDataSource()
                 with(settings) {

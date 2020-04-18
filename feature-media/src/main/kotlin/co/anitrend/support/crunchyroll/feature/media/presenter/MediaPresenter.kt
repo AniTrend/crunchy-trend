@@ -20,6 +20,8 @@ import android.content.Context
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
 import co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class MediaPresenter(
     context: Context,
@@ -29,5 +31,13 @@ class MediaPresenter(
     fun mediaDisplayName(entity: CrunchyMedia): String {
         val separator = "\u2022"
         return "${entity.episodeNumber} $separator ${entity.name}"
+    }
+
+    fun durationFormatted(duration: Int?) : String {
+        return duration?.let {
+            val minutes = TimeUnit.SECONDS.toMinutes(it.toLong())
+            val seconds = it - TimeUnit.MINUTES.toSeconds(minutes)
+            String.format(Locale.getDefault(), if (seconds < 10) "%d:0%d" else "%d:%d", minutes, seconds)
+        } ?: "00:00"
     }
 }

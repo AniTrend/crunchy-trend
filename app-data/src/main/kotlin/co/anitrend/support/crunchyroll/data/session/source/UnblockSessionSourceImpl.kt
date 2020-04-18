@@ -63,7 +63,7 @@ class UnblockSessionSourceImpl(
         Timber.tag(moduleTag).e("Core and login session may be null")
         networkState.postValue(
             NetworkState.Error(
-                heading = "Missing Session Credentials",
+                heading = "Missing session credentials",
                 message = "Operation failed due to an error in the application code"
             )
         )

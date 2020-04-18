@@ -18,6 +18,7 @@ package co.anitrend.support.crunchyroll.feature.media.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import co.anitrend.arch.domain.entities.NetworkState
@@ -26,6 +27,8 @@ import co.anitrend.arch.extension.argument
 import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
+import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
+import co.anitrend.support.crunchyroll.core.extensions.createDialog
 import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
@@ -35,6 +38,12 @@ import co.anitrend.support.crunchyroll.feature.media.R
 import co.anitrend.support.crunchyroll.feature.media.presenter.MediaPresenter
 import co.anitrend.support.crunchyroll.feature.media.ui.adapter.MediaAdapter
 import co.anitrend.support.crunchyroll.feature.media.viewmodel.MediaViewModel
+import com.afollestad.materialdialogs.LayoutMode
+import com.afollestad.materialdialogs.bottomsheets.BottomSheet
+import com.afollestad.materialdialogs.bottomsheets.setPeekHeight
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
+import kotlinx.android.synthetic.main.dialog_media.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -57,16 +66,48 @@ class MediaContent : SupportFragmentPagedList<CrunchyMedia, MediaPresenter, Page
 
                 override fun onItemClick(target: View, data: Pair<Int, CrunchyMedia?>) {
                     val media = data.second
-                    val mediaPlayerPayload = NavigationTargets.MediaPlayer.Payload(
-                        mediaId = media?.mediaId ?: 0,
-                        collectionName = payload?.collectionName,
-                        collectionThumbnail = payload?.collectionThumbnail,
-                        episodeTitle = "Episode ${media?.episodeNumber}: ${media?.name}",
-                        episodeThumbnail = media?.screenshotImage
-                    )
-                    NavigationTargets.MediaPlayer(
-                        target.context, mediaPlayerPayload
-                    )
+                    if (media != null) {
+                        activity?.createDialog(BottomSheet(LayoutMode.WRAP_CONTENT))
+                            ?.setPeekHeight(res = R.dimen.app_bar_height)
+                            ?.cornerRadius(res = R.dimen.xl_margin)
+                            ?.customView(
+                                viewRes = R.layout.dialog_media,
+                                horizontalPadding = false,
+                                noVerticalPadding = true,
+                                dialogWrapContent = true
+                            )
+                            ?.show {
+                                val view = getCustomView()
+                                view.dialog_media_duration.text = supportPresenter.durationFormatted(media.duration)
+                                view.dialog_media_title.text = media.name
+                                view.dialog_media_description.text = media.description
+                                view.dialog_media_image.setImageUrl(media.screenshotImage)
+                                view.dialog_media_image_container.setOnClickListener {
+                                    val mediaPlayerPayload = NavigationTargets.MediaPlayer.Payload(
+                                        mediaId = media.mediaId,
+                                        collectionName = payload?.collectionName,
+                                        collectionThumbnail = payload?.collectionThumbnail,
+                                        episodeTitle = "Episode ${media.episodeNumber}: ${media.name}",
+                                        episodeThumbnail = media.screenshotImage
+                                    )
+                                    NavigationTargets.MediaPlayer(
+                                        target.context, mediaPlayerPayload
+                                    )
+                                }
+                                view.dialog_media_download.setOnClickListener {
+                                    // TODO: Move download to the player screen?
+                                    Toast.makeText(
+                                        it.context,
+                                        "Not yet implemented.. ${Emote.Heart}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                // possible regression https://github.com/afollestad/material-dialogs/issues/1925
+                                /*cancelable(false)
+                                cancelOnTouchOutside(false)
+                                noAutoDismiss()*/
+                            }
+                    }
                 }
 
                 override fun onItemLongClick(target: View, data: Pair<Int, CrunchyMedia?>) {

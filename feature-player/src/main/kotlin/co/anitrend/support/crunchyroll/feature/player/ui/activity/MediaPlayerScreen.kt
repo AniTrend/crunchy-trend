@@ -20,14 +20,17 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import co.anitrend.arch.extension.getCompatColor
+import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.player.R
 import co.anitrend.support.crunchyroll.feature.player.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.player.ui.fragment.MediaStreamContent
 import com.devbrackets.android.exomedia.listener.VideoControlsVisibilityListener
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class MediaPlayerScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(),
@@ -91,8 +94,10 @@ class MediaPlayerScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(),
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        injectFeatureModules()
-        onUpdateUserInterface()
+        launch {
+            injectFeatureModules()
+            onUpdateUserInterface()
+        }
     }
 
     /**
@@ -103,14 +108,17 @@ class MediaPlayerScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(),
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        if (supportFragmentActivity == null) {
-            supportFragmentActivity = MediaStreamContent.newInstance(intent.extras).apply {
-                fullScreenListener = FullScreenListener()
-                supportFragmentManager.commit {
-                    //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                    replace(R.id.contentFrame, this@apply, tag)
-                }
-            }
+        val target = supportFragmentManager.findFragmentByTag(
+            MediaStreamContent.FRAGMENT_TAG
+        ) ?: MediaStreamContent.newInstance(intent.extras).apply {
+            fullScreenListener = FullScreenListener()
+        }
+
+        supportFragmentActivity = target as SupportFragment<*, *, *>
+
+        supportFragmentManager.commit {
+            //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            replace(R.id.contentFrame, target, MediaStreamContent.FRAGMENT_TAG)
         }
         initUiFlags()
     }

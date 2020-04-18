@@ -18,28 +18,25 @@ package co.anitrend.support.crunchyroll.data.api.helper
 
 import co.anitrend.arch.extension.LAZY_MODE_SYNCHRONIZED
 import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
-import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
+import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyCacheInterceptor
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyRequestInterceptor
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyResponseInterceptor
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.core.KoinComponent
-import org.koin.core.get
-import org.koin.core.parameter.DefinitionParameters
-import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.Scope
 import retrofit2.Retrofit
 import timber.log.Timber
-import java.util.HashMap
+import java.util.*
+import kotlin.collections.set
 
 internal object EndpointProvider {
 
-    private val module = javaClass.simpleName
-    private val retrofitInstances by lazy(LAZY_MODE_SYNCHRONIZED) {
-        HashMap<String, Retrofit>()
-    }
+    private val moduleTag = javaClass.simpleName
+    private val retrofitCache
+            by lazy(LAZY_MODE_SYNCHRONIZED) {
+                HashMap<String, Retrofit>()
+            }
 
     private fun provideOkHttpClient(endpointType: EndpointType, scope: Scope) : OkHttpClient {
         val builder = scope.get<OkHttpClient.Builder> {
@@ -53,21 +50,41 @@ internal object EndpointProvider {
             )
         }
 
-        if (endpointType == EndpointType.JSON) {
-            Timber.tag(module).d(
-                "Building additional interceptors for request: ${endpointType.name}"
-            )
-            builder.addInterceptor(
-                CrunchyRequestInterceptor(
-                    authentication = scope.get()
+        when (endpointType) {
+            EndpointType.JSON -> {
+                Timber.tag(moduleTag).d(
+                    """
+                        Adding request and response interceptors 
+                        for request: ${endpointType.name}
+                        """.trimIndent()
                 )
-            ).addInterceptor(
-                CrunchyResponseInterceptor(
-                    authentication = scope.get(),
-                    connectivityHelper = scope.get(),
-                    dispatchers = scope.get()
+                builder.addInterceptor(
+                    CrunchyRequestInterceptor(
+                        authentication = scope.get(),
+                        dispatcher = scope.get()
+                    )
+                ).addInterceptor(
+                    CrunchyResponseInterceptor(
+                        authentication = scope.get(),
+                        connectivity = scope.get(),
+                        dispatchers = scope.get()
+                    )
                 )
-            )
+            }
+            EndpointType.XML -> {
+                Timber.tag(moduleTag).d(
+                    """
+                        Adding cache interceptors 
+                        for request: ${endpointType.name}
+                        """.trimIndent()
+                )
+                builder.addInterceptor(
+                    CrunchyCacheInterceptor(
+                        connectivity = scope.get()
+                    )
+                )
+            }
+            else -> {}
         }
 
         return builder.build()
@@ -86,14 +103,14 @@ internal object EndpointProvider {
     }
 
     fun provideRetrofit(endpointType: EndpointType, scope: Scope): Retrofit {
-        return if (retrofitInstances.containsKey(endpointType.name)) {
-            Timber.tag(module).d("Using cached retrofit instance for endpoint: ${endpointType.name}")
-            retrofitInstances[endpointType.name]!!
+        return if (retrofitCache.containsKey(endpointType.name)) {
+            Timber.tag(moduleTag).d("Using cached retrofit instance for endpoint: ${endpointType.name}")
+            retrofitCache[endpointType.name]!!
         }
         else {
-            Timber.tag(module).d("Creating new retrofit instance for endpoint: ${endpointType.name}")
+            Timber.tag(moduleTag).d("Creating new retrofit instance for endpoint: ${endpointType.name}")
             val retrofit = createRetrofit(endpointType, scope)
-            retrofitInstances[endpointType.name] = retrofit
+            retrofitCache[endpointType.name] = retrofit
             retrofit
         }
     }

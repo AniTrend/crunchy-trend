@@ -22,6 +22,7 @@ import co.anitrend.arch.ui.extension.setUpWith
 import co.anitrend.arch.ui.recycler.SupportRecyclerView
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
+import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
 import co.anitrend.support.crunchyroll.feature.series.model.SeriesModel
 import co.anitrend.support.crunchyroll.feature.series.ui.adpter.SeriesGenreAdapter
 import com.google.android.flexbox.FlexDirection
@@ -32,6 +33,10 @@ class SeriesDetailPresenter(
     context: Context,
     settings: CrunchySettings
 ) : CrunchyCorePresenter(context, settings) {
+
+    fun titleWithSeason(model: CrunchyCollection) : String {
+        return "Season: ${model.season} $separator ${model.name}"
+    }
 
     fun publisherYear(model: LiveData<SeriesModel?>) : String {
         val seriesModel = model.value

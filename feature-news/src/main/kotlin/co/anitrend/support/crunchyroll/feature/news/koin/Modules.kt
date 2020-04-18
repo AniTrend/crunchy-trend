@@ -19,8 +19,7 @@ package co.anitrend.support.crunchyroll.feature.news.koin
 import android.graphics.drawable.Drawable
 import co.anitrend.support.crunchyroll.feature.news.R
 import co.anitrend.support.crunchyroll.feature.news.plugin.CrunchyTagPlugin
-import co.anitrend.support.crunchyroll.feature.news.plugin.decorator.EmbedTagHandler
-import co.anitrend.support.crunchyroll.feature.news.plugin.decorator.TagAlignmentHandler
+import co.anitrend.support.crunchyroll.feature.news.presenter.NewsPresenter
 import co.anitrend.support.crunchyroll.feature.news.viewmodel.NewsViewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
@@ -28,11 +27,13 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.target.Target
 import io.noties.markwon.Markwon
+import io.noties.markwon.SoftBreakAddsNewLinePlugin
 import io.noties.markwon.html.HtmlPlugin
 import io.noties.markwon.image.AsyncDrawable
 import io.noties.markwon.image.glide.GlideImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import org.koin.android.ext.koin.androidApplication
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
@@ -65,12 +66,19 @@ private val coreModule = module {
                     }
                 )
             )
+            .usePlugin(SoftBreakAddsNewLinePlugin.create())
             .build()
     }
 }
 
 private val presenterModule = module {
-
+    factory {
+        NewsPresenter(
+            context = androidContext(),
+            settings = get(),
+            dispatchers = get()
+        )
+    }
 }
 
 private val viewModelModule = module {

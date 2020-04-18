@@ -22,6 +22,7 @@ import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.arch.extension.systemServiceOf
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
+import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyCacheInterceptor
 import co.anitrend.support.crunchyroll.data.arch.database.CrunchyDatabase
 import co.anitrend.support.crunchyroll.data.arch.database.common.ICrunchyDatabase
 import co.anitrend.support.crunchyroll.data.authentication.koin.authenticationModules
@@ -33,6 +34,7 @@ import co.anitrend.support.crunchyroll.data.news.koin.newsModules
 import co.anitrend.support.crunchyroll.data.series.koin.seriesModules
 import co.anitrend.support.crunchyroll.data.session.koin.sessionModules
 import co.anitrend.support.crunchyroll.data.stream.koin.streamModules
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -61,6 +63,12 @@ private val networkModule = module {
     }
     factory { (interceptorLogLevel: HttpLoggingInterceptor.Level) ->
         val okHttpClientBuilder = OkHttpClient.Builder()
+            .cache(
+                Cache(
+                    androidContext().cacheDir,
+                    CrunchyCacheInterceptor.MAX_CACHE_SIZE
+                )
+            )
             .readTimeout(10, TimeUnit.SECONDS)
             .connectTimeout(10, TimeUnit.SECONDS)
             .retryOnConnectionFailure(true)

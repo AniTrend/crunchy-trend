@@ -16,11 +16,13 @@
 
 package co.anitrend.support.crunchyroll.core.koin
 
+import android.webkit.WebView
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.isLowRamDevice
 import co.anitrend.arch.extension.util.contract.ISupportDateHelper
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.core.R
+import co.anitrend.support.crunchyroll.core.model.UserAgent
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
 import co.anitrend.support.crunchyroll.core.util.config.ConfigurationUtil
@@ -66,6 +68,13 @@ private val coreModule = module {
     }
     single {
         SupportDispatchers()
+    }
+    single {
+        UserAgent(
+            WebView(
+                androidContext()
+            ).settings.userAgentString
+        )
     }
 }
 

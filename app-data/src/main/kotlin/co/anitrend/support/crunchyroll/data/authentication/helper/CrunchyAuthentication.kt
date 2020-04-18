@@ -18,6 +18,8 @@ package co.anitrend.support.crunchyroll.data.authentication.helper
 
 import co.anitrend.arch.data.auth.contract.ISupportAuthentication
 import co.anitrend.arch.extension.network.SupportConnectivity
+import co.anitrend.arch.extension.util.time.SupportDateTimeUnit
+import co.anitrend.arch.extension.util.time.SupportTimeHelper
 import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
@@ -51,11 +53,18 @@ class CrunchyAuthentication(
     override val isAuthenticated: Boolean
         get() = settings.isAuthenticated
 
+    private fun hasSessionExpired(sessionExpiryTime: Long?): Boolean {
+        val currentTime = System.currentTimeMillis()
+        return currentTime > (sessionExpiryTime ?: 0)
+    }
+
+    @Synchronized
     private fun getUnblockSession(forceRefresh: Boolean = false): Session? {
         val unblockSession = sessionDao.findBySessionId(
             settings.sessionId
         )
-        val unblock = if (forceRefresh || unblockSession == null) {
+        val unblock = if (forceRefresh) {
+            val expired = hasSessionExpired(unblockSession?.expiresAt)
             val session = unblockSessionUseCase()
             Timber.tag(moduleTag).d(
                 "Refreshed unblock session from remote source with id: ${session?.sessionId}"
@@ -77,11 +86,12 @@ class CrunchyAuthentication(
         return unblock
     }
 
+    @Synchronized
     private fun getCoreSession(forceRefresh: Boolean = false): Session? {
         val coreSession = sessionCoreDao.findBySessionId(
             settings.sessionId
         )
-        val core = if (forceRefresh || coreSession == null) {
+        val core = if (forceRefresh) {
             val session = coreSessionUseCase()
             Timber.tag(moduleTag).d(
                 "Refreshed core session from remote source with id: ${session?.sessionId}"
@@ -169,10 +179,12 @@ class CrunchyAuthentication(
             if (connectivityHelper.isConnected) {
                 settings.authenticatedUserId = IAuthenticationSettings.INVALID_USER_ID
                 settings.isAuthenticated = false
+                settings.sessionId = null
                 sessionCoreDao.clearTable()
                 sessionDao.clearTable()
-                Timber.tag(moduleTag).e(
-                    "All sessions are being invalidated and auth states are being reset!"
+                Timber.tag(moduleTag).e("""
+                    All sessions have been invalidated and authentication states have been reset!
+                    """.trimIndent()
                 )
             }
         }

@@ -24,6 +24,7 @@ import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.capitalizeWords
 import co.anitrend.arch.extension.network.SupportConnectivity
+import co.anitrend.support.crunchyroll.data.arch.extension.fetchBodyWithRetry
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import kotlinx.coroutines.Deferred
@@ -40,32 +41,53 @@ internal class CrunchyController<S, D> private constructor(
 
     private val moduleTag: String = javaClass.simpleName
 
-    private suspend fun connectedRun(
-        block: suspend () -> D?,
+    private inline fun connectedRun(
+        block: () -> D?,
         networkState: MutableLiveData<NetworkState>
     ): D? {
-        if (supportConnectivity.isConnected)
-            return block()
-
-        networkState.postValue(
-            NetworkState.Error(
-                heading = "No Internet Connection",
-                message = "Please check your internet connection"
+        if (supportConnectivity.isConnected) {
+            return runCatching{
+                block()
+            }.getOrElse {
+                it.printStackTrace()
+                networkState.postValue(
+                    NetworkState.Error(
+                        heading = "Unexpected error encountered \uD83E\uDD2D",
+                        message = it.message
+                    )
+                )
+                null
+            }
+        }
+        else {
+            networkState.postValue(
+                NetworkState.Error(
+                    heading = "No internet connection detected \uD83E\uDD2D",
+                    message = "Please check your internet connection"
+                )
             )
-        )
+        }
         return null
     }
 
-    private suspend fun connectedRun(
-        block: suspend () -> Unit,
+    private inline fun connectedRun(
+        block: () -> Unit,
         pagingRequestHelper: PagingRequestHelper.Request.Callback
     ) {
-        if (supportConnectivity.isConnected)
-            block()
-        else
+        if (supportConnectivity.isConnected) {
+            runCatching {
+                block()
+            }.exceptionOrNull()?.also { e ->
+                e.printStackTrace()
+                Timber.tag(moduleTag).e(e)
+                pagingRequestHelper.recordFailure(e)
+            }
+        }
+        else {
             pagingRequestHelper.recordFailure(
                 Throwable("Please check your internet connection")
             )
+        }
     }
 
     /**
@@ -82,49 +104,25 @@ internal class CrunchyController<S, D> private constructor(
     ): D? {
         return connectedRun({
             networkState.postValue(NetworkState.Loading)
-            val result = runCatching {
-                val response = withContext(dispatchers.io) {
-                    resource.await()
-                }
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody?.error == false) {
-                        val result = if (responseBody.data != null) {
-                            val mapped = responseMapper.onResponseMapFrom(responseBody.data)
-                            withContext(dispatchers.io) {
-                                responseMapper.onResponseDatabaseInsert(mapped)
-                            }
-                            mapped
-                        } else null
-                        networkState.postValue(NetworkState.Success)
-                        result
-                    } else {
-                        Timber.tag(moduleTag).e("${responseBody?.message} | Status: ${responseBody?.code}")
-                        networkState.postValue(
-                            NetworkState.Error(
-                                heading = responseBody?.code?.name.capitalizeWords(),
-                                message = responseBody?.message
-                            )
-                        )
-                        null
+            val response = resource.fetchBodyWithRetry(dispatchers.io)
+            if (!response.error) {
+                val result = if (response.data != null) {
+                    val mapped = responseMapper.onResponseMapFrom(response.data)
+                    withContext(dispatchers.io) {
+                        responseMapper.onResponseDatabaseInsert(mapped)
                     }
-                } else {
-                    networkState.postValue(
-                        NetworkState.Error(
-                            heading = "Server Request/Response Error",
-                            message = response.message()
-                        )
-                    )
-                    null
-                }
-            }
-
-            result.getOrElse {
-                it.printStackTrace()
+                    mapped
+                } else null
+                networkState.postValue(NetworkState.Success)
+                result
+            } else {
+                Timber.tag(moduleTag).e(
+                    "${response.message} | Status: ${response.code}"
+                )
                 networkState.postValue(
                     NetworkState.Error(
-                        heading = "Internal Application Error",
-                        message = it.message
+                        heading = response.code.name.capitalizeWords(),
+                        message = response.message
                     )
                 )
                 null
@@ -143,40 +141,21 @@ internal class CrunchyController<S, D> private constructor(
         pagingRequestHelper: PagingRequestHelper.Request.Callback
     ) {
         connectedRun({
-            val result = runCatching {
-                val response = withContext(dispatchers.io) {
-                    resource.await()
-                }
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody != null) {
-                        if (!responseBody.error) {
-                            responseBody.data?.apply {
-                                val mapped = responseMapper.onResponseMapFrom(this)
-                                withContext(dispatchers.io) {
-                                    responseMapper.onResponseDatabaseInsert(mapped)
-                                }
-                            }
-                        } else {
-                            Timber.tag(moduleTag).e("${responseBody.message} | Status: ${responseBody.code}")
-                            pagingRequestHelper.recordFailure(
-                                Throwable(responseBody.message ?: "Unknown error occurred")
-                            )
-                        }
+            val response = resource.fetchBodyWithRetry(dispatchers.io)
+            if (!response.error) {
+                response.data?.apply {
+                    val mapped = responseMapper.onResponseMapFrom(this)
+                    withContext(dispatchers.io) {
+                        responseMapper.onResponseDatabaseInsert(mapped)
                     }
-                    pagingRequestHelper.recordSuccess()
-                } else {
-                    pagingRequestHelper.recordFailure(
-                        Throwable(response.message())
-                    )
                 }
+            } else {
+                Timber.tag(moduleTag).e("${response.message} | Status: ${response.code}")
+                pagingRequestHelper.recordFailure(
+                    Throwable(response.message ?: "Unexpected error occurred")
+                )
             }
-
-            result.getOrElse {
-                it.printStackTrace()
-                Timber.tag(moduleTag).e(it)
-                pagingRequestHelper.recordFailure(it)
-            }
+            pagingRequestHelper.recordSuccess()
         }, pagingRequestHelper)
     }
 

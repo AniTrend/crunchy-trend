@@ -27,21 +27,33 @@ apply from: "../gradle/gradle-common-dependencies.gradle"
 
 ext {
     okHttp = '4.5.0'
-    exoMedia = '4.3.0'
+    //exoMedia = '4.3.0'
+    media = '1.1.0'
+    exoMedia = 'dev~5.0-SNAPSHOT'
     exoPlaylist = '2.0.1'
-    exoMediaPlayer = '2.9.6'
+    exoMediaPlayer = '2.10.7'
 }
 
 dependencies {
     implementation("com.squareup.okhttp3:okhttp:$okHttp")
+
+    implementation("androidx.media:media:$media")
+
     /** Exo media */
-    implementation("com.devbrackets.android:exomedia:$exoMedia")
+    implementation("com.github.brianwernick:ExoMedia:$exoMedia")
 
     /** Playlist support */
-    implementation("com.devbrackets.android:playlistcore:$exoPlaylist")
+    implementation("com.github.brianwernick:PlaylistCore:$exoPlaylist")
 
     /** Exo player extensions */
+    implementation("com.google.android.exoplayer:extension-workmanager:$exoMediaPlayer")
     implementation("com.google.android.exoplayer:extension-okhttp:$exoMediaPlayer")
+
     /** Adding exo player hls since we use media formatter in exo-media */
     implementation("com.google.android.exoplayer:exoplayer-hls:$exoMediaPlayer")
+
+    /** Adding ui module */
+    implementation("com.google.android.exoplayer:exoplayer-ui:$exoMediaPlayer")
+
+    implementation("com.afollestad.material-dialogs:bottomsheets:$materialDialogs")
 }

@@ -50,19 +50,19 @@
             <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{entity.name}"
+                    android:text="@{presenter.titleWithSeason(entity)}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                     tools:text="@sample/collection_list.json/data/name"/>
 
             <Space
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="@dimen/lg_margin" />
 
             <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{entity.description}"
-                    android:maxLines="3"
+                    android:singleLine="true"
                     android:ellipsize="end"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                     tools:text="@sample/collection_list.json/data/description"/>

@@ -4,7 +4,7 @@ buildscript {
     apply from: "./gradle/gradle-ext-versions.gradle"
 
     ext {
-        buildTools = '3.6.2'
+        buildTools = '3.6.3'
     }
 
     repositories {

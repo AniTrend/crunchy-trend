@@ -18,12 +18,44 @@ package co.anitrend.support.crunchyroll.data.authentication.mapper
 
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.capitalizeWords
+import co.anitrend.support.crunchyroll.data.arch.extension.fetchBodyWithRetry
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Deferred
 import retrofit2.Response
 
 class LogoutResponseMapper : CrunchyMapper<Any?, Any?>() {
+
+    /**
+     * Response handler for coroutine contexts which need to observe [NetworkState]
+     *
+     * @param resource awaiting execution
+     */
+    suspend operator fun invoke(
+        resource: Deferred<Response<CrunchyContainer<Any>>>,
+        dispatcher: CoroutineDispatcher
+    ): NetworkState {
+        val result = runCatching {
+            val response = resource.fetchBodyWithRetry(dispatcher)
+            return if (!response.error) {
+                NetworkState.Success
+            } else {
+                NetworkState.Error(
+                    heading = response.code.name.capitalizeWords(),
+                    message = response.message
+                )
+            }
+        }
+
+        return result.getOrElse {
+            it.printStackTrace()
+            NetworkState.Error(
+                heading = "Error preventing successful sign out",
+                message = it.message
+            )
+        }
+    }
 
     /**
      * Creates mapped objects and handles the database operations which may be required to map various objects,
@@ -33,7 +65,7 @@ class LogoutResponseMapper : CrunchyMapper<Any?, Any?>() {
      * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
      */
     override suspend fun onResponseMapFrom(source: Any?): Any? {
-        return null
+        TODO("Not yet implemented")
     }
 
     /**
@@ -43,41 +75,6 @@ class LogoutResponseMapper : CrunchyMapper<Any?, Any?>() {
      * @param mappedData mapped object from [onResponseMapFrom] to insert into the database
      */
     override suspend fun onResponseDatabaseInsert(mappedData: Any?) {
-
-    }
-
-    /**
-     * Response handler for coroutine contexts which need to observe [NetworkState]
-     *
-     * @param resource awaiting execution
-     */
-    suspend operator fun invoke(resource: Deferred<Response<CrunchyContainer<Any>>>): NetworkState {
-        val result = runCatching {
-            val response = resource.await()
-            if (response.isSuccessful) {
-                val responseBody = response.body()
-                return if (responseBody?.error == false) {
-                    NetworkState.Success
-                } else {
-                    NetworkState.Error(
-                        heading = responseBody?.code?.name.capitalizeWords(),
-                        message = responseBody?.message
-                    )
-                }
-            } else {
-                return NetworkState.Error(
-                    heading = "Unable to Sign Out",
-                    message = response.message()
-                )
-            }
-        }
-
-        return result.getOrElse {
-            it.printStackTrace()
-            NetworkState.Error(
-                heading = "Internal Application Error",
-                message = it.message
-            )
-        }
+        TODO("Not yet implemented")
     }
 }

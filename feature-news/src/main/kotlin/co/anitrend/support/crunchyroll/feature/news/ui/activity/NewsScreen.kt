@@ -21,25 +21,32 @@ import android.os.Bundle
 import android.text.util.Linkify
 import androidx.core.app.ShareCompat
 import androidx.core.net.toUri
+import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.extra
 import co.anitrend.arch.extension.startNewActivity
+import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import co.anitrend.support.crunchyroll.feature.news.R
 import co.anitrend.support.crunchyroll.feature.news.koin.injectFeatureModules
+import co.anitrend.support.crunchyroll.feature.news.presenter.NewsPresenter
 import io.noties.markwon.Markwon
 import kotlinx.android.synthetic.main.news_screen.*
 import kotlinx.android.synthetic.main.news_screen_content.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import org.koin.android.ext.android.inject
 
 class NewsScreen : CrunchyActivity<CrunchyNews, CrunchyCorePresenter>() {
 
     private val markwon by inject<Markwon>()
+    private val stateConfiguration
+            by inject<SupportStateLayoutConfiguration>()
 
-    override val supportPresenter by inject<CrunchyCorePresenter>()
+    override val supportPresenter by inject<NewsPresenter>()
 
     private val payload
             by extra<NavigationTargets.News.Payload>(
@@ -50,6 +57,7 @@ class NewsScreen : CrunchyActivity<CrunchyNews, CrunchyCorePresenter>() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.news_screen)
         setSupportActionBar(bottomAppBar)
+        stateLayout.stateConfiguration = stateConfiguration
     }
 
     override fun initializeComponents(savedInstanceState: Bundle?) {
@@ -80,15 +88,10 @@ class NewsScreen : CrunchyActivity<CrunchyNews, CrunchyCorePresenter>() {
     }
 
     override fun onUpdateUserInterface() {
-        val content = """
-            <p><h3>${payload?.title}</h3></p>
-            <p><h5>${payload?.subTitle}</h5></p>
-            <p></p>
-            <p></p>
-        """.trimIndent()
-        markwon.setMarkdown(
-            mediaNewsContent,
-            "$content${payload?.content ?: "No description available"}"
-        )
+        launch {
+            val html = supportPresenter.createCustomHtml(payload)
+            stateLayout?.setNetworkState(NetworkState.Success)
+            markwon.setMarkdown(mediaNewsContent, html)
+        }
     }
 }

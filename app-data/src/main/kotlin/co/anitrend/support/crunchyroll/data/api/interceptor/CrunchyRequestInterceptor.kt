@@ -16,38 +16,57 @@
 
 package co.anitrend.support.crunchyroll.data.api.interceptor
 
+import co.anitrend.arch.extension.SupportDispatchers
+import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.authentication.helper.CrunchyAuthentication
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
 import timber.log.Timber
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 /**
  * Authentication interceptor adds query parameters dynamically when the application is authenticated.
  * The context in which an [Interceptor] may be  parallel or asynchronous depending
  * on the dispatching caller, as such take care to assure thread safety
  */
-class CrunchyRequestInterceptor(
-    private val authentication: CrunchyAuthentication
+internal class CrunchyRequestInterceptor(
+    private val authentication: CrunchyAuthentication,
+    private val dispatcher: SupportDispatchers
 ) : Interceptor {
 
+    private val moduleTag =  CrunchyRequestInterceptor::class.java.simpleName
     private val regex = Regex("start_session|login|logout")
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val original = chain.request()
-        val requestBuilder = runBlocking(Dispatchers.IO) {
+        val requestBuilder = runBlocking(dispatcher.io) {
             if (!original.url.pathSegments.last().contains(regex)) {
-                Timber.d("Injecting query parameters with client interceptor")
+                Timber.tag(moduleTag).d("""
+                    Injecting authentication query parameters on host: ${original.url.host}
+                    """.trimIndent()
+                )
                 authentication.injectQueryParameters(original)
             }
             else {
-                Timber.d("Skipping client interceptor for session endpoints")
-                original.newBuilder()
+                Timber.tag(moduleTag).d("""
+                    Skipping client query interceptor for host: ${original.url.host}. 
+                    Adding cache-control instead..
+                    """.trimIndent()
+                )
+                original.newBuilder().header(
+                    "Cache-Control",
+                    "public, max-age=$MAX_CACHE_AGE"
+                )
+
             }
         }
         return chain.proceed(requestBuilder.build())
+    }
+
+    companion object {
+        private val MAX_CACHE_AGE = TimeUnit.MINUTES.toSeconds(15)
     }
 }

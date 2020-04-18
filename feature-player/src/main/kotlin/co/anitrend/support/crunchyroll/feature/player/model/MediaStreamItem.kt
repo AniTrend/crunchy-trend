@@ -16,7 +16,49 @@
 
 package co.anitrend.support.crunchyroll.feature.player.model
 
-class MediaStreamItem(
+import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
+import co.anitrend.support.crunchyroll.domain.stream.enums.CrunchyStreamQuality
+import com.devbrackets.android.playlistcore.api.PlaylistItem
+import com.devbrackets.android.playlistcore.manager.BasePlaylistManager
 
-) {
+class MediaStreamItem(
+    val mediaTitle: String?,
+    val mediaSubTitle: String?,
+    val mediaStreamQuality: CrunchyStreamQuality,
+    val mediaPlayHead: Int,
+    override val album: String?,
+    override val artist: String?,
+    override val artworkUrl: String?,
+    override val downloaded: Boolean,
+    override val downloadedMediaUri: String?,
+    override val id: Long,
+    override val mediaType: Int,
+    override val mediaUrl: String?,
+    override val thumbnailUrl: String?,
+    override val title: String?
+) : PlaylistItem {
+
+    companion object : ISupportMapperHelper<MediaStreamWithExtras, MediaStreamItem> {
+        /**
+         * Transforms the the [source] to the target type
+         */
+        override fun transform(source: MediaStreamWithExtras): MediaStreamItem {
+            return MediaStreamItem(
+                mediaTitle = source.mediaTitle,
+                mediaSubTitle = source.mediaSubTitle,
+                mediaStreamQuality = source.mediaStream.quality,
+                mediaPlayHead = source.mediaStream.playHead,
+                album = null,
+                artist = null,
+                artworkUrl = source.mediaArtWorkThumbnail,
+                downloaded = false,
+                downloadedMediaUri = null,
+                id = 0,
+                mediaType = BasePlaylistManager.VIDEO,
+                mediaUrl = source.mediaStream.url,
+                thumbnailUrl = source.mediaThumbnail,
+                title = source.mediaTitle
+            )
+        }
+    }
 }

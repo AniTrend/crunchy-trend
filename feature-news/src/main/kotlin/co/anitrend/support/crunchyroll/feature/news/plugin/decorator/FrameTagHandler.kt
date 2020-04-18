@@ -34,7 +34,7 @@ import org.commonmark.node.Text
  *
  * <iframe src="https://www.youtube.com/embed/luWcue3t2OU" width="640" height="360" />
  */
-class EmbedTagHandler private constructor() : SimpleTagHandler() {
+class FrameTagHandler private constructor() : SimpleTagHandler() {
 
     private fun getVideoId(src: String) = src.split('/').last()
 
@@ -94,6 +94,6 @@ class EmbedTagHandler private constructor() : SimpleTagHandler() {
     override fun supportedTags() = listOf("iframe")
 
     companion object {
-        fun create() = EmbedTagHandler()
+        fun create() = FrameTagHandler()
     }
 }

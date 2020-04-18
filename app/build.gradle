@@ -36,6 +36,7 @@ android {
 ext {
     leakCanary = '2.2'
     debugDB = '1.0.6'
+    treessence = '0.3.2'
 }
 
 dependencies {
@@ -69,37 +70,39 @@ dependencies {
     implementation project(':feature-splash')
 
     /** Material Design */
-    implementation "com.google.android.material:material:$material"
+    implementation("com.google.android.material:material:$material")
 
     /** Architecture Components */
-    implementation "androidx.core:core-ktx:$ktx"
-    implementation "androidx.fragment:fragment-ktx:$fragmentKtx"
-    implementation "androidx.work:work-runtime-ktx:$workerKtx"
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleX"
+    implementation("androidx.core:core-ktx:$ktx")
+    implementation("androidx.fragment:fragment-ktx:$fragmentKtx")
+    implementation("androidx.work:work-runtime-ktx:$workerKtx")
+    implementation("androidx.lifecycle:lifecycle-extensions:$lifecycleX")
 
-    implementation "androidx.constraintlayout:constraintlayout:$constraintX"
-    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipeRefreshX"
+    implementation("androidx.constraintlayout:constraintlayout:$constraintX")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:$swipeRefreshX")
 
     /** Material Dialogs */
-    implementation "com.afollestad.material-dialogs:core:$materialDialogs"
-    implementation "com.afollestad.material-dialogs:input:$materialDialogs"
-    implementation "com.afollestad.material-dialogs:lifecycle:$materialDialogs"
-    implementation "com.afollestad.material-dialogs:bottomsheets:$materialDialogs"
+    implementation("com.afollestad.material-dialogs:core:$materialDialogs")
+    implementation("com.afollestad.material-dialogs:input:$materialDialogs")
+    implementation("com.afollestad.material-dialogs:lifecycle:$materialDialogs")
+    implementation("com.afollestad.material-dialogs:bottomsheets:$materialDialogs")
 
     /** Smart Tab Layout */
-    implementation "com.ogaclejapan.smarttablayout:library:$smartTab"
+    implementation("com.ogaclejapan.smarttablayout:library:$smartTab")
 
     /** Tap Target Prompt */
-    implementation "uk.co.samuelwall:material-tap-target-prompt:$tapTarget"
+    implementation("uk.co.samuelwall:material-tap-target-prompt:$tapTarget")
+    implementation("fr.bipi.treessence:treessence:$treessence")
 
     /** Testing-only dependencies */
-    testImplementation "org.koin:koin-test:$koin"
+    testImplementation("org.koin:koin-test:$koin")
 
     // debugImplementation because LeakCanary should only run in debug builds.
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanary"
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:$leakCanary")
     debugImplementation("com.amitshekhar.android:debug-db:$debugDB")
 }
 
 repositories {
+    maven { url "https://dl.bintray.com/bastienpaulfr/maven" }
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
 }
