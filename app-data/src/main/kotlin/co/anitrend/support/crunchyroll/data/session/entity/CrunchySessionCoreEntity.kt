@@ -26,4 +26,10 @@ data class CrunchySessionCoreEntity(
     override val sessionId: String,
     override val deviceType: String,
     override val deviceId: String
-) : ICrunchySessionCoreEntity
+) : ICrunchySessionCoreEntity {
+
+    /**
+     * Returns a string representation of the object.
+     */
+    override fun toString() = "sessionId: $sessionId"
+}
