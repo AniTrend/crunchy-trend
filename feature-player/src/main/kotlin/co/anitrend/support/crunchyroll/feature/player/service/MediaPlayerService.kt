@@ -17,8 +17,8 @@
 package co.anitrend.support.crunchyroll.feature.player.service
 
 import co.anitrend.support.crunchyroll.feature.player.component.MediaImageProvider
-import co.anitrend.support.crunchyroll.feature.player.model.MediaStreamItem
-import co.anitrend.support.crunchyroll.feature.player.plugin.PlaylistManagerPlugin
+import co.anitrend.support.crunchyroll.feature.player.model.stream.MediaStreamItem
+import co.anitrend.support.crunchyroll.feature.player.plugin.PlaylistManagerPluginImpl
 import com.devbrackets.android.playlistcore.components.playlisthandler.DefaultPlaylistHandler
 import com.devbrackets.android.playlistcore.components.playlisthandler.PlaylistHandler
 import com.devbrackets.android.playlistcore.service.BasePlaylistService
@@ -30,7 +30,7 @@ import timber.log.Timber
  * A simple service that extends [BasePlaylistService] in order to provide
  * the application specific information required.
  */
-class MediaPlayerService : BasePlaylistService<MediaStreamItem, PlaylistManagerPlugin>(), KoinComponent {
+class MediaPlayerService : BasePlaylistService<MediaStreamItem, PlaylistManagerPluginImpl>(), KoinComponent {
 
     /**
      * Links the [BasePlaylistManager] that contains the information for playback
@@ -40,7 +40,7 @@ class MediaPlayerService : BasePlaylistService<MediaStreamItem, PlaylistManagerP
      * for playlist changes, however as long as the change isn't breaking (e.g. cleared playlist)
      * then nothing additional needs to be performed
      */
-    override val playlistManager by inject<PlaylistManagerPlugin>()
+    override val playlistManager by inject<PlaylistManagerPluginImpl>()
 
     override fun newPlaylistHandler(): PlaylistHandler<MediaStreamItem> {
         val imageProvider = MediaImageProvider(applicationContext) {

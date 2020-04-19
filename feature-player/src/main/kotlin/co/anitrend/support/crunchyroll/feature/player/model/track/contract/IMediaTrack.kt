@@ -14,14 +14,17 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.feature.player.model
+package co.anitrend.support.crunchyroll.feature.player.model.track.contract
 
-import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
+import com.devbrackets.android.exomedia.ExoMedia
 
-data class MediaStreamWithExtras(
-    val mediaTitle: String?,
-    val mediaSubTitle: String?,
-    val mediaThumbnail: String?,
-    val mediaArtWorkThumbnail: String?,
-    val mediaStream: MediaStream
-)
+/**
+ * Contract for selectable tracks
+ */
+interface IMediaTrack {
+    val title: CharSequence
+    val trackIndex: Short
+    val groupIndex: Short
+    val renderType: ExoMedia.RendererType
+    var selected: Boolean
+}

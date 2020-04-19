@@ -58,8 +58,4 @@ class SourceFactoryProvider(
 
         return cacheFactory!!
     }
-
-    companion object {
-        const val CACHE_NAME = "exo_video_cache"
-    }
 }

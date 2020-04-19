@@ -22,6 +22,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.whenResumed
 import androidx.lifecycle.whenStarted
 import co.anitrend.arch.domain.entities.NetworkState
@@ -29,6 +30,7 @@ import co.anitrend.arch.extension.*
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.extensions.createDialog
 import co.anitrend.support.crunchyroll.core.model.Emote
+import co.anitrend.support.crunchyroll.core.model.UserAgent
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
@@ -36,40 +38,29 @@ import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 import co.anitrend.support.crunchyroll.feature.player.R
 import co.anitrend.support.crunchyroll.feature.player.component.SourceFactoryProvider
-import co.anitrend.support.crunchyroll.feature.player.model.MediaStreamItem
-import co.anitrend.support.crunchyroll.feature.player.model.MediaStreamWithExtras
-import co.anitrend.support.crunchyroll.core.model.UserAgent
-import co.anitrend.support.crunchyroll.feature.player.model.MediaTrack
+import co.anitrend.support.crunchyroll.feature.player.model.track.contract.IMediaTrack
 import co.anitrend.support.crunchyroll.feature.player.plugin.MediaPluginImpl
-import co.anitrend.support.crunchyroll.feature.player.plugin.PlaylistManagerPlugin
+import co.anitrend.support.crunchyroll.feature.player.plugin.PlaylistManagerPluginImpl
 import co.anitrend.support.crunchyroll.feature.player.presenter.StreamPresenter
 import co.anitrend.support.crunchyroll.feature.player.viewmodel.MediaStreamViewModel
-import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.bottomsheets.BottomSheet
-import com.afollestad.materialdialogs.list.listItems
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
-import com.devbrackets.android.exomedia.ExoMedia
 import com.devbrackets.android.exomedia.listener.VideoControlsSeekListener
 import com.devbrackets.android.exomedia.listener.VideoControlsVisibilityListener
 import com.devbrackets.android.exomedia.ui.widget.VideoControls
 import com.devbrackets.android.exomedia.ui.widget.VideoView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
-import com.google.android.exoplayer2.util.EventLogger
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_media_player.*
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
-import java.util.ArrayList
 
 
 class MediaStreamContent(
     override var inflateLayout: Int = R.layout.fragment_media_player
-) : SupportFragment<MediaStream?, CrunchyCorePresenter, List<MediaStream>?>(),
-    VideoControlsSeekListener {
+) : SupportFragment<MediaStream?, CrunchyCorePresenter, List<MediaStream>?>() {
 
     private val qualityButton by lazy(LAZY_MODE_UNSAFE) {
         AppCompatImageButton(context).apply {
@@ -83,7 +74,7 @@ class MediaStreamContent(
             isClickable = true
             isFocusable = true
             background = context.getDrawableAttr(android.R.attr.selectableItemBackground)
-            setOnClickListener { showQualityMenu() }
+            setOnClickListener { showVideoTracksMenu() }
         }
     }
     private val audioButton by lazy(LAZY_MODE_UNSAFE) {
@@ -101,7 +92,6 @@ class MediaStreamContent(
             setOnClickListener { showAudioMenu() }
         }
     }
-
     private val captionButton by lazy(LAZY_MODE_UNSAFE) {
         AppCompatImageButton(context).apply {
             setBackgroundResource(android.R.color.transparent)
@@ -120,6 +110,7 @@ class MediaStreamContent(
 
     private val mediaPlugin by lazy(LAZY_MODE_UNSAFE) {
         MediaPluginImpl(
+            lifecycleScope,
             exoMediaVideoView,
             get<UserAgent>().identifier,
             DefaultBandwidthMeter.Builder(context).build(),
@@ -133,7 +124,7 @@ class MediaStreamContent(
             )
 
     private val sourceFactoryProvider by inject<SourceFactoryProvider>()
-    private val playlistManager by inject<PlaylistManagerPlugin>()
+    private val playlistManager by inject<PlaylistManagerPluginImpl>()
 
     private var controlsVisibilityListener: VideoControlsVisibilityListener? = null
 
@@ -151,122 +142,41 @@ class MediaStreamContent(
      */
     override val supportViewModel by viewModel<MediaStreamViewModel>()
 
-    private fun showQualityMenu() {
-        val renderType = ExoMedia.RendererType.VIDEO
-        val videoTrackGroupArray =
-            exoMediaVideoView.availableTracks?.get(renderType) ?: return
-        if (videoTrackGroupArray.isEmpty) {
-            Snackbar.make(
-                exoMediaVideoView,
-                R.string.player_text_unavailable_video_tracks,
-                Snackbar.LENGTH_SHORT
-            ).show()
+    private fun showDialogUsing(message: Int, mediaTracks: List<IMediaTrack>?) {
+        if (mediaTracks.isNullOrEmpty()) {
+            Snackbar.make(exoMediaVideoView, message, Snackbar.LENGTH_SHORT).show()
             return
         }
 
-        val selectableTracks = ArrayList<MediaTrack>(5)
-        var selectedTrack: MediaTrack? = null
-
-        for (groupIndex in 0 until videoTrackGroupArray.length) {
-            val selectedIndex = exoMediaVideoView.getSelectedTrackIndex(renderType, groupIndex)
-            Timber.tag(moduleTag).d(
-                "Quality selected track: $groupIndex | $selectedIndex"
-            )
-            val trackGroup = videoTrackGroupArray.get(groupIndex)
-            for (index in 0 until trackGroup.length) {
-                val format = trackGroup.getFormat(index)
-
-                // Skip over non video formats.
-                if (!format.sampleMimeType!!.startsWith("video"))
-                    continue
-
-                val title = "${format.height}p ${StreamPresenter.separator} ${supportPresenter.calculateBitRate(format.bitrate)}Mbps"
-                val mediaTrack = MediaTrack(format.bitrate, title, index, groupIndex)
-                if (index == selectedIndex)
-                    selectedTrack = mediaTrack
-
-                if (!selectableTracks.contains(mediaTrack))
-                    selectableTracks.add(mediaTrack)
-            }
+        val selectedIndex = mediaTracks.indexOfFirst {
+            it.selected
         }
 
-        selectableTracks.sortByDescending { it.id }
-        val selectedIndex = selectableTracks.indexOf(selectedTrack)
-
-        activity?.createDialog(BottomSheet(LayoutMode.WRAP_CONTENT))
+        activity?.createDialog()
             ?.cornerRadius(res = R.dimen.xl_margin)
             ?.listItemsSingleChoice(
-                items = selectableTracks.map { it.title },
+                items = mediaTracks.map { it.toString() },
                 initialSelection = selectedIndex,
                 selection = { _: MaterialDialog, index: Int, _: CharSequence ->
-                    val selected = selectableTracks[index]
-                    exoMediaVideoView.setTrack(
-                        renderType,
-                        selected.groupIndex,
-                        selected.trackIndex
-                    )
+                    val selected = mediaTracks[index]
+                    mediaPlugin.useMediaTrack(selected)
                 }
             )?.show()
     }
 
+    private fun showVideoTracksMenu() {
+        val mediaTracks = mediaPlugin.availableVideoTracks()
+        showDialogUsing(R.string.player_text_unavailable_video_tracks, mediaTracks)
+    }
+
     private fun showSubtitleMenu() {
-        val renderType = ExoMedia.RendererType.CLOSED_CAPTION
-        val captionTrackGroupArray =
-            exoMediaVideoView.availableTracks?.get(renderType) ?: return
-        if (captionTrackGroupArray.isEmpty) {
-            Snackbar.make(
-                exoMediaVideoView,
-                R.string.player_text_unavailable_caption_tracks,
-                Snackbar.LENGTH_SHORT
-            ).show()
-            return
-        }
-
-        for (groupIndex in 0 until captionTrackGroupArray.length) {
-            val selectedIndex = exoMediaVideoView.getSelectedTrackIndex(renderType, groupIndex)
-            Timber.tag(moduleTag).d(
-                "Captions Selected Caption Track: $groupIndex | $selectedIndex"
-            )
-            val trackGroup = captionTrackGroupArray.get(groupIndex)
-            for (index in 0 until trackGroup.length) {
-                val format = trackGroup.getFormat(index)
-
-                // Skip over non text formats.
-                if (!format.sampleMimeType!!.startsWith("text"))
-                    continue
-
-            }
-        }
+        val mediaTracks = mediaPlugin.availableCaptionTracks()
+        showDialogUsing(R.string.player_text_unavailable_caption_tracks, mediaTracks)
     }
 
     private fun showAudioMenu() {
-        val renderType = ExoMedia.RendererType.AUDIO
-        val audioTrackGroupArray =
-            exoMediaVideoView.availableTracks?.get(renderType) ?: return
-        if (audioTrackGroupArray.isEmpty) {
-            Snackbar.make(
-                exoMediaVideoView,
-                R.string.player_text_unavailable_audio_tracks,
-                Snackbar.LENGTH_SHORT
-            ).show()
-            return
-        }
-
-        for (groupIndex in 0 until audioTrackGroupArray.length) {
-            val selectedIndex = exoMediaVideoView.getSelectedTrackIndex(renderType, groupIndex)
-            Timber.tag(moduleTag).d(
-                "Audio selected track: $groupIndex | $selectedIndex"
-            )
-            val trackGroup = audioTrackGroupArray.get(groupIndex)
-            for (index in 0 until trackGroup.length) {
-                val format = trackGroup.getFormat(index)
-
-                // Skip over non audio formats.
-                if (!format.sampleMimeType!!.startsWith("audio"))
-                    continue
-
-            }
-        }
+        val mediaTracks = mediaPlugin.availableAudioTracks()
+        showDialogUsing(R.string.player_text_unavailable_audio_tracks, mediaTracks)
     }
 
     override fun setUpViewModelObserver() {
@@ -298,25 +208,7 @@ class MediaStreamContent(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        supportStateLayout.stateConfiguration = get()
-        launch {
-            exoMediaVideoView.handleAudioFocus = false
-            exoMediaVideoView.setAnalyticsListener(
-                EventLogger(null)
-            )
-            mediaPlugin.setVisibilityListener(
-                controlsVisibilityListener
-            )
-            if (exoMediaVideoView.trackSelectionAvailable())
-                (exoMediaVideoView.videoControls as? VideoControls)?.let {
-                    it.seekListener = this@MediaStreamContent
-                    if (exoMediaVideoView.trackSelectionAvailable()) {
-                        it.addExtraView(qualityButton)
-                        it.addExtraView(audioButton)
-                        it.addExtraView(captionButton)
-                    }
-                }
-        }
+        launch { onUpdateUserInterface() }
     }
 
     /**
@@ -327,42 +219,60 @@ class MediaStreamContent(
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        supportStateLayout.setNetworkState(
-            NetworkState.Error(
-                heading = "No streams available ${Emote.Eyes}",
-                message = "Content may be unavailable in your country, please check with original source"
-            )
+        supportStateLayout.stateConfiguration = get()
+        mediaPlugin.onInitializing()
+        mediaPlugin.setVisibilityListener(
+            controlsVisibilityListener
         )
+        (exoMediaVideoView.videoControls as? VideoControls)?.also {
+            it.seekListener = object: VideoControlsSeekListener {
+                override fun onSeekStarted(): Boolean {
+                    playlistManager.invokeSeekStarted()
+                    return true
+                }
+
+                override fun onSeekEnded(seekTime: Long): Boolean {
+                    playlistManager.invokeSeekEnded(seekTime)
+                    return true
+                }
+            }
+            if (exoMediaVideoView.trackSelectionAvailable()) {
+                it.addExtraView(qualityButton)
+                it.addExtraView(audioButton)
+                it.addExtraView(captionButton)
+            }
+        }
     }
 
     private fun prepareResults(mediaStreams: List<MediaStream>?) {
         if (!mediaStreams.isNullOrEmpty()) {
-            val streams = mediaStreams.map {
-                MediaStreamItem.transform(
-                    MediaStreamWithExtras(
-                        mediaTitle = payload?.episodeTitle,
-                        mediaSubTitle = payload?.collectionName,
-                        mediaArtWorkThumbnail = payload?.collectionThumbnail,
-                        mediaThumbnail = payload?.episodeThumbnail,
-                        mediaStream = it
-                    )
-                )
-            }
-            val optimalIndex = supportPresenter.getOptimalStreamIndex(streams)
-            val mediaItem = streams[optimalIndex]
+            val streams = supportPresenter.mapToStreamItems(
+                mediaStreams,
+                payload
+            )
+
+            val playIndex = supportPresenter.getAdaptiveStreamIndex(streams)
+            val mediaItem = streams[playIndex]
             val playHead = mediaItem.mediaPlayHead
 
-            //playlistManager.setParameters(streams, optimalIndex)
-            playlistManager.setParameters(
-                listOf(mediaItem), 0
-            )
-            playlistManager.id = PLAYLIST_ID
-            playlistManager.play(
-                playHead.toLong(),
-                false
-            )
+            //playlistManager.setParameters(streams, playIndex)
+            playlistManager.apply {
+                id = mediaItem.id
+                setParameters(
+                    listOf(mediaItem), 0
+                )
+                play(
+                    playHead.toLong(),
+                    false
+                )
+            }
         } else
-            onUpdateUserInterface()
+            supportStateLayout.setNetworkState(
+                NetworkState.Error(
+                    heading = "No streams available ${Emote.Eyes}",
+                    message = "Content may be unavailable in your country, please check with original source"
+                )
+            )
     }
 
     /**
@@ -432,16 +342,6 @@ class MediaStreamContent(
         super.onDestroy()
     }
 
-    override fun onSeekStarted(): Boolean {
-        playlistManager.invokeSeekStarted()
-        return true
-    }
-
-    override fun onSeekEnded(seekTime: Long): Boolean {
-        playlistManager.invokeSeekEnded(seekTime)
-        return true
-    }
-
     /**
      * Listens to the system to determine when to show the default controls
      * for the [VideoView]
@@ -465,7 +365,6 @@ class MediaStreamContent(
 
     companion object : IFragmentFactory<MediaStreamContent> {
 
-        private const val PLAYLIST_ID = 5L
         override val FRAGMENT_TAG = MediaStreamContent::class.java.simpleName
 
         override fun newInstance(bundle: Bundle?) =

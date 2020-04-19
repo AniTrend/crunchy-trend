@@ -20,32 +20,38 @@ import android.net.Uri
 import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
 import co.anitrend.support.crunchyroll.feature.player.component.SourceFactoryProvider
-import co.anitrend.support.crunchyroll.feature.player.model.MediaStreamItem
+import co.anitrend.support.crunchyroll.feature.player.model.stream.MediaStreamItem
+import co.anitrend.support.crunchyroll.feature.player.model.track.AudioTrack
+import co.anitrend.support.crunchyroll.feature.player.model.track.CaptionTrack
+import co.anitrend.support.crunchyroll.feature.player.model.track.VideoTrack
 import co.anitrend.support.crunchyroll.feature.player.plugin.contract.MediaPlugin
 import coil.Coil
 import coil.api.load
 import coil.request.RequestDisposable
+import com.devbrackets.android.exomedia.ExoMedia
 import com.devbrackets.android.exomedia.listener.VideoControlsVisibilityListener
 import com.devbrackets.android.exomedia.ui.widget.VideoControls
 import com.devbrackets.android.exomedia.ui.widget.VideoView
 import com.devbrackets.android.playlistcore.data.PlaybackState
-import com.devbrackets.android.playlistcore.listener.PlaylistListener
 import com.devbrackets.android.playlistcore.manager.BasePlaylistManager
+import com.google.android.exoplayer2.Format
 import com.google.android.exoplayer2.source.BaseMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.IOException
+import java.util.ArrayList
 
 class MediaPluginImpl(
-    val exoMediaVideoView: VideoView,
+    private val coroutineScope: CoroutineScope,
+    override val exoMediaVideoView: VideoView,
     userAgent: String,
     bandwidthMeter: DefaultBandwidthMeter,
     sourceFactoryProvider: SourceFactoryProvider
-) : MediaPlugin(), PlaylistListener<MediaStreamItem> {
-
-    private val moduleTag = MediaPluginImpl::class.java.simpleName
+) : MediaPlugin<MediaStreamItem>() {
 
     private val mediaSourceFactory =
         sourceFactoryProvider.provide(userAgent, bandwidthMeter)
@@ -74,6 +80,90 @@ class MediaPluginImpl(
         exoMediaVideoView.setOnBufferUpdateListener(this)
     }
 
+    /**
+     * Retrieves a list of video tracks that can be used
+     *
+     * @return a list of media tracks
+     * @see VideoTrack
+     */
+    fun availableVideoTracks(): List<VideoTrack>? {
+        val videoTracks = ArrayList<VideoTrack>(5)
+        tracksOfRenderType(
+            ExoMedia.RendererType.VIDEO
+        ) { format: Format, index: Int, groupIndex: Int, selectedIndex: Int ->
+            val mediaTrack = VideoTrack.map(
+                format,
+                index.toShort(),
+                groupIndex.toShort()
+            )
+            mediaTrack.selected = index == selectedIndex
+
+            if (!videoTracks.contains(mediaTrack))
+                videoTracks.add(mediaTrack)
+            else
+                Timber.tag(moduleTag).d(
+                    "Video track already exists in selectable tracks: $mediaTrack"
+                )
+        }
+        return videoTracks.apply { sortByDescending { it.bitrate } }
+    }
+
+    /**
+     * Retrieves a list of audio tracks that can be used
+     *
+     * @return a list of media tracks
+     * @see AudioTrack
+     */
+    fun availableAudioTracks(): List<AudioTrack>? {
+        val audioTracks = ArrayList<AudioTrack>(2)
+        tracksOfRenderType(
+            ExoMedia.RendererType.AUDIO
+        ) { format: Format, index: Int, groupIndex: Int, selectedIndex: Int ->
+            val mediaTrack = AudioTrack.map(
+                format,
+                index.toShort(),
+                groupIndex.toShort()
+            )
+            mediaTrack.selected = index == selectedIndex
+
+            if (!audioTracks.contains(mediaTrack))
+                audioTracks.add(mediaTrack)
+            else
+                Timber.tag(moduleTag).d(
+                    "Audio track already exists in selectable tracks: $mediaTrack"
+                )
+        }
+        return audioTracks
+    }
+
+    /**
+     * Retrieves a list of video tracks that can be used
+     *
+     * @return a list of media tracks
+     * @see CaptionTrack
+     */
+    fun availableCaptionTracks(): List<CaptionTrack>? {
+        val captionTracks = ArrayList<CaptionTrack>(2)
+        tracksOfRenderType(
+            ExoMedia.RendererType.CLOSED_CAPTION
+        ) { format: Format, index: Int, groupIndex: Int, selectedIndex: Int ->
+            val mediaTrack = CaptionTrack.map(
+                format,
+                index.toShort(),
+                groupIndex.toShort()
+            )
+            mediaTrack.selected = index == selectedIndex
+
+            if (!captionTracks.contains(mediaTrack))
+                captionTracks.add(mediaTrack)
+            else
+                Timber.tag(moduleTag).d(
+                    "Caption track already exists in selectable tracks: $mediaTrack"
+                )
+        }
+        return captionTracks
+    }
+
     private fun checkIfOtherRequestIsOngoing() {
         if (disposable?.isDisposed != true) {
             val previous = disposable
@@ -91,7 +181,7 @@ class MediaPluginImpl(
                 errorCount: Int
             ): Long {
                 exception?.also {
-                    Timber.tag(moduleTag).e(it)
+                    Timber.tag(moduleTag).d(it)
                 }
                 return 1500
             }
@@ -105,7 +195,7 @@ class MediaPluginImpl(
                 errorCount: Int
             ): Long {
                 exception?.also {
-                    Timber.tag(moduleTag).e(it)
+                    Timber.tag(moduleTag).d(it)
                 }
                 return 500
             }
@@ -133,6 +223,18 @@ class MediaPluginImpl(
             )
     }
 
+    override fun onPrepared() {
+        super.onPrepared()
+        coroutineScope.launch {
+            val tracks = availableVideoTracks()
+            val minimumQuality = tracks?.first {
+                it.height >= 480
+            }
+            if (minimumQuality != null)
+                useMediaTrack(minimumQuality)
+        }
+    }
+
     override fun play() {
         exoMediaVideoView.start()
     }
@@ -152,6 +254,7 @@ class MediaPluginImpl(
     override fun release() {
         if (disposable?.isDisposed != true)
             disposable?.dispose()
+        disposable = null
         exoMediaVideoView.suspend()
     }
 

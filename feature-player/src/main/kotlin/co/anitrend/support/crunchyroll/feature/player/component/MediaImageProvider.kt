@@ -22,7 +22,7 @@ import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.drawable.toBitmap
 import co.anitrend.support.crunchyroll.feature.player.R
-import co.anitrend.support.crunchyroll.feature.player.model.MediaStreamItem
+import co.anitrend.support.crunchyroll.feature.player.model.stream.MediaStreamItem
 import coil.ImageLoader
 import coil.api.load
 import coil.target.Target

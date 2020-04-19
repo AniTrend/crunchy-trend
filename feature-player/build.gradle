@@ -55,5 +55,5 @@ dependencies {
     /** Adding ui module */
     implementation("com.google.android.exoplayer:exoplayer-ui:$exoMediaPlayer")
 
-    implementation("com.afollestad.material-dialogs:bottomsheets:$materialDialogs")
+    implementation("com.afollestad.material-dialogs:core:$materialDialogs")
 }

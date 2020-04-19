@@ -17,35 +17,37 @@
 package co.anitrend.support.crunchyroll.feature.player.presenter
 
 import android.content.Context
+import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
+import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.domain.stream.enums.CrunchyStreamQuality
-import co.anitrend.support.crunchyroll.feature.player.model.MediaStreamItem
-import kotlin.math.round
+import co.anitrend.support.crunchyroll.feature.player.model.stream.MediaStreamItem
+import co.anitrend.support.crunchyroll.feature.player.model.stream.MediaStreamWithExtras
 
 class StreamPresenter(
     context: Context,
     settings: CrunchySettings
 ) : CrunchyCorePresenter(context, settings) {
 
-    fun getOptimalStreamIndex(model: List<MediaStreamItem>): Int {
-        return model.indexOfFirst {
-            it.mediaStreamQuality == CrunchyStreamQuality.adaptive
+    fun getAdaptiveStreamIndex(model: List<MediaStreamItem>)= model.indexOfFirst {
+        it.mediaStreamQuality == CrunchyStreamQuality.adaptive
+    }
+
+    fun mapToStreamItems(
+        mediaStreams: List<MediaStream>,
+        payload: NavigationTargets.MediaPlayer.Payload?
+    ): List<MediaStreamItem> {
+        return mediaStreams.map {
+            MediaStreamItem.transform(
+                MediaStreamWithExtras(
+                    mediaTitle = payload?.episodeTitle,
+                    mediaSubTitle = payload?.collectionName,
+                    mediaArtWorkThumbnail = payload?.collectionThumbnail,
+                    mediaThumbnail = payload?.episodeThumbnail,
+                    mediaStream = it
+                )
+            )
         }
-    }
-
-    fun calculateBitRate(bitrate: Int): Float {
-        val megabit = (bitrate / 1024f) / 1024f
-        return megabit.round(1)
-    }
-
-    private fun Float.round(decimals: Int): Float {
-        var multiplier = 1.0f
-        repeat(decimals) { multiplier *= 10 }
-        return round(this * multiplier) / multiplier
-    }
-
-    companion object {
-        const val separator = "\u2022"
     }
 }

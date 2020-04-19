@@ -14,17 +14,34 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.feature.player.model
+package co.anitrend.support.crunchyroll.feature.player.model.track
+
+import co.anitrend.support.crunchyroll.feature.player.extension.SEPARATOR
+import co.anitrend.support.crunchyroll.feature.player.extension.toMbps
+import co.anitrend.support.crunchyroll.feature.player.model.track.contract.IMediaTrack
+import co.anitrend.support.crunchyroll.feature.player.presenter.StreamPresenter
+import com.devbrackets.android.exomedia.ExoMedia
+import com.google.android.exoplayer2.Format
 
 /**
  * Data holder for selectable tracks
  */
-data class MediaTrack(
-    val id: Int = 0,
-    val title: String,
-    val trackIndex: Int,
-    val groupIndex: Int
-) {
+data class VideoTrack(
+    val bitrate: Int,
+    val width: Short,
+    val height: Short,
+    override val title: CharSequence,
+    override val trackIndex: Short,
+    override val groupIndex: Short,
+    override val renderType: ExoMedia.RendererType
+) : IMediaTrack {
+    override var selected: Boolean = false
+
+    /**
+     * Returns a string representation of the object.
+     */
+    override fun toString() = title.toString()
+
     /**
      * Indicates whether some other object is "equal to" this one. Implementations must fulfil the following
      * requirements:
@@ -39,17 +56,41 @@ data class MediaTrack(
      */
     override fun equals(other: Any?): Boolean {
         return when (other) {
-            is MediaTrack ->
-                other.id == id && other.title == title
+            is VideoTrack -> other.bitrate == bitrate &&
+                    other.width == width &&
+                    other.height == height
             else -> super.equals(other)
         }
     }
 
     override fun hashCode(): Int {
-        var result = id
+        var result = bitrate
+        result = 31 * result + width
+        result = 31 * result + height
         result = 31 * result + title.hashCode()
         result = 31 * result + trackIndex
         result = 31 * result + groupIndex
+        result = 31 * result + renderType.hashCode()
+        result = 31 * result + selected.hashCode()
         return result
+    }
+
+    companion object {
+
+        fun map(format: Format, index: Short, groupIndex: Short): VideoTrack {
+            val title = """
+                ${format.height}p $SEPARATOR ${format.bitrate.toMbps()}Mbps
+                """.trimMargin()
+
+            return VideoTrack(
+                bitrate = format.bitrate,
+                width = format.width.toShort(),
+                height = format.height.toShort(),
+                title = title,
+                trackIndex = index,
+                groupIndex = groupIndex,
+                renderType = ExoMedia.RendererType.VIDEO
+            )
+        }
     }
 }

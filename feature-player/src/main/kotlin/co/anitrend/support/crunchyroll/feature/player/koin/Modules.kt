@@ -16,10 +16,11 @@
 
 package co.anitrend.support.crunchyroll.feature.player.koin
 
+import co.anitrend.support.crunchyroll.core.helper.StorageHelper
 import co.anitrend.support.crunchyroll.core.model.UserAgent
 import co.anitrend.support.crunchyroll.feature.player.R
 import co.anitrend.support.crunchyroll.feature.player.component.SourceFactoryProvider
-import co.anitrend.support.crunchyroll.feature.player.plugin.PlaylistManagerPlugin
+import co.anitrend.support.crunchyroll.feature.player.plugin.PlaylistManagerPluginImpl
 import co.anitrend.support.crunchyroll.feature.player.presenter.StreamPresenter
 import co.anitrend.support.crunchyroll.feature.player.viewmodel.MediaStreamViewModel
 import com.google.android.exoplayer2.database.ExoDatabaseProvider
@@ -34,18 +35,18 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
-import java.io.File
 
 private val coreModule = module {
     single {
         val offlineCache = SimpleCache(
-            File(
-                androidContext().externalCacheDir,
-                SourceFactoryProvider.CACHE_NAME
+            StorageHelper.getVideoCache(
+                context = androidContext()
             ),
             LeastRecentlyUsedCacheEvictor(
-                // Setting maximum storage cache to 2GB
-                1024L * 1024L * 2048L
+                StorageHelper.getStorageUsageLimit(
+                    context = androidContext(),
+                    settings = get()
+                )
             ),
             get<ExoDatabaseProvider>()
         )
@@ -62,8 +63,8 @@ private val coreModule = module {
         )
     }
     single {
-        PlaylistManagerPlugin(
-            context = androidApplication()
+        PlaylistManagerPluginImpl(
+            application = androidApplication()
         )
     }
     single {
@@ -71,10 +72,8 @@ private val coreModule = module {
     }
     single {
         val downloadCache = SimpleCache(
-            File(
-                androidContext().externalCacheDir,
-                SourceFactoryProvider.CACHE_NAME
-                //"exo_media_offline_download_cache"
+            StorageHelper.getVideoOfflineCache(
+                context = androidContext()
             ),
             NoOpCacheEvictor(),
             get<ExoDatabaseProvider>()

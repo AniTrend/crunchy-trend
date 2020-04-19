@@ -16,20 +16,114 @@
 
 package co.anitrend.support.crunchyroll.feature.player.plugin.contract
 
-import co.anitrend.support.crunchyroll.feature.player.model.MediaStreamItem
+import co.anitrend.support.crunchyroll.feature.player.model.track.contract.IMediaTrack
+import co.anitrend.support.crunchyroll.feature.player.plugin.MediaPluginImpl
+import com.devbrackets.android.exomedia.ExoMedia
+import com.devbrackets.android.exomedia.ExoMedia.RendererType.*
 import com.devbrackets.android.exomedia.listener.*
+import com.devbrackets.android.exomedia.ui.widget.VideoView
 import com.devbrackets.android.playlistcore.api.MediaPlayerApi
+import com.devbrackets.android.playlistcore.api.PlaylistItem
 import com.devbrackets.android.playlistcore.listener.MediaStatusListener
+import com.devbrackets.android.playlistcore.listener.PlaylistListener
+import com.google.android.exoplayer2.Format
+import com.google.android.exoplayer2.util.EventLogger
+import kotlinx.android.synthetic.main.fragment_media_player.*
+import timber.log.Timber
 
-abstract class MediaPlugin : MediaPlayerApi<MediaStreamItem>, OnPreparedListener,
-    OnCompletionListener, OnErrorListener, OnSeekCompletionListener, OnBufferUpdateListener {
+abstract class MediaPlugin<T: PlaylistItem> : MediaPlayerApi<T>, PlaylistListener<T>,
+    OnPreparedListener, OnCompletionListener, OnErrorListener, OnSeekCompletionListener,
+    OnBufferUpdateListener {
+
+    protected val moduleTag = MediaPluginImpl::class.java.simpleName
 
     protected var prepared: Boolean = false
     protected var bufferPercent: Int = 0
 
-    protected var statusListener: MediaStatusListener<MediaStreamItem>? = null
+    private var statusListener: MediaStatusListener<T>? = null
 
-    override fun setMediaStatusListener(listener: MediaStatusListener<MediaStreamItem>) {
+    abstract val exoMediaVideoView: VideoView
+
+    protected fun ExoMedia.RendererType.matches(mimeType: String?): Boolean {
+        return when (this) {
+            AUDIO -> mimeType?.startsWith(TYPE_AUDIO)
+            VIDEO -> mimeType?.startsWith(TYPE_VIDEO)
+            CLOSED_CAPTION -> mimeType?.startsWith(TYPE_TEXT)
+            METADATA -> mimeType?.startsWith(TYPE_META)
+        } ?: false
+    }
+
+    /**
+     * Sets up the plugin
+     */
+    open fun onInitializing() {
+        exoMediaVideoView.handleAudioFocus = false
+        exoMediaVideoView.setAnalyticsListener(
+            EventLogger(null)
+        )
+    }
+
+    /**
+     * Finds tracks of a specific [rendererType]
+     */
+    protected inline fun tracksOfRenderType(
+        rendererType: ExoMedia.RendererType,
+        onTrackMatch: (
+            format: Format,
+            index: Int,
+            groupIndex: Int,
+            selectedIndex: Int
+        ) -> Unit
+    ) {
+        val trackGroupArray = exoMediaVideoView
+            .availableTracks
+            ?.get(rendererType)
+
+        if (trackGroupArray == null || trackGroupArray.isEmpty) {
+            Timber.tag(moduleTag).v(
+                "Player has no track groups for $rendererType"
+            )
+            return
+        }
+
+        for (groupIndex in 0 until trackGroupArray.length) {
+            val selectedIndex = exoMediaVideoView.getSelectedTrackIndex(
+                rendererType,
+                groupIndex
+            )
+            Timber.tag(moduleTag).d("""
+                Current selected track for render: $rendererType -> 
+                groupIndex: $groupIndex selectedIndex: $selectedIndex
+                    """.trimIndent()
+            )
+            val trackGroup = trackGroupArray.get(groupIndex)
+            for (index in 0 until trackGroup.length) {
+                val format = trackGroup.getFormat(index)
+
+                if (!rendererType.matches(format.sampleMimeType)) {
+                    Timber.tag(moduleTag).d(
+                        "Skipping track with mimeType of ${format.sampleMimeType}"
+                    )
+                    continue
+                }
+
+                onTrackMatch(format, index, groupIndex, selectedIndex)
+            }
+        }
+    }
+
+    /**
+     * Use specific media track
+     */
+    fun useMediaTrack(mediaTrack: IMediaTrack) {
+        exoMediaVideoView.setTrack(
+            mediaTrack.renderType,
+            mediaTrack.groupIndex.toInt(),
+            mediaTrack.trackIndex.toInt()
+        )
+    }
+
+    override fun setMediaStatusListener(listener: MediaStatusListener<T>) {
         statusListener = listener
     }
 
@@ -53,5 +147,12 @@ abstract class MediaPlugin : MediaPlayerApi<MediaStreamItem>, OnPreparedListener
     override fun onBufferingUpdate(percent: Int) {
         bufferPercent = percent
         statusListener?.onBufferingUpdate(this, percent)
+    }
+
+    companion object {
+        private const val TYPE_VIDEO = "video"
+        private const val TYPE_AUDIO = "audio"
+        private const val TYPE_TEXT = "text"
+        private const val TYPE_META = "meta"
     }
 }

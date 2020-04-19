@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.feature.player.model
+package co.anitrend.support.crunchyroll.feature.player.model.stream
 
 import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
 import co.anitrend.support.crunchyroll.domain.stream.enums.CrunchyStreamQuality

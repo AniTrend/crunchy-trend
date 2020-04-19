@@ -17,8 +17,9 @@
 package co.anitrend.support.crunchyroll.feature.player.plugin
 
 import android.app.Application
-import co.anitrend.arch.extension.lifecycle.SupportLifecycle
-import co.anitrend.support.crunchyroll.feature.player.model.MediaStreamItem
+import co.anitrend.support.crunchyroll.feature.player.model.stream.MediaStreamItem
+import co.anitrend.support.crunchyroll.feature.player.plugin.contract.MediaPlugin
+import co.anitrend.support.crunchyroll.feature.player.plugin.contract.PlaylistManagerPlugin
 import co.anitrend.support.crunchyroll.feature.player.service.MediaPlayerService
 import com.devbrackets.android.exomedia.listener.VideoControlsButtonListener
 import com.devbrackets.android.exomedia.ui.widget.VideoControls
@@ -26,14 +27,12 @@ import com.devbrackets.android.playlistcore.manager.ListPlaylistManager
 
 /**
  * A PlaylistManager that extends the [ListPlaylistManager] for use with the
- * [MediaPlayerService] which extends [com.devbrackets.android.playlistcore.service.BasePlaylistService].
+ * [MediaPlayerService] which extends
+ * [com.devbrackets.android.playlistcore.service.BasePlaylistService].
  */
-class PlaylistManagerPlugin(
-    context: Application
-) : ListPlaylistManager<MediaStreamItem>(context, MediaPlayerService::class.java),
-    SupportLifecycle {
-
-    override val moduleTag = PlaylistManagerPlugin::class.java.simpleName
+class PlaylistManagerPluginImpl(
+    application: Application
+) : PlaylistManagerPlugin<MediaStreamItem>(application, MediaPlayerService::class) {
 
     /**
      * Triggered when the lifecycleOwner reaches it's onResume state
@@ -69,9 +68,10 @@ class PlaylistManagerPlugin(
     /**
      * Note: You can call [.getMediaPlayers] and add it manually in the activity,
      * however we have this helper method to allow registration of the media controls
-     * repeatListener provided by ExoMedia's [com.devbrackets.android.exomedia.ui.widget.VideoControls]
+     * repeatListener provided by ExoMedia's
+     * [com.devbrackets.android.exomedia.ui.widget.VideoControls]
      */
-    fun addMediaPlugin(mediaPlugin: MediaPluginImpl) {
+    override fun addMediaPlugin(mediaPlugin: MediaPlugin<MediaStreamItem>) {
         mediaPlayers.add(mediaPlugin)
         updateVideoControls(mediaPlugin)
         registerPlaylistListener(mediaPlugin)
@@ -81,7 +81,7 @@ class PlaylistManagerPlugin(
      * Note: You can call [.getMediaPlayers] and remove it manually in the activity,
      * however we have this helper method to remove the registered repeatListener from [.addVideoApi]
      */
-    fun removeMediaPlugin(mediaPlugin: MediaPluginImpl) {
+    override fun removeMediaPlugin(mediaPlugin: MediaPlugin<MediaStreamItem>) {
         (mediaPlugin.exoMediaVideoView.videoControls as? VideoControls)?.setButtonListener(null)
 
         unRegisterPlaylistListener(mediaPlugin)
@@ -94,7 +94,7 @@ class PlaylistManagerPlugin(
      *
      * @param videoApi The VideoApi to link
      */
-    private fun updateVideoControls(mediaPlugin: MediaPluginImpl) {
+    private fun updateVideoControls(mediaPlugin: MediaPlugin<MediaStreamItem>) {
         (mediaPlugin.exoMediaVideoView.videoControls as? VideoControls)?.let {
             it.setPreviousButtonRemoved(false)
             it.setNextButtonRemoved(false)
