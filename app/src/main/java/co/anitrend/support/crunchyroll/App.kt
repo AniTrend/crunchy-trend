@@ -19,7 +19,7 @@ package co.anitrend.support.crunchyroll
 import android.util.Log
 import co.anitrend.support.crunchyroll.core.BuildConfig
 import co.anitrend.support.crunchyroll.core.CrunchyApplication
-import co.anitrend.support.crunchyroll.core.analytics.AnalyticsLogger
+import co.anitrend.support.crunchyroll.core.helper.StorageHelper
 import co.anitrend.support.crunchyroll.koin.appModules
 import fr.bipi.tressence.file.FileLoggerTree
 import org.koin.android.ext.koin.androidContext
@@ -27,7 +27,6 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import timber.log.Timber
-import java.io.File
 
 class App : CrunchyApplication() {
 
@@ -61,11 +60,12 @@ class App : CrunchyApplication() {
     override fun plantLoggingTree() {
         super.plantLoggingTree()
         val logLevel = if (BuildConfig.DEBUG) Log.VERBOSE else Log.WARN
-        val file = File("${externalCacheDir?.absolutePath}/logs/").apply { mkdirs() }
+        val file = StorageHelper.getLogsCache(applicationContext)
+        val logSizeLimit = 750 * 1024
         val fileLogger = FileLoggerTree.Builder()
             .withFileName("$packageName.log")
             .withDirName(file.absolutePath)
-            .withSizeLimit(20_000)
+            .withSizeLimit(logSizeLimit)
             .withFileLimit(1)
             .withMinPriority(logLevel)
             .appendToFile(true)
