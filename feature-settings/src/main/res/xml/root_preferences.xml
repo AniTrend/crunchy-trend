@@ -35,4 +35,10 @@
             app:icon="@drawable/ic_privacy"
             app:fragment="co.anitrend.support.crunchyroll.feature.settings.ui.fragment.PrivacyContentScreen"/>
 
+    <Preference
+            app:title="@string/preference_title_storage"
+            app:summary="@string/preference_summary_storage"
+            app:icon="@drawable/ic_storage"
+            app:fragment="co.anitrend.support.crunchyroll.feature.settings.ui.fragment.StorageContentScreen"/>
+
 </androidx.preference.PreferenceScreen>
