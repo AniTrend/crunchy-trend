@@ -1,0 +1,78 @@
+/*
+ *    Copyright 2020 AniTrend
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
+package co.anitrend.support.crunchyroll.core.helper
+
+import android.content.Context
+import co.anitrend.support.crunchyroll.core.settings.common.cache.ICacheSettings
+import timber.log.Timber
+import java.io.File
+
+object StorageHelper {
+
+    private val moduleTag = StorageHelper::class.java.simpleName
+    private const val logsName = "logs"
+    private const val imageCacheName = "coil_image_cache"
+    private const val videoCacheName = "exo_video_cache"
+    private const val videoOfflineCacheName = "exo_video_offline_cache"
+
+    private fun cacheDirectory(context: Context) : File {
+        val cacheDirectory = context.externalCacheDir ?: context.cacheDir
+        Timber.tag(moduleTag).d(
+            "Cache directory that will be used for caching: ${cacheDirectory.canonicalPath}"
+        )
+        return cacheDirectory
+    }
+
+    fun getLogsCache(context: Context): File {
+        val cache = cacheDirectory(context)
+        val logs = File(cache, logsName)
+        if (!logs.exists()) logs.mkdirs()
+        return logs
+    }
+
+    fun getImageCache(context: Context): File {
+        val cache = cacheDirectory(context)
+        val imageCache = File(cache, imageCacheName)
+        if (!imageCache.exists()) imageCache.mkdirs()
+        return imageCache
+    }
+
+    fun getVideoCache(context: Context): File {
+        val cache = cacheDirectory(context)
+        val videoCache = File(cache, videoCacheName)
+        if (!videoCache.exists()) videoCache.mkdirs()
+        return videoCache
+    }
+
+    fun getVideoOfflineCache(context: Context): File {
+        val cache = cacheDirectory(context)
+        val videoOfflineCache = File(cache, videoOfflineCacheName)
+        if (!videoOfflineCache.exists()) videoOfflineCache.mkdirs()
+        return videoOfflineCache
+    }
+
+    fun getStorageUsageLimit(context: Context, settings: ICacheSettings): Long {
+        val cache = cacheDirectory(context)
+        val freeSpace = cache.freeSpace
+        val ratio = (settings.usageRatio / 100f)
+        val limit = (freeSpace * ratio).toLong()
+        Timber.tag(moduleTag).d(
+            "Storage usage limit -> ratio: $ratio | free: $freeSpace | limit: $limit"
+        )
+        return limit
+    }
+}

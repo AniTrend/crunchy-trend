@@ -42,6 +42,8 @@
     <string name="settings_privacy_crash_analytics" translatable="false">_crashAnalytics</string>
     <string name="settings_privacy_usage_analytics" translatable="false">_usageAnalytics</string>
 
+    <string name="settings_cache_maximum_usage_ratio" translatable="false">_cacheUsageRatio</string>
+
 
     <!-- other application strings -->
     <string name="label_text_loading">Loading, please wait..</string>
