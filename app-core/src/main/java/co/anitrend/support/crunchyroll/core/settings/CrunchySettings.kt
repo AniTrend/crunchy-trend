@@ -20,8 +20,10 @@ import android.content.Context
 import co.anitrend.arch.extension.preference.*
 import co.anitrend.arch.extension.preference.contract.ISupportPreference
 import co.anitrend.support.crunchyroll.core.R
+import co.anitrend.support.crunchyroll.core.extensions.FloatPreference
 import co.anitrend.support.crunchyroll.core.extensions.NullableStringPreference
 import co.anitrend.support.crunchyroll.core.settings.common.IConfigurationSettings
+import co.anitrend.support.crunchyroll.core.settings.common.cache.ICacheSettings
 import co.anitrend.support.crunchyroll.core.settings.common.locale.ILocaleSettings
 import co.anitrend.support.crunchyroll.core.settings.common.privacy.IPrivacySettings
 import co.anitrend.support.crunchyroll.core.settings.common.theme.IThemeSettings
@@ -31,7 +33,8 @@ import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticat
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings.Companion.INVALID_USER_ID
 
 class CrunchySettings(context: Context) : SupportPreference(context),
-    IAuthenticationSettings, IConfigurationSettings, IPrivacySettings {
+    IAuthenticationSettings, IConfigurationSettings, IPrivacySettings,
+    ICacheSettings {
 
     override var isNewInstallation by BooleanPreference(
         key = R.string.settings_is_new_installation,
@@ -93,6 +96,12 @@ class CrunchySettings(context: Context) : SupportPreference(context),
         resources = context.resources
     )
 
+    override var usageRatio by FloatPreference(
+        key = R.string.settings_cache_maximum_usage_ratio,
+        default = ICacheSettings.MINIMUM_CACHE_LIMIT,
+        resources = context.resources
+    )
+
     companion object  {
 
         /**
@@ -101,7 +110,8 @@ class CrunchySettings(context: Context) : SupportPreference(context),
         internal val BINDINGS = arrayOf(
             ISupportPreference::class, IConfigurationSettings::class,
             ILocaleSettings::class, IThemeSettings::class,
-            IAuthenticationSettings::class, IPrivacySettings::class
+            IAuthenticationSettings::class, IPrivacySettings::class,
+            ICacheSettings::class
         )
     }
 }

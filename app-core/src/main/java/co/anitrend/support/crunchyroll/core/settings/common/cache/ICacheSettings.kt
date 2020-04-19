@@ -17,10 +17,9 @@
 package co.anitrend.support.crunchyroll.core.settings.common.cache
 
 interface ICacheSettings {
-    var usageRatio: Int
+    var usageRatio: Float
 
     companion object {
-        const val MAXIMUM_CACHE_LIMIT = 45
-        const val MINIMUM_CACHE_LIMIT = 15
+        const val MINIMUM_CACHE_LIMIT = 0.10f
     }
 }

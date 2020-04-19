@@ -40,3 +40,20 @@ internal class NullableStringPreference(
         }
     }
 }
+
+internal class FloatPreference(
+    override val key: Int,
+    override val default: Float,
+    override val resources: Resources
+) : ISupportPreferenceDelegate<Float> {
+
+    override fun getValue(thisRef: SharedPreferences, property: KProperty<*>): Float {
+        return thisRef.getFloat(string(key), default)
+    }
+
+    override fun setValue(thisRef: SharedPreferences, property: KProperty<*>, value: Float) {
+        thisRef.edit {
+            putFloat(string(key), value)
+        }
+    }
+}
