@@ -16,25 +16,23 @@
 
 package co.anitrend.support.crunchyroll.data.api.interceptor
 
-import co.anitrend.arch.extension.network.SupportConnectivity
-import co.anitrend.support.crunchyroll.data.api.helper.CacheHelper
-import co.anitrend.support.crunchyroll.data.arch.model.TimeSpecification
+import co.anitrend.arch.extension.LAZY_MODE_SYNCHRONIZED
+import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
+import co.anitrend.support.crunchyroll.data.api.helper.ResponseHelper
 import okhttp3.Interceptor
 import okhttp3.Response
-import java.util.concurrent.TimeUnit
 
-internal class CrunchyCacheInterceptor(
-    private val connectivity: SupportConnectivity
-) : Interceptor {
+internal class CrunchySessionInterceptor : Interceptor {
+
+    private val responseHelper by lazy(LAZY_MODE_SYNCHRONIZED) {
+        ResponseHelper(
+            json = CrunchyConverterFactory.GSON_BUILDER.create()
+        )
+    }
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val original = chain.request()
-        val request = CacheHelper.addCacheControl(
-            connectivity = connectivity,
-            cacheAge = TimeSpecification(30, TimeUnit.MINUTES),
-            staleAge = TimeSpecification(7, TimeUnit.DAYS),
-            request = original
-        )
-        return chain.proceed(request.build())
+        val response = chain.proceed(original)
+        return responseHelper.reconstrctResponseUsing(response) ?: response
     }
 }

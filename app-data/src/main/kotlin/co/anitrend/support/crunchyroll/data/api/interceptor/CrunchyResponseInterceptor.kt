@@ -20,16 +20,12 @@ import co.anitrend.arch.extension.LAZY_MODE_SYNCHRONIZED
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
-import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyResponseStatus
-import co.anitrend.support.crunchyroll.data.arch.extension.composeWith
+import co.anitrend.support.crunchyroll.data.api.helper.ResponseHelper
 import co.anitrend.support.crunchyroll.data.arch.extension.isCached
-import co.anitrend.support.crunchyroll.data.arch.extension.typeTokenOf
-import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
-import co.anitrend.support.crunchyroll.data.authentication.helper.CrunchyAuthentication
+import co.anitrend.support.crunchyroll.data.authentication.helper.CrunchyAuthenticationHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import okhttp3.*
-import okhttp3.ResponseBody.Companion.toResponseBody
 import timber.log.Timber
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicInteger
@@ -39,68 +35,39 @@ import java.util.concurrent.atomic.AtomicInteger
  */
 internal class CrunchyResponseInterceptor(
     private val connectivity: SupportConnectivity,
-    private val authentication: CrunchyAuthentication,
+    private val authentication: CrunchyAuthenticationHelper,
     private val dispatchers: SupportDispatchers
 ) : Interceptor {
 
-    private val json by lazy(LAZY_MODE_SYNCHRONIZED) {
-        CrunchyConverterFactory.GSON_BUILDER.create()
+    private val responseHelper by lazy(LAZY_MODE_SYNCHRONIZED) {
+        ResponseHelper(
+            json = CrunchyConverterFactory.GSON_BUILDER.create()
+        )
     }
 
-    private val retryCount: AtomicInteger = AtomicInteger(0)
+    private val moduleTag = CrunchyResponseInterceptor::class.java.simpleName
 
-    private fun convertResponse(body: String?) : CrunchyContainer<Any?>? {
-        return try {
-            json.fromJson(body, typeTokenOf<CrunchyContainer<Any?>?>())
-        } catch (e: Exception) {
-            Timber.tag("convertResponse").e(
-                Exception(e.message, Throwable(body))
-            )
-            CrunchyContainer(
-                CrunchyResponseStatus.bad_request,
-                true,
-                null,
-                body
-            )
-        }
-    }
-
-    private fun buildResponseBody(content: String?, mediaType: MediaType?): ResponseBody? {
-        return content?.toResponseBody(mediaType)
-    }
+    private val retryCount = AtomicInteger(0)
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val original = chain.request()
         val response = chain.proceed(original)
 
-        val body = response.body?.string()
-        val mimeType = response.body?.contentType()
-        val currentResponse = convertResponse(body)
+        val crunchyResponse = responseHelper.reconstrctResponseUsing(response)
 
-        val newResponse = currentResponse?.composeWith(
-            responseBody = buildResponseBody(
-                body,
-                mimeType
-            ),
-            response = response
-        )
-
-        if (newResponse?.code == 401) {
-            if (!newResponse.isCached()) {
-                val request = authenticate(newResponse)
+        if (crunchyResponse?.code == 401) {
+            if (!crunchyResponse.isCached()) {
+                val request = authenticate(crunchyResponse)
                 if (request != null)
                     return chain.proceed(request)
             } else
-                Timber.tag("intercept").w(
-                    "Response is coming from cache, thus authenticator will be skipped"
+                Timber.tag(moduleTag).w(
+                    "Cached network response detected, re-authentication has been skipped"
                 )
         }
 
-        if (newResponse != null)
-            return newResponse
-
-        return response
+        return crunchyResponse ?: response
     }
 
 
@@ -114,7 +81,9 @@ internal class CrunchyResponseInterceptor(
      */
     private fun authenticate(response: Response): Request? {
         val origin = response.request
-        Timber.tag("authenticate").d("Authenticator invoked!")
+        Timber.tag(moduleTag).v(
+            "Attempting to authenticate request on for host: ${origin.url.host}"
+        )
         if (connectivity.isConnected) {
             if (response.priorResponse?.isSuccessful != true) {
                 val retries = retryCount.incrementAndGet()
@@ -133,8 +102,8 @@ internal class CrunchyResponseInterceptor(
             }
         }
 
-        Timber.tag("authenticate").i(
-            "Device is currently offline, skipping authentication interception"
+        Timber.tag(moduleTag).d(
+            "Device is currently offline, skipping authentication process"
         )
         return null
     }

@@ -18,9 +18,12 @@ package co.anitrend.support.crunchyroll.data.api.interceptor
 
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
-import co.anitrend.support.crunchyroll.data.authentication.helper.CrunchyAuthentication
+import co.anitrend.support.crunchyroll.data.api.helper.CacheHelper
+import co.anitrend.support.crunchyroll.data.arch.model.TimeSpecification
+import co.anitrend.support.crunchyroll.data.authentication.helper.CrunchyAuthenticationHelper
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
+import okhttp3.Request
 import okhttp3.Response
 import timber.log.Timber
 import java.io.IOException
@@ -32,41 +35,33 @@ import java.util.concurrent.TimeUnit
  * on the dispatching caller, as such take care to assure thread safety
  */
 internal class CrunchyRequestInterceptor(
-    private val authentication: CrunchyAuthentication,
+    private val authentication: CrunchyAuthenticationHelper,
+    private val connectivity: SupportConnectivity,
     private val dispatcher: SupportDispatchers
 ) : Interceptor {
 
     private val moduleTag =  CrunchyRequestInterceptor::class.java.simpleName
-    private val regex = Regex("start_session|login|logout")
+
+    private fun addDynamicParameters(request: Request): Request.Builder {
+        Timber.tag(moduleTag).d("Injecting query parameters on host: ${request.url.host}")
+        return runBlocking(dispatcher.io) {
+            authentication.injectQueryParameters(request)
+        }
+    }
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val original = chain.request()
-        val requestBuilder = runBlocking(dispatcher.io) {
-            if (!original.url.pathSegments.last().contains(regex)) {
-                Timber.tag(moduleTag).d("""
-                    Injecting authentication query parameters on host: ${original.url.host}
-                    """.trimIndent()
-                )
-                authentication.injectQueryParameters(original)
-            }
-            else {
-                Timber.tag(moduleTag).d("""
-                    Skipping client query interceptor for host: ${original.url.host}. 
-                    Adding cache-control instead..
-                    """.trimIndent()
-                )
-                original.newBuilder().header(
-                    "Cache-Control",
-                    "public, max-age=$MAX_CACHE_AGE"
-                )
-
-            }
+        val request = run {
+            val dynamicRequest = addDynamicParameters(original).build()
+            val cacheControlledRequest = CacheHelper.addCacheControl(
+                connectivity = connectivity,
+                cacheAge = TimeSpecification(15, TimeUnit.MINUTES),
+                staleAge = TimeSpecification(3, TimeUnit.DAYS),
+                request = dynamicRequest
+            )
+            cacheControlledRequest.build()
         }
-        return chain.proceed(requestBuilder.build())
-    }
-
-    companion object {
-        private val MAX_CACHE_AGE = TimeUnit.MINUTES.toSeconds(15)
+        return chain.proceed(request)
     }
 }
