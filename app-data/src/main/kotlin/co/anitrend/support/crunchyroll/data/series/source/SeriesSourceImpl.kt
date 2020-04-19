@@ -25,6 +25,7 @@ import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.data.util.SupportDataKeyStore
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
+import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
 import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.series.datasource.local.CrunchySeriesDao
 import co.anitrend.support.crunchyroll.data.series.datasource.remote.CrunchySeriesEndpoint
@@ -69,7 +70,12 @@ class SeriesSourceImpl(
 
         launch {
             val controller =
-                mapper.controller(supportConnectivity, dispatchers)
+                mapper.controller(
+                    dispatchers,
+                    OnlineControllerPolicy.create(
+                        supportConnectivity
+                    )
+                )
 
             controller(deferred, callback)
         }
@@ -89,7 +95,12 @@ class SeriesSourceImpl(
 
         launch {
             val controller =
-                mapper.controller(supportConnectivity, dispatchers)
+                mapper.controller(
+                    dispatchers,
+                    OnlineControllerPolicy.create(
+                        supportConnectivity
+                    )
+                )
 
             controller(deferred, callback)
         }
@@ -178,6 +189,7 @@ class SeriesSourceImpl(
      * Clears data sources (databases, preferences, e.t.c)
      */
     override suspend fun clearDataSource() {
-        seriesDao.clearTable()
+        if (supportConnectivity.isConnected)
+            seriesDao.clearTable()
     }
 }

@@ -24,6 +24,8 @@ import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.data.util.SupportDataKeyStore
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
+import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OfflineControllerPolicy
+import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
 import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.media.datasource.local.CrunchyMediaDao
 import co.anitrend.support.crunchyroll.data.media.datasource.remote.CrunchyMediaEndpoint
@@ -57,7 +59,12 @@ class MediaSourceImpl(
 
         launch {
             val controller =
-                mapper.controller(supportConnectivity, dispatchers)
+                mapper.controller(
+                    dispatchers,
+                    OnlineControllerPolicy.create(
+                        supportConnectivity
+                    )
+                )
 
             controller(deferred, callback)
         }
@@ -94,6 +101,7 @@ class MediaSourceImpl(
      * Clears data sources (databases, preferences, e.t.c)
      */
     override suspend fun clearDataSource() {
-        mediaDao.clearTable()
+        if (supportConnectivity.isConnected)
+            mediaDao.clearTable()
     }
 }

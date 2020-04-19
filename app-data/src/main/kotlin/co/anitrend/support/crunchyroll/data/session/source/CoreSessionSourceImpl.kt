@@ -19,16 +19,20 @@ package co.anitrend.support.crunchyroll.data.session.source
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
+import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
 import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.session.datasource.remote.CrunchySessionEndpoint
+import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionCoreEntity
 import co.anitrend.support.crunchyroll.data.session.mapper.CoreSessionResponseMapper
 import co.anitrend.support.crunchyroll.data.session.source.contract.SessionSource
 import co.anitrend.support.crunchyroll.data.session.transformer.CoreSessionTransformer
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class CoreSessionSourceImpl(
     private val settings: IAuthenticationSettings,
@@ -39,6 +43,43 @@ class CoreSessionSourceImpl(
     supportDispatchers: SupportDispatchers
 ) : SessionSource(supportDispatchers) {
 
+    private suspend fun createNewCoreSession(): CrunchySessionCoreEntity? {
+        val invalidSession = withContext(dispatchers.io) {
+            val sessionId = settings.sessionId
+            dao.findBySessionId(sessionId)
+        }
+
+        val deferred = async {
+            endpoint.startCoreSession()
+        }
+
+        val controller =
+            mapper.controller(
+                dispatchers,
+                OnlineControllerPolicy.create(
+                    supportConnectivity
+                )
+            )
+
+        val session = controller(deferred, networkState)
+
+        withContext(dispatchers.io) {
+            if (session != null) {
+                settings.sessionId = session.sessionId
+                Timber.tag(moduleTag).d(
+                    "Persisting core session into private storage space -> $session"
+                )
+            } else if (invalidSession != null) {
+                dao.delete(invalidSession)
+                Timber.tag(moduleTag).d(
+                    "Removing previous invalid core session -> $invalidSession"
+                )
+            }
+        }
+
+        return session
+    }
+
     /**
      * Handles the requesting data from a the network source and return
      * [NetworkState] to the caller after execution.
@@ -48,19 +89,10 @@ class CoreSessionSourceImpl(
     override fun invoke(): Session? {
         super.invoke()
         networkState.postValue(NetworkState.Loading)
-        
-        val deferred = async {
-            endpoint.startCoreSession()
-        }
 
         val session = runBlocking {
-            val controller =
-                mapper.controller(supportConnectivity, dispatchers)
-
-            controller(deferred, networkState)
+            createNewCoreSession()
         }
-        if (session != null)
-            settings.sessionId = session.sessionId
 
         return CoreSessionTransformer.transform(session)
     }

@@ -20,6 +20,7 @@ import androidx.lifecycle.LiveData
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
+import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OfflineControllerPolicy
 import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyModelField
 import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.stream.datasource.remote.CrunchyStreamEndpoint
@@ -50,7 +51,10 @@ class CrunchyStreamSourceImpl(
 
         launch {
             val controller =
-                mapper.controller(supportConnectivity, dispatchers)
+                mapper.controller(
+                    dispatchers,
+                    OfflineControllerPolicy.create()
+                )
 
             val result = controller(deferred, networkState)
 

@@ -19,12 +19,14 @@ package co.anitrend.support.crunchyroll.data.session.source
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
+import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
 import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionDao
 import co.anitrend.support.crunchyroll.data.session.datasource.remote.CrunchySessionEndpoint
+import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
 import co.anitrend.support.crunchyroll.data.session.mapper.SessionResponseMapper
 import co.anitrend.support.crunchyroll.data.session.source.contract.SessionSource
 import co.anitrend.support.crunchyroll.data.session.transformer.SessionTransformer
@@ -32,6 +34,7 @@ import co.anitrend.support.crunchyroll.domain.session.entities.Session
 import co.anitrend.support.crunchyroll.domain.session.models.CrunchyUnBlockedSessionQuery
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class UnblockSessionSourceImpl(
@@ -45,7 +48,7 @@ class UnblockSessionSourceImpl(
     supportDispatchers: SupportDispatchers
 ) : SessionSource(supportDispatchers) {
 
-    private fun buildQuery(): CrunchyUnBlockedSessionQuery? {
+    private suspend fun buildQuery(): CrunchyUnBlockedSessionQuery? {
         val coreSession = coreSessionDao.findBySessionId(
             settings.sessionId
         )
@@ -60,7 +63,9 @@ class UnblockSessionSourceImpl(
             )
         }
 
-        Timber.tag(moduleTag).e("Core and login session may be null")
+        Timber.tag(moduleTag).e(
+            "All sessions seem to be invalid, proceeding requests may fail"
+        )
         networkState.postValue(
             NetworkState.Error(
                 heading = "Missing session credentials",
@@ -71,6 +76,48 @@ class UnblockSessionSourceImpl(
         return null
     }
 
+    private suspend fun createNewUnblockSession(
+        query: CrunchyUnBlockedSessionQuery
+    ): CrunchySessionEntity? {
+        val invalidSession = withContext(dispatchers.io) {
+            val sessionId = settings.sessionId
+            dao.findBySessionId(sessionId)
+        }
+
+        val deferred = async {
+            endpoint.startUnblockedSession(
+                auth = query.auth,
+                userId = query.userId
+            )
+        }
+
+        val controller =
+            mapper.controller(
+                dispatchers,
+                OnlineControllerPolicy.create(
+                    supportConnectivity
+                )
+            )
+
+        val session = controller(deferred, networkState)
+
+        withContext(dispatchers.io) {
+            if (session != null) {
+                settings.sessionId = session.sessionId
+                Timber.tag(moduleTag).d(
+                    "Persisting unblock session into private store -> $session"
+                )
+            } else if (invalidSession != null) {
+                dao.delete(invalidSession)
+                Timber.tag(moduleTag).d(
+                    "Removing previous invalid unblock session -> $invalidSession"
+                )
+            }
+        }
+
+        return session
+    }
+
     /**
      * Handles the requesting data from a the network source and returns
      * [NetworkState] to the caller after execution
@@ -78,25 +125,16 @@ class UnblockSessionSourceImpl(
     override fun invoke(): Session? {
         super.invoke()
         networkState.postValue(NetworkState.Loading)
+        return runBlocking {
+            val unblockSessionQuery =
+                withContext(dispatchers.io) {
+                    buildQuery()
+                }
 
-        return buildQuery()?.let { query ->
-            val deferred = async {
-                endpoint.startUnblockedSession(
-                    auth = query.auth,
-                    userId = query.userId
-                )
+            unblockSessionQuery?.let {
+                val session = createNewUnblockSession(it)
+                SessionTransformer.transform(session)
             }
-
-            val session = runBlocking {
-                val controller =
-                    mapper.controller(supportConnectivity, dispatchers)
-
-                controller(deferred, networkState)
-            }
-            if (session != null)
-                settings.sessionId = session.sessionId
-
-            SessionTransformer.transform(session)
         }
     }
 

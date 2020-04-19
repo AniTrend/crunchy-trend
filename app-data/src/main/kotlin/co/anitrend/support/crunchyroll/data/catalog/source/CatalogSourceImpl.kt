@@ -24,6 +24,8 @@ import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.arch.extension.util.SupportExtKeyStore
+import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OfflineControllerPolicy
+import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
 import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.catalog.datasource.local.CrunchyCatalogDao
 import co.anitrend.support.crunchyroll.data.catalog.mapper.CatalogResponseMapper
@@ -65,7 +67,10 @@ class CatalogSourceImpl(
 
         launch {
             val controller =
-                mapper.controller(supportConnectivity, dispatchers)
+                mapper.controller(
+                    dispatchers,
+                    OfflineControllerPolicy.create()
+                )
 
             controller(deferred, networkState)
         }
@@ -99,6 +104,7 @@ class CatalogSourceImpl(
      * Clears data sources (databases, preferences, e.t.c)
      */
     override suspend fun clearDataSource() {
-        catalogDao.clearTable()
+        if (supportConnectivity.isConnected)
+            catalogDao.clearTable()
     }
 }
