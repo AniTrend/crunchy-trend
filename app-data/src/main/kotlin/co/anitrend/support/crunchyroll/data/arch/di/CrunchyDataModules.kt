@@ -22,7 +22,7 @@ import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.arch.extension.systemServiceOf
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
-import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyCacheInterceptor
+import co.anitrend.support.crunchyroll.data.api.helper.CacheHelper
 import co.anitrend.support.crunchyroll.data.arch.database.CrunchyDatabase
 import co.anitrend.support.crunchyroll.data.arch.database.common.ICrunchyDatabase
 import co.anitrend.support.crunchyroll.data.authentication.koin.authenticationModules
@@ -66,7 +66,7 @@ private val networkModule = module {
             .cache(
                 Cache(
                     androidContext().cacheDir,
-                    CrunchyCacheInterceptor.MAX_CACHE_SIZE
+                    CacheHelper.MAX_CACHE_SIZE
                 )
             )
             .readTimeout(10, TimeUnit.SECONDS)
