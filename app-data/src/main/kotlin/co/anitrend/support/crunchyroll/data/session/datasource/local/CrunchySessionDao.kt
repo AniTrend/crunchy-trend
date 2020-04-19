@@ -19,29 +19,29 @@ package co.anitrend.support.crunchyroll.data.session.datasource.local
 import androidx.room.Dao
 import androidx.room.Query
 import co.anitrend.arch.data.dao.ISupportQuery
+import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
 
 @Dao
-interface CrunchySessionDao : ISupportQuery<CrunchySessionEntity> {
+interface CrunchySessionDao : ISupportQuery<CrunchySessionEntity>, ISourceDao {
+
+    @Query("""
+        select count(sessionId) from CrunchySessionEntity
+        """)
+    override suspend fun count(): Int
 
     @Query("""
         delete from CrunchySessionEntity
         """)
-    fun clearTable()
+    override suspend fun clearTable()
 
-    @Query("""
-        select * 
-        from CrunchySessionEntity 
-        limit 1
-        """)
-    fun findLatest(): CrunchySessionEntity?
 
     @Query("""
         select * 
         from CrunchySessionEntity 
         where sessionId = :sessionId
         """)
-    fun findBySessionId(
+    suspend fun findBySessionId(
         sessionId: String?
     ): CrunchySessionEntity?
 }
