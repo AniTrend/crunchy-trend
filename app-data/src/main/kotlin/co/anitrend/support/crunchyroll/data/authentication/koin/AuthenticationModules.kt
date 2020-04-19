@@ -19,7 +19,7 @@ package co.anitrend.support.crunchyroll.data.authentication.koin
 import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
 import co.anitrend.support.crunchyroll.data.arch.extension.api
 import co.anitrend.support.crunchyroll.data.arch.extension.db
-import co.anitrend.support.crunchyroll.data.authentication.helper.CrunchyAuthentication
+import co.anitrend.support.crunchyroll.data.authentication.helper.CrunchyAuthenticationHelper
 import co.anitrend.support.crunchyroll.data.authentication.mapper.LoginResponseMapper
 import co.anitrend.support.crunchyroll.data.authentication.mapper.LogoutResponseMapper
 import co.anitrend.support.crunchyroll.data.authentication.repository.AuthenticationRepository
@@ -29,16 +29,14 @@ import co.anitrend.support.crunchyroll.data.authentication.source.contract.Login
 import co.anitrend.support.crunchyroll.data.authentication.source.contract.LogoutSource
 import co.anitrend.support.crunchyroll.data.authentication.usecase.LoginUseCaseImpl
 import co.anitrend.support.crunchyroll.data.authentication.usecase.LogoutUseCaseImpl
-import co.anitrend.support.crunchyroll.data.session.source.CoreSessionSourceImpl
 import co.anitrend.support.crunchyroll.data.session.usecase.CoreSessionUseCaseImpl
 import co.anitrend.support.crunchyroll.data.session.usecase.UnblockSessionUseCaseImpl
-import co.anitrend.support.crunchyroll.domain.session.interactors.UnblockSessionUseCase
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
 private val coreModule = module {
     single {
-        CrunchyAuthentication(
+        CrunchyAuthenticationHelper(
             connectivityHelper = get(),
             settings = get(),
             unblockSessionUseCase = get<UnblockSessionUseCaseImpl>(),
