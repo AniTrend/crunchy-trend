@@ -23,5 +23,6 @@ enum class CrunchyResponseStatus {
     bad_session,
     object_not_found,
     forbidden,
+    error,
     ok
 }
