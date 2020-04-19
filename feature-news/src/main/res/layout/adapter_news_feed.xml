@@ -26,83 +26,95 @@
         />
     </data>
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/container"
-            android:background="?cardColor"
-            android:orientation="vertical"
-            android:padding="@dimen/xl_margin"
+    <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/media_news_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                android:text="@{entity.title}"
-                tools:text="@sample/news.json/title"/>
-
-        <Space android:layout_width="wrap_content"
-               android:layout_height="@dimen/md_margin"/>
-
-        <co.anitrend.arch.ui.view.text.SingleLineTextView
-                android:id="@+id/media_news_sub_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                android:text="@{entity.subTitle}"
-                tools:text="@sample/news.json/subTitle"/>
-
-        <Space android:layout_width="wrap_content"
-               android:layout_height="@dimen/lg_margin"/>
+            android:layout_height="wrap_content"
+            android:id="@+id/container"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?selectableItemBackground"
+            app:cardBackgroundColor="?cardColor"
+            app:cardElevation="0dp"
+            app:contentPadding="@dimen/xl_margin"
+            tools:padding="@dimen/xl_margin">
 
         <androidx.appcompat.widget.LinearLayoutCompat
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
 
-            <co.anitrend.arch.ui.view.image.SupportImageView
-                    android:layout_width="@dimen/series_image_sm"
-                    android:layout_height="@dimen/series_image_sm"
-                    android:layout_gravity="center_vertical"
-                    app:imageUrl="@{entity.image}"
-                    tools:src="@sample/thumbnail"
-                    tools:scaleType="centerCrop"
-                    />
+            <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/media_news_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:text="@{entity.title}"
+                    tools:text="@sample/news.json/title" />
 
-            <Space android:layout_width="@dimen/xl_margin"
-                    android:layout_height="wrap_content"/>
+            <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/md_margin" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <co.anitrend.arch.ui.view.text.SingleLineTextView
+                    android:id="@+id/media_news_sub_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:text="@{entity.subTitle}"
+                    tools:text="@sample/news.json/subTitle" />
+
+            <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/lg_margin" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/media_news_description"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:maxLines="5"
-                        android:ellipsize="end"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="@sample/news.json/description" />
+                <co.anitrend.arch.ui.view.image.SupportImageView
+                        android:id="@+id/media_news_image"
+                        android:layout_width="@dimen/series_image_sm"
+                        android:layout_height="@dimen/series_image_sm"
+                        android:layout_gravity="center_vertical"
+                        app:imageUrl="@{entity.image}"
+                        tools:src="@sample/thumbnail"
+                        tools:scaleType="centerCrop" />
+
+                <Space
+                        android:layout_width="@dimen/xl_margin"
+                        android:layout_height="wrap_content" />
+
+                <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/media_news_description"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:maxLines="4"
+                            android:ellipsize="end"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                            android:layout_gravity="start|top"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="@sample/news.json/description" />
 
 
-                <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/media_news_publication"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:longDate="@{entity.publishedOn}"
-                        tools:text="@sample/news.json/publishDate" />
+                    <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/media_news_publication"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                            android:layout_gravity="end|bottom"
+                            app:longDate="@{entity.publishedOn}"
+                            tools:text="@sample/news.json/publishDate" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                </FrameLayout>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
+    </com.google.android.material.card.MaterialCardView>
 
 </layout>

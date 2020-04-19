@@ -58,18 +58,13 @@ class SeriesViewAdapter(
             false
         )
 
-        val viewHolder = SeriesViewHolder(
-            binding
+        return SeriesViewHolder(
+            itemClickListener,binding
         )
-
-        binding.container.setOnClickListener {
-            viewHolder.onItemClick(it, itemClickListener)
-        }
-
-        return viewHolder
     }
 
     internal class SeriesViewHolder(
+        private val clickListener: ItemClickListener<CrunchySeries>,
         private val binding: AdapterDiscoverSeriesBinding
     ) : SupportViewHolder<CrunchySeries>(binding.root) {
 
@@ -80,6 +75,9 @@ class SeriesViewAdapter(
          */
         override fun invoke(model: CrunchySeries?) {
             binding.entity = model
+            binding.container.setOnClickListener {
+                onItemClick(it, clickListener)
+            }
             binding.executePendingBindings()
         }
 
@@ -90,6 +88,7 @@ class SeriesViewAdapter(
          * @see com.bumptech.glide.Glide
          */
         override fun onViewRecycled() {
+            binding.container.setOnClickListener(null)
             binding.unbind()
         }
 

@@ -20,7 +20,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import co.anitrend.arch.core.presenter.SupportPresenter
 import co.anitrend.arch.ui.recycler.adapter.SupportPagedListAdapter
 import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
@@ -59,19 +58,15 @@ class RssMediaAdapter(
             false
         )
 
-        val viewHolder = MediaRssViewHolder(binding)
-
-        binding.mediaThumbnail.setOnClickListener {
-            viewHolder.onItemClick(it, itemClickListener)
-        }
-
-        return viewHolder
+        return MediaRssViewHolder(itemClickListener, binding)
     }
 
 
     internal class MediaRssViewHolder(
+        private val clickListener: ItemClickListener<CrunchyEpisodeFeed>,
         private val binding: AdapterMediaFeedBinding
     ): SupportViewHolder<CrunchyEpisodeFeed>(binding.root) {
+
 
         /**
          * Load images, text, buttons, etc. in this method from the given parameter
@@ -80,6 +75,9 @@ class RssMediaAdapter(
          */
         override fun invoke(model: CrunchyEpisodeFeed?) {
             binding.entity = model
+            binding.mediaThumbnail.setOnClickListener {
+                onItemClick(it, clickListener)
+            }
             binding.executePendingBindings()
         }
 
@@ -90,6 +88,7 @@ class RssMediaAdapter(
          * @see com.bumptech.glide.Glide
          */
         override fun onViewRecycled() {
+            binding.mediaThumbnail.setOnClickListener(null)
             binding.mediaThumbnail.onViewRecycled()
             binding.unbind()
         }

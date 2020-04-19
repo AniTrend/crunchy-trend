@@ -21,6 +21,7 @@ import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.feature.catalog.R
 import co.anitrend.support.crunchyroll.feature.catalog.databinding.AdapterCatalogItemBinding
 import com.xwray.groupie.databinding.BindableItem
+import com.xwray.groupie.databinding.GroupieViewHolder
 
 class CatalogItem(
     private val series: CrunchySeries

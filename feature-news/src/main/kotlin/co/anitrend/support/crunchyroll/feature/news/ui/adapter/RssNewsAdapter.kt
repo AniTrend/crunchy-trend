@@ -20,7 +20,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import co.anitrend.arch.core.presenter.SupportPresenter
 import co.anitrend.arch.ui.recycler.adapter.SupportPagedListAdapter
 import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
@@ -28,8 +27,6 @@ import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import co.anitrend.support.crunchyroll.feature.news.databinding.AdapterNewsFeedBinding
 import io.noties.markwon.Markwon
-import org.koin.core.KoinComponent
-import org.koin.core.inject
 
 class RssNewsAdapter(
     private val markwon: Markwon,
@@ -64,16 +61,11 @@ class RssNewsAdapter(
             false
         )
 
-        val viewHolder = NewsRssViewHolder(binding, markwon)
-
-        binding.container.setOnClickListener{
-            viewHolder.onItemClick(it, itemClickListener)
-        }
-
-        return viewHolder
+        return NewsRssViewHolder(itemClickListener, binding, markwon)
     }
 
     internal class NewsRssViewHolder(
+        private val clickListener: ItemClickListener<CrunchyNews>,
         private val binding: AdapterNewsFeedBinding,
         private val markwon: Markwon
     ): SupportViewHolder<CrunchyNews>(binding.root) {
@@ -89,8 +81,10 @@ class RssNewsAdapter(
                 binding.mediaNewsDescription,
                 model?.description ?: "No description available"
             )
+            binding.container.setOnClickListener {
+                onItemClick(it, clickListener)
+            }
             binding.executePendingBindings()
-
         }
 
         /**
@@ -100,6 +94,7 @@ class RssNewsAdapter(
          * @see com.bumptech.glide.Glide
          */
         override fun onViewRecycled() {
+            binding.container.setOnClickListener(null)
             binding.unbind()
         }
 
