@@ -14,13 +14,14 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.api.helper
+package co.anitrend.support.crunchyroll.data.api.provider
 
 import co.anitrend.arch.extension.LAZY_MODE_SYNCHRONIZED
 import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyCacheInterceptor
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyRequestInterceptor
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyResponseInterceptor
+import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchySessionInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.parameter.parametersOf
@@ -52,15 +53,14 @@ internal object EndpointProvider {
 
         when (endpointType) {
             EndpointType.JSON -> {
-                Timber.tag(moduleTag).d(
-                    """
-                        Adding request and response interceptors 
-                        for request: ${endpointType.name}
-                        """.trimIndent()
+                Timber.tag(moduleTag).d("""
+                    Adding request and response interceptors for request: ${endpointType.name}
+                    """.trimIndent()
                 )
                 builder.addInterceptor(
                     CrunchyRequestInterceptor(
                         authentication = scope.get(),
+                        connectivity = scope.get(),
                         dispatcher = scope.get()
                     )
                 ).addInterceptor(
@@ -73,10 +73,7 @@ internal object EndpointProvider {
             }
             EndpointType.XML -> {
                 Timber.tag(moduleTag).d(
-                    """
-                        Adding cache interceptors 
-                        for request: ${endpointType.name}
-                        """.trimIndent()
+                    "Adding dedicated cache interceptor for request: ${endpointType.name}"
                 )
                 builder.addInterceptor(
                     CrunchyCacheInterceptor(
@@ -84,7 +81,17 @@ internal object EndpointProvider {
                     )
                 )
             }
-            else -> {}
+            EndpointType.SESSION -> {
+                Timber.tag(moduleTag).d(
+                    "Adding response converter interceptor for: ${endpointType.name}"
+                )
+                builder.addInterceptor(
+                    CrunchySessionInterceptor()
+                )
+            }
+            else -> {
+                Timber.tag(moduleTag).d("No interceptors to add for: ${endpointType.name}")
+            }
         }
 
         return builder.build()
@@ -109,7 +116,11 @@ internal object EndpointProvider {
         }
         else {
             Timber.tag(moduleTag).d("Creating new retrofit instance for endpoint: ${endpointType.name}")
-            val retrofit = createRetrofit(endpointType, scope)
+            val retrofit =
+                createRetrofit(
+                    endpointType,
+                    scope
+                )
             retrofitCache[endpointType.name] = retrofit
             retrofit
         }
