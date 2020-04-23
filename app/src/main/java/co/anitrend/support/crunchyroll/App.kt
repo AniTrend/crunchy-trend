@@ -30,6 +30,14 @@ import timber.log.Timber
 
 class App : CrunchyApplication() {
 
+    private fun createUncaughtExceptionHandler() {
+        val exceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler { t, e ->
+            Timber.tag(t.name).e(e)
+            exceptionHandler?.uncaughtException(t, e)
+        }
+    }
+
     /** [Koin](https://insert-koin.io/docs/2.0/getting-started/)
      *
      * Initializes dependencies for the entire application, this function is automatically called
@@ -71,5 +79,11 @@ class App : CrunchyApplication() {
             .appendToFile(true)
             .build()
         Timber.plant(fileLogger)
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        if (BuildConfig.DEBUG)
+            createUncaughtExceptionHandler()
     }
 }
