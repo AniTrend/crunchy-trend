@@ -19,7 +19,6 @@ package co.anitrend.support.crunchyroll.core.android.extensions
 import androidx.databinding.BindingAdapter
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.LifecycleOwner
-import co.anitrend.support.crunchyroll.core.R
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 import coil.api.load
 import coil.request.CachePolicy
@@ -29,12 +28,7 @@ import coil.transform.GrayscaleTransformation
 
 @BindingAdapter("imageUrl")
 fun AppCompatImageView.setImageUrl(url: String?) = url?.also {
-    if (url.isNullOrBlank())
-        load(R.drawable.ic_launcher_foreground) {
-            if (context is LifecycleOwner)
-                lifecycle(context as LifecycleOwner)
-        }
-    else {
+    if (!url.isNullOrBlank()) {
         load(url) {
             scale(Scale.FIT)
             diskCachePolicy(CachePolicy.ENABLED)
