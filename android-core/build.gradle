@@ -51,21 +51,21 @@ dependencies {
 
     implementation project(':app-domain')
     implementation project(':app-data')
-    implementation project(':app-core')
 
     /** Material Design */
-    implementation "com.google.android.material:material:$material"
-    implementation "androidx.palette:palette:$palette"
-    implementation "androidx.palette:palette-ktx:$palette"
+    implementation("com.google.android.material:material:$material")
+    implementation("androidx.palette:palette:$palette")
+    implementation("androidx.palette:palette-ktx:$palette")
 
-    implementation "androidx.paging:paging-runtime:$paging"
-    implementation "androidx.paging:paging-runtime-ktx:$pagingKtx"
+    implementation("androidx.paging:paging-runtime:$paging")
+    implementation("androidx.paging:paging-runtime-ktx:$pagingKtx")
+    implementation("androidx.constraintlayout:constraintlayout:$constraintX")
 
     /** Lifecycle Components*/
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleX"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleX"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleX"
+    implementation("androidx.lifecycle:lifecycle-extensions:$lifecycleX")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleX")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleX")
     
     /** Coil Libraries */
-    implementation "io.coil-kt:coil:$coil"
+    implementation("io.coil-kt:coil:$coil")
 }
