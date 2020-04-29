@@ -18,8 +18,6 @@ package co.anitrend.support.crunchyroll.data.media.helper
 
 import org.junit.Test
 
-import org.junit.Assert.*
-
 class CrunchyMediaHelperTest {
 
     @Test

@@ -19,6 +19,6 @@ package co.anitrend.support.crunchyroll.domain.series.models
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchyMediaType
 
 data class CrunchySeriesSearchQuery(
-    val query: String,
+    val searchTerm: String,
     val mediaTypes: String = CrunchyMediaType.anime.name
 )

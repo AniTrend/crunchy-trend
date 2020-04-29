@@ -17,17 +17,21 @@
 package co.anitrend.support.crunchyroll.data.authentication.usecase
 
 import co.anitrend.arch.data.model.UserInterfaceState
+import co.anitrend.arch.data.repository.contract.ISupportRepository
 import co.anitrend.support.crunchyroll.data.authentication.repository.AuthenticationRepository
 import co.anitrend.support.crunchyroll.domain.authentication.interactors.LogoutUseCase
 
-class LogoutUseCaseImpl(
+internal class LogoutUseCaseImpl(
     repository: AuthenticationRepository
-) : LogoutUseCase<UserInterfaceState<Boolean>>(repository) {
+) : LogoutUseCaseType(repository) {
 
     /**
      * Informs underlying repositories or related components running background operations to stop
      */
     override fun onCleared() {
-        (repository as AuthenticationRepository).onCleared()
+        repository as ISupportRepository
+        repository.onCleared()
     }
 }
+
+typealias LogoutUseCaseType = LogoutUseCase<UserInterfaceState<Boolean>>

@@ -34,7 +34,7 @@ import org.commonmark.node.Text
  *
  * <iframe src="https://www.youtube.com/embed/luWcue3t2OU" width="640" height="360" />
  */
-class FrameTagHandler private constructor() : SimpleTagHandler() {
+internal class FrameTagHandler private constructor() : SimpleTagHandler() {
 
     private fun getVideoId(src: String) = src.split('/').last()
 

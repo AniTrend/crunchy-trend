@@ -18,13 +18,14 @@ package co.anitrend.support.crunchyroll.data.media.repository
 
 import androidx.paging.PagedList
 import co.anitrend.arch.data.model.UserInterfaceState
+import co.anitrend.arch.data.model.UserInterfaceState.Companion.create
 import co.anitrend.arch.data.repository.SupportRepository
 import co.anitrend.support.crunchyroll.data.media.source.contract.MediaSource
 import co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia
 import co.anitrend.support.crunchyroll.domain.media.models.CrunchyMediaQuery
 import co.anitrend.support.crunchyroll.domain.media.repositories.IMediaRepository
 
-class MediaRepository(
+internal class MediaRepository(
     private val source: MediaSource
 ) : SupportRepository(),
     IMediaRepository<UserInterfaceState<PagedList<CrunchyMedia>>> {
@@ -32,8 +33,7 @@ class MediaRepository(
     override fun getMediaForCollection(
         mediaQuery: CrunchyMediaQuery
     ) =
-        UserInterfaceState.create(
-            model = source.mediaObservable(mediaQuery),
-            source = source
+        source.create(
+            model = source(mediaQuery)
         )
 }

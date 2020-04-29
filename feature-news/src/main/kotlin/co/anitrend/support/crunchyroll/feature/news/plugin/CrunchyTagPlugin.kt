@@ -22,7 +22,7 @@ import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.MarkwonPlugin
 import io.noties.markwon.html.HtmlPlugin
 
-class CrunchyTagPlugin private constructor(): AbstractMarkwonPlugin() {
+internal class CrunchyTagPlugin private constructor(): AbstractMarkwonPlugin() {
 
     override fun configure(registry: MarkwonPlugin.Registry) {
         registry.require(HtmlPlugin::class.java) {

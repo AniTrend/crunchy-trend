@@ -22,7 +22,7 @@ import co.anitrend.arch.domain.entities.NetworkState
 
 internal abstract class ControllerStrategy<D> {
 
-    protected val moduleTag = ControllerStrategy::class.java.simpleName
+    protected val moduleTag = javaClass.simpleName
 
     /**
      * Execute a paging task under an implementation strategy

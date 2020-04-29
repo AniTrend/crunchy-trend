@@ -29,7 +29,7 @@ import co.anitrend.support.crunchyroll.data.user.entity.CrunchyUserEntity
         Index(value = ["authenticationKey"], unique = true)
     ]
 )
-data class CrunchySessionEntity(
+internal data class CrunchySessionEntity(
     @Embedded
     override val authenticatedUser: CrunchyUserEntity,
     override val authenticationKey: String,

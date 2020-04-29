@@ -21,6 +21,6 @@ import androidx.room.Fts4
 
 @Fts4(contentEntity = CrunchySeriesEntity::class)
 @Entity
-data class CrunchySeriesFtsEntity(
+internal data class CrunchySeriesFtsEntity(
     val name: String
 )

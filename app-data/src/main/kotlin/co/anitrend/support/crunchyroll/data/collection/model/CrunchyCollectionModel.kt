@@ -19,7 +19,7 @@ package co.anitrend.support.crunchyroll.data.collection.model
 import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyImageSet
 
-data class CrunchyCollectionModel(
+internal data class CrunchyCollectionModel(
     val collection_id: Int,
     val etp_guid: String,
     val series_id: Int,

@@ -24,6 +24,7 @@ import co.anitrend.support.crunchyroll.data.catalog.repository.CatalogRepository
 import co.anitrend.support.crunchyroll.data.catalog.source.CatalogSourceImpl
 import co.anitrend.support.crunchyroll.data.catalog.source.contract.CatalogSource
 import co.anitrend.support.crunchyroll.data.catalog.usecase.CatalogUseCaseImpl
+import co.anitrend.support.crunchyroll.data.catalog.usecase.CatalogUseCaseType
 import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalogFilter
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -34,7 +35,8 @@ private val dataSourceModule = module {
             catalogDao = db().crunchyCatalogDao(),
             endpoint = api(EndpointType.JSON),
             supportConnectivity = get(),
-            supportDispatchers = get()
+            supportDispatchers = get(),
+            settings = get()
         )
     } bind CatalogSource::class
 }
@@ -58,7 +60,7 @@ private val repositoryModule = module {
 }
 
 private val useCaseModule = module {
-    factory {
+    factory<CatalogUseCaseType> {
         CatalogUseCaseImpl(
             repository = get()
         )

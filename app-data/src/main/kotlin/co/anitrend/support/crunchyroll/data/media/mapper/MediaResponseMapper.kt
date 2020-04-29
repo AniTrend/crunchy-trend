@@ -22,7 +22,7 @@ import co.anitrend.support.crunchyroll.data.media.datasource.local.transformer.C
 import co.anitrend.support.crunchyroll.data.media.entity.CrunchyMediaEntity
 import co.anitrend.support.crunchyroll.data.media.model.CrunchyMediaModel
 
-class MediaResponseMapper(
+internal class MediaResponseMapper(
     private val dao: CrunchyMediaDao
 ) : CrunchyMapper<List<CrunchyMediaModel>, List<CrunchyMediaEntity>>() {
 

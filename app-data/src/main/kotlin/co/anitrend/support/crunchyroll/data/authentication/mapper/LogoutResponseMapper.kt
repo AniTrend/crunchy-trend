@@ -25,7 +25,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Deferred
 import retrofit2.Response
 
-class LogoutResponseMapper : CrunchyMapper<Any?, Any?>() {
+internal class LogoutResponseMapper : CrunchyMapper<Any?, Any?>() {
 
     /**
      * Response handler for coroutine contexts which need to observe [NetworkState]

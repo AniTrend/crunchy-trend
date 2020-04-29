@@ -16,6 +16,6 @@
 
 package co.anitrend.support.crunchyroll.data.rss.contract
 
-interface IRssCopyright {
+internal interface IRssCopyright {
     val copyright: String?
 }

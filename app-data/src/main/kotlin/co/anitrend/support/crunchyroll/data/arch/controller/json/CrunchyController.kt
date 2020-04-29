@@ -39,8 +39,6 @@ internal class CrunchyController<S, D> private constructor(
 ) : ISupportResponse<Deferred<Response<CrunchyContainer<S>>>, D>,
     ISupportPagingResponse<Deferred<Response<CrunchyContainer<S>>>> {
 
-    private val moduleTag: String = javaClass.simpleName
-
     /**
      * Response handler for coroutine contexts which need to observe [NetworkState]
      *
@@ -54,29 +52,20 @@ internal class CrunchyController<S, D> private constructor(
         networkState: MutableLiveData<NetworkState>
     ): D? {
         return strategy({
-            networkState.postValue(NetworkState.Loading)
             val response = resource.fetchBodyWithRetry(dispatchers.io)
             if (!response.error) {
-                val result = if (response.data != null) {
+                response.data?.let {
                     val mapped = responseMapper.onResponseMapFrom(response.data)
                     withContext(dispatchers.io) {
                         responseMapper.onResponseDatabaseInsert(mapped)
                     }
                     mapped
-                } else null
-                networkState.postValue(NetworkState.Success)
-                result
+                }
             } else {
-                Timber.tag(moduleTag).e(
-                    "${response.message} | Status: ${response.code}"
+                throw Throwable(
+                    message = response.message,
+                    cause = Throwable(response.code.name.capitalizeWords())
                 )
-                networkState.postValue(
-                    NetworkState.Error(
-                        heading = response.code.name.capitalizeWords(),
-                        message = response.message
-                    )
-                )
-                null
             }
         }, networkState)
     }
@@ -100,13 +89,8 @@ internal class CrunchyController<S, D> private constructor(
                         responseMapper.onResponseDatabaseInsert(mapped)
                     }
                 }
-                pagingRequestHelper.recordSuccess()
-            } else {
-                Timber.tag(moduleTag).e("${response.message} | Status: ${response.code}")
-                pagingRequestHelper.recordFailure(
-                    Throwable(response.message ?: "Unexpected error occurred")
-                )
-            }
+            } else
+                throw Throwable("${response.message}, ${response.code}")
         }, pagingRequestHelper)
     }
 

@@ -19,7 +19,7 @@ package co.anitrend.support.crunchyroll.data.api.contract
 import co.anitrend.support.crunchyroll.data.BuildConfig
 
 
-enum class EndpointType(val url: String) {
+internal enum class EndpointType(val url: String) {
     SESSION(BuildConfig.apiSessionUrl),
     AUTH(BuildConfig.apiUrl),
     JSON(BuildConfig.apiUrl),

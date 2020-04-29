@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.session.model
 
-data class CrunchySessionCoreModel(
+internal data class CrunchySessionCoreModel(
     val session_id: String,
     val country_code: String,
     val device_type: String,

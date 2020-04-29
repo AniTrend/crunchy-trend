@@ -17,18 +17,22 @@
 package co.anitrend.support.crunchyroll.data.catalog.usecase
 
 import co.anitrend.arch.data.model.UserInterfaceState
+import co.anitrend.arch.data.repository.contract.ISupportRepository
 import co.anitrend.support.crunchyroll.data.catalog.repository.CatalogRepository
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 import co.anitrend.support.crunchyroll.domain.catalog.interactors.CatalogUseCase
 
-class CatalogUseCaseImpl(
+internal class CatalogUseCaseImpl(
     repository: CatalogRepository
-) : CatalogUseCase<UserInterfaceState<CrunchyCatalogWithSeries>>(repository) {
+) : CatalogUseCaseType(repository) {
 
     /**
      * Informs underlying repositories or related components running background operations to stop
      */
     override fun onCleared() {
-        (repository as CatalogRepository).onCleared()
+        repository as ISupportRepository
+        repository.onCleared()
     }
 }
+
+typealias CatalogUseCaseType = CatalogUseCase<UserInterfaceState<CrunchyCatalogWithSeries>>

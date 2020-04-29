@@ -26,7 +26,7 @@ import co.anitrend.support.crunchyroll.data.episode.model.CrunchyEpisodeModel
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.data.rss.contract.ICrunchyRssChannel
 
-class EpisodeFeedResponseMapper(
+internal class EpisodeFeedResponseMapper(
     private val dao: CrunchyRssEpisodeDao,
     private val localeHelper: ICrunchySessionLocale,
     private val settings: IAuthenticationSettings

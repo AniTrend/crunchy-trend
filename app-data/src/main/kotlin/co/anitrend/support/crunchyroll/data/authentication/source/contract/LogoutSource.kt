@@ -21,7 +21,7 @@ import androidx.lifecycle.MutableLiveData
 import co.anitrend.arch.data.source.core.SupportCoreDataSource
 import co.anitrend.arch.extension.SupportDispatchers
 
-abstract class LogoutSource(
+internal abstract class LogoutSource(
     supportDispatchers: SupportDispatchers
 ) : SupportCoreDataSource(supportDispatchers) {
 

@@ -24,7 +24,7 @@ import org.simpleframework.xml.ElementList
 import org.simpleframework.xml.Root
 
 @Root(name = "item", strict = false)
-data class CrunchyEpisodeModel(
+internal data class CrunchyEpisodeModel(
     @field:Element(
         name = "title",
         required = false

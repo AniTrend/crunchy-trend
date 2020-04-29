@@ -71,14 +71,18 @@ class NewsFeedContent : SupportFragmentPagedList<CrunchyNews, CrunchyCorePresent
             object : ItemClickListener<CrunchyNews> {
 
                 override fun onItemClick(target: View, data: Pair<Int, CrunchyNews?>) {
-                    val payload = NavigationTargets.News.Payload(
-                        data.second?.title,
-                        data.second?.subTitle,
-                        data.second?.description,
-                        data.second?.content
-                    ).toBundle(NavigationTargets.News.PAYLOAD)
+                    val model = data.second
+                    if (model != null) {
+                        val payload = NavigationTargets.News.Payload(
+                            model.title,
+                            model.subTitle,
+                            model.description,
+                            model.content,
+                            model.publishedOn
+                        ).toBundle(NavigationTargets.News.PAYLOAD)
 
-                    target.context.startNewActivity<NewsScreen>(payload)
+                        target.context.startNewActivity<NewsScreen>(payload)
+                    }
                 }
 
                 override fun onItemLongClick(target: View, data: Pair<Int, CrunchyNews?>) {

@@ -16,28 +16,34 @@
 
 package co.anitrend.support.crunchyroll.data.episode.source.contract
 
+import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import androidx.paging.PagingRequestHelper
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.data.source.paging.SupportPagingDataSource
 import co.anitrend.arch.extension.SupportDispatchers
-import co.anitrend.arch.extension.network.SupportConnectivity
-import co.anitrend.support.crunchyroll.data.arch.controller.CrunchyRssMediaController
-import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyRssMapper
-import co.anitrend.support.crunchyroll.data.rss.contract.IRssCopyright
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 import kotlinx.coroutines.launch
 
-abstract class EpisodeFeedSource(
+internal abstract class EpisodeFeedSource(
     supportDispatchers: SupportDispatchers
 ) : SupportPagingDataSource<CrunchyEpisodeFeed>(supportDispatchers) {
 
-    abstract val episodeListingsObservable: ISourceObservable<RssQuery, PagedList<CrunchyEpisodeFeed>>
+    protected lateinit var query: RssQuery
+        private set
 
-    protected abstract fun getMediaListingsCatalogue(
+    protected abstract val episodeListingsObservable:
+            ISourceObservable<Nothing?, PagedList<CrunchyEpisodeFeed>>
+
+    protected abstract suspend fun getMediaListingsCatalogue(
         callback: PagingRequestHelper.Request.Callback
     )
+
+    operator fun invoke(rssQuery: RssQuery): LiveData<PagedList<CrunchyEpisodeFeed>> {
+        query = rssQuery
+        return episodeListingsObservable(null)
+    }
 
     /**
      * Called when zero items are returned from an initial load of the PagedList's data source.
@@ -47,7 +53,7 @@ abstract class EpisodeFeedSource(
             PagingRequestHelper.RequestType.INITIAL
         ) {
             if (supportPagingHelper.isFirstPage()) {
-                getMediaListingsCatalogue(it)
+                launch { getMediaListingsCatalogue(it) }
                 supportPagingHelper.onPageNext()
             }
             else it.recordSuccess()
@@ -68,21 +74,10 @@ abstract class EpisodeFeedSource(
             PagingRequestHelper.RequestType.BEFORE
         ) {
             if (supportPagingHelper.isFirstPage()) {
-                getMediaListingsCatalogue(it)
+                launch { getMediaListingsCatalogue(it) }
                 supportPagingHelper.onPageNext()
             }
             else it.recordSuccess()
         }
     }
-
-    /**
-     * Extension to help us create a controller from a a mapper instance
-     */
-    internal fun <S: IRssCopyright, D> CrunchyRssMapper<S, D>.controller(
-        supportConnectivity: SupportConnectivity
-    ) = CrunchyRssMediaController.newInstance(
-        responseMapper = this,
-        supportConnectivity = supportConnectivity,
-        supportDispatchers = dispatchers
-    )
 }

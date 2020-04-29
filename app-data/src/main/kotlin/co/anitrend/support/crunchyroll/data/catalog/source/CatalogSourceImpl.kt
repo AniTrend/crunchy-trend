@@ -18,15 +18,13 @@ package co.anitrend.support.crunchyroll.data.catalog.source
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.map
-import androidx.lifecycle.switchMap
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
-import co.anitrend.arch.extension.util.SupportExtKeyStore
 import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OfflineControllerPolicy
-import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
+import co.anitrend.support.crunchyroll.data.arch.database.settings.IRefreshBehaviourSettings
 import co.anitrend.support.crunchyroll.data.arch.extension.controller
+import co.anitrend.support.crunchyroll.data.arch.helper.CrunchyClearDataHelper
 import co.anitrend.support.crunchyroll.data.catalog.datasource.local.CrunchyCatalogDao
 import co.anitrend.support.crunchyroll.data.catalog.mapper.CatalogResponseMapper
 import co.anitrend.support.crunchyroll.data.catalog.source.contract.CatalogSource
@@ -40,46 +38,42 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.get
+import org.koin.core.inject
 import org.koin.core.parameter.parametersOf
 
-class CatalogSourceImpl(
+internal class CatalogSourceImpl(
     private val catalogDao: CrunchyCatalogDao,
     private val endpoint: CrunchySeriesEndpoint,
     private val supportConnectivity: SupportConnectivity,
+    private val settings: IRefreshBehaviourSettings,
     supportDispatchers: SupportDispatchers
 ) : CatalogSource(supportDispatchers), KoinComponent {
 
-    override fun getCatalog(
-        param: CrunchyCatalogQuery
-    ): LiveData<CrunchyCatalogWithSeries> {
-        retry = { getCatalog(param) }
+    override suspend fun getCatalog() {
         val deferred = async {
             endpoint.getSeriesList(
                 offset = 0,
-                filter = param.catalogFilter.attribute
+                filter = query.catalogFilter.attribute
             )
         }
 
-        /** Not injecting via the constructor as we depending on [param] to be provided */
+        /** Not injecting via the constructor as we depending on [query] to be provided */
         val mapper = get<CatalogResponseMapper>{
-            parametersOf(param.catalogFilter)
+            parametersOf(query.catalogFilter)
         }
 
-        launch {
-            val controller =
-                mapper.controller(
-                    dispatchers,
-                    OfflineControllerPolicy.create()
-                )
+        val controller =
+            mapper.controller(
+                dispatchers,
+                OfflineControllerPolicy.create()
+            )
 
-            controller(deferred, networkState)
-        }
+        controller(deferred, networkState)
 
-        return observable(param)
     }
 
     override val observable =
-        object :ISourceObservable<CrunchyCatalogQuery, CrunchyCatalogWithSeries> {
+        object :ISourceObservable<Nothing?, CrunchyCatalogWithSeries> {
             /**
              * Returns the appropriate observable which we will monitor for updates,
              * common implementation may include but not limited to returning
@@ -87,10 +81,9 @@ class CatalogSourceImpl(
              *
              * @param parameter to use when executing
              */
-            override fun invoke(parameter: CrunchyCatalogQuery): LiveData<CrunchyCatalogWithSeries> {
-
+            override fun invoke(parameter: Nothing?): LiveData<CrunchyCatalogWithSeries> {
                 val catalogFlow = catalogDao.findMatchingFlow(
-                    parameter.catalogFilter
+                    query.catalogFilter
                 )
 
                 @Suppress("EXPERIMENTAL_API_USAGE")
@@ -104,7 +97,8 @@ class CatalogSourceImpl(
      * Clears data sources (databases, preferences, e.t.c)
      */
     override suspend fun clearDataSource() {
-        if (supportConnectivity.isConnected)
-            catalogDao.clearTable()
+        CrunchyClearDataHelper(settings, supportConnectivity) {
+            catalogDao.clearTableMatching(query.catalogFilter)
+        }
     }
 }

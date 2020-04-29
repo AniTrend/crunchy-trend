@@ -19,6 +19,6 @@ package co.anitrend.support.crunchyroll.data.session.usecase
 import co.anitrend.support.crunchyroll.domain.session.interactors.UnblockSessionUseCase
 import co.anitrend.support.crunchyroll.domain.session.repositories.ISessionRepository
 
-class UnblockSessionUseCaseImpl(
+internal class UnblockSessionUseCaseImpl(
     repository: ISessionRepository
 ) : UnblockSessionUseCase(repository)

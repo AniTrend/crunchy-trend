@@ -21,7 +21,7 @@ import co.anitrend.support.crunchyroll.data.session.source.contract.SessionSourc
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
 import co.anitrend.support.crunchyroll.domain.session.repositories.ISessionRepository
 
-class SessionRepository(
+internal class SessionRepository(
     private val coreSource: SessionSource,
     private val normalSource: SessionSource,
     private val unblockedSource: SessionSource

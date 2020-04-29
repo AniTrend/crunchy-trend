@@ -20,7 +20,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-class CrunchyLocaleEntity(
+internal class CrunchyLocaleEntity(
     @PrimaryKey
     val localeId: String,
     val label: String

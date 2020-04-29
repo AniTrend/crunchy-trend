@@ -21,7 +21,7 @@ import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
 
-abstract class SessionSource(
+internal abstract class SessionSource(
     supportDispatchers: SupportDispatchers
 ) : SupportCoreDataSource(supportDispatchers) {
 

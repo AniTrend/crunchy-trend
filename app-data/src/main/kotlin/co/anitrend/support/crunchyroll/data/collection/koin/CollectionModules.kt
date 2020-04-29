@@ -24,7 +24,7 @@ import co.anitrend.support.crunchyroll.data.collection.repository.CollectionRepo
 import co.anitrend.support.crunchyroll.data.collection.source.CollectionSourceImpl
 import co.anitrend.support.crunchyroll.data.collection.source.contract.CollectionSource
 import co.anitrend.support.crunchyroll.data.collection.usecase.CollectionUseCaseImpl
-import co.anitrend.support.crunchyroll.domain.collection.interactors.CollectionUseCase
+import co.anitrend.support.crunchyroll.data.collection.usecase.CollectionUseCaseType
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -35,7 +35,8 @@ private val dataSourceModule = module {
             collectionDao = db().crunchyCollectionDao(),
             collectionEndpoint = api(EndpointType.JSON),
             supportDispatchers = get(),
-            supportConnectivity = get()
+            supportConnectivity = get(),
+            settings = get()
         )
     } bind CollectionSource::class
 }
@@ -57,7 +58,7 @@ private val repositoryModule = module {
 }
 
 private val useCaseModule = module {
-    factory {
+    factory<CollectionUseCaseType> {
         CollectionUseCaseImpl(
             repository = get()
         )

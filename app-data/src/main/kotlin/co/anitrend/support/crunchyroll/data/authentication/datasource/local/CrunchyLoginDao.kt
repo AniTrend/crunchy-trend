@@ -24,7 +24,7 @@ import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
 import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEntity
 
 @Dao
-interface CrunchyLoginDao : ISupportQuery<CrunchyLoginEntity>, ISourceDao {
+internal interface CrunchyLoginDao : ISupportQuery<CrunchyLoginEntity>, ISourceDao {
 
     @Query("""
         select count(userId) from CrunchyLoginEntity 

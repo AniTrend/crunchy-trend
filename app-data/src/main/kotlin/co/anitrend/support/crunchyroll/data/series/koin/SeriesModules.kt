@@ -21,25 +21,53 @@ import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
 import co.anitrend.support.crunchyroll.data.arch.extension.api
 import co.anitrend.support.crunchyroll.data.arch.extension.db
 import co.anitrend.support.crunchyroll.data.series.mapper.SeriesResponseMapper
-import co.anitrend.support.crunchyroll.data.series.repository.SeriesRepository
-import co.anitrend.support.crunchyroll.data.series.source.SeriesSourceImpl
-import co.anitrend.support.crunchyroll.data.series.source.contract.SeriesSource
+import co.anitrend.support.crunchyroll.data.series.repository.browse.SeriesBrowseRepository
+import co.anitrend.support.crunchyroll.data.series.repository.detail.SeriesDetailRepository
+import co.anitrend.support.crunchyroll.data.series.repository.search.SeriesSearchRepository
+import co.anitrend.support.crunchyroll.data.series.source.browse.SeriesBrowseSourceImpl
+import co.anitrend.support.crunchyroll.data.series.source.browse.contract.SeriesBrowseSource
+import co.anitrend.support.crunchyroll.data.series.source.detail.SeriesDetailSourceImpl
+import co.anitrend.support.crunchyroll.data.series.source.detail.contract.SeriesDetailSource
+import co.anitrend.support.crunchyroll.data.series.source.search.SeriesSearchSourceImpl
+import co.anitrend.support.crunchyroll.data.series.source.search.contract.SeriesSearchSource
+import co.anitrend.support.crunchyroll.data.series.usecase.*
 import co.anitrend.support.crunchyroll.data.series.usecase.SeriesBrowseUseCaseImpl
-import co.anitrend.support.crunchyroll.data.series.usecase.SeriesInfoUseCaseImpl
+import co.anitrend.support.crunchyroll.data.series.usecase.SeriesDetailUseCaseImpl
 import co.anitrend.support.crunchyroll.data.series.usecase.SeriesSearchUseCaseImpl
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
 private val dataSourceModule = module {
     factory {
-        SeriesSourceImpl(
+        SeriesDetailSourceImpl(
             mapper = get(),
             seriesDao = db().crunchySeriesDao(),
             endpoint = api(EndpointType.JSON),
             supportDispatchers = get(),
+            settings = get(),
             supportConnectivity = get()
         )
-    } bind SeriesSource::class
+    } bind SeriesDetailSource::class
+    factory {
+        SeriesSearchSourceImpl(
+            mapper = get(),
+            seriesDao = db().crunchySeriesDao(),
+            endpoint = api(EndpointType.JSON),
+            supportDispatchers = get(),
+            settings = get(),
+            supportConnectivity = get()
+        )
+    } bind SeriesSearchSource::class
+    factory {
+        SeriesBrowseSourceImpl(
+            mapper = get(),
+            seriesDao = db().crunchySeriesDao(),
+            endpoint = api(EndpointType.JSON),
+            supportDispatchers = get(),
+            settings = get(),
+            supportConnectivity = get()
+        )
+    } bind SeriesBrowseSource::class
 }
 
 private val mapperModule = module {
@@ -52,24 +80,34 @@ private val mapperModule = module {
 
 private val repositoryModule = module {
     factory {
-        SeriesRepository(
+        SeriesDetailRepository(
+            source = get()
+        )
+    }
+    factory {
+        SeriesSearchRepository(
+            source = get()
+        )
+    }
+    factory {
+        SeriesBrowseRepository(
             source = get()
         )
     }
 }
 
 private val useCaseModule = module {
-    factory {
-        SeriesInfoUseCaseImpl(
+    factory<SeriesDetailUseCaseType> {
+        SeriesDetailUseCaseImpl(
             repository = get()
         )
     }
-    factory {
+    factory<SeriesSearchUseCaseType> {
         SeriesSearchUseCaseImpl(
             repository = get()
         )
     }
-    factory {
+    factory<SeriesBrowseUseCaseType> {
         SeriesBrowseUseCaseImpl(
             repository = get()
         )

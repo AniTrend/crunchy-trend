@@ -22,7 +22,7 @@ import co.anitrend.support.crunchyroll.data.session.datasource.local.transformer
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
 import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionModel
 
-class SessionResponseMapper(
+internal class SessionResponseMapper(
     private val dao: CrunchySessionDao
 ) : CrunchyMapper<CrunchySessionModel, CrunchySessionEntity>() {
 

@@ -111,11 +111,11 @@ internal object EndpointProvider {
 
     fun provideRetrofit(endpointType: EndpointType, scope: Scope): Retrofit {
         return if (retrofitCache.containsKey(endpointType.name)) {
-            Timber.tag(moduleTag).d("Using cached retrofit instance for endpoint: ${endpointType.name}")
+            Timber.tag(moduleTag).v("Using cached retrofit instance for endpoint: ${endpointType.name}")
             retrofitCache[endpointType.name]!!
         }
         else {
-            Timber.tag(moduleTag).d("Creating new retrofit instance for endpoint: ${endpointType.name}")
+            Timber.tag(moduleTag).v("Creating new retrofit instance for endpoint: ${endpointType.name}")
             val retrofit =
                 createRetrofit(
                     endpointType,

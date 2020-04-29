@@ -23,7 +23,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface CrunchySeriesFeedEndpoint {
+internal interface CrunchySeriesFeedEndpoint {
 
     @XML
     @GET("/{media_slug}.rss")

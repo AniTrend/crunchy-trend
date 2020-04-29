@@ -17,20 +17,20 @@
 package co.anitrend.support.crunchyroll.data.stream.repository
 
 import co.anitrend.arch.data.model.UserInterfaceState
+import co.anitrend.arch.data.model.UserInterfaceState.Companion.create
 import co.anitrend.arch.data.repository.SupportRepository
 import co.anitrend.support.crunchyroll.data.stream.source.contract.CrunchyStreamSource
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 import co.anitrend.support.crunchyroll.domain.stream.repositories.IStreamRepository
 
-class CrunchyStreamRepository(
+internal class CrunchyStreamRepository(
     private val source: CrunchyStreamSource
 ) : SupportRepository(source),
     IStreamRepository<UserInterfaceState<List<MediaStream>?>> {
 
     override fun getStream(query: CrunchyMediaStreamQuery) =
-        UserInterfaceState.create(
-            model = source.getMediaStream(query),
-            source = source
+        source.create(
+            model = source(query)
         )
 }

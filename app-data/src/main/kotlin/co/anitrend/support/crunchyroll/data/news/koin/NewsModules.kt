@@ -25,7 +25,7 @@ import co.anitrend.support.crunchyroll.data.news.repository.NewsRepository
 import co.anitrend.support.crunchyroll.data.news.source.NewsSourceImpl
 import co.anitrend.support.crunchyroll.data.news.source.contract.NewsSource
 import co.anitrend.support.crunchyroll.data.news.usecase.NewsUseCaseImpl
-import co.anitrend.support.crunchyroll.domain.news.interactors.NewsUseCase
+import co.anitrend.support.crunchyroll.data.news.usecase.NewsUseCaseType
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -36,6 +36,7 @@ private val dataSourceModule = module {
             endpoint = api(EndpointType.XML),
             dao = db().crunchyRssNewsDao(),
             supportDispatchers = get(),
+            settings = get(),
             supportConnectivity = get()
         )
     } bind NewsSource::class
@@ -58,7 +59,7 @@ private val repositoryModule = module {
 }
 
 private val useCaseModule = module {
-    factory {
+    factory<NewsUseCaseType> {
         NewsUseCaseImpl(
             repository = get()
         )

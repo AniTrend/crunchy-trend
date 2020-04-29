@@ -25,7 +25,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface CrunchyCollectionEndpoint {
+internal interface CrunchyCollectionEndpoint {
 
     @JSON
     @GET("/list_collections.${BuildConfig.apiExtension}.json")

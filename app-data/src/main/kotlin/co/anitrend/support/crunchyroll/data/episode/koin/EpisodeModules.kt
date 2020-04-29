@@ -25,7 +25,7 @@ import co.anitrend.support.crunchyroll.data.episode.repository.EpisodeFeedReposi
 import co.anitrend.support.crunchyroll.data.episode.source.EpisodeFeedSourceImpl
 import co.anitrend.support.crunchyroll.data.episode.source.contract.EpisodeFeedSource
 import co.anitrend.support.crunchyroll.data.episode.usecase.EpisodeFeedUseCaseImpl
-import co.anitrend.support.crunchyroll.domain.episode.interactors.EpisodeFeedUseCase
+import co.anitrend.support.crunchyroll.data.episode.usecase.EpisodeFeedUseCaseType
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -36,7 +36,8 @@ private val dataSourceModule = module {
             endpoint = api(EndpointType.XML),
             dao = db().crunchyRssMediaDao(),
             supportDispatchers = get(),
-            supportConnectivity = get()
+            supportConnectivity = get(),
+            settings = get()
         )
     } bind EpisodeFeedSource::class
 }
@@ -60,7 +61,7 @@ private val repositoryModule = module {
 }
 
 private val useCaseModule = module {
-    factory {
+    factory<EpisodeFeedUseCaseType> {
         EpisodeFeedUseCaseImpl(
             repository = get()
         )

@@ -19,16 +19,15 @@ package co.anitrend.support.crunchyroll.feature.authentication.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.liveData
 import co.anitrend.arch.core.viewmodel.SupportViewModel
 import co.anitrend.arch.data.model.UserInterfaceState
-import co.anitrend.support.crunchyroll.data.authentication.usecase.LoginUseCaseImpl
-import co.anitrend.support.crunchyroll.data.authentication.usecase.LogoutUseCaseImpl
+import co.anitrend.support.crunchyroll.data.authentication.usecase.LoginUseCaseType
+import co.anitrend.support.crunchyroll.data.authentication.usecase.LogoutUseCaseType
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 
 class LogoutViewModel(
-    override val useCase: LogoutUseCaseImpl,
-    private val loginUseCase: LoginUseCaseImpl
+    override val useCase: LogoutUseCaseType,
+    private val loginUseCase: LoginUseCaseType
 ) : SupportViewModel<Nothing?, Boolean>() {
 
     /**

@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.stream.model
 
-data class CrunchyStreamInfoModel(
+internal data class CrunchyStreamInfoModel(
     val playhead: Int,
     val stream_data: CrunchyStreamDataModel
 )

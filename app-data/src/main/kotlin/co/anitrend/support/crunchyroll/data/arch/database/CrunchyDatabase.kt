@@ -23,12 +23,12 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.arch.database.common.ICrunchyDatabase
-import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEntity
-import co.anitrend.support.crunchyroll.data.collection.entity.CrunchyCollectionEntity
 import co.anitrend.support.crunchyroll.data.arch.database.converters.CrunchyEnumsTypeConverter
 import co.anitrend.support.crunchyroll.data.arch.database.converters.CrunchyTypeConverters
 import co.anitrend.support.crunchyroll.data.arch.database.migration.migrations
+import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEntity
 import co.anitrend.support.crunchyroll.data.catalog.entity.CrunchyCatalogEntity
+import co.anitrend.support.crunchyroll.data.collection.entity.CrunchyCollectionEntity
 import co.anitrend.support.crunchyroll.data.episode.entity.EpisodeFeedEntity
 import co.anitrend.support.crunchyroll.data.locale.entity.CrunchyLocaleEntity
 import co.anitrend.support.crunchyroll.data.media.entity.CrunchyMediaEntity
@@ -60,8 +60,7 @@ import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
         CrunchyTypeConverters::class
     ]
 )
-abstract class CrunchyDatabase: RoomDatabase(),
-    ICrunchyDatabase {
+internal abstract class CrunchyDatabase: RoomDatabase(), ICrunchyDatabase {
 
     companion object {
         fun newInstance(context: Context): CrunchyDatabase {

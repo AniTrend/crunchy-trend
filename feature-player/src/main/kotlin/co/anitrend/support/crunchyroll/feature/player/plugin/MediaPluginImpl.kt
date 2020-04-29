@@ -228,7 +228,7 @@ class MediaPluginImpl(
         coroutineScope.launch {
             val tracks = availableVideoTracks()
             val minimumQuality = tracks?.first {
-                it.height >= 480
+                it.height == 480.toShort()
             }
             if (minimumQuality != null)
                 useMediaTrack(minimumQuality)

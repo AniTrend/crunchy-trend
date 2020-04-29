@@ -22,12 +22,12 @@ package co.anitrend.support.crunchyroll.data.arch
 )
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
-annotation class CrunchyExperimentalFeature
+internal annotation class CrunchyExperimentalFeature
 
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION)
-annotation class JSON
+internal annotation class JSON
 
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION)
-annotation class XML
+internal annotation class XML

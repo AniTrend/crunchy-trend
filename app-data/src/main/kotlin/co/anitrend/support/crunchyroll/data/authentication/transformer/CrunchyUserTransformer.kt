@@ -20,7 +20,7 @@ import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
 import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEntity
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 
-object CrunchyUserTransformer : ISupportMapperHelper<CrunchyLoginEntity?, CrunchyUser?> {
+internal object CrunchyUserTransformer : ISupportMapperHelper<CrunchyLoginEntity?, CrunchyUser?> {
 
     /**
      * Transforms the the [source] to the target type

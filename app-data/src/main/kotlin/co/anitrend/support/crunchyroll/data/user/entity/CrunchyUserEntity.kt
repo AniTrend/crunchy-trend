@@ -21,7 +21,7 @@ import co.anitrend.support.crunchyroll.domain.user.enums.CrunchyAccessType
 /**
  * @param premium anime|drama|manga
  */
-data class CrunchyUserEntity(
+internal data class CrunchyUserEntity(
     val userId: Long,
     val username: String,
     val email: String,

@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.user.model
 
-data class CrunchyUserModel(
+internal data class CrunchyUserModel(
     val user_id: Int,
     val username: String,
     val email: String,

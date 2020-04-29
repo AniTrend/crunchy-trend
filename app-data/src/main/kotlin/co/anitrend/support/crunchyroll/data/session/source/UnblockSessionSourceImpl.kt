@@ -37,7 +37,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class UnblockSessionSourceImpl(
+internal class UnblockSessionSourceImpl(
     private val dao: CrunchySessionDao,
     private val loginDao: CrunchyLoginDao,
     private val settings: IAuthenticationSettings,

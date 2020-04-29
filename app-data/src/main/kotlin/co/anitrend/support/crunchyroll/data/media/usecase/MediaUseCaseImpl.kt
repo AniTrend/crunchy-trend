@@ -18,18 +18,22 @@ package co.anitrend.support.crunchyroll.data.media.usecase
 
 import androidx.paging.PagedList
 import co.anitrend.arch.data.model.UserInterfaceState
+import co.anitrend.arch.data.repository.contract.ISupportRepository
 import co.anitrend.support.crunchyroll.data.media.repository.MediaRepository
 import co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia
 import co.anitrend.support.crunchyroll.domain.media.interactors.MediaUseCase
 
-class MediaUseCaseImpl(
+internal class MediaUseCaseImpl(
     repository: MediaRepository
-) : MediaUseCase<UserInterfaceState<PagedList<CrunchyMedia>>>(repository) {
+) : MediaUseCaseType(repository) {
 
     /**
      * Informs underlying repositories or related components running background operations to stop
      */
     override fun onCleared() {
-        (repository as MediaRepository).onCleared()
+        repository as ISupportRepository
+        repository.onCleared()
     }
 }
+
+typealias MediaUseCaseType = MediaUseCase<UserInterfaceState<PagedList<CrunchyMedia>>>

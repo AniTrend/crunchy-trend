@@ -17,20 +17,20 @@
 package co.anitrend.support.crunchyroll.data.catalog.repository
 
 import co.anitrend.arch.data.model.UserInterfaceState
+import co.anitrend.arch.data.model.UserInterfaceState.Companion.create
 import co.anitrend.arch.data.repository.SupportRepository
 import co.anitrend.support.crunchyroll.data.catalog.source.contract.CatalogSource
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 import co.anitrend.support.crunchyroll.domain.catalog.models.CrunchyCatalogQuery
 import co.anitrend.support.crunchyroll.domain.catalog.repositories.ICatalogRepository
 
-class CatalogRepository(
+internal class CatalogRepository(
     private val source: CatalogSource
 ) : SupportRepository(source),
     ICatalogRepository<UserInterfaceState<CrunchyCatalogWithSeries>> {
 
     override fun catalogSeries(catalogQuery: CrunchyCatalogQuery) =
-        UserInterfaceState.create(
-            model = source.getCatalog(catalogQuery),
-            source = source
+        source.create(
+            model = source(catalogQuery)
         )
 }

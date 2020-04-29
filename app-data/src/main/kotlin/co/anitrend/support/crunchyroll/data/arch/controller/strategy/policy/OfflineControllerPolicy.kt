@@ -60,12 +60,13 @@ internal class OfflineControllerPolicy<D> private constructor() : ControllerStra
         networkState: MutableLiveData<NetworkState>
     ): D? {
         return runCatching{
+            networkState.postValue(NetworkState.Loading)
             block()
         }.getOrElse {
             it.printStackTrace()
             networkState.postValue(
                 NetworkState.Error(
-                    heading = "Unexpected error encountered \uD83E\uDD2D",
+                    heading = it.cause?.message ?: "Unexpected error encountered \uD83E\uDD2D",
                     message = it.message
                 )
             )

@@ -25,7 +25,7 @@ import co.anitrend.support.crunchyroll.data.series.mapper.SeriesResponseMapper
 import co.anitrend.support.crunchyroll.data.series.model.CrunchySeriesModel
 import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalogFilter
 
-class CatalogResponseMapper(
+internal class CatalogResponseMapper(
     private val dao: CrunchyCatalogDao,
     private val seriesResponseMapper: SeriesResponseMapper,
     private val catalogFilter: CrunchySeriesCatalogFilter

@@ -19,7 +19,7 @@ package co.anitrend.support.crunchyroll.data.arch.database.migration
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-val MIGRATION_1_2 = object : Migration(1, 2) {
+internal val MIGRATION_1_2 = object : Migration(1, 2) {
     /**
      * Should run the necessary migrations.
      *
@@ -37,6 +37,6 @@ val MIGRATION_1_2 = object : Migration(1, 2) {
     }
 }
 
-val migrations = arrayOf(
+internal val migrations = arrayOf(
     MIGRATION_1_2
 )

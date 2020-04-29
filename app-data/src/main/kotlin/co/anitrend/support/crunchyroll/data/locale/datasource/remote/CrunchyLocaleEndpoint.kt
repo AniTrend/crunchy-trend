@@ -23,7 +23,7 @@ import co.anitrend.support.crunchyroll.data.locale.model.CrunchyLocaleModel
 import retrofit2.Response
 import retrofit2.http.GET
 
-interface CrunchyLocaleEndpoint {
+internal interface CrunchyLocaleEndpoint {
 
     @JSON
     @GET("/list_locales.${BuildConfig.apiExtension}.json")

@@ -25,6 +25,13 @@ import kotlin.reflect.KClass
  *
  * @param endpoint The interface class method representing your request to use
  */
+@Deprecated(
+    "We won't be using this anymore, instead we'll be using a custom class",
+    ReplaceWith(
+        expression = "EndpointProvider",
+        imports = arrayOf("co.anitrend.support.crunchyroll.data.api.provider.EndpointProvider")
+    )
+)
 open class CrunchyEndpointFactory<S: Any>(
     endpoint: KClass<S>,
     override val retrofit: Retrofit

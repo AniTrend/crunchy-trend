@@ -22,7 +22,7 @@ import co.anitrend.support.crunchyroll.data.media.helper.CrunchyMediaHelper
 import co.anitrend.support.crunchyroll.data.media.model.CrunchyMediaModel
 import co.anitrend.support.crunchyroll.data.util.extension.iso8601ToUnixTime
 
-object CrunchyMediaEntityTransformer : ISupportMapperHelper<CrunchyMediaModel, CrunchyMediaEntity> {
+internal object CrunchyMediaEntityTransformer : ISupportMapperHelper<CrunchyMediaModel, CrunchyMediaEntity> {
 
     /**
      * Transforms the the [source] to the target type

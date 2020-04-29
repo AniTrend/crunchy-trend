@@ -20,7 +20,7 @@ import androidx.room.TypeConverter
 import co.anitrend.support.crunchyroll.data.arch.database.extension.fromCommaSeparatedValues
 import co.anitrend.support.crunchyroll.data.arch.database.extension.toCommaSeparatedValues
 
-class CrunchyTypeConverters {
+internal class CrunchyTypeConverters {
 
     @TypeConverter fun fromList(value: List<String>) = value.toCommaSeparatedValues()
     @TypeConverter fun toList(value: String) = value.fromCommaSeparatedValues()

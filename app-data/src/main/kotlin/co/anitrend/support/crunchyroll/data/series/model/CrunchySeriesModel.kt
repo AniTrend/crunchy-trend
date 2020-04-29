@@ -16,13 +16,9 @@
 
 package co.anitrend.support.crunchyroll.data.series.model
 
-import androidx.room.Entity
-import androidx.room.Fts4
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyImageSet
 
-@Entity
-@Fts4
-data class CrunchySeriesModel(
+internal data class CrunchySeriesModel(
     val series_id: Long,
     val url: String,
     val name: String,

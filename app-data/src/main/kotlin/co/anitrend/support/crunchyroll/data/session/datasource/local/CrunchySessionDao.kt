@@ -23,7 +23,7 @@ import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
 
 @Dao
-interface CrunchySessionDao : ISupportQuery<CrunchySessionEntity>, ISourceDao {
+internal interface CrunchySessionDao : ISupportQuery<CrunchySessionEntity>, ISourceDao {
 
     @Query("""
         select count(sessionId) from CrunchySessionEntity

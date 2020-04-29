@@ -16,4 +16,7 @@
 
 <resources>
 
+    <string name="action_title_open_in_browser">Open in browser</string>
+    <string name="action_title_open_gallery">Show gallery</string>
+
 </resources>

@@ -18,6 +18,9 @@ package co.anitrend.support.crunchyroll.feature.listing.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.core.text.HtmlCompat
+import androidx.core.text.parseAsHtml
 import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import co.anitrend.arch.core.viewmodel.SupportPagingViewModel
@@ -25,6 +28,9 @@ import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
+import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
+import co.anitrend.support.crunchyroll.core.extensions.createDialog
+import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
@@ -37,6 +43,12 @@ import co.anitrend.support.crunchyroll.feature.feed.R
 import co.anitrend.support.crunchyroll.feature.listing.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.listing.presenter.ListingPresenter
 import co.anitrend.support.crunchyroll.feature.listing.ui.adapter.RssMediaAdapter
+import com.afollestad.materialdialogs.LayoutMode
+import com.afollestad.materialdialogs.bottomsheets.BottomSheet
+import com.afollestad.materialdialogs.bottomsheets.setPeekHeight
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
+import kotlinx.android.synthetic.main.dialog_media.view.*
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -65,16 +77,50 @@ class MediaFeedContent : SupportFragmentPagedList<CrunchyEpisodeFeed, CrunchyCor
             object : ItemClickListener<CrunchyEpisodeFeed> {
                 override fun onItemClick(target: View, data: Pair<Int, CrunchyEpisodeFeed?>) {
                     val episodeFeed = data.second
-                    val mediaPlayerPayload = NavigationTargets.MediaPlayer.Payload(
-                        mediaId = episodeFeed?.id ?: 0,
-                        collectionName = episodeFeed?.title,
-                        collectionThumbnail = null,
-                        episodeTitle = "Episode ${episodeFeed?.episodeNumber}: ${episodeFeed?.episodeTitle}",
-                        episodeThumbnail = episodeFeed?.episodeThumbnail
-                    )
-                    NavigationTargets.MediaPlayer(
-                        target.context, mediaPlayerPayload
-                    )
+                    if (episodeFeed != null) {
+                        activity?.createDialog(BottomSheet(LayoutMode.WRAP_CONTENT))
+                            ?.setPeekHeight(res = R.dimen.app_bar_height)
+                            ?.cornerRadius(res = R.dimen.xl_margin)
+                            ?.customView(
+                                viewRes = R.layout.dialog_media,
+                                horizontalPadding = false,
+                                noVerticalPadding = true,
+                                dialogWrapContent = true
+                            )
+                            ?.show {
+                                val view = getCustomView()
+                                view.dialog_media_duration.text = episodeFeed.episodeDuration
+                                view.dialog_media_title.text = episodeFeed.episodeTitle
+                                view.dialog_media_description.text = episodeFeed.description?.parseAsHtml(
+                                    flags = HtmlCompat.FROM_HTML_MODE_COMPACT
+                                )
+                                view.dialog_media_image.setImageUrl(episodeFeed.episodeThumbnail)
+                                view.dialog_media_image_container.setOnClickListener {
+                                    val mediaPlayerPayload = NavigationTargets.MediaPlayer.Payload(
+                                        mediaId = episodeFeed.id,
+                                        collectionName = episodeFeed.title,
+                                        collectionThumbnail = null,
+                                        episodeTitle = "Episode ${episodeFeed.episodeNumber}: ${episodeFeed.episodeTitle}",
+                                        episodeThumbnail = episodeFeed.episodeThumbnail
+                                    )
+                                    NavigationTargets.MediaPlayer(
+                                        target.context, mediaPlayerPayload
+                                    )
+                                }
+                                view.dialog_media_download.setOnClickListener {
+                                    // TODO: Move download to the player screen?
+                                    Toast.makeText(
+                                        it.context,
+                                        "Not yet implemented.. ${Emote.Heart}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                // possible regression https://github.com/afollestad/material-dialogs/issues/1925
+                                /*cancelable(false)
+                            cancelOnTouchOutside(false)
+                            noAutoDismiss()*/
+                            }
+                    }
                 }
 
                 override fun onItemLongClick(target: View, data: Pair<Int, CrunchyEpisodeFeed?>) {

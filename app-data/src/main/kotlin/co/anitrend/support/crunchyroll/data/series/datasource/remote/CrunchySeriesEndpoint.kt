@@ -27,7 +27,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface CrunchySeriesEndpoint {
+internal interface CrunchySeriesEndpoint {
 
     @JSON
     @GET("/info.${BuildConfig.apiExtension}.json")

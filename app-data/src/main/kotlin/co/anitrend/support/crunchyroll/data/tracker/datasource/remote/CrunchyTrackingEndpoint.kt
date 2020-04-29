@@ -23,7 +23,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface CrunchyTrackingEndpoint {
+internal interface CrunchyTrackingEndpoint {
 
     @JSON
     @GET("/add_to_queue.${BuildConfig.apiExtension}.json")

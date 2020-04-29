@@ -22,7 +22,7 @@ import co.anitrend.support.crunchyroll.data.authentication.datasource.local.tran
 import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEntity
 import co.anitrend.support.crunchyroll.data.authentication.model.CrunchyLoginModel
 
-class LoginResponseMapper(
+internal class LoginResponseMapper(
     private val dao: CrunchyLoginDao
 ) : CrunchyMapper<CrunchyLoginModel, CrunchyLoginEntity>() {
 

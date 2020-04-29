@@ -23,7 +23,7 @@ import co.anitrend.support.crunchyroll.data.episode.model.CrunchyEpisodeModel
 import co.anitrend.support.crunchyroll.data.util.extension.rcf822ToUnixTime
 import java.util.*
 
-object EpisodeFeedEntityTransformer : ISupportMapperHelper<CrunchyEpisodeModel, EpisodeFeedEntity> {
+internal object EpisodeFeedEntityTransformer : ISupportMapperHelper<CrunchyEpisodeModel, EpisodeFeedEntity> {
 
     /**
      * Transforms the the [source] to the target type

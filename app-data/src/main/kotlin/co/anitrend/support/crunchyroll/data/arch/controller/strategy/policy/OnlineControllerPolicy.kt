@@ -69,12 +69,13 @@ internal class OnlineControllerPolicy<D> private constructor(
     ): D? {
         if (connectivity.isConnected) {
             return runCatching{
+                networkState.postValue(NetworkState.Loading)
                 block()
             }.getOrElse {
-                it.printStackTrace()
+                Timber.tag(moduleTag).e(it)
                 networkState.postValue(
                     NetworkState.Error(
-                        heading = "Unexpected error encountered \uD83E\uDD2D",
+                        heading = it.cause?.message ?: "Unexpected error encountered \uD83E\uDD2D",
                         message = it.message
                     )
                 )

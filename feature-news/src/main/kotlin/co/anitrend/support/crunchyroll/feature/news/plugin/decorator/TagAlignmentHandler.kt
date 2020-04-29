@@ -23,7 +23,7 @@ import io.noties.markwon.RenderProps
 import io.noties.markwon.html.HtmlTag
 import io.noties.markwon.html.tag.SimpleTagHandler
 
-class TagAlignmentHandler private constructor(): SimpleTagHandler() {
+internal class TagAlignmentHandler private constructor(): SimpleTagHandler() {
 
     override fun getSpans(
         configuration: MarkwonConfiguration,

@@ -16,6 +16,6 @@
 
 package co.anitrend.support.crunchyroll.data.arch.model
 
-data class CrunchyImageSet(
+internal data class CrunchyImageSet(
     val full_url: String
 )

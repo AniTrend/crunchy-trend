@@ -27,6 +27,7 @@ import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
+import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesBrowseQuery
@@ -169,5 +170,16 @@ class SeriesDiscoverContent : SupportFragmentPagedList<CrunchySeries, SeriesPres
     override fun onDestroyView() {
         supportRecyclerView?.adapter = null
         super.onDestroyView()
+    }
+
+    companion object : IFragmentFactory<SeriesDiscoverContent> {
+
+        override val FRAGMENT_TAG = SeriesDiscoverContent::class.java.simpleName
+
+        override fun newInstance(bundle: Bundle?) =
+            SeriesDiscoverContent()
+                .apply {
+                    arguments = bundle
+                }
     }
 }

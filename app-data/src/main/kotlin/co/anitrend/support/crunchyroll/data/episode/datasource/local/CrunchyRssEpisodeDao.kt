@@ -25,7 +25,7 @@ import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
 import co.anitrend.support.crunchyroll.data.episode.entity.EpisodeFeedEntity
 
 @Dao
-interface CrunchyRssEpisodeDao : ISupportQuery<EpisodeFeedEntity>, ISourceDao {
+internal interface CrunchyRssEpisodeDao : ISupportQuery<EpisodeFeedEntity>, ISourceDao {
 
     @Query("""
         select count(mediaId) from EpisodeFeedEntity 

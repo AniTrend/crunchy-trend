@@ -20,7 +20,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.core.text.isDigitsOnly
 import co.anitrend.support.crunchyroll.data.media.model.CrunchyMediaModel
 
-object CrunchyMediaHelper {
+internal object CrunchyMediaHelper {
     fun getActualEpisodeNumber(model: CrunchyMediaModel): String {
         val regex = Regex("[^\\d.]")
         if (model.episode_number.isBlank())

@@ -25,7 +25,7 @@ import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
 import co.anitrend.support.crunchyroll.data.news.entity.NewsEntity
 
 @Dao
-interface CrunchyRssNewsDao : ISupportQuery<NewsEntity>, ISourceDao {
+internal interface CrunchyRssNewsDao : ISupportQuery<NewsEntity>, ISourceDao {
 
     @Query("""
         select count(guid) from NewsEntity

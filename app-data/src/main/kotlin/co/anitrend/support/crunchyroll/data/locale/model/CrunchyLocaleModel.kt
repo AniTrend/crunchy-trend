@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.locale.model
 
-data class CrunchyLocaleModel(
+internal data class CrunchyLocaleModel(
     val locale_id: String,
     val label: String
 )

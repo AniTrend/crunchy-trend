@@ -20,7 +20,7 @@ import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
 import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesEntity
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 
-object CrunchySeriesTransformer : ISupportMapperHelper<CrunchySeriesEntity, CrunchySeries> {
+internal object CrunchySeriesTransformer : ISupportMapperHelper<CrunchySeriesEntity, CrunchySeries> {
 
     /**
      * Transforms the the [source] to the target type

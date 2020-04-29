@@ -21,7 +21,7 @@ import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesEntity
 import co.anitrend.support.crunchyroll.data.series.model.CrunchySeriesModel
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchyMediaType
 
-object CrunchySeriesEntityTransformer : ISupportMapperHelper<CrunchySeriesModel, CrunchySeriesEntity> {
+internal object CrunchySeriesEntityTransformer : ISupportMapperHelper<CrunchySeriesModel, CrunchySeriesEntity> {
 
     /**
      * Transforms the the [source] to the target type

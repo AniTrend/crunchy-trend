@@ -24,7 +24,7 @@ import org.simpleframework.xml.ElementList
 import org.simpleframework.xml.Root
 
 @Root(strict = false)
-data class CrunchyRssEpisodeChannel(
+internal data class CrunchyRssEpisodeChannel(
     @field:Element(required = false)
     override var title: String? = null,
     @field:Element(required = false)

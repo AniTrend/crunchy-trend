@@ -21,7 +21,7 @@ import co.anitrend.support.crunchyroll.data.user.entity.CrunchyUserEntity
 import co.anitrend.support.crunchyroll.data.user.model.CrunchyUserModel
 import co.anitrend.support.crunchyroll.domain.user.enums.CrunchyAccessType
 
-object UserEntityTransformer : ISupportMapperHelper<CrunchyUserModel, CrunchyUserEntity> {
+internal object UserEntityTransformer : ISupportMapperHelper<CrunchyUserModel, CrunchyUserEntity> {
 
     /**
      * Transforms the the [source] to the target type

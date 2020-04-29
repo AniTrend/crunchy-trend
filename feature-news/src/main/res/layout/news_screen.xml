@@ -15,8 +15,6 @@
   ~    limitations under the License.
   -->
 
-
-
 <co.anitrend.arch.ui.view.widget.SupportStateLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -50,6 +48,7 @@
                     app:layout_anchor="@id/bottomAppBar"
                     app:backgroundTint="@color/material_300"
                     app:srcCompat="@drawable/ic_share_24dp" />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </co.anitrend.arch.ui.view.widget.SupportStateLayout>

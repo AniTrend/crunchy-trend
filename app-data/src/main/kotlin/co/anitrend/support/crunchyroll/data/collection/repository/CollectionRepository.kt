@@ -18,13 +18,14 @@ package co.anitrend.support.crunchyroll.data.collection.repository
 
 import androidx.paging.PagedList
 import co.anitrend.arch.data.model.UserInterfaceState
+import co.anitrend.arch.data.model.UserInterfaceState.Companion.create
 import co.anitrend.arch.data.repository.SupportRepository
 import co.anitrend.support.crunchyroll.data.collection.source.contract.CollectionSource
 import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
 import co.anitrend.support.crunchyroll.domain.collection.models.CrunchyCollectionQuery
 import co.anitrend.support.crunchyroll.domain.collection.repositories.ICollectionRepository
 
-class CollectionRepository(
+internal class CollectionRepository(
     private val source: CollectionSource
 ) : SupportRepository(source),
     ICollectionRepository<UserInterfaceState<PagedList<CrunchyCollection>>> {
@@ -32,8 +33,7 @@ class CollectionRepository(
     override fun getCollection(
         seriesQuery: CrunchyCollectionQuery
     ) =
-        UserInterfaceState.create(
-            model = source.collectionObservable(seriesQuery),
-            source = source
+        source.create(
+            model = source(seriesQuery)
         )
 }

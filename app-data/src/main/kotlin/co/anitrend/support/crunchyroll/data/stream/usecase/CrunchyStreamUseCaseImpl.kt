@@ -17,18 +17,22 @@
 package co.anitrend.support.crunchyroll.data.stream.usecase
 
 import co.anitrend.arch.data.model.UserInterfaceState
+import co.anitrend.arch.data.repository.contract.ISupportRepository
 import co.anitrend.support.crunchyroll.data.stream.repository.CrunchyStreamRepository
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.domain.stream.interactors.MediaStreamUseCase
 
-class CrunchyStreamUseCaseImpl(
+internal class CrunchyStreamUseCaseImpl(
     repository: CrunchyStreamRepository
-) : MediaStreamUseCase<UserInterfaceState<List<MediaStream>?>>(repository) {
+) : MediaStreamUseCaseType(repository) {
 
     /**
      * Informs underlying repositories or related components running background operations to stop
      */
     override fun onCleared() {
-        (repository as CrunchyStreamRepository).onCleared()
+        repository as ISupportRepository
+        repository.onCleared()
     }
 }
+
+typealias MediaStreamUseCaseType = MediaStreamUseCase<UserInterfaceState<List<MediaStream>?>>

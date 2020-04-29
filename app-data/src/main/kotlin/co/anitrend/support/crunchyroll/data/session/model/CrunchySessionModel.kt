@@ -19,7 +19,7 @@ package co.anitrend.support.crunchyroll.data.session.model
 import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
 import co.anitrend.support.crunchyroll.data.user.model.CrunchyUserModel
 
-data class CrunchySessionModel(
+internal data class CrunchySessionModel(
     val session_id: String,
     val country_code: String,
     val device_type: String,

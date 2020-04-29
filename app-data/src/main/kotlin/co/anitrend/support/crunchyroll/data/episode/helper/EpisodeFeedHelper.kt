@@ -21,7 +21,7 @@ import co.anitrend.support.crunchyroll.data.episode.model.EpisodeThumbnailModel
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-object EpisodeFeedHelper {
+internal object EpisodeFeedHelper {
 
     fun highestQuality(thumbnails: List<EpisodeThumbnailModel>?) = thumbnails?.maxBy { it.width }
 

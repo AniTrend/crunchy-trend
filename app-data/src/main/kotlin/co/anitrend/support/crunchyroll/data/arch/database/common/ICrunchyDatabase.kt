@@ -27,7 +27,7 @@ import co.anitrend.support.crunchyroll.data.series.datasource.local.CrunchySerie
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionDao
 
-interface ICrunchyDatabase {
+internal interface ICrunchyDatabase {
 
     fun crunchyLocaleDao(): CrunchyLocaleDao
 

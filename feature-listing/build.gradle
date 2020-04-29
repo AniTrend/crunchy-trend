@@ -27,4 +27,5 @@ apply from: "../gradle/gradle-common-dependencies.gradle"
 
 dependencies {
 
+    implementation("com.afollestad.material-dialogs:bottomsheets:$materialDialogs")
 }

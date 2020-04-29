@@ -153,7 +153,7 @@ class MediaStreamContent(
         }
 
         activity?.createDialog()
-            ?.cornerRadius(res = R.dimen.xl_margin)
+            ?.cornerRadius(res = R.dimen.lg_margin)
             ?.listItemsSingleChoice(
                 items = mediaTracks.map { it.toString() },
                 initialSelection = selectedIndex,
@@ -238,8 +238,8 @@ class MediaStreamContent(
             }
             if (exoMediaVideoView.trackSelectionAvailable()) {
                 it.addExtraView(qualityButton)
-                it.addExtraView(audioButton)
-                it.addExtraView(captionButton)
+                /*it.addExtraView(audioButton)
+                it.addExtraView(captionButton)*/
             }
         }
     }

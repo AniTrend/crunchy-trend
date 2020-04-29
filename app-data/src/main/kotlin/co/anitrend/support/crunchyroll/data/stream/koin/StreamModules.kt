@@ -24,6 +24,7 @@ import co.anitrend.support.crunchyroll.data.stream.repository.CrunchyStreamRepos
 import co.anitrend.support.crunchyroll.data.stream.source.CrunchyStreamSourceImpl
 import co.anitrend.support.crunchyroll.data.stream.source.contract.CrunchyStreamSource
 import co.anitrend.support.crunchyroll.data.stream.usecase.CrunchyStreamUseCaseImpl
+import co.anitrend.support.crunchyroll.data.stream.usecase.MediaStreamUseCaseType
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -53,7 +54,7 @@ private val repositoryModule = module {
 }
 
 private val useCaseModule = module {
-    factory {
+    factory<MediaStreamUseCaseType> {
         CrunchyStreamUseCaseImpl(
             repository = get()
         )

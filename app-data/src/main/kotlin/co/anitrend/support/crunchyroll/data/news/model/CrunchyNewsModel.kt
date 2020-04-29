@@ -22,7 +22,7 @@ import org.simpleframework.xml.Element
 import org.simpleframework.xml.Root
 
 @Root(name = "item", strict = false)
-data class CrunchyNewsModel(
+internal data class CrunchyNewsModel(
     @field:Element(name = "title")
     var title: String,
     @field:Element(name = "author")
