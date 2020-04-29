@@ -14,8 +14,9 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.feature.series.common
+package co.anitrend.support.crunchyroll.data.arch.database.settings
 
-interface ISwappable {
-    fun onSwapWithCollection()
+interface IRefreshBehaviourSettings {
+
+    var clearDataOnSwipeRefresh: Boolean
 }

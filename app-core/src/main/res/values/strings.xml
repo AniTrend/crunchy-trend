@@ -43,6 +43,7 @@
     <string name="settings_privacy_usage_analytics" translatable="false">_usageAnalytics</string>
 
     <string name="settings_cache_maximum_usage_ratio" translatable="false">_cacheUsageRatio</string>
+    <string name="settings_refresh_behaviour" translatable="false">_clearOnRefresh</string>
 
 
     <!-- other application strings -->
@@ -53,4 +54,6 @@
     <string name="label_text_action_settings">Settings</string>
 
     <string name="label_text_action_retry">Reload</string>
+
+    <string name="dialog_title_download">Download</string>
 </resources>

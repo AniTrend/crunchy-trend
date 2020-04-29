@@ -18,6 +18,10 @@
 
     <string name="title_activity_settings_screen">Settings</string>
 
+    <!-- Preference Group Titles -->
+    <string name="preference_group_title_application">Application</string>
+    <string name="preference_group_title_configuration">Configuration</string>
+
     <!-- Preference Titles -->
     <string name="preference_title_accounts">Accounts</string>
     <string name="preference_title_locale">Locale</string>
@@ -28,6 +32,7 @@
     <string name="preference_title_privacy_analytics_config">Usage analytics</string>
     <string name="preference_title_privacy_crash_analytics_config">Crash reporting</string>
     <string name="preference_title_cache_config">Cache usage limit</string>
+    <string name="preference_title_refresh_behavior_config">Clear database on refresh</string>
 
     <!-- Preference Summaries -->
     <string name="preference_summary_accounts">Access information about current accounts</string>
@@ -38,7 +43,8 @@
     <string name="preference_summary_privacy_analytics_config">Allows usage statics to be sent to the developer</string>
     <string name="preference_summary_privacy_crash_analytics_config">Allows crashes to be reported automatically as they happen</string>
     <string name="preference_summary_cache_config">Maximum amount of the remaining storage space on your device that can be used for caching. The minimum is 10% with a maximum of 50%</string>
+    <string name="preference_summary_refresh_behavior_config">Typically the database is cleared when you pull to refresh</string>
 
-    <!-- Preference Keys -->
+    <!-- Preference Lookup Keys (if we ever need to reference a preference) -->
     <string name="preference_key_accounts">_accounts</string>
 </resources>
