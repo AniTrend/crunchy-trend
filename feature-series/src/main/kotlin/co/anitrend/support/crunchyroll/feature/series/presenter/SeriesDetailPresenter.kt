@@ -34,10 +34,6 @@ class SeriesDetailPresenter(
     settings: CrunchySettings
 ) : CrunchyCorePresenter(context, settings) {
 
-    fun titleWithSeason(model: CrunchyCollection) : String {
-        return "Season: ${model.season} $separator ${model.name}"
-    }
-
     fun publisherYear(model: LiveData<SeriesModel?>) : String {
         val seriesModel = model.value
         val year = seriesModel?.year

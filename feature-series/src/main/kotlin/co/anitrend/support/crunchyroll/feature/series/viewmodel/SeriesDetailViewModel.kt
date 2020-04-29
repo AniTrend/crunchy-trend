@@ -18,14 +18,14 @@ package co.anitrend.support.crunchyroll.feature.series.viewmodel
 
 import androidx.lifecycle.Transformations
 import co.anitrend.arch.core.viewmodel.SupportViewModel
-import co.anitrend.support.crunchyroll.data.series.usecase.SeriesInfoUseCaseImpl
+import co.anitrend.support.crunchyroll.data.series.usecase.SeriesDetailUseCaseType
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
-import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesInfoQuery
+import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesDetailQuery
 import co.anitrend.support.crunchyroll.feature.series.model.SeriesModel
 
 class SeriesDetailViewModel(
-    override val useCase: SeriesInfoUseCaseImpl
-) : SupportViewModel<CrunchySeriesInfoQuery, CrunchySeries?>() {
+    override val useCase: SeriesDetailUseCaseType
+) : SupportViewModel<CrunchySeriesDetailQuery, CrunchySeries?>() {
 
     val seriesModel = Transformations.map(model) {
         it?.let { c ->
@@ -40,7 +40,7 @@ class SeriesDetailViewModel(
      *
      * @param parameter request payload
      */
-    override fun invoke(parameter: CrunchySeriesInfoQuery) {
+    override fun invoke(parameter: CrunchySeriesDetailQuery) {
         useCaseResult.value = useCase(parameter)
     }
 }

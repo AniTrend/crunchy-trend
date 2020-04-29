@@ -25,9 +25,9 @@ import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.feature.series.databinding.AdapterGenreBinding
-import co.anitrend.support.crunchyroll.feature.series.presenter.SeriesDetailPresenter
 
 class SeriesGenreAdapter(
+    private val itemClickListener: ItemClickListener<String>,
     override val stateConfiguration: SupportStateLayoutConfiguration
 ) : SupportListAdapter<String>() {
 
@@ -54,12 +54,14 @@ class SeriesGenreAdapter(
         return SeriesGenreViewHolder(
             AdapterGenreBinding.inflate(
                 layoutInflater, parent, false
-            )
+            ),
+            itemClickListener
         )
     }
 
     internal class SeriesGenreViewHolder(
-        private val binding: AdapterGenreBinding
+        private val binding: AdapterGenreBinding,
+        private val listener: ItemClickListener<String>
     ) : SupportViewHolder<String>(binding.root) {
 
         /**
@@ -69,6 +71,9 @@ class SeriesGenreAdapter(
          */
         override fun invoke(model: String?) {
             binding.entity = model
+            binding.seriesGenre.setOnClickListener {
+                onItemClick(it, listener)
+            }
             binding.executePendingBindings()
         }
 
@@ -79,6 +84,7 @@ class SeriesGenreAdapter(
          * @see com.bumptech.glide.Glide
          */
         override fun onViewRecycled() {
+            binding.seriesGenre.setOnClickListener(null)
             binding.unbind()
         }
 
@@ -89,8 +95,9 @@ class SeriesGenreAdapter(
          * @param view the view that has been clicked
          * @param itemClickListener callback for handing clicks
          */
-        override fun onItemClick(view: View, itemClickListener: ItemClickListener<String>) {
-
-        }
+        override fun onItemClick(
+            view: View,
+            itemClickListener: ItemClickListener<String>
+        ) = performClick(binding.entity, view, itemClickListener)
     }
 }

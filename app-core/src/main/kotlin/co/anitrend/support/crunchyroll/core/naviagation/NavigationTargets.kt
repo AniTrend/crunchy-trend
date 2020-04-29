@@ -74,10 +74,11 @@ object NavigationTargets {
 
         @Parcelize
         data class Payload(
-            val title: String?,
-            val subTitle: String?,
+            val title: String,
+            val subTitle: String,
             val description: String?,
-            val content: String?
+            val content: String,
+            val publishDate: Long?
         ) : Parcelable
     }
 
@@ -145,6 +146,21 @@ object NavigationTargets {
         override val navRouterIntent = forIntent()
     }
 
+    object DiscoverScreen : INavigationRouter, INavigationTarget {
+        override val packageName = "feature.discover.ui.activity"
+        override val className = "SeriesDiscoverScreen"
+
+        override val navRouterIntent = forIntent()
+
+        /**
+         * Starts the target [navRouterIntent] for the implementation
+         */
+        operator fun invoke(context: Context?, payload: Discover.Payload) {
+            navRouterIntent?.putExtra(Discover.PAYLOAD, payload)
+            super.invoke(context)
+        }
+    }
+
     object Discover : INavigationRouter, INavigationTarget {
         override val packageName = "feature.discover.ui.fragment"
         override val className = "SeriesDiscoverContent"
@@ -182,6 +198,28 @@ object NavigationTargets {
         override val navRouterIntent = forIntent()
 
         const val PAYLOAD = "SeriesScreen:Payload"
+
+        /**
+         * Starts the target [navRouterIntent] for the implementation
+         */
+        operator fun invoke(context: Context?, payload: Payload) {
+            navRouterIntent?.putExtra(PAYLOAD, payload)
+            super.invoke(context)
+        }
+
+        @Parcelize
+        data class Payload(
+            val seriesId: Long
+        ) : Parcelable
+    }
+
+    object Collection : INavigationRouter, INavigationTarget {
+        override val packageName = "feature.collection.ui.activity"
+        override val className = "CollectionScreen"
+
+        override val navRouterIntent = forIntent()
+
+        const val PAYLOAD = "CollectionScreen:Payload"
 
         /**
          * Starts the target [navRouterIntent] for the implementation

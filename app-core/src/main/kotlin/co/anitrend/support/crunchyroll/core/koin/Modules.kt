@@ -32,7 +32,7 @@ import co.anitrend.support.crunchyroll.core.util.locale.LocaleUtil
 import co.anitrend.support.crunchyroll.core.util.locale.SessionLocaleProviderHelper
 import co.anitrend.support.crunchyroll.core.util.theme.ThemeUtil
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
-import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper
+import co.anitrend.support.crunchyroll.data.util.CrunchyDateUtil
 import coil.ImageLoader
 import okhttp3.Cache
 import okhttp3.OkHttpClient
@@ -42,7 +42,7 @@ import org.koin.dsl.module
 
 private val coreModule = module {
     single<ISupportDateHelper> {
-        CrunchyDateHelper(
+        CrunchyDateUtil(
             context = androidContext()
         )
     }

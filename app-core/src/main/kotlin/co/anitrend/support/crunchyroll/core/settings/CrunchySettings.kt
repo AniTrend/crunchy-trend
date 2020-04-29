@@ -29,12 +29,13 @@ import co.anitrend.support.crunchyroll.core.settings.common.privacy.IPrivacySett
 import co.anitrend.support.crunchyroll.core.settings.common.theme.IThemeSettings
 import co.anitrend.support.crunchyroll.core.util.locale.AniTrendLocale
 import co.anitrend.support.crunchyroll.core.util.theme.AniTrendTheme
+import co.anitrend.support.crunchyroll.data.arch.database.settings.IRefreshBehaviourSettings
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings.Companion.INVALID_USER_ID
 
 class CrunchySettings(context: Context) : SupportPreference(context),
     IAuthenticationSettings, IConfigurationSettings, IPrivacySettings,
-    ICacheSettings {
+    ICacheSettings, IRefreshBehaviourSettings {
 
     override var isNewInstallation by BooleanPreference(
         key = R.string.settings_is_new_installation,
@@ -102,6 +103,12 @@ class CrunchySettings(context: Context) : SupportPreference(context),
         resources = context.resources
     )
 
+    override var clearDataOnSwipeRefresh by BooleanPreference(
+        key = R.string.settings_refresh_behaviour,
+        default = true,
+        resources = context.resources
+    )
+
     companion object  {
 
         /**
@@ -111,7 +118,7 @@ class CrunchySettings(context: Context) : SupportPreference(context),
             ISupportPreference::class, IConfigurationSettings::class,
             ILocaleSettings::class, IThemeSettings::class,
             IAuthenticationSettings::class, IPrivacySettings::class,
-            ICacheSettings::class
+            ICacheSettings::class, IRefreshBehaviourSettings::class
         )
     }
 }

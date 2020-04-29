@@ -40,7 +40,7 @@ object StorageHelper {
         val cache = cacheDirectory(context)
         val logs = File(cache, logsName)
         if (!logs.exists()) logs.mkdirs()
-        Timber.tag(moduleTag).d(
+        Timber.tag(moduleTag).v(
             "Directory that will be used for logs: ${logs.canonicalPath}"
         )
         return logs
@@ -50,7 +50,7 @@ object StorageHelper {
         val cache = cacheDirectory(context)
         val imageCache = File(cache, imageCacheName)
         if (!imageCache.exists()) imageCache.mkdirs()
-        Timber.tag(moduleTag).d(
+        Timber.tag(moduleTag).v(
             "Cache that will be used for images: ${imageCache.canonicalPath}"
         )
         return imageCache
@@ -60,7 +60,7 @@ object StorageHelper {
         val cache = cacheDirectory(context)
         val videoCache = File(cache, videoCacheName)
         if (!videoCache.exists()) videoCache.mkdirs()
-        Timber.tag(moduleTag).d(
+        Timber.tag(moduleTag).v(
             "Cache that will be used for videos: ${videoCache.canonicalPath}"
         )
         return videoCache
@@ -70,7 +70,7 @@ object StorageHelper {
         val cache = cacheDirectory(context)
         val videoOfflineCache = File(cache, videoOfflineCacheName)
         if (!videoOfflineCache.exists()) videoOfflineCache.mkdirs()
-        Timber.tag(moduleTag).d(
+        Timber.tag(moduleTag).v(
             "Cache that will be used for offline videos: ${videoOfflineCache.canonicalPath}"
         )
         return videoOfflineCache
@@ -85,8 +85,8 @@ object StorageHelper {
         val freeSpace = getFreeSpace(context)
         val ratio = settings.usageRatio
         val limit = (freeSpace * ratio).toLong()
-        Timber.tag(moduleTag).d(
-            "Storage usage limit -> ratio: $ratio | limit: $limit"
+        Timber.tag(moduleTag).v(
+            "Storage usage limit -> ratio: $ratio | limit: ${limit.toHumanReadableByteValue()}"
         )
         return limit
     }

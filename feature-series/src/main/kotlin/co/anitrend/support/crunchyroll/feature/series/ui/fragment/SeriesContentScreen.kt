@@ -16,7 +16,6 @@
 
 package co.anitrend.support.crunchyroll.feature.series.ui.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,12 +26,13 @@ import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.argument
 import co.anitrend.arch.ui.fragment.SupportFragment
+import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
-import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesInfoQuery
-import co.anitrend.support.crunchyroll.feature.series.common.ISwappable
+import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
+import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesDetailQuery
 import co.anitrend.support.crunchyroll.feature.series.databinding.SeriesContentBinding
 import co.anitrend.support.crunchyroll.feature.series.presenter.SeriesDetailPresenter
 import co.anitrend.support.crunchyroll.feature.series.ui.adpter.SeriesGenreAdapter
@@ -43,8 +43,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter, CrunchySeries?>() {
 
-    private var swappable: ISwappable? = null
-
     private val payload
             by argument<NavigationTargets.Series.Payload>(
                 NavigationTargets.Series.PAYLOAD
@@ -53,7 +51,40 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
     private lateinit var binding: SeriesContentBinding
 
     private val seriesGenreAdapter by lazy(LAZY_MODE_UNSAFE) {
-        SeriesGenreAdapter(get())
+        SeriesGenreAdapter(
+            object : ItemClickListener<String> {
+                /**
+                 * When the target view from [View.OnClickListener]
+                 * is clicked from a view holder this method will be called
+                 *
+                 * @param target view that has been clicked
+                 * @param data the liveData that at the click index
+                 */
+                override fun onItemClick(target: View, data: Pair<Int, String?>) {
+                    val genre = data.second
+                    if (!genre.isNullOrEmpty()) {
+                        val payload = NavigationTargets.Discover.Payload(
+                            browseFilter = CrunchySeriesBrowseFilter.TAG,
+                            filterOption = genre
+                        )
+
+                        NavigationTargets.DiscoverScreen(context, payload)
+                    }
+                }
+
+                /**
+                 * When the target view from [View.OnLongClickListener]
+                 * is clicked from a view holder this method will be called
+                 *
+                 * @param target view that has been long clicked
+                 * @param data the liveData that at the long click index
+                 */
+                override fun onItemLongClick(target: View, data: Pair<Int, String?>) {
+
+                }
+            },
+            get()
+        )
     }
 
     /**
@@ -158,7 +189,14 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
         binding.presenter = supportPresenter
 
         binding.seriesInfo.seriesSeasons.setOnClickListener {
-            swappable?.onSwapWithCollection()
+            payload?.seriesId?.also { seriesId ->
+                val collectionPayload = NavigationTargets.Collection.Payload(
+                    seriesId = seriesId
+                )
+                NavigationTargets.Collection(
+                    it.context, collectionPayload
+                )
+            }
         }
         binding.supportStateLayout.onWidgetInteraction = View.OnClickListener {
             supportViewModel.retry()
@@ -194,16 +232,6 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
     }
 
     /**
-     * Called when a fragment is first attached to its context.
-     * [.onCreate] will be called after this.
-     */
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is ISwappable)
-            swappable = context
-    }
-
-    /**
      * Handles the complex logic required to dispatch network request to [ISupportViewModel]
      * to either request from the network or database cache.
      *
@@ -215,7 +243,7 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
     override fun onFetchDataInitialize() {
         payload?.also {
             supportViewModel(
-                parameter = CrunchySeriesInfoQuery(
+                parameter = CrunchySeriesDetailQuery(
                     seriesId = it.seriesId
                 )
             )
