@@ -20,6 +20,7 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import co.anitrend.arch.ui.fragment.SupportFragment
+import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.feature.authentication.ui.fragment.FragmentLogin
 import co.anitrend.support.crunchyroll.feature.authentication.ui.fragment.FragmentLogout
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
@@ -30,6 +31,8 @@ import kotlinx.android.synthetic.main.activity_auth.*
 import org.koin.android.ext.android.inject
 
 class AuthenticationScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
+
+    override val elasticLayout: ElasticDragDismissFrameLayout? = null
 
     /**
      * Should be created lazily through injection or lazy delegate

@@ -24,17 +24,16 @@ import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.feature.series.R
-import co.anitrend.support.crunchyroll.feature.series.common.ISwappable
 import co.anitrend.support.crunchyroll.feature.series.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.series.presenter.SeriesDetailPresenter
-import co.anitrend.support.crunchyroll.feature.series.ui.fragment.SeriesCollectionScreen
 import co.anitrend.support.crunchyroll.feature.series.ui.fragment.SeriesContentScreen
 import kotlinx.android.synthetic.main.series_activity.*
 import org.koin.android.ext.android.inject
 
-class SeriesScreen : CrunchyActivity<CrunchySeries?, SeriesDetailPresenter>(), ISwappable {
+class SeriesScreen : CrunchyActivity<CrunchySeries?, SeriesDetailPresenter>() {
 
-    private lateinit var systemChromeFader: ElasticDragDismissFrameLayout.SystemChromeFader
+    override val elasticLayout: ElasticDragDismissFrameLayout?
+        get() = draggableFrame
 
     /**
      * Should be created lazily through injection or lazy delegate
@@ -60,43 +59,6 @@ class SeriesScreen : CrunchyActivity<CrunchySeries?, SeriesDetailPresenter>(), I
     override fun initializeComponents(savedInstanceState: Bundle?) {
         injectFeatureModules()
         onUpdateUserInterface()
-        systemChromeFader =
-            object : ElasticDragDismissFrameLayout.SystemChromeFader(
-                this
-            ) {
-                override fun onDragDismissed() {
-                    closeScreen()
-                }
-            }
-    }
-
-    /**
-     * Dispatch onResume() to fragments.  Note that for better inter-operation
-     * with older versions of the platform, at the point of this call the
-     * fragments attached to the activity are *not* resumed.
-     */
-    override fun onResume() {
-        super.onResume()
-        draggableFrame.addListener(systemChromeFader)
-    }
-
-    /**
-     * Dispatch onPause() to fragments.
-     */
-    override fun onPause() {
-        draggableFrame.removeListener(systemChromeFader)
-        super.onPause()
-    }
-
-    /**
-     * Take care of popping the fragment back stack or finishing the activity
-     * as appropriate.
-     */
-    override fun onBackPressed() {
-        if (supportFragmentActivity is SeriesCollectionScreen)
-            onSwapWithDetail()
-        else
-            super.onBackPressed()
     }
 
     /**
@@ -106,23 +68,6 @@ class SeriesScreen : CrunchyActivity<CrunchySeries?, SeriesDetailPresenter>(), I
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        onSwapWithDetail()
-    }
-
-    override fun onSwapWithCollection() {
-        val target = supportFragmentManager.findFragmentByTag(
-            SeriesCollectionScreen.FRAGMENT_TAG
-        ) ?: SeriesCollectionScreen.newInstance(intent.extras)
-
-        supportFragmentActivity = target as SupportFragment<*, *, *>
-
-        supportFragmentManager.commit {
-            //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-            replace(R.id.series_content, target, SeriesCollectionScreen.FRAGMENT_TAG)
-        }
-    }
-
-    private fun onSwapWithDetail() {
         val target = supportFragmentManager.findFragmentByTag(
             SeriesContentScreen.FRAGMENT_TAG
         ) ?: SeriesContentScreen.newInstance(intent.extras)

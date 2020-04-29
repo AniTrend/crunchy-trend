@@ -21,7 +21,6 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
-import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.media.R
 import co.anitrend.support.crunchyroll.feature.media.koin.injectFeatureModules
@@ -32,7 +31,8 @@ import org.koin.android.ext.android.inject
 
 class MediaScreen : CrunchyActivity<Nothing, MediaPresenter>() {
 
-    private lateinit var systemChromeFader: ElasticDragDismissFrameLayout.SystemChromeFader
+    override val elasticLayout: ElasticDragDismissFrameLayout?
+        get() = draggableFrame
 
     override val supportPresenter by inject<MediaPresenter>()
 
@@ -53,32 +53,6 @@ class MediaScreen : CrunchyActivity<Nothing, MediaPresenter>() {
     override fun initializeComponents(savedInstanceState: Bundle?) {
         injectFeatureModules()
         onUpdateUserInterface()
-        systemChromeFader =
-            object : ElasticDragDismissFrameLayout.SystemChromeFader(
-                this
-            ) {
-                override fun onDragDismissed() {
-                    closeScreen()
-                }
-            }
-    }
-
-    /**
-     * Dispatch onResume() to fragments.  Note that for better inter-operation
-     * with older versions of the platform, at the point of this call the
-     * fragments attached to the activity are *not* resumed.
-     */
-    override fun onResume() {
-        super.onResume()
-        draggableFrame.addListener(systemChromeFader)
-    }
-
-    /**
-     * Dispatch onPause() to fragments.
-     */
-    override fun onPause() {
-        draggableFrame.removeListener(systemChromeFader)
-        super.onPause()
     }
 
     /**

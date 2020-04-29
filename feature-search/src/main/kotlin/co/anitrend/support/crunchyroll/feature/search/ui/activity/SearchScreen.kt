@@ -22,7 +22,6 @@ import androidx.paging.PagedList
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.multisearch.model.MultiSearchChangeListener
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
-import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesSearchQuery
@@ -37,7 +36,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchScreen : CrunchyActivity<PagedList<CrunchySeries>, SeriesPresenter>() {
 
-    private lateinit var systemChromeFader: ElasticDragDismissFrameLayout.SystemChromeFader
+    override val elasticLayout: ElasticDragDismissFrameLayout?
+        get() = draggableFrame
 
     private val multiSearchViewListener =
         object : MultiSearchChangeListener {
@@ -52,7 +52,7 @@ class SearchScreen : CrunchyActivity<PagedList<CrunchySeries>, SeriesPresenter>(
             override fun onItemSelected(index: Int, charSequence: CharSequence) {
                 supportViewModel.searchQueryLiveData.postValue(
                     CrunchySeriesSearchQuery(
-                        query = charSequence.toString()
+                        searchTerm = charSequence.toString()
                     )
                 )
             }
@@ -86,7 +86,7 @@ class SearchScreen : CrunchyActivity<PagedList<CrunchySeries>, SeriesPresenter>(
                 if (charSequence.isNotBlank())
                     supportViewModel.searchQueryLiveData.postValue(
                         CrunchySeriesSearchQuery(
-                            query = charSequence.toString()
+                            searchTerm = charSequence.toString()
                         )
                     )
             }
@@ -123,33 +123,7 @@ class SearchScreen : CrunchyActivity<PagedList<CrunchySeries>, SeriesPresenter>(
     override fun initializeComponents(savedInstanceState: Bundle?) {
         injectFeatureModules()
         onUpdateUserInterface()
-        systemChromeFader =
-            object : ElasticDragDismissFrameLayout.SystemChromeFader(
-                this
-            ) {
-                override fun onDragDismissed() {
-                    closeScreen()
-                }
-            }
         multiSearch.setSearchViewListener(multiSearchViewListener)
-    }
-
-    /**
-     * Dispatch onResume() to fragments.  Note that for better inter-operation
-     * with older versions of the platform, at the point of this call the
-     * fragments attached to the activity are *not* resumed.
-     */
-    override fun onResume() {
-        super.onResume()
-        draggableFrame.addListener(systemChromeFader)
-    }
-
-    /**
-     * Dispatch onPause() to fragments.
-     */
-    override fun onPause() {
-        draggableFrame.removeListener(systemChromeFader)
-        super.onPause()
     }
 
     /**

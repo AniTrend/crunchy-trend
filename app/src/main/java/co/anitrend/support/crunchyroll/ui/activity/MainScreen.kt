@@ -29,6 +29,7 @@ import co.anitrend.arch.ui.activity.SupportActivity
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.arch.ui.util.SupportUiKeyStore
 import co.anitrend.support.crunchyroll.R
+import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.naviagation.extensions.forFragment
@@ -39,7 +40,8 @@ import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
 
-class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(), NavigationView.OnNavigationItemSelectedListener {
+class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(),
+    NavigationView.OnNavigationItemSelectedListener {
 
     private val bottomDrawerBehavior by lazy(LAZY_MODE_UNSAFE) {
         BottomSheetBehavior.from(bottomNavigationDrawer)
@@ -50,6 +52,9 @@ class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(), NavigationV
 
     @StringRes
     private var selectedTitle: Int = R.string.nav_shows
+
+
+    override val elasticLayout: ElasticDragDismissFrameLayout? = null
 
     /**
      * Should be created lazily through injection or lazy delegate

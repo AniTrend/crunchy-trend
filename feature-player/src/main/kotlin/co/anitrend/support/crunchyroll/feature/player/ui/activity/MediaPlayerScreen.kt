@@ -24,6 +24,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import co.anitrend.arch.extension.getCompatColor
 import co.anitrend.arch.ui.fragment.SupportFragment
+import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.player.R
@@ -36,6 +37,7 @@ import org.koin.android.ext.android.inject
 class MediaPlayerScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(),
     VideoControlsVisibilityListener {
 
+    override val elasticLayout: ElasticDragDismissFrameLayout? = null
     private var fullScreenListener: MediaStreamContent.FullScreenListener? = null
 
     /**

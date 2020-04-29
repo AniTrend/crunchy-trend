@@ -20,19 +20,45 @@ import android.Manifest
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import co.anitrend.arch.core.presenter.SupportPresenter
+import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.ui.activity.SupportActivity
 import co.anitrend.support.crunchyroll.core.R
+import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
+import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.extensions.createDialog
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
 import co.anitrend.support.crunchyroll.core.util.config.ConfigurationUtil
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 abstract class CrunchyActivity<M, P : SupportPresenter<CrunchySettings>> : SupportActivity<M, P>() {
 
+    private val systemChromeFade by lazy(LAZY_MODE_UNSAFE) {
+        object : ElasticDragDismissFrameLayout.SystemChromeFader(this) {
+            override fun onDragDismissed() {
+                closeScreen()
+            }
+        }
+    }
+
+    protected abstract val elasticLayout: ElasticDragDismissFrameLayout?
+
     protected val configurationUtil by inject<ConfigurationUtil>()
+
+    /**
+     * Must be called on [onResume]
+     */
+    fun attachSystemChromeFade() {
+        elasticLayout?.addListener(systemChromeFade)
+    }
+
+    /**
+     * Must be called in [onPause]
+     */
+    fun detachSystemChromeFade() {
+        elasticLayout?.removeListener(systemChromeFade)
+    }
 
     /**
      * Can be used to configure custom theme styling as desired
@@ -49,6 +75,15 @@ abstract class CrunchyActivity<M, P : SupportPresenter<CrunchySettings>> : Suppo
     override fun onResume() {
         super.onResume()
         configurationUtil.onResume(this)
+        attachSystemChromeFade()
+    }
+
+    /**
+     * Dispatch onPause() to fragments.
+     */
+    override fun onPause() {
+        super.onPause()
+        detachSystemChromeFade()
     }
 
     /**
@@ -97,7 +132,7 @@ abstract class CrunchyActivity<M, P : SupportPresenter<CrunchySettings>> : Suppo
         }
     }
 
-    fun checkStoragePermission() {
+    protected fun checkStoragePermission() {
         if (!requestPermissionIfMissing(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(
                     this,

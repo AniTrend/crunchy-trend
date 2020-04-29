@@ -36,7 +36,8 @@ import org.koin.android.ext.android.inject
 
 class SettingsScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
 
-    private lateinit var systemChromeFader: ElasticDragDismissFrameLayout.SystemChromeFader
+    override val elasticLayout: ElasticDragDismissFrameLayout?
+        get() = draggableFrame
 
     /**
      * Should be created lazily through injection or lazy delegate
@@ -69,32 +70,6 @@ class SettingsScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
                 Toast.LENGTH_SHORT
             ).show()
         }
-        systemChromeFader =
-            object : ElasticDragDismissFrameLayout.SystemChromeFader(
-                this
-            ) {
-                override fun onDragDismissed() {
-                    closeScreen()
-                }
-            }
-    }
-
-    /**
-     * Dispatch onResume() to fragments.  Note that for better inter-operation
-     * with older versions of the platform, at the point of this call the
-     * fragments attached to the activity are *not* resumed.
-     */
-    override fun onResume() {
-        super.onResume()
-        draggableFrame.addListener(systemChromeFader)
-    }
-
-    /**
-     * Dispatch onPause() to fragments.
-     */
-    override fun onPause() {
-        draggableFrame.removeListener(systemChromeFader)
-        super.onPause()
     }
 
     /**
