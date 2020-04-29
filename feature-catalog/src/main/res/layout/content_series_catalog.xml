@@ -22,20 +22,13 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/supportRefreshLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:descendantFocusability="blocksDescendants">
-
-        <co.anitrend.arch.ui.view.widget.SupportStateLayout
-                android:id="@+id/supportStateLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            android:layout_height="match_parent">
 
             <co.anitrend.arch.ui.recycler.SupportRecyclerView
                     android:id="@+id/support_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scrollbars="vertical" />
-        </co.anitrend.arch.ui.view.widget.SupportStateLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>

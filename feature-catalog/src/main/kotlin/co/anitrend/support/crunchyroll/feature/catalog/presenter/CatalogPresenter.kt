@@ -17,6 +17,9 @@
 package co.anitrend.support.crunchyroll.feature.catalog.presenter
 
 import android.content.Context
+import android.util.SparseArray
+import androidx.core.util.contains
+import androidx.core.util.forEach
 import androidx.lifecycle.LiveData
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
@@ -28,6 +31,7 @@ import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalog
 import co.anitrend.support.crunchyroll.feature.catalog.controller.group.CarouselGroup
 import co.anitrend.support.crunchyroll.feature.catalog.controller.items.CatalogItem
 import co.anitrend.support.crunchyroll.feature.catalog.controller.items.HeaderItem
+import co.anitrend.support.crunchyroll.feature.catalog.controller.items.PlaceHolderItem
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
@@ -38,41 +42,82 @@ class CatalogPresenter(
     settings: CrunchySettings
 ) : CrunchyCorePresenter(context, settings) {
 
-    private val catalogCache = ArrayList<String>(5)
+    private val sectionMap = SparseArray<Section>(5)
+    private val carouselMap = SparseArray<CarouselGroup>(5)
+
+    private fun CrunchyCatalogWithSeries.key() = qualifier.ordinal
+
+    private fun updateGroupAdapter(
+        groupAdapter: GroupAdapter<*>
+    ) {
+        val sections = ArrayList<Section>(sectionMap.size())
+        sectionMap.forEach { _, value ->
+            sections.add(value)
+        }
+        groupAdapter.update(sections)
+    }
+
+    private fun updateSectionAdapter(
+        catalog: CrunchyCatalogWithSeries
+    ) {
+        val carousels = ArrayList<CarouselGroup>(carouselMap.size())
+        carouselMap.forEach { _, value ->
+            carousels.add(value)
+        }
+        sectionMap[catalog.key()].update(carousels)
+    }
+
+    fun updatePlaceHolderState(
+        onRetry: () -> Unit,
+        networkState: NetworkState,
+        catalog: CrunchyCatalogWithSeries?,
+        groupAdapter: GroupAdapter<*>
+    ) {
+        if (catalog != null && sectionMap.contains(catalog.key())) {
+            sectionMap[catalog.key()].setPlaceholder(
+                PlaceHolderItem(networkState, onRetry)
+            )
+            updateGroupAdapter(groupAdapter)
+        }
+    }
+
+    private fun createCarouselGroup(
+        catalog: CrunchyCatalogWithSeries
+    ): CarouselGroup {
+        val adapter = GroupAdapter<GroupieViewHolder>()
+        for (series in catalog.series) {
+            val catalogItem = CatalogItem(series)
+            adapter.add(catalogItem)
+        }
+        return CarouselGroup(adapter)
+    }
 
     fun setUpGroupAdapter(
         catalog: CrunchyCatalogWithSeries,
-        groupAdapter: GroupAdapter<*>,
-        supportStateLayout: SupportStateLayout
+        groupAdapter: GroupAdapter<*>
     ) {
-        if (!catalog.series.isNullOrEmpty())
-            // hack around for now until I figure out how to best update sections
-            if (!catalogCache.contains(catalog.qualifier.attribute)) {
-                val section = Section(
-                    HeaderItem(
-                        catalog.qualifier
-                    )
-                )
-                section.setHideWhenEmpty(false)
-                val adapter = GroupAdapter<GroupieViewHolder>()
-                supportStateLayout.setNetworkState(
-                    NetworkState.Success
-                )
-                catalog.series.forEach { series ->
-                    adapter.add(
-                        CatalogItem(
-                            series
-                        )
-                    )
-                }
-                val carouselGroup = CarouselGroup(adapter)
-                section.add(carouselGroup)
-                groupAdapter.add(section)
-                catalogCache.add(catalog.qualifier.attribute)
-            }
-    }
+        // hack around for now until I figure out how to best update sections
+        if (!sectionMap.contains(catalog.key())) {
+            val section = Section(
+                HeaderItem(catalog.qualifier)
+            )
 
-    fun onRefresh() {
-        catalogCache.clear()
+            section.setPlaceholder(
+                PlaceHolderItem(NetworkState.Loading)
+            )
+
+            val carouselGroup = createCarouselGroup(catalog)
+            carouselMap.put(catalog.key(), carouselGroup)
+
+            section.add(carouselGroup)
+            sectionMap.put(catalog.key(), section)
+
+            groupAdapter.add(sectionMap[catalog.key()])
+        } else {
+            val carouselGroup = createCarouselGroup(catalog)
+            carouselMap.put(catalog.key(), carouselGroup)
+            updateSectionAdapter(catalog)
+            updateGroupAdapter(groupAdapter)
+        }
     }
 }

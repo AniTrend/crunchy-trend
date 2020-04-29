@@ -22,13 +22,13 @@ import androidx.lifecycle.Transformations
 import co.anitrend.arch.core.model.ISupportViewModelState
 import co.anitrend.arch.data.model.UserInterfaceState
 import co.anitrend.arch.domain.entities.NetworkState
-import co.anitrend.support.crunchyroll.data.catalog.usecase.CatalogUseCaseImpl
+import co.anitrend.support.crunchyroll.data.catalog.usecase.CatalogUseCaseType
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 import co.anitrend.support.crunchyroll.domain.catalog.models.CrunchyCatalogQuery
 
 data class CatalogViewModelState(
     private val parameter: CrunchyCatalogQuery,
-    private val useCase: CatalogUseCaseImpl
+    private val useCase: CatalogUseCaseType
 ) : ISupportViewModelState<CrunchyCatalogWithSeries> {
 
     private val useCaseResult = MutableLiveData<UserInterfaceState<CrunchyCatalogWithSeries>>()

@@ -35,9 +35,9 @@ class CatalogCarouselContainer(
     override fun getLayout() = R.layout.item_carousel
 
     override fun createViewHolder(itemView: View): GroupieViewHolder<ItemCarouselBinding> {
-        val viewHolder =
-            super.createViewHolder(itemView)
-        val recyclerView: RecyclerView = viewHolder.binding.carouselRecycler
+        val viewHolder = super.createViewHolder(itemView)
+        val recyclerView = viewHolder.binding.carouselRecycler
+
         if (itemDecoration != null)
             recyclerView.addItemDecoration(itemDecoration)
         recyclerView.layoutManager = LinearLayoutManager(
@@ -56,6 +56,15 @@ class CatalogCarouselContainer(
      */
     override fun bind(viewBinding: ItemCarouselBinding, position: Int) {
         viewBinding.carouselRecycler.adapter = adapter
+    }
+
+    /**
+     * Do any cleanup required for the viewholder to be reused.
+     *
+     * @param viewHolder The ViewHolder being recycled
+     */
+    override fun unbind(viewHolder: GroupieViewHolder<ItemCarouselBinding>) {
+        super.unbind(viewHolder)
     }
 
     override fun onItemClick(item: Item<*>, view: View) {

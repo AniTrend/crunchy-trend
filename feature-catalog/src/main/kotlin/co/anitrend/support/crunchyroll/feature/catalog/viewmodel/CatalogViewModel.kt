@@ -18,16 +18,16 @@ package co.anitrend.support.crunchyroll.feature.catalog.viewmodel
 
 import androidx.lifecycle.ViewModel
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
-import co.anitrend.support.crunchyroll.data.catalog.usecase.CatalogUseCaseImpl
+import co.anitrend.support.crunchyroll.data.catalog.usecase.CatalogUseCaseType
 import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalogFilter
 import co.anitrend.support.crunchyroll.domain.catalog.models.CrunchyCatalogQuery
 import co.anitrend.support.crunchyroll.feature.catalog.model.CatalogViewModelState
 
 class CatalogViewModel(
-    private val catalogUseCase: CatalogUseCaseImpl
+    private val catalogUseCase: CatalogUseCaseType
 ) : ViewModel() {
 
-    val viewStateFeatured by lazy(LAZY_MODE_UNSAFE) {
+    private val viewStateFeatured by lazy(LAZY_MODE_UNSAFE) {
         CatalogViewModelState(
             CrunchyCatalogQuery(
                 CrunchySeriesCatalogFilter.FEATURED
@@ -36,7 +36,7 @@ class CatalogViewModel(
         )
     }
 
-    val viewStateNewest by lazy(LAZY_MODE_UNSAFE) {
+    private val viewStateNewest by lazy(LAZY_MODE_UNSAFE) {
         CatalogViewModelState(
             CrunchyCatalogQuery(
                 CrunchySeriesCatalogFilter.NEWEST
@@ -45,7 +45,7 @@ class CatalogViewModel(
         )
     }
 
-    val viewStatePopular by lazy(LAZY_MODE_UNSAFE) {
+    private val viewStatePopular by lazy(LAZY_MODE_UNSAFE) {
         CatalogViewModelState(
             CrunchyCatalogQuery(
                 CrunchySeriesCatalogFilter.POPULAR
@@ -54,7 +54,7 @@ class CatalogViewModel(
         )
     }
 
-    val viewStateSimulcast by lazy(LAZY_MODE_UNSAFE) {
+    private val viewStateSimulcast by lazy(LAZY_MODE_UNSAFE) {
         CatalogViewModelState(
             CrunchyCatalogQuery(
                 CrunchySeriesCatalogFilter.SIMULCAST
@@ -63,12 +63,22 @@ class CatalogViewModel(
         )
     }
 
-    val viewStateUpdated by lazy(LAZY_MODE_UNSAFE) {
+    private val viewStateUpdated by lazy(LAZY_MODE_UNSAFE) {
         CatalogViewModelState(
             CrunchyCatalogQuery(
                 CrunchySeriesCatalogFilter.UPDATED
             ),
             catalogUseCase
+        )
+    }
+
+    val viewModelLists by lazy {
+        listOf(
+            viewStateFeatured,
+            viewStateNewest,
+            viewStatePopular,
+            viewStateSimulcast,
+            viewStateUpdated
         )
     }
 
@@ -80,11 +90,9 @@ class CatalogViewModel(
      * prevent a leak of this ViewModel.
      */
     override fun onCleared() {
-        viewStateFeatured.onCleared()
-        viewStateNewest.onCleared()
-        viewStatePopular.onCleared()
-        viewStateSimulcast.onCleared()
-        viewStateUpdated.onCleared()
+        viewModelLists.forEach {
+            it.onCleared()
+        }
         super.onCleared()
     }
 }

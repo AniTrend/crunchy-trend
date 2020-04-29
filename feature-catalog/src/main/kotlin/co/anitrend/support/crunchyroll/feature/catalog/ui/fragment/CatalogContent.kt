@@ -34,6 +34,8 @@ import co.anitrend.support.crunchyroll.feature.catalog.presenter.CatalogPresente
 import co.anitrend.support.crunchyroll.feature.catalog.viewmodel.CatalogViewModel
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -54,45 +56,30 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>, CatalogPr
 
     private val viewModel by viewModel<CatalogViewModel>()
 
+    private fun CrunchyCatalogWithSeries.networkState() =
+        if (series.isEmpty()) NetworkState.Loading else NetworkState.Success
+
     /**
      * Invoke view model observer to watch for changes
      */
     override fun setUpViewModelObserver() {
-        viewModel.viewStateFeatured.model.observe(viewLifecycleOwner, Observer {
-            supportPresenter.setUpGroupAdapter(
-                it,
-                groupAdapter,
-                binding.supportStateLayout
-            )
-        })
-        viewModel.viewStateNewest.model.observe(viewLifecycleOwner, Observer {
-            supportPresenter.setUpGroupAdapter(
-                it,
-                groupAdapter,
-                binding.supportStateLayout
-            )
-        })
-        viewModel.viewStatePopular.model.observe(viewLifecycleOwner, Observer {
-            supportPresenter.setUpGroupAdapter(
-                it,
-                groupAdapter,
-                binding.supportStateLayout
-            )
-        })
-        viewModel.viewStateSimulcast.model.observe(viewLifecycleOwner, Observer {
-            supportPresenter.setUpGroupAdapter(
-                it,
-                groupAdapter,
-                binding.supportStateLayout
-            )
-        })
-        viewModel.viewStateUpdated.model.observe(viewLifecycleOwner, Observer {
-            supportPresenter.setUpGroupAdapter(
-                it,
-                groupAdapter,
-                binding.supportStateLayout
-            )
-        })
+        viewModel.viewModelLists.forEach { vm ->
+            vm.model.observe(viewLifecycleOwner, Observer { model ->
+                supportPresenter.setUpGroupAdapter(
+                    model,
+                    groupAdapter
+                )
+            })
+
+            vm.networkState?.observe(viewLifecycleOwner, Observer { networkState ->
+                supportPresenter.updatePlaceHolderState(
+                    { vm.retry() },
+                    networkState,
+                    vm.model.value,
+                    groupAdapter
+                )
+            })
+        }
     }
 
     /**
@@ -166,21 +153,11 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>, CatalogPr
             )
             adapter = groupAdapter
         }
-        with (binding.supportStateLayout) {
-            stateConfiguration = get()
-        }
         binding.supportRefreshLayout.setOnRefreshListener {
             binding.supportRefreshLayout.isRefreshing = false
-            binding.supportStateLayout.setNetworkState(
-                NetworkState.Loading
-            )
-            groupAdapter.clear()
-            supportPresenter.onRefresh()
-            viewModel.viewStateFeatured.refresh()
-            viewModel.viewStateNewest.refresh()
-            viewModel.viewStatePopular.refresh()
-            viewModel.viewStateSimulcast.refresh()
-            viewModel.viewStateUpdated.refresh()
+            viewModel.viewModelLists.forEach {
+                it.retry()
+            }
         }
         onFetchDataInitialize()
     }
@@ -205,11 +182,12 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>, CatalogPr
      * @see [ISupportViewModel.invoke]
      */
     override fun onFetchDataInitialize() {
-        viewModel.viewStateFeatured.requestIfModelIsNotInitialized()
-        viewModel.viewStateNewest.requestIfModelIsNotInitialized()
-        viewModel.viewStatePopular.requestIfModelIsNotInitialized()
-        viewModel.viewStateSimulcast.requestIfModelIsNotInitialized()
-        viewModel.viewStateUpdated.requestIfModelIsNotInitialized()
+        viewModel.viewModelLists.forEach {
+            launch {
+                it.requestIfModelIsNotInitialized()
+                delay(500)
+            }
+        }
     }
 
     /**
