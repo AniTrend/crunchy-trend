@@ -35,7 +35,7 @@ data class AudioTrack(
 
     companion object {
         fun map(format: Format, index: Short, groupIndex: Short): AudioTrack {
-            val title = format.label ?: format.language ?: "${format.containerMimeType} - ${groupIndex}:$index"
+            val title = format.label ?: format.language ?: "${groupIndex}:$index"
             return AudioTrack(
                 title = title,
                 trackIndex = index,

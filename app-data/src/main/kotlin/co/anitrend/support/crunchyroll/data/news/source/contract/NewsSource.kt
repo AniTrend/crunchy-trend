@@ -16,28 +16,33 @@
 
 package co.anitrend.support.crunchyroll.data.news.source.contract
 
+import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import androidx.paging.PagingRequestHelper
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.data.source.paging.SupportPagingDataSource
 import co.anitrend.arch.extension.SupportDispatchers
-import co.anitrend.arch.extension.network.SupportConnectivity
-import co.anitrend.support.crunchyroll.data.arch.controller.CrunchyRssNewsController
-import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyRssMapper
-import co.anitrend.support.crunchyroll.data.rss.contract.IRssCopyright
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import kotlinx.coroutines.launch
 
-abstract class NewsSource(
+internal abstract class NewsSource(
     supportDispatchers: SupportDispatchers
 ) : SupportPagingDataSource<CrunchyNews>(supportDispatchers) {
 
-    abstract val newsObservable: ISourceObservable<RssQuery, PagedList<CrunchyNews>>
+    protected lateinit var query: RssQuery
+        private set
 
-    protected abstract fun getNewsCatalogue(
+    protected abstract val newsObservable: ISourceObservable<Nothing?, PagedList<CrunchyNews>>
+
+    protected abstract suspend fun getNewsCatalogue(
         callback: PagingRequestHelper.Request.Callback
     )
+
+    operator fun invoke(rssQuery: RssQuery): LiveData<PagedList<CrunchyNews>> {
+        query = rssQuery
+        return newsObservable(null)
+    }
 
     /**
      * Called when zero items are returned from an initial load of the PagedList's data source.
@@ -47,7 +52,7 @@ abstract class NewsSource(
             PagingRequestHelper.RequestType.INITIAL
         ) {
             if (supportPagingHelper.isFirstPage()) {
-                getNewsCatalogue(it)
+                launch{ getNewsCatalogue(it) }
                 supportPagingHelper.onPageNext()
             }
             else it.recordSuccess()
@@ -58,7 +63,6 @@ abstract class NewsSource(
      * Called when the item at the front of the PagedList has been loaded, and access has
      * occurred within [Config.prefetchDistance] of it.
      *
-     *
      * No more data will be prepended to the PagedList before this item.
      *
      * @param itemAtFront The first item of PagedList
@@ -68,21 +72,10 @@ abstract class NewsSource(
             PagingRequestHelper.RequestType.BEFORE
         ) {
             if (supportPagingHelper.isFirstPage()) {
-                getNewsCatalogue(it)
+                launch { getNewsCatalogue(it) }
                 supportPagingHelper.onPageNext()
             }
             else it.recordSuccess()
         }
     }
-
-    /**
-     * Extension to help us create a controller from a a mapper instance
-     */
-    internal fun <S: IRssCopyright, D> CrunchyRssMapper<S, D>.controller(
-        supportConnectivity: SupportConnectivity
-    ) = CrunchyRssNewsController.newInstance(
-        responseMapper = this,
-        supportConnectivity = supportConnectivity,
-        supportDispatchers = dispatchers
-    )
 }

@@ -20,7 +20,7 @@ import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionCoreEntity
 import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionCoreModel
 
-object CoreSessionEntityTransformer :
+internal object CoreSessionEntityTransformer :
     ISupportMapperHelper<CrunchySessionCoreModel, CrunchySessionCoreEntity> {
 
     /**

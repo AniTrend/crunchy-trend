@@ -22,7 +22,7 @@ import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionModel
 import co.anitrend.support.crunchyroll.data.user.datasource.local.transformer.UserEntityTransformer
 import co.anitrend.support.crunchyroll.data.util.extension.iso8601ToUnixTime
 
-object SessionEntityTransformer : ISupportMapperHelper<CrunchySessionModel, CrunchySessionEntity> {
+internal object SessionEntityTransformer : ISupportMapperHelper<CrunchySessionModel, CrunchySessionEntity> {
 
     /**
      * Transforms the the [source] to the target type

@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.data.catalog.extension
 
 import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalogFilter
 
-fun CrunchySeriesCatalogFilter.generateHashCode(seriesId: Long) : Long {
+internal fun CrunchySeriesCatalogFilter.generateHashCode(seriesId: Long) : Long {
     val code = attribute.hashCode()
     val hash = if (code < 0) code * -1 else code
     return hash + seriesId

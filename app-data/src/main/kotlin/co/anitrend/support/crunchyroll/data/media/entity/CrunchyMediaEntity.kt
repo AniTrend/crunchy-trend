@@ -26,7 +26,7 @@ import androidx.room.PrimaryKey
         Index(value = ["collectionId"])
     ]
 )
-data class CrunchyMediaEntity(
+internal data class CrunchyMediaEntity(
     @PrimaryKey
     val mediaId: Long,
     val etpGuid: String,

@@ -20,5 +20,5 @@ import co.anitrend.arch.data.mapper.SupportResponseMapper
 import co.anitrend.support.crunchyroll.data.rss.contract.ICrunchyRssChannel
 import co.anitrend.support.crunchyroll.data.rss.contract.IRssCopyright
 
-abstract class CrunchyRssMapper<S : IRssCopyright, D> :
+internal abstract class CrunchyRssMapper<S : IRssCopyright, D> :
     SupportResponseMapper<ICrunchyRssChannel<S>, List<D>>()

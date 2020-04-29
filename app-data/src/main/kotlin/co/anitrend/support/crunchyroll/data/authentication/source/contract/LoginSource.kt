@@ -23,7 +23,7 @@ import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.support.crunchyroll.domain.authentication.models.CrunchyLoginQuery
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 
-abstract class LoginSource(
+internal abstract class LoginSource(
     supportDispatchers: SupportDispatchers
 ) : SupportCoreDataSource(supportDispatchers) {
 

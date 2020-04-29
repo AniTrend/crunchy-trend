@@ -60,6 +60,7 @@
                     android:textColor="@color/colorWhite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:text="@{entity.episodeDuration}"
                     tools:text="23:45"/>
 
@@ -70,6 +71,7 @@
             <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     app:srcCompat="@drawable/ic_timelapse_24dp"/>
 
         </androidx.appcompat.widget.LinearLayoutCompat>

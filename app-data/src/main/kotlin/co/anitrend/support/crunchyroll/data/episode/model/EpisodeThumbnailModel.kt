@@ -21,7 +21,7 @@ import org.simpleframework.xml.Attribute
 import org.simpleframework.xml.Root
 
 @Root(name = "thumbnail", strict = false)
-data class EpisodeThumbnailModel(
+internal data class EpisodeThumbnailModel(
     @field:Attribute(
         required = false
     )

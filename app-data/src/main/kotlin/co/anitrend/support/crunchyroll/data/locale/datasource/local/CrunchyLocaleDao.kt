@@ -24,7 +24,7 @@ import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
 import co.anitrend.support.crunchyroll.data.locale.entity.CrunchyLocaleEntity
 
 @Dao
-interface CrunchyLocaleDao : ISupportQuery<CrunchyLocaleEntity>, ISourceDao {
+internal interface CrunchyLocaleDao : ISupportQuery<CrunchyLocaleEntity>, ISourceDao {
 
     @Query("""
         select count(localeId) from CrunchyLocaleEntity

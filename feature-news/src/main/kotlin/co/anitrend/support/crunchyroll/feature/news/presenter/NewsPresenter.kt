@@ -17,18 +17,32 @@
 package co.anitrend.support.crunchyroll.feature.news.presenter
 
 import android.content.Context
+import androidx.core.app.ShareCompat
 import co.anitrend.arch.extension.SupportDispatchers
+import co.anitrend.arch.extension.util.contract.ISupportDateHelper
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
+import co.anitrend.support.crunchyroll.feature.news.model.Poster
+import co.anitrend.support.crunchyroll.feature.news.ui.activity.NewsScreen
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
+import timber.log.Timber
+import java.util.*
+import kotlin.collections.ArrayList
 
 class NewsPresenter(
     context: Context,
     settings: CrunchySettings,
     private val dispatchers: SupportDispatchers
 ) : CrunchyCorePresenter(context, settings) {
+
+    private val moduleTag = javaClass.simpleName
+
+    // TODO: Remove invalid characters from url
+    private val regex = Regex(",|#|!|'|")
+
+    internal val posters = ArrayList<Poster>()
 
     suspend fun createCustomHtml(
         payload: NavigationTargets.News.Payload?
@@ -42,7 +56,67 @@ class NewsPresenter(
             document.getElementsByTag("iframe").forEach { tag ->
                 tag.append(" ")
             }
+            document.getElementsByTag("img").forEach { tag ->
+                val src = tag.attr("src")
+
+                val width = runCatching{
+                    tag.attr("width")?.toShort()
+                }.getOrElse { it.printStackTrace(); null }  ?: 0
+
+                val height = runCatching{
+                    tag.attr("height")?.toShort()
+                }.getOrElse { it.printStackTrace(); null }  ?: 0
+
+                if (height > 100) {
+                    Timber.tag(moduleTag).v("Image found -> $src | $width x $height")
+                    posters.add(Poster(src, width, height))
+                }
+                else
+                    Timber.tag(moduleTag).v("Ignoring image -> $src | $width x $height")
+            }
             document.html()
         }
+    }
+
+    fun buildNewsUrl(
+        payload: NavigationTargets.News.Payload,
+        dateHelper: ISupportDateHelper
+    ): String {
+        val payloadContent = StringBuilder(120)
+
+        val url = "https://www.crunchyroll.com/en-gb/anime-feature"
+        payloadContent.append(url, '/')
+
+        val date = dateHelper.convertFromUnixTimeStamp(
+            unixTimeStamp = payload.publishDate ?: 0,
+            outputDatePattern = "yyyy/MM/dd"
+        )
+        payloadContent.append(date, '/')
+
+        val slug = payload.title.toLowerCase(
+            Locale.getDefault()
+        ).replace(regex, "")
+            .replace(' ', '-')
+        payloadContent.append(slug)
+
+        return payloadContent.toString()
+    }
+
+    fun createShareContent(
+        payload: NavigationTargets.News.Payload,
+        dateHelper: ISupportDateHelper,
+        newsScreen: NewsScreen
+    ): ShareCompat.IntentBuilder {
+        val url = buildNewsUrl(payload, dateHelper)
+
+        val payloadContent = StringBuilder(payload.description!!)
+
+        payloadContent.append(payload.description, "\n\n", url)
+
+        return ShareCompat.IntentBuilder
+            .from(newsScreen)
+            .setType("text/plain")
+            .setSubject(payload.title)
+            .setHtmlText(payloadContent.toString())
     }
 }

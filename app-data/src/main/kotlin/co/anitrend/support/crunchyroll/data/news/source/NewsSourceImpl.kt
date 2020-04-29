@@ -24,6 +24,10 @@ import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.data.util.SupportDataKeyStore
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
+import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
+import co.anitrend.support.crunchyroll.data.arch.database.settings.IRefreshBehaviourSettings
+import co.anitrend.support.crunchyroll.data.arch.extension.controller
+import co.anitrend.support.crunchyroll.data.arch.helper.CrunchyClearDataHelper
 import co.anitrend.support.crunchyroll.data.news.datasource.local.CrunchyRssNewsDao
 import co.anitrend.support.crunchyroll.data.news.datasource.remote.CrunchyNewsFeedEndpoint
 import co.anitrend.support.crunchyroll.data.news.mapper.NewsResponseMapper
@@ -34,18 +38,17 @@ import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-class NewsSourceImpl(
+internal class NewsSourceImpl(
     private val mapper: NewsResponseMapper,
     private val endpoint: CrunchyNewsFeedEndpoint,
     private val dao: CrunchyRssNewsDao,
     private val supportConnectivity: SupportConnectivity,
+    private val settings: IRefreshBehaviourSettings,
     supportDispatchers: SupportDispatchers
 ) : NewsSource(supportDispatchers) {
 
-    private lateinit var rssQuery: RssQuery
-
     override val newsObservable =
-        object : ISourceObservable<RssQuery, PagedList<CrunchyNews>> {
+        object : ISourceObservable<Nothing?, PagedList<CrunchyNews>> {
             /**
              * Returns the appropriate observable which we will monitor for updates,
              * common implementation may include but not limited to returning
@@ -53,9 +56,7 @@ class NewsSourceImpl(
              *
              * @param parameter to use when executing
              */
-            override fun invoke(parameter: RssQuery): LiveData<PagedList<CrunchyNews>> {
-                rssQuery = parameter
-
+            override fun invoke(parameter: Nothing?): LiveData<PagedList<CrunchyNews>> {
                 val localSource = dao.findByAllFactory()
 
                 val result = localSource.map {
@@ -69,23 +70,28 @@ class NewsSourceImpl(
             }
         }
 
-    override fun getNewsCatalogue(callback: PagingRequestHelper.Request.Callback) {
+    override suspend fun getNewsCatalogue(callback: PagingRequestHelper.Request.Callback) {
         val deferred = async {
-            endpoint.getMediaNews(rssQuery.language)
+            endpoint.getMediaNews(query.language)
         }
 
-        launch {
-            val controller =
-                mapper.controller(supportConnectivity)
+        val controller =
+            mapper.controller(
+                dispatchers,
+                OnlineControllerPolicy.create(
+                    supportConnectivity
+                )
+            )
 
-            controller(deferred, callback)
-        }
+        controller.news(deferred, callback)
     }
 
     /**
      * Clears data sources (databases, preferences, e.t.c)
      */
     override suspend fun clearDataSource() {
-        dao.clearTable()
+        CrunchyClearDataHelper(settings, supportConnectivity) {
+            dao.clearTable()
+        }
     }
 }

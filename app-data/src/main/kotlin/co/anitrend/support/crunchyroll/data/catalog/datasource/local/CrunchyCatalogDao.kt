@@ -27,7 +27,7 @@ import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalog
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface CrunchyCatalogDao : ISupportQuery<CrunchyCatalogEntity>, ISourceDao {
+internal interface CrunchyCatalogDao : ISupportQuery<CrunchyCatalogEntity>, ISourceDao {
 
     @Query("""
         select count(catalogId) from CrunchyCatalogEntity
@@ -38,6 +38,12 @@ interface CrunchyCatalogDao : ISupportQuery<CrunchyCatalogEntity>, ISourceDao {
         delete from CrunchyCatalogEntity
         """)
     override suspend fun clearTable()
+
+    @Query("""
+        delete from CrunchyCatalogEntity
+        where catalogFilter = :catalogFilter
+        """)
+    suspend fun clearTableMatching(catalogFilter: CrunchySeriesCatalogFilter)
 
 
     @Transaction

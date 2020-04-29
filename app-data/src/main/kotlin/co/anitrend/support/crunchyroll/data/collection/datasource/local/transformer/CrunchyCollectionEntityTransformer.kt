@@ -22,7 +22,7 @@ import co.anitrend.support.crunchyroll.data.collection.model.CrunchyCollectionMo
 import co.anitrend.support.crunchyroll.data.util.extension.iso8601ToUnixTime
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchyMediaType
 
-object CrunchyCollectionEntityTransformer :
+internal object CrunchyCollectionEntityTransformer :
     ISupportMapperHelper<CrunchyCollectionModel, CrunchyCollectionEntity> {
 
     /**

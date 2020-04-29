@@ -31,7 +31,7 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import java.lang.reflect.Type
 
 
-class CrunchyConverterFactory private constructor(): Converter.Factory() {
+internal class CrunchyConverterFactory private constructor(): Converter.Factory() {
 
     override fun responseBodyConverter(
         type: Type,

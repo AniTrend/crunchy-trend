@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.data.stream.model
 
 import co.anitrend.support.crunchyroll.domain.stream.enums.CrunchyStreamQuality
 
-data class CrunchyStreamModel(
+internal data class CrunchyStreamModel(
     val quality: CrunchyStreamQuality,
     val expires: String,
     val url: String

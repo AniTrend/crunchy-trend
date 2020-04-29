@@ -19,7 +19,7 @@ package co.anitrend.support.crunchyroll.data.episode.datasource.local.transforme
 import co.anitrend.support.crunchyroll.data.episode.helper.EpisodeFeedHelper
 import co.anitrend.support.crunchyroll.data.episode.model.CrunchyEpisodeRestrictionModel
 import co.anitrend.support.crunchyroll.data.episode.model.EpisodeThumbnailModel
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.*
 

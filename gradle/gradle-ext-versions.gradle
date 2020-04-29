@@ -19,8 +19,8 @@ ext {
     targetSdk = 29
     minSdk = 21
 
-    versionCode = 80
-    versionName = '0.4.6-alpha01'
+    versionCode = 85
+    versionName = '0.4.7-alpha01'
 
     coil = '0.9.5'
     retrofit = '2.7.2'

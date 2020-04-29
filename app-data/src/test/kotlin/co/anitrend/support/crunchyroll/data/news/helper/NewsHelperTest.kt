@@ -18,8 +18,6 @@ package co.anitrend.support.crunchyroll.data.news.helper
 
 import org.junit.Test
 
-import org.junit.Assert.*
-
 class NewsHelperTest {
 
     @Test

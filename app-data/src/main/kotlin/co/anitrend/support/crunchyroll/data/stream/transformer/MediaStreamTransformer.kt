@@ -21,7 +21,7 @@ import co.anitrend.support.crunchyroll.data.stream.model.CrunchyStreamInfoModel
 import co.anitrend.support.crunchyroll.data.util.extension.iso8601ToUnixTime
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 
-object MediaStreamTransformer : ISupportMapperHelper<CrunchyStreamInfoModel?, List<MediaStream>?> {
+internal object MediaStreamTransformer : ISupportMapperHelper<CrunchyStreamInfoModel?, List<MediaStream>?> {
 
     /**
      * Transforms the the [source] to the target type

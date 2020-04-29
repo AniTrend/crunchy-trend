@@ -20,7 +20,7 @@ import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
 
-object SessionTransformer : ISupportMapperHelper<CrunchySessionEntity?, Session?> {
+internal object SessionTransformer : ISupportMapperHelper<CrunchySessionEntity?, Session?> {
 
     /**
      * Transforms the the [source] to the target type

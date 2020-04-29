@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.stream.model
 
-data class CrunchyStreamDataModel(
+internal data class CrunchyStreamDataModel(
     val hardsub_lang: String,
     val audio_lang: String,
     val format: String,

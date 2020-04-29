@@ -21,10 +21,21 @@ import androidx.room.PrimaryKey
 import co.anitrend.support.crunchyroll.data.cache.model.CacheRequest
 
 @Entity
-data class CacheLogEntity(
+internal data class CacheLogEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val request: CacheRequest,
     val cacheItemId: Long,
     val timestamp: Long
-)
+) {
+    companion object {
+        fun new(
+            request: CacheRequest,
+            cacheItemId: Long
+        ): CacheLogEntity = CacheLogEntity(
+            request = request,
+            cacheItemId = cacheItemId,
+            timestamp = System.currentTimeMillis()
+        )
+    }
+}

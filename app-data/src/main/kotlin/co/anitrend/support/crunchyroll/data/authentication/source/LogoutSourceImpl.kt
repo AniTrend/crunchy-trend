@@ -31,7 +31,7 @@ import co.anitrend.support.crunchyroll.data.session.repository.SessionRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-class LogoutSourceImpl(
+internal class LogoutSourceImpl(
     private val sessionCoreDao: CrunchySessionCoreDao,
     private val mapper: LogoutResponseMapper,
     private val sessionDao: CrunchySessionDao,

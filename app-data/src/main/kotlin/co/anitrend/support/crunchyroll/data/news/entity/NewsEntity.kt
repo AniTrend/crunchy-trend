@@ -20,7 +20,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class NewsEntity(
+internal data class NewsEntity(
     @PrimaryKey
     val guid: String,
     val title: String,

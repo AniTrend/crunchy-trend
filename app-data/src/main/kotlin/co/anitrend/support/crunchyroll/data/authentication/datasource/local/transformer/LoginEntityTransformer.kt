@@ -22,7 +22,7 @@ import co.anitrend.support.crunchyroll.data.authentication.model.CrunchyLoginMod
 import co.anitrend.support.crunchyroll.data.user.datasource.local.transformer.UserEntityTransformer
 import co.anitrend.support.crunchyroll.data.util.extension.iso8601ToUnixTime
 
-object LoginEntityTransformer : ISupportMapperHelper<CrunchyLoginModel, CrunchyLoginEntity> {
+internal object LoginEntityTransformer : ISupportMapperHelper<CrunchyLoginModel, CrunchyLoginEntity> {
 
     /**
      * Transforms the the [source] to the target type

@@ -28,7 +28,9 @@ import co.anitrend.support.crunchyroll.data.authentication.source.LogoutSourceIm
 import co.anitrend.support.crunchyroll.data.authentication.source.contract.LoginSource
 import co.anitrend.support.crunchyroll.data.authentication.source.contract.LogoutSource
 import co.anitrend.support.crunchyroll.data.authentication.usecase.LoginUseCaseImpl
+import co.anitrend.support.crunchyroll.data.authentication.usecase.LoginUseCaseType
 import co.anitrend.support.crunchyroll.data.authentication.usecase.LogoutUseCaseImpl
+import co.anitrend.support.crunchyroll.data.authentication.usecase.LogoutUseCaseType
 import co.anitrend.support.crunchyroll.data.session.usecase.CoreSessionUseCaseImpl
 import co.anitrend.support.crunchyroll.data.session.usecase.UnblockSessionUseCaseImpl
 import org.koin.dsl.bind
@@ -95,12 +97,12 @@ private val repositoryModule = module {
 }
 
 private val useCaseModule = module {
-    factory {
+    factory<LoginUseCaseType> {
         LoginUseCaseImpl(
             repository = get()
         )
     }
-    factory {
+    factory<LogoutUseCaseType> {
         LogoutUseCaseImpl(
             repository = get()
         )

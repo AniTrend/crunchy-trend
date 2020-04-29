@@ -22,7 +22,7 @@ import org.simpleframework.xml.Element
 import org.simpleframework.xml.Root
 
 @Root(name = "rss", strict = false)
-data class CrunchyRssEpisodeContainer(
+internal data class CrunchyRssEpisodeContainer(
     @field:Element(
         name = "channel",
         required = false

@@ -22,7 +22,7 @@ import org.simpleframework.xml.Element
 import org.simpleframework.xml.Root
 
 @Root(name = "restriction", strict = false)
-data class CrunchyEpisodeRestrictionModel(
+internal data class CrunchyEpisodeRestrictionModel(
     @field:Attribute(
         required = false
     )

@@ -26,7 +26,7 @@ import co.anitrend.support.crunchyroll.domain.series.enums.CrunchyMediaType
         Index(value = ["seriesId"])
     ]
 )
-data class CrunchyCollectionEntity(
+internal data class CrunchyCollectionEntity(
     @PrimaryKey
     val collectionId: Long,
     val etpGuid: String,

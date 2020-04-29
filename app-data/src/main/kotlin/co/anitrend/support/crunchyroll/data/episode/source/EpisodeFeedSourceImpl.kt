@@ -24,28 +24,29 @@ import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.data.util.SupportDataKeyStore
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
+import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
+import co.anitrend.support.crunchyroll.data.arch.database.settings.IRefreshBehaviourSettings
+import co.anitrend.support.crunchyroll.data.arch.extension.controller
+import co.anitrend.support.crunchyroll.data.arch.helper.CrunchyClearDataHelper
 import co.anitrend.support.crunchyroll.data.episode.datasource.local.CrunchyRssEpisodeDao
 import co.anitrend.support.crunchyroll.data.episode.datasource.remote.CrunchyEpisodeFeedEndpoint
 import co.anitrend.support.crunchyroll.data.episode.mapper.EpisodeFeedResponseMapper
 import co.anitrend.support.crunchyroll.data.episode.source.contract.EpisodeFeedSource
 import co.anitrend.support.crunchyroll.data.episode.transformer.EpisodeFeedTransformer
-import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 
-class EpisodeFeedSourceImpl(
+internal class EpisodeFeedSourceImpl(
     private val mapper: EpisodeFeedResponseMapper,
     private val endpoint: CrunchyEpisodeFeedEndpoint,
     private val dao: CrunchyRssEpisodeDao,
     private val supportConnectivity: SupportConnectivity,
+    private val settings: IRefreshBehaviourSettings,
     supportDispatchers: SupportDispatchers
 ) : EpisodeFeedSource(supportDispatchers) {
 
-    private lateinit var rssQuery: RssQuery
-
     override val episodeListingsObservable =
-        object : ISourceObservable<RssQuery, PagedList<CrunchyEpisodeFeed>> {
+        object : ISourceObservable<Nothing?, PagedList<CrunchyEpisodeFeed>> {
             /**
              * Returns the appropriate observable which we will monitor for updates,
              * common implementation may include but not limited to returning
@@ -53,8 +54,7 @@ class EpisodeFeedSourceImpl(
              *
              * @param parameter to use when executing
              */
-            override fun invoke(parameter: RssQuery): LiveData<PagedList<CrunchyEpisodeFeed>> {
-                rssQuery = parameter
+            override fun invoke(parameter: Nothing?): LiveData<PagedList<CrunchyEpisodeFeed>> {
                 val localSource = dao.findByAllFactory()
 
                 val result = localSource.map {
@@ -68,23 +68,28 @@ class EpisodeFeedSourceImpl(
             }
         }
 
-    override fun getMediaListingsCatalogue(callback: PagingRequestHelper.Request.Callback) {
+    override suspend fun getMediaListingsCatalogue(callback: PagingRequestHelper.Request.Callback) {
         val deferred = async {
-            endpoint.getLatestMediaFeed(rssQuery.language)
+            endpoint.getLatestMediaFeed(query.language)
         }
 
-        launch {
-            val controller =
-                mapper.controller(supportConnectivity)
+        val controller =
+            mapper.controller(
+                dispatchers,
+                OnlineControllerPolicy.create(
+                    supportConnectivity
+                )
+            )
 
-            controller(deferred, callback)
-        }
+        controller.episode(deferred, callback)
     }
 
     /**
      * Clears data sources (databases, preferences, e.t.c)
      */
     override suspend fun clearDataSource() {
-        dao.clearTable()
+        CrunchyClearDataHelper(settings, supportConnectivity) {
+            dao.clearTable()
+        }
     }
 }

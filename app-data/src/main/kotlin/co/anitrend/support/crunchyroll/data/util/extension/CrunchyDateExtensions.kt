@@ -17,16 +17,13 @@
 package co.anitrend.support.crunchyroll.data.util.extension
 
 import co.anitrend.arch.extension.LAZY_MODE_PUBLICATION
-import co.anitrend.arch.extension.LAZY_MODE_SYNCHRONIZED
 import co.anitrend.arch.extension.util.contract.ISupportDateHelper
 import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
 import co.anitrend.support.crunchyroll.data.arch.RCF822Date
-import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper.Companion.ISO8601_PATTERN
-import co.anitrend.support.crunchyroll.data.util.CrunchyDateHelper.Companion.RCF822_PATTERN
+import co.anitrend.support.crunchyroll.data.util.CrunchyDateUtil.Companion.ISO8601_PATTERN
+import co.anitrend.support.crunchyroll.data.util.CrunchyDateUtil.Companion.RCF822_PATTERN
 import org.koin.core.KoinComponent
-import org.koin.core.context.GlobalContext
 import org.koin.core.get
-import org.koin.core.inject
 import timber.log.Timber
 
 internal val koin = object : KoinComponent {}
@@ -35,7 +32,7 @@ val supportDateHelper by lazy(LAZY_MODE_PUBLICATION) {
     koin.get<ISupportDateHelper>()
 }
 
-fun ISO8601Date.iso8601ToUnixTime() =
+internal fun ISO8601Date.iso8601ToUnixTime() =
     runCatching{
         supportDateHelper.convertToUnixTimeStamp(
             originDate = this,
@@ -46,7 +43,7 @@ fun ISO8601Date.iso8601ToUnixTime() =
         0
     }
 
-fun RCF822Date.rcf822ToUnixTime() =
+internal fun RCF822Date.rcf822ToUnixTime() =
     runCatching {
         supportDateHelper.convertToUnixTimeStamp(
             originDate = this,

@@ -23,7 +23,7 @@ import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalog
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchyMediaType
 import co.anitrend.support.crunchyroll.domain.user.enums.CrunchyAccessType
 
-class CrunchyEnumsTypeConverter {
+internal class CrunchyEnumsTypeConverter {
 
     @TypeConverter fun fromAccessType(value: CrunchyAccessType?) = value?.fromEnum()
     @TypeConverter fun toAccessType(value: String?) = value?.toEnum<CrunchyAccessType>()

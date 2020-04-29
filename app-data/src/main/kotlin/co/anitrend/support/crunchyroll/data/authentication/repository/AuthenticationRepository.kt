@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.data.authentication.repository
 
 import co.anitrend.arch.data.model.UserInterfaceState
+import co.anitrend.arch.data.model.UserInterfaceState.Companion.create
 import co.anitrend.arch.data.repository.SupportRepository
 import co.anitrend.support.crunchyroll.data.authentication.source.contract.LoginSource
 import co.anitrend.support.crunchyroll.data.authentication.source.contract.LogoutSource
@@ -25,7 +26,7 @@ import co.anitrend.support.crunchyroll.domain.authentication.repositories.ILogin
 import co.anitrend.support.crunchyroll.domain.authentication.repositories.ILogoutRepository
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 
-class AuthenticationRepository(
+internal class AuthenticationRepository(
     private val loginSource: LoginSource,
     private val logoutSource: LogoutSource
 ) : SupportRepository(loginSource),
@@ -34,27 +35,24 @@ class AuthenticationRepository(
 
 
     override fun loggedInUser() =
-        UserInterfaceState.create(
-            model = loginSource.loggedInUser(),
-            source = loginSource
+        loginSource.create(
+            model = loginSource.loggedInUser()
         )
 
     /**
      * Authenticates a user
      */
     override fun loginUser(query: CrunchyLoginQuery) =
-        UserInterfaceState.create(
-            model = loginSource.loginUser(query),
-            source = loginSource
+        loginSource.create(
+            model = loginSource.loginUser(query)
         )
 
     /**
      * Un-authenticates a user
      */
     override fun logoutUser() =
-        UserInterfaceState.create(
-            model = logoutSource.logoutUser(),
-            source = logoutSource
+        logoutSource.create(
+            model = logoutSource.logoutUser()
         )
 
     /**

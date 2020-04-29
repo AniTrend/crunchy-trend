@@ -21,7 +21,7 @@ import androidx.room.PrimaryKey
 import co.anitrend.support.crunchyroll.data.session.entity.common.ICrunchySessionCoreEntity
 
 @Entity
-data class CrunchySessionCoreEntity(
+internal data class CrunchySessionCoreEntity(
     @PrimaryKey
     override val sessionId: String,
     override val deviceType: String,

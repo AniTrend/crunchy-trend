@@ -46,7 +46,7 @@ internal class ResponseHelper(private val json: Gson) {
         return content?.toResponseBody(mediaType)
     }
 
-    internal fun reconstrctResponseUsing(response: Response): Response? {
+    internal fun reconstructResponseUsing(response: Response): Response? {
         val body = response.body?.string()
         val mimeType = response.body?.contentType()
         val currentResponse = convertResponse(body)

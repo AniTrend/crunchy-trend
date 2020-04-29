@@ -23,7 +23,7 @@ import co.anitrend.support.crunchyroll.data.news.entity.NewsEntity
 import co.anitrend.support.crunchyroll.data.news.model.CrunchyNewsModel
 import co.anitrend.support.crunchyroll.data.rss.contract.ICrunchyRssChannel
 
-class NewsResponseMapper(
+internal class NewsResponseMapper(
     private val dao: CrunchyRssNewsDao
 ) : CrunchyRssMapper<CrunchyNewsModel, NewsEntity>() {
 

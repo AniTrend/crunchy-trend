@@ -25,7 +25,7 @@ import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
 import co.anitrend.support.crunchyroll.data.media.entity.CrunchyMediaEntity
 
 @Dao
-interface CrunchyMediaDao : ISupportQuery<CrunchyMediaEntity>, ISourceDao {
+internal interface CrunchyMediaDao : ISupportQuery<CrunchyMediaEntity>, ISourceDao {
 
     @Query("""
         select count(mediaId) from CrunchyMediaEntity
@@ -36,6 +36,12 @@ interface CrunchyMediaDao : ISupportQuery<CrunchyMediaEntity>, ISourceDao {
         delete from CrunchyMediaEntity
         """)
     override suspend fun clearTable()
+
+    @Query("""
+        delete from CrunchyMediaEntity
+        where collectionId = :collectionId
+        """)
+    suspend fun clearTableByCollectionId(collectionId: Long)
 
 
     @Query("""
@@ -77,6 +83,15 @@ interface CrunchyMediaDao : ISupportQuery<CrunchyMediaEntity>, ISourceDao {
     fun findByCollectionIdX(
         collectionId: Long
     ): LiveData<List<CrunchyMediaEntity>>
+
+    @Query("""
+        select count(collectionId)
+        from CrunchyMediaEntity 
+        where collectionId = :collectionId
+        """)
+    suspend fun countByCollectionId(
+        collectionId: Long
+    ): Int
 
     @Query("""
         select * 

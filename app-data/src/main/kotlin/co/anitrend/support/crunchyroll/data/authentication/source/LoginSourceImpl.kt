@@ -36,7 +36,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class LoginSourceImpl(
+internal class LoginSourceImpl(
     private val dao: CrunchyLoginDao,
     private val settings: IAuthenticationSettings,
     private val endpoint: CrunchyAuthenticationEndpoint,

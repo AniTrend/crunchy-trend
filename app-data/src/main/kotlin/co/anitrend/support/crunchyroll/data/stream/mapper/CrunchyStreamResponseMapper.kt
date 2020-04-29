@@ -19,7 +19,7 @@ package co.anitrend.support.crunchyroll.data.stream.mapper
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
 import co.anitrend.support.crunchyroll.data.stream.model.CrunchyStreamInfoModel
 
-class CrunchyStreamResponseMapper :
+internal class CrunchyStreamResponseMapper :
     CrunchyMapper<CrunchyStreamInfoModel, CrunchyStreamInfoModel>() {
 
     /**

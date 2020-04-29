@@ -16,6 +16,6 @@
 
 package co.anitrend.support.crunchyroll.data.rss.contract
 
-interface ICrunchyContainer<T : ICrunchyRssChannel<*>> {
+internal interface ICrunchyContainer<T : ICrunchyRssChannel<*>> {
     val channel: T?
 }

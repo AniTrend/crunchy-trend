@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.session.entity.common
 
-interface ICrunchySessionCoreEntity {
+internal interface ICrunchySessionCoreEntity {
     val sessionId: String
     val deviceType: String
     val deviceId: String

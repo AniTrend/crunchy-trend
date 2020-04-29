@@ -16,8 +16,6 @@
 
 package co.anitrend.support.crunchyroll.data.stream.source
 
-import androidx.lifecycle.LiveData
-import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OfflineControllerPolicy
@@ -27,21 +25,16 @@ import co.anitrend.support.crunchyroll.data.stream.datasource.remote.CrunchyStre
 import co.anitrend.support.crunchyroll.data.stream.mapper.CrunchyStreamResponseMapper
 import co.anitrend.support.crunchyroll.data.stream.source.contract.CrunchyStreamSource
 import co.anitrend.support.crunchyroll.data.stream.transformer.MediaStreamTransformer
-import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
-import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 
-class CrunchyStreamSourceImpl(
+internal class CrunchyStreamSourceImpl(
     private val endpoint: CrunchyStreamEndpoint,
     private val mapper: CrunchyStreamResponseMapper,
     private val supportConnectivity: SupportConnectivity,
     supportDispatchers: SupportDispatchers
 ) : CrunchyStreamSource(supportDispatchers) {
 
-    override fun getMediaStream(query: CrunchyMediaStreamQuery): LiveData<List<MediaStream>?> {
-        retry = { getMediaStream(query) }
-        networkState.value = NetworkState.Loading
+    override suspend fun getMediaStream() {
         val deferred = async {
             endpoint.getStreamInfo(
                 mediaId = query.mediaId,
@@ -49,20 +42,16 @@ class CrunchyStreamSourceImpl(
             )
         }
 
-        launch {
-            val controller =
-                mapper.controller(
-                    dispatchers,
-                    OfflineControllerPolicy.create()
-                )
-
-            val result = controller(deferred, networkState)
-
-            observable.postValue(
-                MediaStreamTransformer.transform(result)
+        val controller =
+            mapper.controller(
+                dispatchers,
+                OfflineControllerPolicy.create()
             )
-        }
 
-        return observable
+        val result = controller(deferred, networkState)
+
+        observable.postValue(
+            MediaStreamTransformer.transform(result)
+        )
     }
 }

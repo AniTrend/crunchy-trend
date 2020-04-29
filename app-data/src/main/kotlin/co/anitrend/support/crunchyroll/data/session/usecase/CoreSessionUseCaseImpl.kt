@@ -19,6 +19,6 @@ package co.anitrend.support.crunchyroll.data.session.usecase
 import co.anitrend.support.crunchyroll.domain.session.interactors.CoreSessionUseCase
 import co.anitrend.support.crunchyroll.domain.session.repositories.ISessionRepository
 
-class CoreSessionUseCaseImpl(
+internal class CoreSessionUseCaseImpl(
     repository: ISessionRepository
 ) : CoreSessionUseCase(repository)

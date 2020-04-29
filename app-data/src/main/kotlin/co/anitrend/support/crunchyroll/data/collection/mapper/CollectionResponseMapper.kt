@@ -22,7 +22,7 @@ import co.anitrend.support.crunchyroll.data.collection.datasource.local.transfor
 import co.anitrend.support.crunchyroll.data.collection.entity.CrunchyCollectionEntity
 import co.anitrend.support.crunchyroll.data.collection.model.CrunchyCollectionModel
 
-class CollectionResponseMapper(
+internal class CollectionResponseMapper(
     private val dao: CrunchyCollectionDao
 ) : CrunchyMapper<List<CrunchyCollectionModel>, List<CrunchyCollectionEntity>>() {
 

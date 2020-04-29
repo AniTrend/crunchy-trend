@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.data.session.entity.common
 
 import co.anitrend.support.crunchyroll.data.user.entity.CrunchyUserEntity
 
-interface ICrunchySessionEntity {
+internal interface ICrunchySessionEntity {
     val authenticatedUser: CrunchyUserEntity
     val authenticationKey: String
     val expiresAt: Long

@@ -33,6 +33,6 @@ internal class CrunchySessionInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val original = chain.request()
         val response = chain.proceed(original)
-        return responseHelper.reconstrctResponseUsing(response) ?: response
+        return responseHelper.reconstructResponseUsing(response) ?: response
     }
 }

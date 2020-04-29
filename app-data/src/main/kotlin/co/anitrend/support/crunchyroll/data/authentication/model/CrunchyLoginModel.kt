@@ -19,7 +19,7 @@ package co.anitrend.support.crunchyroll.data.authentication.model
 import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
 import co.anitrend.support.crunchyroll.data.user.model.CrunchyUserModel
 
-data class CrunchyLoginModel(
+internal data class CrunchyLoginModel(
     val user: CrunchyUserModel,
     val auth: String,
     val expires: ISO8601Date

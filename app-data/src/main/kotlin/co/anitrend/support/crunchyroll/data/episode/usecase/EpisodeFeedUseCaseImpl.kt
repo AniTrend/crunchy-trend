@@ -22,9 +22,9 @@ import co.anitrend.support.crunchyroll.data.episode.repository.EpisodeFeedReposi
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 import co.anitrend.support.crunchyroll.domain.episode.interactors.EpisodeFeedUseCase
 
-class EpisodeFeedUseCaseImpl(
+internal class EpisodeFeedUseCaseImpl(
     repository: EpisodeFeedRepository
-) : EpisodeFeedUseCase<UserInterfaceState<PagedList<CrunchyEpisodeFeed>>>(repository) {
+) : EpisodeFeedUseCaseType(repository) {
 
     /**
      * Informs underlying repositories or related components running background operations to stop
@@ -33,3 +33,5 @@ class EpisodeFeedUseCaseImpl(
         (repository as EpisodeFeedRepository).onCleared()
     }
 }
+
+typealias EpisodeFeedUseCaseType = EpisodeFeedUseCase<UserInterfaceState<PagedList<CrunchyEpisodeFeed>>>

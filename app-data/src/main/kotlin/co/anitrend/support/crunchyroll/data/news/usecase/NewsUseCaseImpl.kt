@@ -18,18 +18,22 @@ package co.anitrend.support.crunchyroll.data.news.usecase
 
 import androidx.paging.PagedList
 import co.anitrend.arch.data.model.UserInterfaceState
+import co.anitrend.arch.data.repository.contract.ISupportRepository
 import co.anitrend.support.crunchyroll.data.news.repository.NewsRepository
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import co.anitrend.support.crunchyroll.domain.news.interactors.NewsUseCase
 
-class NewsUseCaseImpl(
+internal class NewsUseCaseImpl(
     repository: NewsRepository
-) : NewsUseCase<UserInterfaceState<PagedList<CrunchyNews>>>(repository) {
+) : NewsUseCaseType(repository) {
 
     /**
      * Informs underlying repositories or related components running background operations to stop
      */
     override fun onCleared() {
-        (repository as NewsRepository).onCleared()
+        repository as ISupportRepository
+        repository.onCleared()
     }
 }
+
+typealias NewsUseCaseType = NewsUseCase<UserInterfaceState<PagedList<CrunchyNews>>>

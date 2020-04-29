@@ -34,7 +34,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class CoreSessionSourceImpl(
+internal class CoreSessionSourceImpl(
     private val settings: IAuthenticationSettings,
     private val dao: CrunchySessionCoreDao,
     private val endpoint: CrunchySessionEndpoint,

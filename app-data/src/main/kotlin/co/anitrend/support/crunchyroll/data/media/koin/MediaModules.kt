@@ -25,7 +25,7 @@ import co.anitrend.support.crunchyroll.data.media.repository.MediaRepository
 import co.anitrend.support.crunchyroll.data.media.source.MediaSourceImpl
 import co.anitrend.support.crunchyroll.data.media.source.contract.MediaSource
 import co.anitrend.support.crunchyroll.data.media.usecase.MediaUseCaseImpl
-import co.anitrend.support.crunchyroll.domain.media.interactors.MediaUseCase
+import co.anitrend.support.crunchyroll.data.media.usecase.MediaUseCaseType
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -36,7 +36,8 @@ private val dataSourceModule = module {
             supportDispatchers = get(),
             mapper = get(),
             mediaDao = db().crunchyMediaDao(),
-            endpoint = api(EndpointType.JSON)
+            endpoint = api(EndpointType.JSON),
+            settings = get()
         )
     } bind MediaSource::class
 }
@@ -58,7 +59,7 @@ private val repositoryModule = module {
 }
 
 private val useCaseModule = module {
-    factory {
+    factory<MediaUseCaseType> {
         MediaUseCaseImpl(
             repository = get()
         )

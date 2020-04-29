@@ -18,10 +18,10 @@ package co.anitrend.support.crunchyroll.feature.media.viewmodel
 
 import androidx.paging.PagedList
 import co.anitrend.arch.core.viewmodel.SupportPagingViewModel
-import co.anitrend.support.crunchyroll.data.media.usecase.MediaUseCaseImpl
+import co.anitrend.support.crunchyroll.data.media.usecase.MediaUseCaseType
 import co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia
 import co.anitrend.support.crunchyroll.domain.media.models.CrunchyMediaQuery
 
 class MediaViewModel(
-    override val useCase: MediaUseCaseImpl
+    override val useCase: MediaUseCaseType
 ) : SupportPagingViewModel<CrunchyMediaQuery, PagedList<CrunchyMedia>>()

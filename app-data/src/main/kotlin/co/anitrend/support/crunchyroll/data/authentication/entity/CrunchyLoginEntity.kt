@@ -21,7 +21,7 @@ import androidx.room.PrimaryKey
 import co.anitrend.support.crunchyroll.domain.user.enums.CrunchyAccessType
 
 @Entity
-data class CrunchyLoginEntity(
+internal data class CrunchyLoginEntity(
     @PrimaryKey
     val userId: Long,
     val username: String,

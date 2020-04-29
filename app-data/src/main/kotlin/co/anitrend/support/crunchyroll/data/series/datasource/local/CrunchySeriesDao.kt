@@ -26,7 +26,7 @@ import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
 import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesEntity
 
 @Dao
-interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity>, ISourceDao {
+internal interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity>, ISourceDao {
 
     @Query("""
         select count(id) from CrunchySeriesEntity
@@ -37,6 +37,29 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity>, ISourceDao {
         delete from CrunchySeriesEntity
         """)
     override suspend fun clearTable()
+
+    @Query("""
+        delete from CrunchySeriesEntity
+        where id = :seriesId
+        """)
+    suspend fun clearTableById(seriesId: Long)
+
+    @Query("""
+        delete from CrunchySeriesEntity
+        where name match :seriesName 
+        """)
+    suspend fun clearTableByMatch(seriesName: String)
+
+    @Query("""
+        delete from CrunchySeriesEntity
+        where name like :prefix
+        """)
+    suspend fun clearTableByPrefix(prefix: String)
+    @Query("""
+        delete from CrunchySeriesEntity
+        where genres like :genre
+        """)
+    suspend fun clearTableByGenre(genre: String)
 
 
     @Query("""
@@ -58,6 +81,12 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity>, ISourceDao {
     ): LiveData<CrunchySeriesEntity?>
 
 
+    @Query("""
+        select count(id)
+        from CrunchySeriesEntity 
+        where name match :seriesName 
+    """)
+    suspend fun countBySeriesName(seriesName: String): Int
 
     @Query("""
         select *
@@ -115,6 +144,15 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity>, ISourceDao {
     fun findAllFactory(): DataSource.Factory<Int, CrunchySeriesEntity>
 
     @Query("""
+        select count(id)
+        from CrunchySeriesEntity
+        where name like :prefix
+        """)
+    suspend fun countStartingWith(
+        prefix: String
+    ): Int
+
+    @Query("""
         select *
         from CrunchySeriesEntity
         where name like :prefix
@@ -124,13 +162,23 @@ interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity>, ISourceDao {
         prefix: String
     ): DataSource.Factory<Int, CrunchySeriesEntity>
 
+
+    @Query("""
+        select count(id)
+        from CrunchySeriesEntity 
+        where genres like :genre
+        """)
+    fun countContainingGenre(
+        genre: String
+    ): Int
+
     @Query("""
         select *
         from CrunchySeriesEntity 
-        where genres in(:option)
+        where genres like :genre
         order by name collate nocase asc
         """)
-    fun findAllContainingGenre(
-        option: String
+    fun findAllContainingGenreFactory(
+        genre: String
     ): DataSource.Factory<Int, CrunchySeriesEntity>
 }

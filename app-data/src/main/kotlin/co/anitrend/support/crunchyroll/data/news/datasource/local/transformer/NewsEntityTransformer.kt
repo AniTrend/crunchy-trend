@@ -22,7 +22,7 @@ import co.anitrend.support.crunchyroll.data.news.helper.NewsHelper
 import co.anitrend.support.crunchyroll.data.news.model.CrunchyNewsModel
 import co.anitrend.support.crunchyroll.data.util.extension.rcf822ToUnixTime
 
-object NewsEntityTransformer : ISupportMapperHelper<CrunchyNewsModel, NewsEntity> {
+internal object NewsEntityTransformer : ISupportMapperHelper<CrunchyNewsModel, NewsEntity> {
 
     /**
      * Transforms the the [source] to the target type

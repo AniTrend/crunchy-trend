@@ -22,13 +22,25 @@ import co.anitrend.arch.data.source.core.SupportCoreDataSource
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
+import kotlinx.coroutines.launch
 
-abstract class CrunchyStreamSource(
+internal abstract class CrunchyStreamSource(
     supportDispatchers: SupportDispatchers
 ) : SupportCoreDataSource(supportDispatchers) {
 
+    protected lateinit var query: CrunchyMediaStreamQuery
+        private set
+
     protected val observable = MutableLiveData<List<MediaStream>?>()
-    abstract fun getMediaStream(query: CrunchyMediaStreamQuery): LiveData<List<MediaStream>?>
+
+    protected abstract suspend fun getMediaStream()
+
+    operator fun invoke(mediaStreamQuery: CrunchyMediaStreamQuery): LiveData<List<MediaStream>?> {
+        query = mediaStreamQuery
+        retry = { launch { getMediaStream() } }
+        launch { getMediaStream() }
+        return observable
+    }
 
     /**
      * Clears data sources (databases, preferences, e.t.c)

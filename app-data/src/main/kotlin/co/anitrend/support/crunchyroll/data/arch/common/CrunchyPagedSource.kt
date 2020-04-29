@@ -17,62 +17,40 @@
 package co.anitrend.support.crunchyroll.data.arch.common
 
 import androidx.paging.PagedList
-import androidx.paging.PagingRequestHelper
+import androidx.paging.PagingRequestHelper.Request
+import androidx.paging.PagingRequestHelper.RequestType
 import co.anitrend.arch.data.source.paging.SupportPagingDataSource
 import co.anitrend.arch.extension.SupportDispatchers
-import co.anitrend.support.crunchyroll.data.arch.CrunchyExperimentalFeature
-import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 /**
  * Helper for prototyping quick sources
  */
-abstract class CrunchyPagedSource<T>(
-    supportDispatchers: SupportDispatchers,
-    sourceDao: ISourceDao
+internal abstract class CrunchyPagedSource<T>(
+    supportDispatchers: SupportDispatchers
 ) : SupportPagingDataSource<T>(supportDispatchers) {
 
-    init {
-        launch (dispatchers.io) {
-            @OptIn(CrunchyExperimentalFeature::class)
-            configurePagingHelper(sourceDao)
-        }
-    }
-
-    protected lateinit var executionTarget: (PagingRequestHelper.Request.Callback) -> Unit
-
-    /**
-     * Since we plan on using a paging source backed by a database, Ideally we should
-     * configure [supportPagingHelper] with the records count/paging limit to start load
-     * from the last page of results in our backend.
-     *
-     * @param sourceDao contract for all compatible data access objects
-     *
-     * @see setUpPagingHelperWithInitial
-     */
-    @CrunchyExperimentalFeature
-    protected open suspend fun configurePagingHelper(sourceDao: ISourceDao) {
-        // Disabled for now since not all pagination can be calculated without supplying
-        // a filter clause
-    }
-
-    protected fun setUpPagingHelperWithInitial(itemsCount: Int) {
-        if (itemsCount > 0) {
-            val lastLoadedPage = itemsCount / supportPagingHelper.pageSize
-            supportPagingHelper.page = lastLoadedPage
-            supportPagingHelper.pageOffset = lastLoadedPage * supportPagingHelper.pageSize
-        }
-    }
+    @Volatile
+    protected lateinit var executionTarget: suspend (
+        callback: Request.Callback,
+        requestType: RequestType,
+        model: T?
+    ) -> Unit
 
     /**
      * Called when zero items are returned from an initial load of the PagedList's data source.
      */
     override fun onZeroItemsLoaded() {
         pagingRequestHelper.runIfNotRunning(
-            PagingRequestHelper.RequestType.INITIAL
-        ) {
-            executionTarget(it)
+            RequestType.INITIAL
+        ) { pagingRequestCallback ->
+            launch {
+                executionTarget(
+                    pagingRequestCallback,
+                    RequestType.INITIAL,
+                    null
+                )
+            }
         }
     }
 
@@ -80,17 +58,22 @@ abstract class CrunchyPagedSource<T>(
      * Called when the item at the end of the PagedList has been loaded, and access has
      * occurred within [PagedList.Config.prefetchDistance] of it.
      *
-     *
      * No more data will be appended to the PagedList after this item.
      *
      * @param itemAtEnd The first item of PagedList
      */
     override fun onItemAtEndLoaded(itemAtEnd: T) {
         pagingRequestHelper.runIfNotRunning(
-            PagingRequestHelper.RequestType.AFTER
-        ) {
-            supportPagingHelper.onPageNext()
-            executionTarget(it)
+            RequestType.AFTER
+        ) { pagingRequestCallback ->
+            launch {
+                supportPagingHelper.onPageNext()
+                executionTarget(
+                    pagingRequestCallback,
+                    RequestType.AFTER,
+                    itemAtEnd
+                )
+            }
         }
     }
 }

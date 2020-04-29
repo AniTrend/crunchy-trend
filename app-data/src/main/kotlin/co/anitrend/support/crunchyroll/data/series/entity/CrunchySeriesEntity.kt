@@ -16,11 +16,12 @@
 
 package co.anitrend.support.crunchyroll.data.series.entity
 
-import androidx.room.*
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchyMediaType
 
 @Entity
-data class CrunchySeriesEntity(
+internal data class CrunchySeriesEntity(
     @PrimaryKey
     val id: Long,
     val url: String,

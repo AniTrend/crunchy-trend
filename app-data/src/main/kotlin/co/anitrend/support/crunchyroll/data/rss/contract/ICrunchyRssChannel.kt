@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.data.rss.contract
 
 import co.anitrend.support.crunchyroll.data.arch.RCF822Date
 
-interface ICrunchyRssChannel<T : IRssCopyright> {
+internal interface ICrunchyRssChannel<T : IRssCopyright> {
     val title: String?
     val description: String?
     val copyright: String

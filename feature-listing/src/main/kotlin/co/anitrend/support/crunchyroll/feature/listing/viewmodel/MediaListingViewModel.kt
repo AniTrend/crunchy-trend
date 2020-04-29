@@ -18,10 +18,10 @@ package co.anitrend.support.crunchyroll.feature.listing.viewmodel
 
 import androidx.paging.PagedList
 import co.anitrend.arch.core.viewmodel.SupportPagingViewModel
-import co.anitrend.support.crunchyroll.data.episode.usecase.EpisodeFeedUseCaseImpl
+import co.anitrend.support.crunchyroll.data.episode.usecase.EpisodeFeedUseCaseType
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 
 class MediaListingViewModel(
-    override val useCase: EpisodeFeedUseCaseImpl
+    override val useCase: EpisodeFeedUseCaseType
 ) : SupportPagingViewModel<RssQuery, PagedList<CrunchyEpisodeFeed>>()

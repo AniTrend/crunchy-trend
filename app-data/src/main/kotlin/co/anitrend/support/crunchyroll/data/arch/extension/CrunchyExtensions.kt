@@ -17,15 +17,10 @@
 package co.anitrend.support.crunchyroll.data.arch.extension
 
 import co.anitrend.arch.extension.SupportDispatchers
-import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
 import co.anitrend.support.crunchyroll.data.api.provider.EndpointProvider
 import co.anitrend.support.crunchyroll.data.arch.controller.json.CrunchyController
 import co.anitrend.support.crunchyroll.data.arch.controller.strategy.contract.ControllerStrategy
-import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OfflineControllerPolicy
-import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
-import co.anitrend.support.crunchyroll.data.arch.controller.xml.CrunchyRssMediaController
-import co.anitrend.support.crunchyroll.data.arch.controller.xml.CrunchyRssNewsController
 import co.anitrend.support.crunchyroll.data.arch.controller.xml.CrunchyXmlController
 import co.anitrend.support.crunchyroll.data.arch.database.common.ICrunchyDatabase
 import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyResponseStatus
@@ -38,7 +33,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import okhttp3.Response as OkHttpResponse
 import okhttp3.ResponseBody
 import org.koin.core.scope.Scope
 import retrofit2.HttpException
@@ -46,6 +40,7 @@ import retrofit2.Response
 import java.io.IOException
 import java.lang.reflect.Type
 import java.util.*
+import okhttp3.Response as OkHttpResponse
 
 fun OkHttpResponse?.isCached(): Boolean {
     return if (this != null) cacheResponse != null else false
@@ -100,25 +95,6 @@ internal fun <S: IRssCopyright, D> CrunchyRssMapper<S, D>.controller(
     supportDispatchers = supportDispatchers
 )
 
-/*internal fun <S: IRssCopyright, D> CrunchyRssMapper<S, D>.controller(
-    supportDispatchers: SupportDispatchers,
-    strategy: ControllerStrategy<D> = OfflineControllerPolicy.create()
-) = CrunchyRssNewsController.newInstance(
-    strategy = strategy,
-    responseMapper = this,
-    supportDispatchers = supportDispatchers
-)
-
-
-internal fun <S: IRssCopyright, D> CrunchyRssMapper<S, D>.controller(
-    supportDispatchers: SupportDispatchers,
-    strategy: ControllerStrategy<D> = OfflineControllerPolicy.create()
-) = CrunchyRssMediaController.newInstance(
-    strategy = strategy,
-    responseMapper = this,
-    supportDispatchers = supportDispatchers
-)*/
-
 /**
  * Uses system locale to generate a locale string which crunchyroll can use
  */
@@ -126,7 +102,7 @@ fun Locale.toCrunchyLocale(): String {
     return "$language$country"
 }
 
-fun Scope.db() = get<ICrunchyDatabase>()
+internal fun Scope.db() = get<ICrunchyDatabase>()
 
 internal inline fun <reified T> Scope.api(endpointType: EndpointType): T =
     EndpointProvider.provideRetrofit(endpointType, this).create(T::class.java)

@@ -18,18 +18,22 @@ package co.anitrend.support.crunchyroll.data.series.usecase
 
 import androidx.paging.PagedList
 import co.anitrend.arch.data.model.UserInterfaceState
-import co.anitrend.support.crunchyroll.data.series.repository.SeriesRepository
+import co.anitrend.arch.data.repository.contract.ISupportRepository
+import co.anitrend.support.crunchyroll.data.series.repository.search.SeriesSearchRepository
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.interactors.SeriesSearchUseCase
 
-class SeriesSearchUseCaseImpl(
-    repository: SeriesRepository
-) : SeriesSearchUseCase<UserInterfaceState<PagedList<CrunchySeries>>>(repository) {
+internal class SeriesSearchUseCaseImpl(
+    repository: SeriesSearchRepository
+) : SeriesSearchUseCaseType(repository) {
 
     /**
      * Informs underlying repositories or related components running background operations to stop
      */
     override fun onCleared() {
-        (repository as SeriesRepository).onCleared()
+        repository as ISupportRepository
+        repository.onCleared()
     }
 }
+
+typealias SeriesSearchUseCaseType = SeriesSearchUseCase<UserInterfaceState<PagedList<CrunchySeries>>>

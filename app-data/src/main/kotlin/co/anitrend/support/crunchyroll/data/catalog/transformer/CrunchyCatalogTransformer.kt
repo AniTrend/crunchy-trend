@@ -21,7 +21,7 @@ import co.anitrend.support.crunchyroll.data.catalog.entity.CrunchyCatalogWithSer
 import co.anitrend.support.crunchyroll.data.series.transformer.CrunchySeriesTransformer
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 
-object CrunchyCatalogTransformer : ISupportMapperHelper<List<CrunchyCatalogWithSeriesEntity>, CrunchyCatalogWithSeries?> {
+internal object CrunchyCatalogTransformer : ISupportMapperHelper<List<CrunchyCatalogWithSeriesEntity>, CrunchyCatalogWithSeries?> {
     /**
      * Transforms the the [source] to the target type
      */

@@ -37,7 +37,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class NormalSessionSourceImpl(
+internal class NormalSessionSourceImpl(
     private val dao: CrunchySessionDao,
     private val settings: IAuthenticationSettings,
     private val loginDao: CrunchyLoginDao,

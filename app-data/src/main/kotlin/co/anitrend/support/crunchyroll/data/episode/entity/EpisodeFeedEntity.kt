@@ -20,7 +20,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class EpisodeFeedEntity(
+internal data class EpisodeFeedEntity(
     @PrimaryKey
     val mediaId: Long,
     val title: String,
