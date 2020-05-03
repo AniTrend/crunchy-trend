@@ -53,7 +53,7 @@ class MainScreen : CrunchyActivity(), NavigationView.OnNavigationItemSelectedLis
     private var selectedItem: Int = R.id.nav_show_latest
 
     @StringRes
-    private var selectedTitle: Int = R.string.nav_shows
+    private var selectedTitle: Int = R.string.nav_show_news
 
 
     override val elasticLayout: ElasticDragDismissFrameLayout? = null
