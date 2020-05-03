@@ -44,18 +44,18 @@
             app:title="@string/preference_title_locale"
             app:summary="@string/preference_summary_locale"
             app:icon="@drawable/ic_language"
-            app:fragment="co.anitrend.support.crunchyroll.feature.settings.ui.fragment.LocaleContentScreen"/>
+            app:fragment="co.anitrend.support.crunchyroll.feature.settings.ui.fragment.screens.LocaleContentScreen"/>
 
     <Preference
             app:title="@string/preference_title_privacy"
             app:summary="@string/preference_summary_privacy"
             app:icon="@drawable/ic_privacy"
-            app:fragment="co.anitrend.support.crunchyroll.feature.settings.ui.fragment.PrivacyContentScreen"/>
+            app:fragment="co.anitrend.support.crunchyroll.feature.settings.ui.fragment.screens.PrivacyContentScreen"/>
 
     <Preference
             app:title="@string/preference_title_storage"
             app:summary="@string/preference_summary_storage"
             app:icon="@drawable/ic_storage"
-            app:fragment="co.anitrend.support.crunchyroll.feature.settings.ui.fragment.StorageContentScreen"/>
+            app:fragment="co.anitrend.support.crunchyroll.feature.settings.ui.fragment.screens.StorageContentScreen"/>
 
 </androidx.preference.PreferenceScreen>
