@@ -16,12 +16,28 @@
 
 package co.anitrend.support.crunchyroll.feature.collection.viewmodel
 
+import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
 import co.anitrend.arch.core.viewmodel.SupportPagingViewModel
 import co.anitrend.support.crunchyroll.data.collection.usecase.CollectionUseCaseType
 import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
 import co.anitrend.support.crunchyroll.domain.collection.models.CrunchyCollectionQuery
+import co.anitrend.support.crunchyroll.feature.collection.viewmodel.model.CollectionModelState
 
 class CollectionViewModel(
-    override val useCase: CollectionUseCaseType
-) : SupportPagingViewModel<CrunchyCollectionQuery, PagedList<CrunchyCollection>>()
+    useCase: CollectionUseCaseType
+) : ViewModel() {
+
+    val state = CollectionModelState(useCase)
+
+    /**
+     * This method will be called when this ViewModel is no longer used and will be destroyed.
+     *
+     * It is useful when ViewModel observes some data and you need to clear this subscription to
+     * prevent a leak of this ViewModel.
+     */
+    override fun onCleared() {
+        state.onCleared()
+        super.onCleared()
+    }
+}

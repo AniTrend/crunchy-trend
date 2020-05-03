@@ -18,23 +18,20 @@ package co.anitrend.support.crunchyroll.feature.search.ui.activity
 
 import android.os.Bundle
 import androidx.fragment.app.commit
-import androidx.paging.PagedList
+import co.anitrend.arch.ui.common.ISupportActionUp
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.multisearch.model.MultiSearchChangeListener
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
-import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesSearchQuery
 import co.anitrend.support.crunchyroll.feature.search.R
 import co.anitrend.support.crunchyroll.feature.search.koin.injectFeatureModules
-import co.anitrend.support.crunchyroll.feature.search.presenter.SeriesPresenter
 import co.anitrend.support.crunchyroll.feature.search.ui.fragment.SearchContentScreen
 import co.anitrend.support.crunchyroll.feature.search.viewmodel.SeriesSearchViewModel
 import kotlinx.android.synthetic.main.search_activity.*
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchScreen : CrunchyActivity<PagedList<CrunchySeries>, SeriesPresenter>() {
+class SearchScreen : CrunchyActivity() {
 
     override val elasticLayout: ElasticDragDismissFrameLayout?
         get() = draggableFrame
@@ -50,7 +47,7 @@ class SearchScreen : CrunchyActivity<PagedList<CrunchySeries>, SeriesPresenter>(
              * @param charSequence stream of characters including changes
              */
             override fun onItemSelected(index: Int, charSequence: CharSequence) {
-                supportViewModel.searchQueryLiveData.postValue(
+                viewModel.searchQueryLiveData.postValue(
                     CrunchySeriesSearchQuery(
                         searchTerm = charSequence.toString()
                     )
@@ -84,7 +81,7 @@ class SearchScreen : CrunchyActivity<PagedList<CrunchySeries>, SeriesPresenter>(
              */
             override fun onTextChanged(index: Int, charSequence: CharSequence) {
                 if (charSequence.isNotBlank())
-                    supportViewModel.searchQueryLiveData.postValue(
+                    viewModel.searchQueryLiveData.postValue(
                         CrunchySeriesSearchQuery(
                             searchTerm = charSequence.toString()
                         )
@@ -92,19 +89,7 @@ class SearchScreen : CrunchyActivity<PagedList<CrunchySeries>, SeriesPresenter>(
             }
         }
 
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return supportPresenter of the generic type specified
-     */
-    override val supportPresenter by inject<SeriesPresenter>()
-
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return view model of the given type
-     */
-    override val supportViewModel by viewModel<SeriesSearchViewModel>()
+    private val viewModel by viewModel<SeriesSearchViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -137,7 +122,7 @@ class SearchScreen : CrunchyActivity<PagedList<CrunchySeries>, SeriesPresenter>(
             SearchContentScreen.FRAGMENT_TAG
         ) ?: SearchContentScreen.newInstance()
 
-        supportFragmentActivity = target as SupportFragment<*, *, *>
+        supportActionUp = target as ISupportActionUp
 
         supportFragmentManager.commit {
             replace(R.id.search_content, target, SearchContentScreen.FRAGMENT_TAG)

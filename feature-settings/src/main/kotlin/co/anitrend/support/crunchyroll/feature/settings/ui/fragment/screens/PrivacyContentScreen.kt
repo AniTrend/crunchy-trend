@@ -14,16 +14,13 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.feature.settings.ui.fragment
+package co.anitrend.support.crunchyroll.feature.settings.ui.fragment.screens
 
 import android.os.Bundle
-import android.view.View
-import androidx.preference.ListPreference
-import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import co.anitrend.support.crunchyroll.feature.settings.R
 
-class LocaleContentScreen : PreferenceFragmentCompat() {
+class PrivacyContentScreen : PreferenceFragmentCompat() {
 
     /**
      * Called during [.onCreate] to supply the preferences for this fragment.
@@ -36,19 +33,6 @@ class LocaleContentScreen : PreferenceFragmentCompat() {
      * [PreferenceScreen] with this key.
      */
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.preferences_locale, rootKey)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        findPreference<ListPreference>(
-            getString(R.string.settings_configuration_locale)
-        )?.onPreferenceChangeListener =
-            Preference.OnPreferenceChangeListener { _, _ ->
-                runCatching {
-                    activity?.recreate()
-                }.exceptionOrNull()?.printStackTrace()
-                true
-            }
+        setPreferencesFromResource(R.xml.preferences_privacy, rootKey)
     }
 }

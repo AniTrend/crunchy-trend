@@ -21,21 +21,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import co.anitrend.arch.core.model.ISupportViewModelState
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLoginBinding
 import co.anitrend.support.crunchyroll.feature.authentication.presenter.AuthPresenter
-import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.LoginViewModel
+import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login.LoginViewModel
 import kotlinx.android.synthetic.main.login_anonymous_controls.view.*
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
-class FragmentLogin : SupportFragment<CrunchyUser?, CrunchyCorePresenter, CrunchyUser?>() {
+class FragmentLogin : SupportFragment<CrunchyUser?>() {
 
     private lateinit var binding: FragmentLoginBinding
 
@@ -44,29 +44,40 @@ class FragmentLogin : SupportFragment<CrunchyUser?, CrunchyCorePresenter, Crunch
      *
      * @return supportPresenter of the generic type specified
      */
-    override val supportPresenter by inject<AuthPresenter>()
+    private val presenter by inject<AuthPresenter>()
 
-    override val supportViewModel by inject<LoginViewModel>()
+    private val viewModel by inject<LoginViewModel>()
 
     /**
      * Invoke view model observer to watch for changes
      */
     override fun setUpViewModelObserver() {
-        supportViewModel.model.observe(viewLifecycleOwner, Observer {
+        viewModelState().model.observe(viewLifecycleOwner, Observer {
             if (it != null)
                 onUpdateUserInterface()
         })
-        supportViewModel.networkState?.observe(viewLifecycleOwner, Observer {
+        viewModelState().networkState.observe(viewLifecycleOwner, Observer {
             binding.supportStateLayout.setNetworkState(it)
         })
-        supportViewModel.refreshState?.observe(viewLifecycleOwner, Observer {
+        viewModelState().refreshState.observe(viewLifecycleOwner, Observer {
             binding.supportStateLayout.setNetworkState(it)
         })
+        binding.supportStateLayout.interactionLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                viewModelState().retry()
+            }
+        )
         with(binding) {
             lifecycleOwner = this@FragmentLogin
-            viewModel = supportViewModel
+            viewModel = viewModel
         }
     }
+
+    /**
+     * Proxy for a view model state if one exists
+     */
+    override fun viewModelState() = viewModel.state
 
     /**
      * Additional initialization to be done in this method, if the overriding class is type of
@@ -131,12 +142,8 @@ class FragmentLogin : SupportFragment<CrunchyUser?, CrunchyCorePresenter, Crunch
             NavigationTargets.Main(context)
             activity?.closeScreen()
         }
-        binding.supportStateLayout.stateConfiguration = get()
-        binding.supportStateLayout.onWidgetInteraction = View.OnClickListener {
-            supportViewModel.retry()
-        }
+        binding.supportStateLayout.stateConfig = get()
         binding.supportStateLayout.setNetworkState(NetworkState.Success)
-        setUpViewModelObserver()
     }
 
     /**
@@ -146,7 +153,7 @@ class FragmentLogin : SupportFragment<CrunchyUser?, CrunchyCorePresenter, Crunch
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        supportPresenter.onLoginStateChange(supportViewModel.model.value)
+        presenter.onLoginStateChange(viewModelState().model.value)
         NavigationTargets.Main(context)
         activity?.closeScreen()
     }
@@ -161,10 +168,10 @@ class FragmentLogin : SupportFragment<CrunchyUser?, CrunchyCorePresenter, Crunch
      * @see [LoginViewModel.invoke]
      */
     override fun onFetchDataInitialize() {
-        supportPresenter.onSubmit(
-            supportViewModel.loginQuery,
+        presenter.onSubmit(
+            viewModel.loginQuery,
             binding
-        ) { supportViewModel(supportViewModel.loginQuery) }
+        ) { viewModel.state(viewModel.loginQuery) }
     }
 
     override fun hasBackPressableAction(): Boolean {

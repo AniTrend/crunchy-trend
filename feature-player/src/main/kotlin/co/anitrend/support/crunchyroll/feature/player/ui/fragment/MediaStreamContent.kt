@@ -32,7 +32,6 @@ import co.anitrend.support.crunchyroll.core.extensions.createDialog
 import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.model.UserAgent
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
@@ -60,7 +59,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MediaStreamContent(
     override var inflateLayout: Int = R.layout.fragment_media_player
-) : SupportFragment<MediaStream?, CrunchyCorePresenter, List<MediaStream>?>() {
+) : SupportFragment<MediaStream?>() {
 
     private val qualityButton by lazy(LAZY_MODE_UNSAFE) {
         AppCompatImageButton(context).apply {
@@ -90,6 +89,7 @@ class MediaStreamContent(
             isFocusable = true
             background = context.getDrawableAttr(android.R.attr.selectableItemBackground)
             setOnClickListener { showAudioMenu() }
+            gone()
         }
     }
     private val captionButton by lazy(LAZY_MODE_UNSAFE) {
@@ -105,6 +105,7 @@ class MediaStreamContent(
             isFocusable = true
             background = context.getDrawableAttr(android.R.attr.selectableItemBackground)
             setOnClickListener { showSubtitleMenu() }
+            gone()
         }
     }
 
@@ -128,19 +129,9 @@ class MediaStreamContent(
 
     private var controlsVisibilityListener: VideoControlsVisibilityListener? = null
 
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return supportPresenter of the generic type specified
-     */
-    override val supportPresenter by inject<StreamPresenter>()
+    private val presenter by inject<StreamPresenter>()
 
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return view model of the given type
-     */
-    override val supportViewModel by viewModel<MediaStreamViewModel>()
+    private val viewModel by viewModel<MediaStreamViewModel>()
 
     private fun showDialogUsing(message: Int, mediaTracks: List<IMediaTrack>?) {
         if (mediaTracks.isNullOrEmpty()) {
@@ -180,27 +171,24 @@ class MediaStreamContent(
     }
 
     override fun setUpViewModelObserver() {
-        supportViewModel.model.observe(viewLifecycleOwner, Observer {
+        viewModelState().model.observe(viewLifecycleOwner, Observer {
             launch { prepareResults(it) }
         })
-        supportViewModel.networkState?.observe(viewLifecycleOwner, Observer {
+        viewModelState().networkState.observe(viewLifecycleOwner, Observer {
             supportStateLayout.setNetworkState(it)
         })
-        supportViewModel.refreshState?.observe(viewLifecycleOwner, Observer {
+        viewModelState().refreshState.observe(viewLifecycleOwner, Observer {
             supportStateLayout.setNetworkState(it)
         })
         supportStateLayout.interactionLiveData.observe(viewLifecycleOwner, Observer {
-            supportViewModel.retry()
+            viewModelState().retry()
         })
     }
 
     override fun initializeComponents(savedInstanceState: Bundle?) {
         launch {
-            lifecycle.whenStarted {
-                setUpViewModelObserver()
-            }
             lifecycle.whenResumed {
-                if (!supportViewModel.hasModelData())
+                if (!viewModelState().isEmpty())
                     onFetchDataInitialize()
             }
         }
@@ -219,7 +207,7 @@ class MediaStreamContent(
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        supportStateLayout.stateConfiguration = get()
+        supportStateLayout.stateConfig = get()
         mediaPlugin.onInitializing()
         mediaPlugin.setVisibilityListener(
             controlsVisibilityListener
@@ -238,20 +226,20 @@ class MediaStreamContent(
             }
             if (exoMediaVideoView.trackSelectionAvailable()) {
                 it.addExtraView(qualityButton)
-                /*it.addExtraView(audioButton)
-                it.addExtraView(captionButton)*/
+                it.addExtraView(audioButton)
+                it.addExtraView(captionButton)
             }
         }
     }
 
     private fun prepareResults(mediaStreams: List<MediaStream>?) {
         if (!mediaStreams.isNullOrEmpty()) {
-            val streams = supportPresenter.mapToStreamItems(
+            val streams = presenter.mapToStreamItems(
                 mediaStreams,
                 payload
             )
 
-            val playIndex = supportPresenter.getAdaptiveStreamIndex(streams)
+            val playIndex = presenter.getAdaptiveStreamIndex(streams)
             val mediaItem = streams[playIndex]
             val playHead = mediaItem.mediaPlayHead
 
@@ -281,13 +269,13 @@ class MediaStreamContent(
      * from the network or database cache.
      *
      * The results of the dispatched network or cache call will be published by the
-     * [androidx.lifecycle.LiveData] specifically [MediaStreamViewModel.model]
+     * [androidx.lifecycle.LiveData] specifically [MediaStreamViewModel.state]
      *
-     * @see [MediaStreamViewModel.invoke]
+     * @see [MediaStreamViewModel.state]
      */
     override fun onFetchDataInitialize() {
         payload?.also {
-            supportViewModel(
+            viewModel.state(
                 parameter = CrunchyMediaStreamQuery(
                     mediaId = it.mediaId
                 )
@@ -334,13 +322,18 @@ class MediaStreamContent(
     }
 
     /**
-     * Called when the fragment is no longer in use.  This is called
-     * after [.onStop] and before [.onDetach].
+     * Called when the fragment is no longer in use. This is called
+     * after [onStop] and before [onDetach].
      */
     override fun onDestroy() {
         controlsVisibilityListener = null
         super.onDestroy()
     }
+
+    /**
+     * Proxy for a view model state if one exists
+     */
+    override fun viewModelState() = viewModel.state
 
     /**
      * Listens to the system to determine when to show the default controls

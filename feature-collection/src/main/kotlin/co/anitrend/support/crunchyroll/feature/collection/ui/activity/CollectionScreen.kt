@@ -18,27 +18,18 @@ package co.anitrend.support.crunchyroll.feature.collection.ui.activity
 
 import android.os.Bundle
 import androidx.fragment.app.commit
-import co.anitrend.arch.ui.fragment.SupportFragment
+import co.anitrend.arch.ui.common.ISupportActionUp
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.collection.R
 import co.anitrend.support.crunchyroll.feature.collection.koin.injectFeatureModules
-import co.anitrend.support.crunchyroll.feature.collection.presenter.CollectionPresenter
 import co.anitrend.support.crunchyroll.feature.collection.ui.fragment.CollectionContentScreen
 import kotlinx.android.synthetic.main.collection_activity.*
-import org.koin.android.ext.android.inject
 
-class CollectionScreen : CrunchyActivity<Nothing, CollectionPresenter>() {
+class CollectionScreen : CrunchyActivity() {
 
     override val elasticLayout: ElasticDragDismissFrameLayout?
         get() = draggableFrame
-
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return supportPresenter of the generic type specified
-     */
-    override val supportPresenter by inject<CollectionPresenter>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,7 +61,7 @@ class CollectionScreen : CrunchyActivity<Nothing, CollectionPresenter>() {
             CollectionContentScreen.FRAGMENT_TAG
         ) ?: CollectionContentScreen.newInstance(intent.extras)
 
-        supportFragmentActivity = target as SupportFragment<*, *, *>
+        supportActionUp = target as ISupportActionUp
 
         supportFragmentManager.commit {
             //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)

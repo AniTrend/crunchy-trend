@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2020 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,17 +14,19 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.feature.authentication.viewmodel
+package co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login
 
+import androidx.lifecycle.ViewModel
 import co.anitrend.arch.core.viewmodel.SupportViewModel
 import co.anitrend.arch.extension.empty
 import co.anitrend.support.crunchyroll.data.authentication.usecase.LoginUseCaseType
 import co.anitrend.support.crunchyroll.domain.authentication.models.CrunchyLoginQuery
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
+import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login.model.LoginModelState
 
 class LoginViewModel(
-    override val useCase: LoginUseCaseType
-) : SupportViewModel<CrunchyLoginQuery, CrunchyUser?>() {
+    useCase: LoginUseCaseType
+) : ViewModel() {
 
     val loginQuery =
         CrunchyLoginQuery(
@@ -32,13 +34,17 @@ class LoginViewModel(
             password = String.empty()
         )
 
+    val state = LoginModelState(useCase)
+
     /**
-     * Starts view model operations
+     * This method will be called when this ViewModel is no longer used and will be destroyed.
      *
-     * @param parameter request payload
+     *
+     * It is useful when ViewModel observes some data and you need to clear this subscription to
+     * prevent a leak of this ViewModel.
      */
-    override fun invoke(parameter: CrunchyLoginQuery) {
-        val result = useCase(parameter)
-        useCaseResult.value = result
+    override fun onCleared() {
+        state.onCleared()
+        super.onCleared()
     }
 }

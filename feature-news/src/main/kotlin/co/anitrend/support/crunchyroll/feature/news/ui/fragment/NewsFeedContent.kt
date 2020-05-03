@@ -19,12 +19,11 @@ package co.anitrend.support.crunchyroll.feature.news.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.paging.PagedList
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.startNewActivity
-import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
+import co.anitrend.arch.ui.fragment.paged.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
+import co.anitrend.arch.ui.util.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.extensions.toBundle
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
@@ -38,36 +37,24 @@ import co.anitrend.support.crunchyroll.feature.news.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.news.ui.activity.NewsScreen
 import co.anitrend.support.crunchyroll.feature.news.ui.adapter.RssNewsAdapter
 import co.anitrend.support.crunchyroll.feature.news.viewmodel.NewsViewModel
-import io.noties.markwon.Markwon
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NewsFeedContent : SupportFragmentPagedList<CrunchyNews, CrunchyCorePresenter, PagedList<CrunchyNews>>() {
+class NewsFeedContent(
+    override val columnSize: Int = R.integer.single_list_size
+) : SupportFragmentPagedList<CrunchyNews>() {
 
-    private val markwon by inject<Markwon>()
+    override val stateConfig by inject<StateLayoutConfig>()
 
-    override val supportStateConfiguration
-            by inject<SupportStateLayoutConfiguration>()
+    private val presenter by inject<CrunchyCorePresenter>()
 
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return supportPresenter of the generic type specified
-     */
-    override val supportPresenter by inject<CrunchyCorePresenter>()
-
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return view model of the given type
-     */
-    override val supportViewModel by viewModel<NewsViewModel>()
+    val viewModel by viewModel<NewsViewModel>()
 
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         RssNewsAdapter(
-            markwon,
-            supportStateConfiguration,
+            get(),
+            stateConfig,
             object : ItemClickListener<CrunchyNews> {
 
                 override fun onItemClick(target: View, data: Pair<Int, CrunchyNews?>) {
@@ -96,7 +83,7 @@ class NewsFeedContent : SupportFragmentPagedList<CrunchyNews, CrunchyCorePresent
      * Invoke view model observer to watch for changes
      */
     override fun setUpViewModelObserver() {
-        supportViewModel.model.observe(viewLifecycleOwner, Observer {
+        viewModelState().model.observe(viewLifecycleOwner, Observer {
             onPostModelChange(it)
         })
     }
@@ -134,14 +121,12 @@ class NewsFeedContent : SupportFragmentPagedList<CrunchyNews, CrunchyCorePresent
      */
     override fun onFetchDataInitialize() {
         val currentLocale = get<ICrunchySessionLocale>().sessionLocale
-        supportViewModel(
+        viewModel.state(
             RssQuery(
                 language = currentLocale.toCrunchyLocale()
             )
         )
     }
-
-    override val columnSize: Int = R.integer.single_list_size
 
     /**
      * Called when the view previously created by [.onCreateView] has
@@ -156,6 +141,11 @@ class NewsFeedContent : SupportFragmentPagedList<CrunchyNews, CrunchyCorePresent
         supportRecyclerView?.adapter = null
         super.onDestroyView()
     }
+
+    /**
+     * Proxy for a view model state if one exists
+     */
+    override fun viewModelState() = viewModel.state
 
     companion object : IFragmentFactory<NewsFeedContent> {
         override val FRAGMENT_TAG = NewsFeedContent::class.java.simpleName

@@ -18,11 +18,11 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
-    
+
     <data>
         <variable
                 name="viewModel"
-                type="co.anitrend.support.crunchyroll.feature.authentication.viewmodel.LoginViewModel" />
+                type="co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login.LoginViewModel" />
     </data>
 
     <co.anitrend.arch.ui.view.widget.SupportStateLayout
@@ -30,96 +30,96 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:fillViewport="true"
-            android:scrollbars="none">
-
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:fillViewport="true"
+                android:scrollbars="none">
 
-            <include layout="@layout/login_header_frame" />
-
-            <Space
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/xl_margin" />
-
-            <include android:id="@+id/login_anonymous_controls"
-                    layout="@layout/login_anonymous_controls" />
-
-            <Space
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/xl_margin" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/user_email_input_layout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_lg"
-                    android:layout_marginEnd="@dimen/spacing_lg"
-                    android:hint="@string/hint_label_username"
-                    app:boxStrokeColor="?colorAccent"
-                    app:hintTextColor="?colorOnSurface">
+                    android:orientation="vertical">
 
-                <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/txt_input_email"
+                <include layout="@layout/login_header_frame" />
+
+                <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/xl_margin" />
+
+                <include android:id="@+id/login_anonymous_controls"
+                        layout="@layout/login_anonymous_controls" />
+
+                <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/xl_margin" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/user_email_input_layout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:inputType="textEmailAddress|text"
-                        android:singleLine="true"
-                        android:text="@={viewModel.loginQuery.account}"
-                        tools:text="John"/>
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_lg"
+                        android:layout_marginEnd="@dimen/spacing_lg"
+                        android:hint="@string/hint_label_username"
+                        app:boxStrokeColor="?colorAccent"
+                        app:hintTextColor="?colorOnSurface">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/txt_input_email"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:inputType="textEmailAddress|text"
+                            android:singleLine="true"
+                            android:text="@={viewModel.loginQuery.account}"
+                            tools:text="John"/>
 
-            <Space
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/xl_margin" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/user_password_input_layout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_lg"
-                    android:layout_marginEnd="@dimen/spacing_lg"
-                    android:hint="@string/hint_label_password"
-                    app:boxStrokeColor="?colorAccent"
-                    app:hintTextColor="?colorOnSurface"
-                    app:passwordToggleEnabled="true">
+                <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/xl_margin" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/txt_input_password"
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/user_password_input_layout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:inputType="textPassword"
-                        android:singleLine="true"
-                        android:text="@={viewModel.loginQuery.password}"
-                        tools:text="Doe"/>
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_lg"
+                        android:layout_marginEnd="@dimen/spacing_lg"
+                        android:hint="@string/hint_label_password"
+                        app:boxStrokeColor="?colorAccent"
+                        app:hintTextColor="?colorOnSurface"
+                        app:passwordToggleEnabled="true">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/txt_input_password"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:inputType="textPassword"
+                            android:singleLine="true"
+                            android:text="@={viewModel.loginQuery.password}"
+                            tools:text="Doe"/>
 
-            <com.google.android.material.button.MaterialButton
-                    android:id="@+id/loginButton"
-                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/lg_margin"
-                    android:maxLines="1"
-                    app:backgroundTint="@color/colorAccent"
-                    android:text="@string/label_action_login" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
+                <com.google.android.material.button.MaterialButton
+                        android:id="@+id/loginButton"
+                        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/lg_margin"
+                        android:maxLines="1"
+                        app:backgroundTint="@color/colorAccent"
+                        android:text="@string/label_action_login" />
 
-    </androidx.core.widget.NestedScrollView>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
-</co.anitrend.arch.ui.view.widget.SupportStateLayout>
+        </androidx.core.widget.NestedScrollView>
+
+    </co.anitrend.arch.ui.view.widget.SupportStateLayout>
 
 </layout>

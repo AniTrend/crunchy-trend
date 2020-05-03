@@ -22,6 +22,4 @@ import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
 
 class SeriesPresenter(
     context: Context, settings: CrunchySettings
-) : CrunchyCorePresenter(context, settings) {
-
-}
+) : CrunchyCorePresenter(context, settings)

@@ -18,29 +18,19 @@ package co.anitrend.support.crunchyroll.feature.series.ui.activity
 
 import android.os.Bundle
 import androidx.fragment.app.commit
+import co.anitrend.arch.ui.common.ISupportActionUp
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
-import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
-import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.feature.series.R
 import co.anitrend.support.crunchyroll.feature.series.koin.injectFeatureModules
-import co.anitrend.support.crunchyroll.feature.series.presenter.SeriesDetailPresenter
 import co.anitrend.support.crunchyroll.feature.series.ui.fragment.SeriesContentScreen
 import kotlinx.android.synthetic.main.series_activity.*
-import org.koin.android.ext.android.inject
 
-class SeriesScreen : CrunchyActivity<CrunchySeries?, SeriesDetailPresenter>() {
+class SeriesScreen : CrunchyActivity() {
 
     override val elasticLayout: ElasticDragDismissFrameLayout?
         get() = draggableFrame
-
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return supportPresenter of the generic type specified
-     */
-    override val supportPresenter by inject<SeriesDetailPresenter>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +62,7 @@ class SeriesScreen : CrunchyActivity<CrunchySeries?, SeriesDetailPresenter>() {
             SeriesContentScreen.FRAGMENT_TAG
         ) ?: SeriesContentScreen.newInstance(intent.extras)
 
-        supportFragmentActivity = target as SupportFragment<*, *, *>
+        supportActionUp = target as ISupportActionUp
 
         supportFragmentManager.commit {
             //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)

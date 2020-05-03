@@ -22,27 +22,26 @@ import android.widget.Toast
 import androidx.core.text.HtmlCompat
 import androidx.core.text.parseAsHtml
 import androidx.lifecycle.Observer
-import androidx.paging.PagedList
+import co.anitrend.arch.core.model.ISupportViewModelState
 import co.anitrend.arch.core.viewmodel.SupportPagingViewModel
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
-import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
+import co.anitrend.arch.ui.fragment.paged.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
+import co.anitrend.arch.ui.util.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
 import co.anitrend.support.crunchyroll.core.extensions.createDialog
 import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
 import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
-import co.anitrend.support.crunchyroll.feature.listing.viewmodel.MediaListingViewModel
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 import co.anitrend.support.crunchyroll.feature.feed.R
 import co.anitrend.support.crunchyroll.feature.listing.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.listing.presenter.ListingPresenter
 import co.anitrend.support.crunchyroll.feature.listing.ui.adapter.RssMediaAdapter
+import co.anitrend.support.crunchyroll.feature.listing.viewmodel.MediaListingViewModel
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.bottomsheets.setPeekHeight
@@ -53,27 +52,17 @@ import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MediaFeedContent : SupportFragmentPagedList<CrunchyEpisodeFeed, CrunchyCorePresenter, PagedList<CrunchyEpisodeFeed>>() {
+class MediaFeedContent(
+    override val columnSize: Int = R.integer.single_list_size
+) : SupportFragmentPagedList<CrunchyEpisodeFeed>() {
 
-    override val supportStateConfiguration by inject<SupportStateLayoutConfiguration>()
+    override val stateConfig by inject<StateLayoutConfig>()
 
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return supportPresenter of the generic type specified
-     */
-    override val supportPresenter by inject<ListingPresenter>()
-
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return view model of the given type
-     */
-    override val supportViewModel by viewModel<MediaListingViewModel>()
+    private val viewModel by viewModel<MediaListingViewModel>()
 
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         RssMediaAdapter(
-            supportStateConfiguration,
+            stateConfig,
             object : ItemClickListener<CrunchyEpisodeFeed> {
                 override fun onItemClick(target: View, data: Pair<Int, CrunchyEpisodeFeed?>) {
                     val episodeFeed = data.second
@@ -134,7 +123,7 @@ class MediaFeedContent : SupportFragmentPagedList<CrunchyEpisodeFeed, CrunchyCor
      * Invoke view model observer to watch for changes
      */
     override fun setUpViewModelObserver() {
-        supportViewModel.model.observe(viewLifecycleOwner, Observer {
+        viewModelState().model.observe(viewLifecycleOwner, Observer {
             onPostModelChange(it)
         })
     }
@@ -172,14 +161,12 @@ class MediaFeedContent : SupportFragmentPagedList<CrunchyEpisodeFeed, CrunchyCor
      */
     override fun onFetchDataInitialize() {
         val currentLocale = get<ICrunchySessionLocale>().sessionLocale
-        supportViewModel(
+        viewModel.state(
             RssQuery(
                 language = currentLocale.toCrunchyLocale()
             )
         )
     }
-
-    override val columnSize: Int = R.integer.single_list_size
 
     /**
      * Called when the view previously created by [.onCreateView] has
@@ -194,6 +181,11 @@ class MediaFeedContent : SupportFragmentPagedList<CrunchyEpisodeFeed, CrunchyCor
         supportRecyclerView?.adapter = null
         super.onDestroyView()
     }
+
+    /**
+     * Proxy for a view model state if one exists
+     */
+    override fun viewModelState() = viewModel.state
 
     companion object : IFragmentFactory<MediaFeedContent> {
         override val FRAGMENT_TAG = MediaFeedContent::class.java.simpleName

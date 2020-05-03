@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.feature.catalog.controller.items
 
 import android.view.View
 import co.anitrend.arch.domain.entities.NetworkState
-import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
+import co.anitrend.arch.ui.util.StateLayoutConfig
 import co.anitrend.support.crunchyroll.feature.catalog.R
 import co.anitrend.support.crunchyroll.feature.catalog.databinding.ItemPlaceHolderBinding
 import com.xwray.groupie.databinding.BindableItem
@@ -37,7 +37,7 @@ class PlaceHolderItem(
      * @param position The adapter position
      */
     override fun bind(viewBinding: ItemPlaceHolderBinding, position: Int) {
-        viewBinding.placeHolderState.stateConfiguration = SupportStateLayoutConfiguration(
+        viewBinding.placeHolderState.stateConfig = StateLayoutConfig(
             loadingMessage = R.string.label_text_loading
         )
         viewBinding.placeHolderState.onWidgetInteraction = View.OnClickListener {

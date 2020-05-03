@@ -19,13 +19,13 @@ package co.anitrend.support.crunchyroll.feature.search.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.paging.PagedList
+import co.anitrend.arch.core.model.ISupportViewModelState
 import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
-import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
+import co.anitrend.arch.ui.fragment.paged.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
+import co.anitrend.arch.ui.util.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
@@ -38,23 +38,11 @@ import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class SearchContentScreen : SupportFragmentPagedList<CrunchySeries, SeriesPresenter, PagedList<CrunchySeries>>() {
+class SearchContentScreen(
+    override val columnSize: Int = R.integer.single_list_size
+) : SupportFragmentPagedList<CrunchySeries>() {
 
-    override val columnSize = R.integer.single_list_size
-
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return supportPresenter of the generic type specified
-     */
-    override val supportPresenter by inject<SeriesPresenter>()
-
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return view model of the given type
-     */
-    override val supportViewModel by sharedViewModel<SeriesSearchViewModel>()
+    private val viewModel by sharedViewModel<SeriesSearchViewModel>()
 
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         SeriesViewAdapter(
@@ -94,13 +82,13 @@ class SearchContentScreen : SupportFragmentPagedList<CrunchySeries, SeriesPresen
      * Invoke view model observer to watch for changes
      */
     override fun setUpViewModelObserver() {
-        supportViewModel.model.observe(
+        viewModelState().model.observe(
             viewLifecycleOwner,
             Observer {
                 onPostModelChange(it)
             }
         )
-        supportViewModel.searchQueryLiveData.observe(
+        viewModel.searchQueryLiveData.observe(
             viewLifecycleOwner,
             Observer {
                 onFetchDataInitialize()
@@ -140,12 +128,6 @@ class SearchContentScreen : SupportFragmentPagedList<CrunchySeries, SeriesPresen
 
     }
 
-    /**
-     * Handles the updating of views, binding, creation or state change, depending on the context
-     * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
-     *
-     * Check implementation for more details
-     */
     override fun onUpdateUserInterface() {
 
     }
@@ -160,9 +142,9 @@ class SearchContentScreen : SupportFragmentPagedList<CrunchySeries, SeriesPresen
      * @see [ISupportViewModel.invoke]
      */
     override fun onFetchDataInitialize() {
-        val searchQuery = supportViewModel.searchQueryLiveData.value
+        val searchQuery = viewModel.searchQueryLiveData.value
         if (searchQuery != null) {
-            supportViewModel(
+            viewModel.state(
                 parameter = searchQuery
             )
         }
@@ -171,7 +153,7 @@ class SearchContentScreen : SupportFragmentPagedList<CrunchySeries, SeriesPresen
     /**
      * State configuration for any underlying state representing widgets
      */
-    override val supportStateConfiguration = SupportStateLayoutConfiguration(
+    override val stateConfig = StateLayoutConfig(
         loadingDrawable = R.drawable.ic_launcher_foreground,
         errorDrawable = R.drawable.ic_support_empty_state
     )
@@ -180,15 +162,20 @@ class SearchContentScreen : SupportFragmentPagedList<CrunchySeries, SeriesPresen
      * Called when the view previously created by [.onCreateView] has
      * been detached from the fragment.  The next time the fragment needs
      * to be displayed, a new view will be created.  This is called
-     * after [.onStop] and before [.onDestroy].  It is called
-     * *regardless* of whether [.onCreateView] returned a
-     * non-null view.  Internally it is called after the view's state has
+     * after [onStop] and before [onDestroy]. It is called
+     * *regardless* of whether [onCreateView] returned a
+     * non-null view. Internally it is called after the view's state has
      * been saved but before it has been removed from its parent.
      */
     override fun onDestroyView() {
         supportRecyclerView?.adapter = null
         super.onDestroyView()
     }
+
+    /**
+     * Proxy for a view model state if one exists
+     */
+    override fun viewModelState() = viewModel.state
 
     companion object : IFragmentFactory<SearchContentScreen> {
         override val FRAGMENT_TAG = SearchContentScreen::class.java.simpleName

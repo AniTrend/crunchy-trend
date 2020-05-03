@@ -20,14 +20,10 @@ import android.content.Context
 import android.util.SparseArray
 import androidx.core.util.contains
 import androidx.core.util.forEach
-import androidx.lifecycle.LiveData
 import co.anitrend.arch.domain.entities.NetworkState
-import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
-import co.anitrend.arch.ui.view.widget.SupportStateLayout
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
-import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalogFilter
 import co.anitrend.support.crunchyroll.feature.catalog.controller.group.CarouselGroup
 import co.anitrend.support.crunchyroll.feature.catalog.controller.items.CatalogItem
 import co.anitrend.support.crunchyroll.feature.catalog.controller.items.HeaderItem
@@ -35,7 +31,7 @@ import co.anitrend.support.crunchyroll.feature.catalog.controller.items.PlaceHol
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Section
-import java.util.ArrayList
+import java.util.*
 
 class CatalogPresenter(
     context: Context,

@@ -22,6 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
+import co.anitrend.arch.core.model.ISupportViewModelState
 import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.ui.fragment.SupportFragment
@@ -36,23 +37,17 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>, CatalogPresenter, List<CrunchyCatalogWithSeries>>() {
+class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>>() {
 
     private lateinit var binding: ContentSeriesCatalogBinding
 
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
     private lateinit var gridLayoutManager: GridLayoutManager
 
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return supportPresenter of the generic type specified
-     */
-    override val supportPresenter by inject<CatalogPresenter>()
+    private val presenter by inject<CatalogPresenter>()
 
     private val viewModel by viewModel<CatalogViewModel>()
 
@@ -65,14 +60,14 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>, CatalogPr
     override fun setUpViewModelObserver() {
         viewModel.viewModelLists.forEach { vm ->
             vm.model.observe(viewLifecycleOwner, Observer { model ->
-                supportPresenter.setUpGroupAdapter(
+                presenter.setUpGroupAdapter(
                     model,
                     groupAdapter
                 )
             })
 
             vm.networkState?.observe(viewLifecycleOwner, Observer { networkState ->
-                supportPresenter.updatePlaceHolderState(
+                presenter.updatePlaceHolderState(
                     { vm.retry() },
                     networkState,
                     vm.model.value,
@@ -140,8 +135,6 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>, CatalogPr
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpViewModelObserver()
-
         gridLayoutManager = GridLayoutManager(context, groupAdapter.spanCount)
         gridLayoutManager.spanSizeLookup = groupAdapter.spanSizeLookup
         with (binding.supportRecycler) {
@@ -203,4 +196,9 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>, CatalogPr
         binding.supportRecycler.adapter = null
         super.onDestroyView()
     }
+
+    /**
+     * Proxy for a view model state if one exists
+     */
+    override fun viewModelState(): Nothing? = null
 }

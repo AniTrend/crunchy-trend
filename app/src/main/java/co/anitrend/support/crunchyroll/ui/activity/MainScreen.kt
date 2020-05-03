@@ -19,15 +19,15 @@ package co.anitrend.support.crunchyroll.ui.activity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
-import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
+import co.anitrend.arch.extension.extra
 import co.anitrend.arch.ui.activity.SupportActivity
+import co.anitrend.arch.ui.common.ISupportActionUp
 import co.anitrend.arch.ui.fragment.SupportFragment
-import co.anitrend.arch.ui.util.SupportUiKeyStore
 import co.anitrend.support.crunchyroll.R
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
@@ -38,14 +38,16 @@ import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
-class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(),
-    NavigationView.OnNavigationItemSelectedListener {
+class MainScreen : CrunchyActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private val bottomDrawerBehavior by lazy(LAZY_MODE_UNSAFE) {
         BottomSheetBehavior.from(bottomNavigationDrawer)
     }
+
+    private val shortcutSelection by extra(keyShortcutRedirect, R.id.nav_show_news)
 
     @IdRes
     private var selectedItem: Int = R.id.nav_show_latest
@@ -56,20 +58,16 @@ class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(),
 
     override val elasticLayout: ElasticDragDismissFrameLayout? = null
 
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return supportPresenter of the generic type specified
-     */
-    override val supportPresenter by inject<CrunchyCorePresenter>()
+    private val presenter by inject<CrunchyCorePresenter>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(bottomAppBar)
         bottomDrawerBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        if (intent.hasExtra(SupportUiKeyStore.arg_redirect))
-            selectedItem = intent.getIntExtra(SupportUiKeyStore.arg_redirect, R.id.nav_show_news)
+        shortcutSelection?.also {
+            selectedItem = it
+        }
     }
 
     /**
@@ -92,15 +90,15 @@ class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(),
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt(SupportUiKeyStore.key_navigation_selected, selectedItem)
-        outState.putInt(SupportUiKeyStore.key_navigation_title, selectedTitle)
+        outState.putInt(keyNavigationSelected, selectedItem)
+        outState.putInt(keyNavigationTitle, selectedTitle)
         super.onSaveInstanceState(outState)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        selectedItem = savedInstanceState.getInt(SupportUiKeyStore.key_navigation_selected)
-        selectedTitle = savedInstanceState.getInt(SupportUiKeyStore.key_navigation_title)
+        selectedItem = savedInstanceState.getInt(keyNavigationSelected)
+        selectedTitle = savedInstanceState.getInt(keyNavigationTitle)
     }
 
     override fun onBackPressed() {
@@ -131,7 +129,7 @@ class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(),
             }
             R.id.action_login -> {
                 NavigationTargets.Authentication(applicationContext)
-                if (!supportPresenter.supportPreference.isAuthenticated)
+                if (!presenter.settings.isAuthenticated)
                     closeScreen()
                 return true
             }
@@ -142,41 +140,44 @@ class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(),
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         if (selectedItem != item.itemId) {
             selectedItem = item.itemId
-            onNavigate(selectedItem)
+            launch {
+                onNavigate(selectedItem)
+            }
         }
         return true
     }
 
     private fun onNavigate(@IdRes menu: Int) {
-        var supportFragment: SupportFragment<*, *, *>? = null
         when (menu) {
             R.id.nav_series_catalog -> {
                 selectedTitle = R.string.nav_series_catalog
-                supportFragment = NavigationTargets.Catalog.forFragment()
+                supportActionUp = NavigationTargets.Catalog.forFragment() as ISupportActionUp
             }
             R.id.nav_series_discover -> {
                 selectedTitle = R.string.nav_discover
-                supportFragment = NavigationTargets.Discover.forFragment()
+                supportActionUp = NavigationTargets.Discover.forFragment() as ISupportActionUp
             }
             R.id.nav_show_latest -> {
                 selectedTitle = R.string.nav_shows
-                supportFragment = NavigationTargets.Listing.forFragment()
+                supportActionUp = NavigationTargets.Listing.forFragment() as ISupportActionUp
             }
             R.id.nav_show_news -> {
                 selectedTitle = R.string.nav_show_news
-                supportFragment = NavigationTargets.News.forFragment()
+                supportActionUp = NavigationTargets.News.forFragment() as ISupportActionUp
             }
         }
 
         bottomAppBar.setTitle(selectedTitle)
         bottomDrawerBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        supportFragment?.apply {
-            supportFragmentActivity = this@apply
-            supportFragmentManager.commit {
-                //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                replace(R.id.contentFrame, this@apply, tag)
+        runCatching {
+            supportActionUp?.apply {
+                this as Fragment
+                supportFragmentManager.commit {
+                    //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    replace(R.id.contentFrame, this@apply, tag)
+                }
             }
-        }
+        }.exceptionOrNull()?.printStackTrace()
     }
 
     /**
@@ -186,9 +187,19 @@ class MainScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(),
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        if (selectedItem != 0)
-            onNavigate(selectedItem)
-        else
-            onNavigate(R.id.nav_show_latest)
+        launch {
+            if (selectedItem != 0)
+                onNavigate(selectedItem)
+            else
+                onNavigate(R.id.nav_show_latest)
+        }
+    }
+
+    companion object {
+
+        private const val keyNavigationSelected = "keyNavigationSelected"
+        private const val keyNavigationTitle = "keyNavigationTitle"
+
+        private const val keyShortcutRedirect = "keyShortcutRedirect"
     }
 }

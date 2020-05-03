@@ -23,13 +23,13 @@ import androidx.recyclerview.widget.RecyclerView
 import co.anitrend.arch.ui.recycler.adapter.SupportPagedListAdapter
 import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
+import co.anitrend.arch.ui.util.StateLayoutConfig
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.feature.search.databinding.AdapterSeriesBinding
 import co.anitrend.support.crunchyroll.feature.search.presenter.SeriesPresenter
 
 class SeriesViewAdapter(
-    override val stateConfiguration: SupportStateLayoutConfiguration,
+    override val stateConfig: StateLayoutConfig,
     private val itemClickListener: ItemClickListener<CrunchySeries>
 ) : SupportPagedListAdapter<CrunchySeries>() {
 

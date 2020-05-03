@@ -16,12 +16,28 @@
 
 package co.anitrend.support.crunchyroll.feature.listing.viewmodel
 
+import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
 import co.anitrend.arch.core.viewmodel.SupportPagingViewModel
 import co.anitrend.support.crunchyroll.data.episode.usecase.EpisodeFeedUseCaseType
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
+import co.anitrend.support.crunchyroll.feature.listing.viewmodel.model.MediaListingModelState
 
 class MediaListingViewModel(
-    override val useCase: EpisodeFeedUseCaseType
-) : SupportPagingViewModel<RssQuery, PagedList<CrunchyEpisodeFeed>>()
+    useCase: EpisodeFeedUseCaseType
+) : ViewModel() {
+    val state = MediaListingModelState(useCase)
+
+    /**
+     * This method will be called when this ViewModel is no longer used and will be destroyed.
+     *
+     *
+     * It is useful when ViewModel observes some data and you need to clear this subscription to
+     * prevent a leak of this ViewModel.
+     */
+    override fun onCleared() {
+        state.onCleared()
+        super.onCleared()
+    }
+}

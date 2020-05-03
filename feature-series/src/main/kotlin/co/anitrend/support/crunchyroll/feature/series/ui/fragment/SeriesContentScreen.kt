@@ -21,13 +21,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import co.anitrend.arch.core.model.ISupportViewModelState
 import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.argument
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
+import co.anitrend.arch.ui.util.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
@@ -41,7 +42,7 @@ import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter, CrunchySeries?>() {
+class SeriesContentScreen : SupportFragment<CrunchySeries>() {
 
     private val payload
             by argument<NavigationTargets.Series.Payload>(
@@ -91,7 +92,7 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
      * Invoke view model observer to watch for changes
      */
     override fun setUpViewModelObserver() {
-        supportViewModel.seriesModel.observe(
+        viewModelState().model.observe(
             viewLifecycleOwner,
             Observer {
                 if (it != null) {
@@ -100,40 +101,33 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
                 }
             }
         )
-        supportViewModel.networkState?.observe(
+        viewModelState().networkState.observe(
             viewLifecycleOwner,
             Observer {
                 binding.supportStateLayout.setNetworkState(it)
             }
         )
+        binding.supportStateLayout.interactionLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                viewModelState().retry()
+            }
+        )
     }
 
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return supportPresenter of the generic type specified
-     */
-    override val supportPresenter by inject<SeriesDetailPresenter>()
+    private val presenter by inject<SeriesDetailPresenter>()
+
+    private val viewModel by viewModel<SeriesDetailViewModel>()
 
     /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return view model of the given type
-     */
-    override val supportViewModel by viewModel<SeriesDetailViewModel>()
-
-    /**
-     * Additional initialization to be done in this method, if the overriding class is type of
-     * [androidx.fragment.app.Fragment] then this method will be called in
-     * [androidx.fragment.app.FragmentActivity.onCreate]. Otherwise
-     * [androidx.fragment.app.FragmentActivity.onPostCreate] invokes this function
+     * Additional initialization to be done in this method, this method will be called in
+     * [androidx.fragment.app.FragmentActivity.onCreate].
      *
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
 
     }
-
 
     /**
      * Called to have the fragment instantiate its user interface view. This is optional, and
@@ -165,9 +159,7 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
     ): View? {
         binding = SeriesContentBinding.inflate(inflater, container, false)
 
-        val stateConfigurationUtil = get<SupportStateLayoutConfiguration>()
-
-        binding.supportStateLayout.stateConfiguration = stateConfigurationUtil
+        binding.supportStateLayout.stateConfig = get()
 
         binding.lifecycleOwner = this
         return binding.root
@@ -185,8 +177,8 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.viewModel = supportViewModel
-        binding.presenter = supportPresenter
+        binding.viewModel = viewModel
+        binding.presenter = presenter
 
         binding.seriesInfo.seriesSeasons.setOnClickListener {
             payload?.seriesId?.also { seriesId ->
@@ -198,28 +190,25 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
                 )
             }
         }
-        binding.supportStateLayout.onWidgetInteraction = View.OnClickListener {
-            supportViewModel.retry()
-        }
 
-        supportPresenter.setupGenresAdapter(
+        presenter.setupGenresAdapter(
             binding.seriesGenres,
             seriesGenreAdapter
         )
     }
 
-    override fun onStart() {
-        super.onStart()
-        setUpViewModelObserver()
-    }
-
     override fun onResume() {
         super.onResume()
-        if (!supportViewModel.hasModelData())
+        if (!viewModelState().isEmpty())
             onFetchDataInitialize()
         else
             onUpdateUserInterface()
     }
+
+    /**
+     * Proxy for a view model state if one exists
+     */
+    override fun viewModelState() = viewModel.state
 
     /**
      * Handles the updating of views, binding, creation or state change, depending on the context
@@ -242,7 +231,7 @@ class SeriesContentScreen : SupportFragment<CrunchySeries, SeriesDetailPresenter
      */
     override fun onFetchDataInitialize() {
         payload?.also {
-            supportViewModel(
+            viewModel.state(
                 parameter = CrunchySeriesDetailQuery(
                     seriesId = it.seriesId
                 )

@@ -25,7 +25,7 @@ import com.afollestad.materialdialogs.DialogBehavior
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 
-fun CrunchyActivity<*, *>.recreateModules() {
+fun CrunchyActivity.recreateModules() {
     val coreApplication = applicationContext as CrunchyApplication
     runCatching {
         coreApplication.restartDependencyInjection()

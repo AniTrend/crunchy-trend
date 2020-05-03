@@ -83,7 +83,7 @@
                 <co.anitrend.arch.ui.view.text.SingleLineTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{presenter.collectionCount(viewModel.seriesModel)}"
+                        android:text="@{presenter.collectionCount(viewModel.state.model)}"
                         android:textIsSelectable="true"
                         tools:text="@sample/series_detail.json/collection_count" />
 
@@ -104,7 +104,7 @@
                 <co.anitrend.arch.ui.view.text.SingleLineTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{presenter.mediaCount(viewModel.seriesModel)}"
+                        android:text="@{presenter.mediaCount(viewModel.state.model)}"
                         android:textIsSelectable="true"
                         tools:text="@sample/series_detail.json/media_count" />
             </LinearLayout>

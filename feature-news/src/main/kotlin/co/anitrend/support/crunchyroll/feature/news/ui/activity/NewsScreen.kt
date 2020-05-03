@@ -42,22 +42,22 @@ import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
-class NewsScreen : CrunchyActivity<CrunchyNews, CrunchyCorePresenter>() {
+class NewsScreen : CrunchyActivity() {
 
     override val elasticLayout: ElasticDragDismissFrameLayout? = null
-
-    override val supportPresenter by inject<NewsPresenter>()
 
     private val payload
             by extra<NavigationTargets.News.Payload>(
                 NavigationTargets.News.PAYLOAD
             )
 
+    private val presenter by inject<NewsPresenter>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.news_screen)
         setSupportActionBar(bottomAppBar)
-        stateLayout.stateConfiguration = get()
+        stateLayout.stateConfig = get()
     }
 
     override fun initializeComponents(savedInstanceState: Bundle?) {
@@ -75,7 +75,7 @@ class NewsScreen : CrunchyActivity<CrunchyNews, CrunchyCorePresenter>() {
         }
         floatingShortcutButton.setOnClickListener {
             val shareCompat = payload?.let {
-                supportPresenter.createShareContent(it, get(), this)
+                presenter.createShareContent(it, get(), this)
             }?.createChooserIntent()
             runCatching {
                 startActivity(shareCompat)
@@ -127,7 +127,7 @@ class NewsScreen : CrunchyActivity<CrunchyNews, CrunchyCorePresenter>() {
              R.id.action_open_in_browser -> {
                  kotlin.runCatching {
                      val url = payload?.let {
-                         supportPresenter.buildNewsUrl(it, get())
+                         presenter.buildNewsUrl(it, get())
                      }
                      val intent = Intent(Intent.ACTION_VIEW)
                      intent.data = url?.toUri()
@@ -145,7 +145,7 @@ class NewsScreen : CrunchyActivity<CrunchyNews, CrunchyCorePresenter>() {
 
     override fun onUpdateUserInterface() {
         launch {
-            val html = supportPresenter.createCustomHtml(payload)
+            val html = presenter.createCustomHtml(payload)
             stateLayout?.setNetworkState(NetworkState.Success)
             get<Markwon>().setMarkdown(mediaNewsContent, html)
         }

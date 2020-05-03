@@ -47,7 +47,7 @@ class ConfigurationUtil(
      *
      * @param activity
      */
-    override fun onCreate(activity: CrunchyActivity<*, *>) {
+    override fun onCreate(activity: CrunchyActivity) {
         applicationTheme = settings.theme
         applicationLocale = settings.locale
         localeUtil.applyApplicationLocale(activity)
@@ -59,7 +59,7 @@ class ConfigurationUtil(
      *
      * @param activity
      */
-    override fun onResume(activity: CrunchyActivity<*, *>) {
+    override fun onResume(activity: CrunchyActivity) {
         if (applicationTheme != settings.theme) {
             val intent: Intent? = activity.intent
             with(activity) {
@@ -72,7 +72,7 @@ class ConfigurationUtil(
     }
 
     companion object {
-        private operator fun CrunchyActivity<*, *>.invoke() {
+        private operator fun CrunchyActivity.invoke() {
             overridePendingTransition(
                 android.R.anim.fade_in,
                 android.R.anim.fade_out

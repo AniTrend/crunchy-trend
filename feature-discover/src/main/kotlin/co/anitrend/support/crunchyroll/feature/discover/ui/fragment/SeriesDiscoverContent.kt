@@ -19,13 +19,12 @@ package co.anitrend.support.crunchyroll.feature.discover.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.paging.PagedList
 import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.argument
-import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
+import co.anitrend.arch.ui.fragment.paged.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
+import co.anitrend.arch.ui.util.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
@@ -40,30 +39,30 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @Suppress("unused")
-class SeriesDiscoverContent : SupportFragmentPagedList<CrunchySeries, SeriesPresenter, PagedList<CrunchySeries>>() {
+class SeriesDiscoverContent(
+    override val columnSize: Int = R.integer.single_list_size
+) : SupportFragmentPagedList<CrunchySeries>() {
 
     private val payload: NavigationTargets.Discover.Payload?
             by argument(NavigationTargets.Discover.PAYLOAD)
-
-    override val columnSize = R.integer.single_list_size
 
     /**
      * Should be created lazily through injection or lazy delegate
      *
      * @return supportPresenter of the generic type specified
      */
-    override val supportPresenter by inject<SeriesPresenter>()
+    private val presenter by inject<SeriesPresenter>()
 
     /**
      * Should be created lazily through injection or lazy delegate
      *
      * @return view model of the given type
      */
-    override val supportViewModel by viewModel<SeriesDiscoverViewModel>()
+    private val viewModel by viewModel<SeriesDiscoverViewModel>()
 
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         SeriesViewAdapter(
-            supportStateConfiguration,
+            stateConfig,
             object : ItemClickListener<CrunchySeries> {
                 /**
                  * When the target view from [View.OnClickListener]
@@ -99,7 +98,7 @@ class SeriesDiscoverContent : SupportFragmentPagedList<CrunchySeries, SeriesPres
      * Invoke view model observer to watch for changes
      */
     override fun setUpViewModelObserver() {
-        supportViewModel.model.observe(
+        viewModelState().model.observe(
             viewLifecycleOwner,
             Observer {
                 onPostModelChange(it)
@@ -148,15 +147,12 @@ class SeriesDiscoverContent : SupportFragmentPagedList<CrunchySeries, SeriesPres
             filter = CrunchySeriesBrowseFilter.ALPHA
         )
 
-        supportViewModel(
+        viewModel.state(
             parameter = query
         )
     }
 
-    /**
-     * State configuration for any underlying state representing widgets
-     */
-    override val supportStateConfiguration by inject<SupportStateLayoutConfiguration>()
+    override val stateConfig by inject<StateLayoutConfig>()
 
     /**
      * Called when the view previously created by [.onCreateView] has
@@ -171,6 +167,11 @@ class SeriesDiscoverContent : SupportFragmentPagedList<CrunchySeries, SeriesPres
         supportRecyclerView?.adapter = null
         super.onDestroyView()
     }
+
+    /**
+     * Proxy for a view model state if one exists
+     */
+    override fun viewModelState() = viewModel.state
 
     companion object : IFragmentFactory<SeriesDiscoverContent> {
 

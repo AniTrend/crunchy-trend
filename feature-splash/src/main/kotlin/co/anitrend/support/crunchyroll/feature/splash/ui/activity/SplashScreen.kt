@@ -18,6 +18,7 @@ package co.anitrend.support.crunchyroll.feature.splash.ui.activity
 
 import android.os.Bundle
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.extension.isStateAtLeast
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
@@ -30,9 +31,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
-class SplashScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
+class SplashScreen : CrunchyActivity() {
 
     override val elasticLayout: ElasticDragDismissFrameLayout? = null
+
+    private val presenter by inject<CrunchyCorePresenter>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,13 +48,6 @@ class SplashScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
     }
 
     /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return supportPresenter of the generic type specified
-     */
-    override val supportPresenter by inject<CrunchyCorePresenter>()
-
-    /**
      * Additional initialization to be done in this method, if the overriding class is type of
      * [androidx.fragment.app.Fragment] then this method will be called in
      * [androidx.fragment.app.FragmentActivity.onCreate]. Otherwise
@@ -60,17 +56,12 @@ class SplashScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        injectFeatureModules()
-    }
-
-    /**
-     * Dispatch onResume() to fragments.  Note that for better inter-operation
-     * with older versions of the platform, at the point of this call the
-     * fragments attached to the activity are *not* resumed.
-     */
-    override fun onResume() {
-        super.onResume()
-        onUpdateUserInterface()
+        launch {
+            injectFeatureModules()
+            lifecycleScope.launchWhenResumed {
+                onUpdateUserInterface()
+            }
+        }
     }
 
     /**
@@ -81,16 +72,15 @@ class SplashScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
      */
     override fun onUpdateUserInterface() {
         launch {
-            delay(250)
+            delay(100)
             if (isStateAtLeast(Lifecycle.State.RESUMED)) {
-                val settings = supportPresenter.supportPreference
-                if (!settings.isNewInstallation)
+                if (!presenter.settings.isNewInstallation)
                     NavigationTargets.Main(applicationContext)
                 else {
-                    if (settings.isAuthenticated)
+                    if (presenter.settings.isAuthenticated)
                         NavigationTargets.Main(applicationContext)
                     else {
-                        settings.isNewInstallation = false
+                        presenter.settings.isNewInstallation = false
                         NavigationTargets.Authentication(applicationContext)
                     }
                 }

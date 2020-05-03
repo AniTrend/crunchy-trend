@@ -16,12 +16,21 @@
 
 package co.anitrend.support.crunchyroll.feature.news.viewmodel
 
+import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
 import co.anitrend.arch.core.viewmodel.SupportPagingViewModel
 import co.anitrend.support.crunchyroll.data.news.usecase.NewsUseCaseType
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
+import co.anitrend.support.crunchyroll.feature.news.viewmodel.model.NewsModelState
 
 class NewsViewModel(
-    override val useCase: NewsUseCaseType
-) : SupportPagingViewModel<RssQuery, PagedList<CrunchyNews>>()
+    useCase: NewsUseCaseType
+) : ViewModel() {
+    val state = NewsModelState(useCase)
+
+    override fun onCleared() {
+        state.onCleared()
+        super.onCleared()
+    }
+}

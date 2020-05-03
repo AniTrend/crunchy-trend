@@ -20,7 +20,7 @@ import android.webkit.WebView
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.isLowRamDevice
 import co.anitrend.arch.extension.util.contract.ISupportDateHelper
-import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
+import co.anitrend.arch.ui.util.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.R
 import co.anitrend.support.crunchyroll.core.helper.StorageHelper
 import co.anitrend.support.crunchyroll.core.model.UserAgent
@@ -47,7 +47,7 @@ private val coreModule = module {
         )
     }
     single {
-        SupportStateLayoutConfiguration(
+        StateLayoutConfig(
             loadingDrawable = R.drawable.ic_launcher_foreground,
             errorDrawable = R.drawable.ic_support_empty_state,
             loadingMessage = R.string.label_text_loading,

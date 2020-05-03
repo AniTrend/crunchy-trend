@@ -41,7 +41,7 @@ class ThemeUtil(private val settings: IThemeSettings) {
         }
 
 
-    private fun CrunchyActivity<*, *>.applyWindowStyle() {
+    private fun CrunchyActivity.applyWindowStyle() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val systemUiOptions = window.decorView.systemUiVisibility
             when (AppCompatDelegate.getDefaultNightMode()) {
@@ -80,7 +80,7 @@ class ThemeUtil(private val settings: IThemeSettings) {
             }
     }
 
-    internal fun applyApplicationTheme(context: CrunchyActivity<*, *>) {
+    internal fun applyApplicationTheme(context: CrunchyActivity) {
         context.applyWindowStyle()
         context.setTheme(theme)
     }

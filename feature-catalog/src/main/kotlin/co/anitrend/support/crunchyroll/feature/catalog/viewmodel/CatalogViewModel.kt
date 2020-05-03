@@ -24,53 +24,49 @@ import co.anitrend.support.crunchyroll.domain.catalog.models.CrunchyCatalogQuery
 import co.anitrend.support.crunchyroll.feature.catalog.model.CatalogViewModelState
 
 class CatalogViewModel(
-    private val catalogUseCase: CatalogUseCaseType
+    catalogUseCase: CatalogUseCaseType
 ) : ViewModel() {
 
-    private val viewStateFeatured by lazy(LAZY_MODE_UNSAFE) {
+    private val viewStateFeatured =
         CatalogViewModelState(
             CrunchyCatalogQuery(
                 CrunchySeriesCatalogFilter.FEATURED
             ),
             catalogUseCase
         )
-    }
 
-    private val viewStateNewest by lazy(LAZY_MODE_UNSAFE) {
+    private val viewStateNewest =
         CatalogViewModelState(
             CrunchyCatalogQuery(
                 CrunchySeriesCatalogFilter.NEWEST
             ),
             catalogUseCase
         )
-    }
 
-    private val viewStatePopular by lazy(LAZY_MODE_UNSAFE) {
+    private val viewStatePopular =
         CatalogViewModelState(
             CrunchyCatalogQuery(
                 CrunchySeriesCatalogFilter.POPULAR
             ),
             catalogUseCase
         )
-    }
 
-    private val viewStateSimulcast by lazy(LAZY_MODE_UNSAFE) {
+    private val viewStateSimulcast =
         CatalogViewModelState(
             CrunchyCatalogQuery(
                 CrunchySeriesCatalogFilter.SIMULCAST
             ),
             catalogUseCase
         )
-    }
 
-    private val viewStateUpdated by lazy(LAZY_MODE_UNSAFE) {
+    private val viewStateUpdated =
         CatalogViewModelState(
             CrunchyCatalogQuery(
                 CrunchySeriesCatalogFilter.UPDATED
             ),
             catalogUseCase
         )
-    }
+
 
     val viewModelLists by lazy {
         listOf(

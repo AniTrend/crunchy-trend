@@ -19,6 +19,7 @@ package co.anitrend.support.crunchyroll.feature.media.ui.activity
 import android.os.Bundle
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
+import co.anitrend.arch.ui.common.ISupportActionUp
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
@@ -29,12 +30,10 @@ import co.anitrend.support.crunchyroll.feature.media.ui.fragment.MediaContent
 import kotlinx.android.synthetic.main.media_screen.*
 import org.koin.android.ext.android.inject
 
-class MediaScreen : CrunchyActivity<Nothing, MediaPresenter>() {
+class MediaScreen : CrunchyActivity() {
 
     override val elasticLayout: ElasticDragDismissFrameLayout?
         get() = draggableFrame
-
-    override val supportPresenter by inject<MediaPresenter>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,7 +65,7 @@ class MediaScreen : CrunchyActivity<Nothing, MediaPresenter>() {
             MediaContent.FRAGMENT_TAG
         ) ?: MediaContent.newInstance(intent.extras)
 
-        supportFragmentActivity = target as SupportFragment<*, *, *>
+        supportActionUp = target as ISupportActionUp
 
         supportFragmentManager.commit {
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

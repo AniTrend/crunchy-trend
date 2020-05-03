@@ -20,13 +20,12 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import androidx.paging.PagedList
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.argument
-import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
+import co.anitrend.arch.ui.fragment.paged.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
+import co.anitrend.arch.ui.util.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
 import co.anitrend.support.crunchyroll.core.extensions.createDialog
 import co.anitrend.support.crunchyroll.core.model.Emote
@@ -47,21 +46,23 @@ import kotlinx.android.synthetic.main.dialog_media.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MediaContent : SupportFragmentPagedList<CrunchyMedia, MediaPresenter, PagedList<CrunchyMedia>>() {
+class MediaContent(
+    override val columnSize: Int = R.integer.single_list_size
+) : SupportFragmentPagedList<CrunchyMedia>() {
 
     private val payload
             by argument<NavigationTargets.Media.Payload>(
                 NavigationTargets.Media.PAYLOAD
             )
 
-    override val supportPresenter by inject<MediaPresenter>()
+    private val presenter by inject<MediaPresenter>()
 
-    override val supportViewModel by viewModel<MediaViewModel>()
+    private val viewModel by viewModel<MediaViewModel>()
 
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         MediaAdapter(
-            presenter = supportPresenter,
-            stateConfiguration = supportStateConfiguration,
+            presenter = presenter,
+            stateConfig = stateConfig,
             itemClickListener = object : ItemClickListener<CrunchyMedia> {
 
                 override fun onItemClick(target: View, data: Pair<Int, CrunchyMedia?>) {
@@ -78,7 +79,7 @@ class MediaContent : SupportFragmentPagedList<CrunchyMedia, MediaPresenter, Page
                             )
                             ?.show {
                                 val view = getCustomView()
-                                view.dialog_media_duration.text = supportPresenter.durationFormatted(media.duration)
+                                view.dialog_media_duration.text = presenter.durationFormatted(media.duration)
                                 view.dialog_media_title.text = media.name
                                 view.dialog_media_description.text = media.description
                                 view.dialog_media_image.setImageUrl(media.screenshotImage)
@@ -118,7 +119,7 @@ class MediaContent : SupportFragmentPagedList<CrunchyMedia, MediaPresenter, Page
     }
 
     override fun setUpViewModelObserver() {
-        supportViewModel.model.observe(viewLifecycleOwner, Observer {
+        viewModelState().model.observe(viewLifecycleOwner, Observer {
             onPostModelChange(it)
         })
     }
@@ -133,7 +134,7 @@ class MediaContent : SupportFragmentPagedList<CrunchyMedia, MediaPresenter, Page
 
     override fun onFetchDataInitialize() {
         payload?.also {
-            supportViewModel(
+            viewModel.state(
                 CrunchyMediaQuery(
                     collectionId = it.collectionId
                 )
@@ -146,9 +147,7 @@ class MediaContent : SupportFragmentPagedList<CrunchyMedia, MediaPresenter, Page
         )
     }
 
-    override val supportStateConfiguration by inject<SupportStateLayoutConfiguration>()
-
-    override val columnSize: Int = R.integer.single_list_size
+    override val stateConfig by inject<StateLayoutConfig>()
 
     /**
      * Called when the view previously created by [.onCreateView] has
@@ -163,6 +162,11 @@ class MediaContent : SupportFragmentPagedList<CrunchyMedia, MediaPresenter, Page
         supportRecyclerView?.adapter = null
         super.onDestroyView()
     }
+
+    /**
+     * Proxy for a view model state if one exists
+     */
+    override fun viewModelState() = viewModel.state
 
     companion object : IFragmentFactory<MediaContent> {
         override val FRAGMENT_TAG = MediaContent::class.java.simpleName

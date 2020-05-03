@@ -16,31 +16,17 @@
 
 package co.anitrend.support.crunchyroll.feature.series.viewmodel
 
-import androidx.lifecycle.Transformations
-import co.anitrend.arch.core.viewmodel.SupportViewModel
+import androidx.lifecycle.ViewModel
 import co.anitrend.support.crunchyroll.data.series.usecase.SeriesDetailUseCaseType
-import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
-import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesDetailQuery
-import co.anitrend.support.crunchyroll.feature.series.model.SeriesModel
+import co.anitrend.support.crunchyroll.feature.series.viewmodel.model.SeriesDetailModelState
 
 class SeriesDetailViewModel(
-    override val useCase: SeriesDetailUseCaseType
-) : SupportViewModel<CrunchySeriesDetailQuery, CrunchySeries?>() {
+    useCase: SeriesDetailUseCaseType
+) : ViewModel() {
+    val state = SeriesDetailModelState(useCase)
 
-    val seriesModel = Transformations.map(model) {
-        it?.let { c ->
-            SeriesModel.fromCrunchySeries(
-                c
-            )
-        }
-    }
-
-    /**
-     * Starts view model operations
-     *
-     * @param parameter request payload
-     */
-    override fun invoke(parameter: CrunchySeriesDetailQuery) {
-        useCaseResult.value = useCase(parameter)
+    override fun onCleared() {
+        state.onCleared()
+        super.onCleared()
     }
 }

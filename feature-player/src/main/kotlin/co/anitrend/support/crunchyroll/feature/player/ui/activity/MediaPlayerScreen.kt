@@ -23,6 +23,7 @@ import android.view.WindowManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import co.anitrend.arch.extension.getCompatColor
+import co.anitrend.arch.ui.common.ISupportActionUp
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
@@ -34,8 +35,7 @@ import com.devbrackets.android.exomedia.listener.VideoControlsVisibilityListener
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
-class MediaPlayerScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(),
-    VideoControlsVisibilityListener {
+class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener {
 
     override val elasticLayout: ElasticDragDismissFrameLayout? = null
     private var fullScreenListener: MediaStreamContent.FullScreenListener? = null
@@ -75,12 +75,7 @@ class MediaPlayerScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(),
         }
     }
 
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return supportPresenter of the generic type specified
-     */
-    override val supportPresenter by inject<CrunchyCorePresenter>()
+    val presenter by inject<CrunchyCorePresenter>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,7 +111,7 @@ class MediaPlayerScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>(),
             fullScreenListener = FullScreenListener()
         }
 
-        supportFragmentActivity = target as SupportFragment<*, *, *>
+        supportActionUp = target as ISupportActionUp
 
         supportFragmentManager.commit {
             //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

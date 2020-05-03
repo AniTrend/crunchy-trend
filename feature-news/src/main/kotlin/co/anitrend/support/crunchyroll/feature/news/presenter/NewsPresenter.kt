@@ -37,12 +37,10 @@ class NewsPresenter(
     private val dispatchers: SupportDispatchers
 ) : CrunchyCorePresenter(context, settings) {
 
-    private val moduleTag = javaClass.simpleName
-
     // TODO: Remove invalid characters from url
     private val regex = Regex(",|#|!|'|")
 
-    internal val posters = ArrayList<Poster>()
+    private val posters = ArrayList<Poster>()
 
     suspend fun createCustomHtml(
         payload: NavigationTargets.News.Payload?

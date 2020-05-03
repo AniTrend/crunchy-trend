@@ -49,7 +49,7 @@ internal fun <T> String.loadClassOrNull(): Class<out T>? =
         Class.forName(this)
     }.castOrNull()
 
-internal fun <T : SupportFragment<*, *, *>> String.loadFragmentOrNull(): T? =
+internal fun <T : Fragment> String.loadFragmentOrNull(): T? =
     try {
         this.loadClassOrNull<T>()?.newInstance()
     } catch (e: ClassNotFoundException) {
@@ -64,6 +64,6 @@ fun INavigationTarget.forIntent(): Intent? {
     return "$APPLICATION_PACKAGE_NAME.$packageName.$className".loadIntentOrNull()
 }
 
-fun INavigationTarget.forFragment(): SupportFragment<*, *, *>? {
+fun INavigationTarget.forFragment(): Fragment? {
     return forIntent()?.component?.className?.loadFragmentOrNull()
 }

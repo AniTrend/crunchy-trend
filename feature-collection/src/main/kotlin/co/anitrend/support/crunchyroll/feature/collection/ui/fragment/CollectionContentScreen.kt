@@ -19,15 +19,15 @@ package co.anitrend.support.crunchyroll.feature.collection.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.paging.PagedList
+import co.anitrend.arch.core.model.ISupportViewModelState
 import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.argument
 import co.anitrend.arch.extension.empty
-import co.anitrend.arch.ui.fragment.SupportFragmentPagedList
+import co.anitrend.arch.ui.fragment.paged.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.arch.ui.util.SupportStateLayoutConfiguration
+import co.anitrend.arch.ui.util.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
@@ -40,19 +40,19 @@ import co.anitrend.support.crunchyroll.feature.collection.viewmodel.CollectionVi
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class CollectionContentScreen : SupportFragmentPagedList<CrunchyCollection, CollectionPresenter, PagedList<CrunchyCollection>>() {
+class CollectionContentScreen(
+    override val columnSize: Int = R.integer.single_list_size
+) : SupportFragmentPagedList<CrunchyCollection>() {
 
     private val payload
             by argument<NavigationTargets.Collection.Payload>(
                 NavigationTargets.Collection.PAYLOAD
             )
 
-    override val columnSize = R.integer.single_list_size
-
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         CollectionAdapter(
-            supportPresenter,
-            supportStateConfiguration,
+            presenter,
+            stateConfig,
             object : ItemClickListener<CrunchyCollection> {
                 override fun onItemClick(target: View, data: Pair<Int, CrunchyCollection?>) {
                     val payload = NavigationTargets.Media.Payload(
@@ -77,7 +77,7 @@ class CollectionContentScreen : SupportFragmentPagedList<CrunchyCollection, Coll
      * Invoke view model observer to watch for changes
      */
     override fun setUpViewModelObserver() {
-        supportViewModel.model.observe(
+        viewModelState().model.observe(
             this,
             Observer {
                 onPostModelChange(it)
@@ -90,14 +90,14 @@ class CollectionContentScreen : SupportFragmentPagedList<CrunchyCollection, Coll
      *
      * @return supportPresenter of the generic type specified
      */
-    override val supportPresenter by inject<CollectionPresenter>()
+    private val presenter by inject<CollectionPresenter>()
 
     /**
      * Should be created lazily through injection or lazy delegate
      *
      * @return view model of the given type
      */
-    override val supportViewModel by viewModel<CollectionViewModel>()
+    private val viewModel by viewModel<CollectionViewModel>()
 
     /**
      * Additional initialization to be done in this method, if the overriding class is type of
@@ -132,7 +132,7 @@ class CollectionContentScreen : SupportFragmentPagedList<CrunchyCollection, Coll
      */
     override fun onFetchDataInitialize() {
         payload?.also {
-            supportViewModel(
+            viewModel.state(
                 parameter = CrunchyCollectionQuery(
                     seriesId = it.seriesId
                 )
@@ -148,7 +148,7 @@ class CollectionContentScreen : SupportFragmentPagedList<CrunchyCollection, Coll
     /**
      * State configuration for any underlying state representing widgets
      */
-    override val supportStateConfiguration by inject<SupportStateLayoutConfiguration>()
+    override val stateConfig: StateLayoutConfig by inject()
 
     /**
      * Called when the view previously created by [.onCreateView] has
@@ -163,6 +163,11 @@ class CollectionContentScreen : SupportFragmentPagedList<CrunchyCollection, Coll
         supportRecyclerView?.adapter = null
         super.onDestroyView()
     }
+
+    /**
+     * Proxy for a view model state if one exists
+     */
+    override fun viewModelState() = viewModel.state
 
     companion object : IFragmentFactory<CollectionContentScreen> {
         override val FRAGMENT_TAG = CollectionContentScreen::class.java.simpleName

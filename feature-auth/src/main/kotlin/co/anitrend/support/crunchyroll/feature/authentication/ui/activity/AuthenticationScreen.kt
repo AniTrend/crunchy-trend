@@ -19,6 +19,7 @@ package co.anitrend.support.crunchyroll.feature.authentication.ui.activity
 import android.os.Bundle
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
+import co.anitrend.arch.ui.common.ISupportActionUp
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.feature.authentication.ui.fragment.FragmentLogin
@@ -30,16 +31,11 @@ import co.anitrend.support.crunchyroll.feature.authentication.koin.injectFeature
 import kotlinx.android.synthetic.main.activity_auth.*
 import org.koin.android.ext.android.inject
 
-class AuthenticationScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
+class AuthenticationScreen : CrunchyActivity() {
 
     override val elasticLayout: ElasticDragDismissFrameLayout? = null
 
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return supportPresenter of the generic type specified
-     */
-    override val supportPresenter by inject<CrunchyCorePresenter>()
+    private val presenter by inject<CrunchyCorePresenter>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +63,7 @@ class AuthenticationScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        val target = when (supportPresenter.supportPreference.isAuthenticated) {
+        val target = when (presenter.settings.isAuthenticated) {
             true -> {
                 supportFragmentManager.findFragmentByTag(
                     FragmentLogout.FRAGMENT_TAG
@@ -80,12 +76,12 @@ class AuthenticationScreen : CrunchyActivity<Nothing, CrunchyCorePresenter>() {
             }
         }
         
-        val tag = when (supportPresenter.supportPreference.isAuthenticated) {
+        val tag = when (presenter.settings.isAuthenticated) {
             true -> FragmentLogout.FRAGMENT_TAG
             else -> FragmentLogin.FRAGMENT_TAG
         }
 
-        supportFragmentActivity = target as SupportFragment<*, *, *>
+        supportActionUp = target as ISupportActionUp
 
         supportFragmentManager.commit {
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

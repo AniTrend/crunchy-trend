@@ -25,15 +25,15 @@ import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.feature.authentication.presenter.AuthPresenter
-import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
 import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLogoutBinding
-import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.LogoutViewModel
+import co.anitrend.support.crunchyroll.feature.authentication.presenter.AuthPresenter
+import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login.LoginViewModel
+import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.logout.LogoutViewModel
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
-class FragmentLogout : SupportFragment<Boolean, CrunchyCorePresenter, Boolean>() {
+class FragmentLogout : SupportFragment<Boolean>() {
 
     private lateinit var binding: FragmentLogoutBinding
 
@@ -42,14 +42,44 @@ class FragmentLogout : SupportFragment<Boolean, CrunchyCorePresenter, Boolean>()
      *
      * @return supportPresenter of the generic type specified
      */
-    override val supportPresenter by inject<AuthPresenter>()
+    private val presenter by inject<AuthPresenter>()
 
     /**
      * Should be created lazily through injection or lazy delegate
      *
      * @return view model of the given type
      */
-    override val supportViewModel by inject<LogoutViewModel>()
+    private val viewModel by inject<LogoutViewModel>()
+    private val viewModelUser by inject<LoginViewModel>()
+
+    /**
+     * Invoke view model observer to watch for changes
+     */
+    override fun setUpViewModelObserver() {
+        viewModelUser.state.model.observe(viewLifecycleOwner, Observer {
+            binding.currentUserModel = it
+        })
+        viewModelState().model.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                if (it == true) {
+                    NavigationTargets.Splash(context)
+                    activity?.closeScreen()
+                }
+            }
+        })
+        viewModelState().networkState.observe(viewLifecycleOwner, Observer {
+            binding.supportStateLayout.setNetworkState(it)
+        })
+        viewModelState().refreshState.observe(viewLifecycleOwner, Observer {
+            binding.supportStateLayout.setNetworkState(it)
+        })
+        binding.supportStateLayout.interactionLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                viewModelState().retry()
+            }
+        )
+    }
 
     /**
      * Called to have the fragment instantiate its user interface view.
@@ -100,35 +130,11 @@ class FragmentLogout : SupportFragment<Boolean, CrunchyCorePresenter, Boolean>()
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.supportStateLayout.stateConfiguration = get()
-        binding.supportStateLayout.onWidgetInteraction = View.OnClickListener {
-            supportViewModel.retry()
-        }
+        binding.supportStateLayout.stateConfig = get()
         binding.supportStateLayout.setNetworkState(NetworkState.Success)
         binding.userLogoutButton.setOnClickListener {
             onFetchDataInitialize()
         }
-        setUpViewModelObserver()
-    }
-
-    /**
-     * Invoke view model observer to watch for changes
-     */
-    override fun setUpViewModelObserver() {
-        supportViewModel.model.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
-                if (it == true) {
-                    NavigationTargets.Splash(context)
-                    activity?.closeScreen()
-                }
-            }
-        })
-        supportViewModel.networkState?.observe(viewLifecycleOwner, Observer {
-            binding.supportStateLayout.setNetworkState(it)
-        })
-        supportViewModel.refreshState?.observe(viewLifecycleOwner, Observer {
-            binding.supportStateLayout.setNetworkState(it)
-        })
     }
 
     /**
@@ -149,16 +155,18 @@ class FragmentLogout : SupportFragment<Boolean, CrunchyCorePresenter, Boolean>()
     }
 
     /**
+     * Proxy for a view model state if one exists
+     */
+    override fun viewModelState() = viewModel.state
+
+    /**
      * Handles the updating of views, binding, creation or state change, depending on the context
      * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
      *
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        val liveData = supportViewModel.getCurrentUser()
-        liveData.observe(viewLifecycleOwner, Observer {
-            binding.currentUserModel = it
-        })
+        viewModelUser.state()
     }
 
     /**
@@ -171,7 +179,7 @@ class FragmentLogout : SupportFragment<Boolean, CrunchyCorePresenter, Boolean>()
      * @see [SupportPagingViewModel.requestBundleLiveData]
      */
     override fun onFetchDataInitialize() {
-        supportViewModel(null)
+        viewModel.state()
     }
 
     override fun hasBackPressableAction(): Boolean {

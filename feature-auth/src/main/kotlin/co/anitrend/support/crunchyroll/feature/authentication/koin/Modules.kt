@@ -17,8 +17,8 @@
 package co.anitrend.support.crunchyroll.feature.authentication.koin
 
 import co.anitrend.support.crunchyroll.feature.authentication.presenter.AuthPresenter
-import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.LoginViewModel
-import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.LogoutViewModel
+import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login.LoginViewModel
+import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.logout.LogoutViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
@@ -41,8 +41,7 @@ private val viewModelModule = module {
     }
     viewModel {
         LogoutViewModel(
-            useCase = get(),
-            loginUseCase = get()
+            useCase = get()
         )
     }
 }

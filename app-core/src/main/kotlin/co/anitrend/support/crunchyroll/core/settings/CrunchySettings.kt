@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.core.settings
 
 import android.content.Context
 import co.anitrend.arch.extension.preference.*
-import co.anitrend.arch.extension.preference.contract.ISupportPreference
+import co.anitrend.arch.extension.preference.contract.ISupportSettings
 import co.anitrend.support.crunchyroll.core.R
 import co.anitrend.support.crunchyroll.core.extensions.FloatPreference
 import co.anitrend.support.crunchyroll.core.extensions.NullableStringPreference
@@ -33,7 +33,7 @@ import co.anitrend.support.crunchyroll.data.arch.database.settings.IRefreshBehav
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings.Companion.INVALID_USER_ID
 
-class CrunchySettings(context: Context) : SupportPreference(context),
+class CrunchySettings(context: Context) : SupportSettings(context),
     IAuthenticationSettings, IConfigurationSettings, IPrivacySettings,
     ICacheSettings, IRefreshBehaviourSettings {
 
@@ -115,7 +115,7 @@ class CrunchySettings(context: Context) : SupportPreference(context),
          * Binding types for [CrunchySettings]
          */
         internal val BINDINGS = arrayOf(
-            ISupportPreference::class, IConfigurationSettings::class,
+            ISupportSettings::class, IConfigurationSettings::class,
             ILocaleSettings::class, IThemeSettings::class,
             IAuthenticationSettings::class, IPrivacySettings::class,
             ICacheSettings::class, IRefreshBehaviourSettings::class

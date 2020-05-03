@@ -18,6 +18,7 @@ package co.anitrend.support.crunchyroll.feature.discover.ui.activity
 
 import android.os.Bundle
 import androidx.fragment.app.commit
+import co.anitrend.arch.ui.common.ISupportActionUp
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
@@ -28,17 +29,10 @@ import co.anitrend.support.crunchyroll.feature.discover.ui.fragment.SeriesDiscov
 import kotlinx.android.synthetic.main.discover_activity.*
 import org.koin.android.ext.android.inject
 
-class SeriesDiscoverScreen : CrunchyActivity<Nothing, SeriesPresenter>() {
+class SeriesDiscoverScreen : CrunchyActivity() {
 
     override val elasticLayout: ElasticDragDismissFrameLayout?
         get() = draggableFrame
-
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return supportPresenter of the generic type specified
-     */
-    override val supportPresenter by inject<SeriesPresenter>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,7 +64,7 @@ class SeriesDiscoverScreen : CrunchyActivity<Nothing, SeriesPresenter>() {
             SeriesDiscoverContent.FRAGMENT_TAG
         ) ?: SeriesDiscoverContent.newInstance(intent.extras)
 
-        supportFragmentActivity = target as SupportFragment<*, *, *>
+        supportActionUp = target as ISupportActionUp
 
         supportFragmentManager.commit {
             //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)

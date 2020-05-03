@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2020 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,13 +14,13 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.feature.settings.ui.fragment
+package co.anitrend.support.crunchyroll.feature.settings.ui.fragment.screens
 
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
 import co.anitrend.support.crunchyroll.feature.settings.R
 
-class PrivacyContentScreen : PreferenceFragmentCompat() {
+class StorageContentScreen : PreferenceFragmentCompat() {
 
     /**
      * Called during [.onCreate] to supply the preferences for this fragment.
@@ -33,6 +33,6 @@ class PrivacyContentScreen : PreferenceFragmentCompat() {
      * [PreferenceScreen] with this key.
      */
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.preferences_privacy, rootKey)
+        setPreferencesFromResource(R.xml.preferences_storage, rootKey)
     }
 }
