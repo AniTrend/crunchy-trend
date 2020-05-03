@@ -5,6 +5,7 @@ buildscript {
 
     ext {
         buildTools = '3.6.3'
+        coil = '0.10.1'
     }
 
     repositories {
