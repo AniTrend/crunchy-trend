@@ -44,6 +44,9 @@ internal object EndpointProvider {
             parametersOf(
                 when (endpointType) {
                     EndpointType.SESSION,
+                    EndpointType.SESSION_PROXY,
+                    EndpointType.SESSION_CORE,
+                    EndpointType.SESSION_JSON,
                     EndpointType.AUTH,
                     EndpointType.JSON -> HttpLoggingInterceptor.Level.BODY
                     else -> HttpLoggingInterceptor.Level.HEADERS
@@ -81,6 +84,9 @@ internal object EndpointProvider {
                     )
                 )
             }
+            EndpointType.SESSION_PROXY,
+            EndpointType.SESSION_CORE,
+            EndpointType.SESSION_JSON,
             EndpointType.SESSION -> {
                 Timber.tag(moduleTag).d(
                     "Adding response converter interceptor for: ${endpointType.name}"

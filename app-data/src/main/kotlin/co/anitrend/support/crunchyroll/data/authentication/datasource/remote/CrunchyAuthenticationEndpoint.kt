@@ -28,7 +28,7 @@ internal interface CrunchyAuthenticationEndpoint {
 
     @JSON
     @FormUrlEncoded
-    @POST("/login.${BuildConfig.apiExtension}.json")
+    @POST("/login.${BuildConfig.apiExtensionV2}.json")
     suspend fun loginUser(
         @Field("account") account: String,
         @Field("password") password: String,

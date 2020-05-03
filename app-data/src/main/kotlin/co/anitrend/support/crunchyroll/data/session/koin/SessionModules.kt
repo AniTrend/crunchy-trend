@@ -35,7 +35,8 @@ private val dataSourceModule = module {
     factory {
         CoreSessionSourceImpl(
             dao = db().crunchySessionCoreDao(),
-            endpoint = api(EndpointType.SESSION),
+            endpoint = api(EndpointType.SESSION_JSON),
+            proxyEndpoint = api(EndpointType.SESSION_PROXY),
             mapper = get(),
             settings = get(),
             supportDispatchers = get(),
@@ -57,7 +58,7 @@ private val dataSourceModule = module {
     factory {
         UnblockSessionSourceImpl(
             dao = db().crunchySessionDao(),
-            endpoint = api(EndpointType.SESSION),
+            endpoint = api(EndpointType.SESSION_CORE),
             coreSessionDao = db().crunchySessionCoreDao(),
             loginDao = db().crunchyLoginDao(),
             mapper = get(),

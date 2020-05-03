@@ -25,7 +25,7 @@ import co.anitrend.support.crunchyroll.data.authentication.datasource.local.Crun
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionDao
-import co.anitrend.support.crunchyroll.data.session.datasource.remote.CrunchySessionEndpoint
+import co.anitrend.support.crunchyroll.data.session.datasource.remote.CrunchyUnblockSessionEndpoint
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
 import co.anitrend.support.crunchyroll.data.session.mapper.SessionResponseMapper
 import co.anitrend.support.crunchyroll.data.session.source.contract.SessionSource
@@ -41,7 +41,7 @@ internal class UnblockSessionSourceImpl(
     private val dao: CrunchySessionDao,
     private val loginDao: CrunchyLoginDao,
     private val settings: IAuthenticationSettings,
-    private val endpoint: CrunchySessionEndpoint,
+    private val endpoint: CrunchyUnblockSessionEndpoint,
     private val coreSessionDao: CrunchySessionCoreDao,
     private val mapper: SessionResponseMapper,
     private val supportConnectivity: SupportConnectivity,

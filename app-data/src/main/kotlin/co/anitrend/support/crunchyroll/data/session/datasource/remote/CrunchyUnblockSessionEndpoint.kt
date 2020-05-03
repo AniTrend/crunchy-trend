@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2020 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,28 +17,20 @@
 package co.anitrend.support.crunchyroll.data.session.datasource.remote
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
-import co.anitrend.support.crunchyroll.data.api.helper.SessionHelper
 import co.anitrend.support.crunchyroll.data.arch.JSON
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
-import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionCoreModel
+import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionModel
 import retrofit2.Response
-import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
 
-internal interface CrunchySessionEndpoint {
+internal interface CrunchyUnblockSessionEndpoint {
 
     @JSON
-    @GET("/start_session")
-    suspend fun startCoreSession(
-        @Query("version") version: String = BuildConfig.apiVersion
-    ): Response<CrunchyContainer<CrunchySessionCoreModel>>
-
-    @JSON
-    @POST("/start_session.${BuildConfig.apiExtensionV1}.json")
-    suspend fun startCoreSessionJson(
-        @Query("access_token") accessToken: String = BuildConfig.clientToken,
-        @Query("device_type") deviceType: String = BuildConfig.deviceType,
-        @Query("device_id") deviceId: String = SessionHelper.createDummyDeviceId()
-    ): Response<CrunchyContainer<CrunchySessionCoreModel>>
+    @POST("/start_session")
+    suspend fun startUnblockedSession(
+        @Query("auth") auth: String,
+        @Query("version") version: String = BuildConfig.apiVersion,
+        @Query("user_id") userId: Long
+    ): Response<CrunchyContainer<CrunchySessionModel>>
 }

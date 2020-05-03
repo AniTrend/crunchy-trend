@@ -172,7 +172,9 @@ class MediaStreamContent(
 
     override fun setUpViewModelObserver() {
         viewModelState().model.observe(viewLifecycleOwner, Observer {
-            launch { prepareResults(it) }
+            launch {
+                prepareResults(it)
+            }
         })
         viewModelState().networkState.observe(viewLifecycleOwner, Observer {
             supportStateLayout.setNetworkState(it)

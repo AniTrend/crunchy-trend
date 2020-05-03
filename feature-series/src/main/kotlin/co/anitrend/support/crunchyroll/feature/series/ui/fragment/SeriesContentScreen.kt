@@ -21,6 +21,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.core.model.ISupportViewModelState
 import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
 import co.anitrend.arch.domain.entities.NetworkState
@@ -38,6 +39,7 @@ import co.anitrend.support.crunchyroll.feature.series.databinding.SeriesContentB
 import co.anitrend.support.crunchyroll.feature.series.presenter.SeriesDetailPresenter
 import co.anitrend.support.crunchyroll.feature.series.ui.adpter.SeriesGenreAdapter
 import co.anitrend.support.crunchyroll.feature.series.viewmodel.SeriesDetailViewModel
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -126,7 +128,14 @@ class SeriesContentScreen : SupportFragment<CrunchySeries>() {
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-
+        launch {
+            lifecycleScope.launchWhenResumed {
+                if (viewModelState().isEmpty())
+                    onFetchDataInitialize()
+                else
+                    onUpdateUserInterface()
+            }
+        }
     }
 
     /**
@@ -197,14 +206,6 @@ class SeriesContentScreen : SupportFragment<CrunchySeries>() {
         )
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (!viewModelState().isEmpty())
-            onFetchDataInitialize()
-        else
-            onUpdateUserInterface()
-    }
-
     /**
      * Proxy for a view model state if one exists
      */
@@ -242,6 +243,20 @@ class SeriesContentScreen : SupportFragment<CrunchySeries>() {
                 message = "Invalid or missing payload"
             )
         )
+    }
+
+    /**
+     * Called when the view previously created by [.onCreateView] has
+     * been detached from the fragment.  The next time the fragment needs
+     * to be displayed, a new view will be created.  This is called
+     * after [.onStop] and before [.onDestroy].  It is called
+     * *regardless* of whether [.onCreateView] returned a
+     * non-null view.  Internally it is called after the view's state has
+     * been saved but before it has been removed from its parent.
+     */
+    override fun onDestroyView() {
+        binding.seriesGenres.adapter = null
+        super.onDestroyView()
     }
 
     companion object : IFragmentFactory<SeriesContentScreen> {

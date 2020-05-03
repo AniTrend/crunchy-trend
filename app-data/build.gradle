@@ -45,7 +45,10 @@ android {
                 stream -> secretsProps.load(stream)
             }
             it.buildConfigField("String", "clientToken", secretsProps['clientToken'])
-            it.buildConfigField("String", "apiSessionUrl", secretsProps['apiSessionUrl'])
+            it.buildConfigField("String", "apiSessionV2", secretsProps['apiSessionV2'])
+            it.buildConfigField("String", "apiSessionV1", secretsProps['apiSessionV1'])
+            it.buildConfigField("String", "apiSession", secretsProps['apiSession'])
+            it.buildConfigField("String", "deviceType", secretsProps['deviceType'])
             it.buildConfigField("String", "apiUrl", secretsProps['apiUrl'])
 
             def configProps = new Properties()
@@ -56,6 +59,8 @@ android {
             it.buildConfigField("String", "crunchyUrl", configProps['crunchyUrl'])
             it.buildConfigField("String", "apiVersion", configProps['apiVersion'])
             it.buildConfigField("String", "apiExtension", configProps['apiExtension'])
+            it.buildConfigField("String", "apiExtensionV1", configProps['apiExtensionV1'])
+            it.buildConfigField("String", "apiExtensionV2", configProps['apiExtensionV2'])
 
             it.buildConfigField("int", "DATABASE_SCHEMA_VERSION", DATABASE_SCHEMA_VERSION)
         }
@@ -64,6 +69,7 @@ android {
 
 ext {
     roomigrant = '0.1.7'
+    chuncker = '3.2.0'
 }
 
 dependencies {
@@ -103,4 +109,7 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$okHttpLogger"
 
     implementation "com.jakewharton.threetenabp:threetenabp:$threetenabp"
+
+    debugImplementation("com.github.ChuckerTeam.Chucker:library:$chuncker")
+    releaseImplementation("com.github.ChuckerTeam.Chucker:library-no-op:$chuncker")
 }

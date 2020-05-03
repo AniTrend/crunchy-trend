@@ -19,13 +19,43 @@
     xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <shortcut
-        android:enabled="true"
-        android:shortcutId="SHORTCUT_SEARCH"
-        android:icon="@drawable/ic_shortcut_search"
-        android:shortcutShortLabel="@string/label_text_action_search">
+            android:enabled="true"
+            android:shortcutId="SHORTCUT_SEARCH"
+            android:icon="@drawable/ic_search_24dp"
+            android:shortcutShortLabel="@string/label_text_action_search">
         <intent
-            android:action="android.intent.action.VIEW"
-            android:targetClass="co.anitrend.support.crunchyroll.ui.MainActivity"
-            android:targetPackage="co.anitrend.support.crunchyroll" />
+                android:action="android.intent.action.VIEW"
+                android:targetClass="co.anitrend.support.crunchyroll.feature.search.ui.activity.SearchScreen" />
     </shortcut>
+
+    <shortcut
+            android:enabled="false"
+            android:shortcutId="SHORTCUT_SHOWS"
+            android:icon="@drawable/ic_live_tv_24dp"
+            android:shortcutShortLabel="@string/nav_shows">
+        <intent
+                android:action="android.intent.action.VIEW"
+                android:targetClass="co.anitrend.support.crunchyroll.ui.activity.MainScreen" />
+    </shortcut>
+
+    <shortcut
+            android:enabled="false"
+            android:shortcutId="SHORTCUT_NEWS"
+            android:icon="@drawable/ic_local_movies_24dp"
+            android:shortcutShortLabel="@string/label_text_action_search">
+        <intent
+                android:action="android.intent.action.VIEW"
+                android:targetClass="co.anitrend.support.crunchyroll.ui.activity.MainScreen" />
+    </shortcut>
+
+    <shortcut
+            android:enabled="false"
+            android:shortcutId="SHORTCUT_CATALOG"
+            android:icon="@drawable/ic_collections_24dp"
+            android:shortcutShortLabel="@string/nav_series_catalog">
+        <intent
+                android:action="android.intent.action.VIEW"
+                android:targetClass="co.anitrend.support.crunchyroll.ui.activity.MainScreen" />
+    </shortcut>
+
 </shortcuts>
