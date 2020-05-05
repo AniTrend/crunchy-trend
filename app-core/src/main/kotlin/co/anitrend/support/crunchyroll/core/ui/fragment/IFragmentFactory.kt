@@ -22,13 +22,13 @@ import androidx.fragment.app.Fragment
 /**
  * Fragment factory to help us construct new fragments
  *
- * @property FRAGMENT_TAG unique tag that can be used by
+ * @property fragmentTag unique tag that can be used by
  * [androidx.fragment.app.FragmentManager]
  *
  * @param T type of your fragment
  */
 interface IFragmentFactory<T: Fragment> {
-    val FRAGMENT_TAG: String
+    val fragmentTag: String
 
     fun newInstance(bundle: Bundle? = null): T
 }

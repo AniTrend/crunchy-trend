@@ -58,14 +58,14 @@ class CollectionScreen : CrunchyActivity() {
      */
     override fun onUpdateUserInterface() {
         val target = supportFragmentManager.findFragmentByTag(
-            CollectionContentScreen.FRAGMENT_TAG
+            CollectionContentScreen.fragmentTag
         ) ?: CollectionContentScreen.newInstance(intent.extras)
 
         supportActionUp = target as ISupportActionUp
 
         supportFragmentManager.commit {
             //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-            replace(R.id.collection_content, target, CollectionContentScreen.FRAGMENT_TAG)
+            replace(R.id.collection_content, target, CollectionContentScreen.fragmentTag)
         }
     }
 }

@@ -20,7 +20,6 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import co.anitrend.arch.ui.common.ISupportActionUp
-import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.feature.authentication.ui.fragment.FragmentLogin
 import co.anitrend.support.crunchyroll.feature.authentication.ui.fragment.FragmentLogout
@@ -66,19 +65,19 @@ class AuthenticationScreen : CrunchyActivity() {
         val target = when (presenter.settings.isAuthenticated) {
             true -> {
                 supportFragmentManager.findFragmentByTag(
-                    FragmentLogout.FRAGMENT_TAG
+                    FragmentLogout.fragmentTag
                 ) ?: FragmentLogout.newInstance()
             }
             else -> {
                 supportFragmentManager.findFragmentByTag(
-                    FragmentLogin.FRAGMENT_TAG
+                    FragmentLogin.fragmentTag
                 ) ?: FragmentLogin.newInstance()
             }
         }
         
         val tag = when (presenter.settings.isAuthenticated) {
-            true -> FragmentLogout.FRAGMENT_TAG
-            else -> FragmentLogin.FRAGMENT_TAG
+            true -> FragmentLogout.fragmentTag
+            else -> FragmentLogin.fragmentTag
         }
 
         supportActionUp = target as ISupportActionUp

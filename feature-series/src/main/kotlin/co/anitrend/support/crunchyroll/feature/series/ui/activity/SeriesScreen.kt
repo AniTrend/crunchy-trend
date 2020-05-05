@@ -19,7 +19,6 @@ package co.anitrend.support.crunchyroll.feature.series.ui.activity
 import android.os.Bundle
 import androidx.fragment.app.commit
 import co.anitrend.arch.ui.common.ISupportActionUp
-import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.series.R
@@ -59,14 +58,14 @@ class SeriesScreen : CrunchyActivity() {
      */
     override fun onUpdateUserInterface() {
         val target = supportFragmentManager.findFragmentByTag(
-            SeriesContentScreen.FRAGMENT_TAG
+            SeriesContentScreen.fragmentTag
         ) ?: SeriesContentScreen.newInstance(intent.extras)
 
         supportActionUp = target as ISupportActionUp
 
         supportFragmentManager.commit {
             //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-            replace(R.id.series_content, target, SeriesContentScreen.FRAGMENT_TAG)
+            replace(R.id.series_content, target, SeriesContentScreen.fragmentTag)
         }
     }
 }

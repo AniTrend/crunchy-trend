@@ -260,7 +260,7 @@ class SeriesContentScreen : SupportFragment<CrunchySeries>() {
     }
 
     companion object : IFragmentFactory<SeriesContentScreen> {
-        override val FRAGMENT_TAG = SeriesContentScreen::class.java.simpleName
+        override val fragmentTag = SeriesContentScreen::class.java.simpleName
 
         override fun newInstance(bundle: Bundle?) =
             SeriesContentScreen().apply {

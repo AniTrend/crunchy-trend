@@ -169,7 +169,7 @@ class MediaContent(
     override fun viewModelState() = viewModel.state
 
     companion object : IFragmentFactory<MediaContent> {
-        override val FRAGMENT_TAG = MediaContent::class.java.simpleName
+        override val fragmentTag = MediaContent::class.java.simpleName
 
         override fun newInstance(bundle: Bundle?) =
             MediaContent().apply {

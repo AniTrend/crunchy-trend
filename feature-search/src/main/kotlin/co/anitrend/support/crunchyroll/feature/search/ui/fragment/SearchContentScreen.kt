@@ -178,7 +178,7 @@ class SearchContentScreen(
     override fun viewModelState() = viewModel.state
 
     companion object : IFragmentFactory<SearchContentScreen> {
-        override val FRAGMENT_TAG = SearchContentScreen::class.java.simpleName
+        override val fragmentTag = SearchContentScreen::class.java.simpleName
 
         override fun newInstance(bundle: Bundle?) = SearchContentScreen()
     }

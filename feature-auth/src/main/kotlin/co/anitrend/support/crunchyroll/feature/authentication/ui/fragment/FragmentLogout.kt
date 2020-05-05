@@ -192,7 +192,7 @@ class FragmentLogout : SupportFragment<Boolean>() {
 
 
     companion object : IFragmentFactory<FragmentLogout> {
-        override val FRAGMENT_TAG = FragmentLogout::class.java.simpleName
+        override val fragmentTag = FragmentLogout::class.java.simpleName
 
         override fun newInstance(bundle: Bundle?) = FragmentLogout()
     }

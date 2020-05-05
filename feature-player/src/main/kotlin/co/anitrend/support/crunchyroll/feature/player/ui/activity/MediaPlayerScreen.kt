@@ -20,11 +20,9 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import co.anitrend.arch.extension.getCompatColor
 import co.anitrend.arch.ui.common.ISupportActionUp
-import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
@@ -106,7 +104,7 @@ class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener {
      */
     override fun onUpdateUserInterface() {
         val target = supportFragmentManager.findFragmentByTag(
-            MediaStreamContent.FRAGMENT_TAG
+            MediaStreamContent.fragmentTag
         ) ?: MediaStreamContent.newInstance(intent.extras).apply {
             fullScreenListener = FullScreenListener()
         }
@@ -115,7 +113,7 @@ class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener {
 
         supportFragmentManager.commit {
             //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            replace(R.id.contentFrame, target, MediaStreamContent.FRAGMENT_TAG)
+            replace(R.id.contentFrame, target, MediaStreamContent.fragmentTag)
         }
         initUiFlags()
     }

@@ -19,15 +19,12 @@ package co.anitrend.support.crunchyroll.feature.discover.ui.activity
 import android.os.Bundle
 import androidx.fragment.app.commit
 import co.anitrend.arch.ui.common.ISupportActionUp
-import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.discover.R
 import co.anitrend.support.crunchyroll.feature.discover.koin.injectFeatureModules
-import co.anitrend.support.crunchyroll.feature.discover.presenter.SeriesPresenter
 import co.anitrend.support.crunchyroll.feature.discover.ui.fragment.SeriesDiscoverContent
 import kotlinx.android.synthetic.main.discover_activity.*
-import org.koin.android.ext.android.inject
 
 class SeriesDiscoverScreen : CrunchyActivity() {
 
@@ -61,14 +58,14 @@ class SeriesDiscoverScreen : CrunchyActivity() {
      */
     override fun onUpdateUserInterface() {
         val target = supportFragmentManager.findFragmentByTag(
-            SeriesDiscoverContent.FRAGMENT_TAG
+            SeriesDiscoverContent.fragmentTag
         ) ?: SeriesDiscoverContent.newInstance(intent.extras)
 
         supportActionUp = target as ISupportActionUp
 
         supportFragmentManager.commit {
             //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-            replace(R.id.discover_content, target, SeriesDiscoverContent.FRAGMENT_TAG)
+            replace(R.id.discover_content, target, SeriesDiscoverContent.fragmentTag)
         }
     }
 }

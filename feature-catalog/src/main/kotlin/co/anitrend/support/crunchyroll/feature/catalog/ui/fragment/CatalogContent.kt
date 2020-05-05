@@ -176,10 +176,7 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>>() {
      */
     override fun onFetchDataInitialize() {
         viewModel.viewModelLists.forEach {
-            launch {
-                it.requestIfModelIsNotInitialized()
-                delay(500)
-            }
+            it.requestIfModelIsNotInitialized()
         }
     }
 

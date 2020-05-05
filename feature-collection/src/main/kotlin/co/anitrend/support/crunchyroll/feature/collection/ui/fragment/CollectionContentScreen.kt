@@ -170,7 +170,7 @@ class CollectionContentScreen(
     override fun viewModelState() = viewModel.state
 
     companion object : IFragmentFactory<CollectionContentScreen> {
-        override val FRAGMENT_TAG = CollectionContentScreen::class.java.simpleName
+        override val fragmentTag = CollectionContentScreen::class.java.simpleName
 
         override fun newInstance(bundle: Bundle?)=
             CollectionContentScreen()

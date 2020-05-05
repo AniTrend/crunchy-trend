@@ -61,7 +61,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     companion object : IFragmentFactory<SettingsFragment> {
-        override val FRAGMENT_TAG = SettingsFragment::class.java.simpleName
+        override val fragmentTag = SettingsFragment::class.java.simpleName
 
         override fun newInstance(bundle: Bundle?) = SettingsFragment()
     }

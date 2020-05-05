@@ -175,7 +175,7 @@ class SeriesDiscoverContent(
 
     companion object : IFragmentFactory<SeriesDiscoverContent> {
 
-        override val FRAGMENT_TAG = SeriesDiscoverContent::class.java.simpleName
+        override val fragmentTag = SeriesDiscoverContent::class.java.simpleName
 
         override fun newInstance(bundle: Bundle?) =
             SeriesDiscoverContent()

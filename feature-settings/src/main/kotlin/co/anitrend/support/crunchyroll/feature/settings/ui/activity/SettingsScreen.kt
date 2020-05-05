@@ -17,22 +17,14 @@
 package co.anitrend.support.crunchyroll.feature.settings.ui.activity
 
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.commit
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
-import co.anitrend.support.crunchyroll.core.extensions.closeScreen
-import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
-import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
-import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.feature.settings.R
 import co.anitrend.support.crunchyroll.feature.settings.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.settings.ui.fragment.SettingsFragment
 import kotlinx.android.synthetic.main.settings_activity.*
-import org.koin.android.ext.android.inject
 
 class SettingsScreen : CrunchyActivity() {
 
@@ -73,11 +65,11 @@ class SettingsScreen : CrunchyActivity() {
      */
     override fun onUpdateUserInterface() {
         val target = supportFragmentManager.findFragmentByTag(
-            SettingsFragment.FRAGMENT_TAG
+            SettingsFragment.fragmentTag
         ) ?: SettingsFragment.newInstance()
 
         supportFragmentManager.commit {
-            replace(R.id.settings_content, target, SettingsFragment.FRAGMENT_TAG)
+            replace(R.id.settings_content, target, SettingsFragment.fragmentTag)
         }
     }
 }

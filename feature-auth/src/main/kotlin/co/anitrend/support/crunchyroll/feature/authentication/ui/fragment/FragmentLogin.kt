@@ -183,7 +183,7 @@ class FragmentLogin : SupportFragment<CrunchyUser?>() {
     }
 
     companion object : IFragmentFactory<FragmentLogin> {
-        override val FRAGMENT_TAG = FragmentLogin::class.java.simpleName
+        override val fragmentTag = FragmentLogin::class.java.simpleName
 
         override fun newInstance(bundle: Bundle?) = FragmentLogin()
     }

@@ -360,7 +360,7 @@ class MediaStreamContent(
 
     companion object : IFragmentFactory<MediaStreamContent> {
 
-        override val FRAGMENT_TAG = MediaStreamContent::class.java.simpleName
+        override val fragmentTag = MediaStreamContent::class.java.simpleName
 
         override fun newInstance(bundle: Bundle?) =
             MediaStreamContent().apply {

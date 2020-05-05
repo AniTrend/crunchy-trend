@@ -19,7 +19,6 @@ package co.anitrend.support.crunchyroll.feature.search.ui.activity
 import android.os.Bundle
 import androidx.fragment.app.commit
 import co.anitrend.arch.ui.common.ISupportActionUp
-import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.multisearch.model.MultiSearchChangeListener
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
@@ -119,13 +118,13 @@ class SearchScreen : CrunchyActivity() {
      */
     override fun onUpdateUserInterface() {
         val target = supportFragmentManager.findFragmentByTag(
-            SearchContentScreen.FRAGMENT_TAG
+            SearchContentScreen.fragmentTag
         ) ?: SearchContentScreen.newInstance()
 
         supportActionUp = target as ISupportActionUp
 
         supportFragmentManager.commit {
-            replace(R.id.search_content, target, SearchContentScreen.FRAGMENT_TAG)
+            replace(R.id.search_content, target, SearchContentScreen.fragmentTag)
         }
     }
 }

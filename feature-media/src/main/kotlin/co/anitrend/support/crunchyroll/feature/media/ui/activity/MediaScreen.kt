@@ -20,15 +20,12 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import co.anitrend.arch.ui.common.ISupportActionUp
-import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.media.R
 import co.anitrend.support.crunchyroll.feature.media.koin.injectFeatureModules
-import co.anitrend.support.crunchyroll.feature.media.presenter.MediaPresenter
 import co.anitrend.support.crunchyroll.feature.media.ui.fragment.MediaContent
 import kotlinx.android.synthetic.main.media_screen.*
-import org.koin.android.ext.android.inject
 
 class MediaScreen : CrunchyActivity() {
 
@@ -62,14 +59,14 @@ class MediaScreen : CrunchyActivity() {
      */
     override fun onUpdateUserInterface() {
         val target = supportFragmentManager.findFragmentByTag(
-            MediaContent.FRAGMENT_TAG
+            MediaContent.fragmentTag
         ) ?: MediaContent.newInstance(intent.extras)
 
         supportActionUp = target as ISupportActionUp
 
         supportFragmentManager.commit {
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            replace(R.id.series_content, target, MediaContent.FRAGMENT_TAG)
+            replace(R.id.series_content, target, MediaContent.fragmentTag)
         }
     }
 }
