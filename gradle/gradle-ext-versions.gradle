@@ -42,7 +42,7 @@ ext {
     koin = '2.1.5'
     kotlinVersion = '1.3.72'
 
-    mockk = '1.9.3.kotlin12'
+    mockk = '1.10.0'
     junit = '4.13'
     junitKtx = '1.1.1'
     runner = '1.2.0'
