@@ -22,6 +22,7 @@ import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyCacheIntercep
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyRequestInterceptor
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyResponseInterceptor
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchySessionInterceptor
+import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.parameter.parametersOf
@@ -60,19 +61,26 @@ internal object EndpointProvider {
                     Adding request and response interceptors for request: ${endpointType.name}
                     """.trimIndent()
                 )
-                builder.addInterceptor(
-                    CrunchyRequestInterceptor(
-                        authentication = scope.get(),
-                        connectivity = scope.get(),
-                        dispatcher = scope.get()
+                val dispatcher = Dispatcher().apply {
+                    // Setting the dispatcher to only run one request at a time
+                    maxRequests = 1
+                }
+                builder
+                    .dispatcher(dispatcher)
+                    .addInterceptor(
+                        CrunchyRequestInterceptor(
+                            authentication = scope.get(),
+                            connectivity = scope.get(),
+                            dispatcher = scope.get()
+                        )
                     )
-                ).addInterceptor(
-                    CrunchyResponseInterceptor(
-                        authentication = scope.get(),
-                        connectivity = scope.get(),
-                        dispatchers = scope.get()
+                    .addInterceptor(
+                        CrunchyResponseInterceptor(
+                            authentication = scope.get(),
+                            connectivity = scope.get(),
+                            dispatchers = scope.get()
+                        )
                     )
-                )
             }
             EndpointType.XML -> {
                 Timber.tag(moduleTag).d(

@@ -44,7 +44,7 @@ internal class CrunchyRequestInterceptor(
 
     private fun addDynamicParameters(request: Request): Request.Builder {
         Timber.tag(moduleTag).d("Injecting query parameters on host: ${request.url.host}")
-        return runBlocking(dispatcher.io) {
+        return runBlocking(dispatcher.confined) {
             authentication.injectQueryParameters(request)
         }
     }

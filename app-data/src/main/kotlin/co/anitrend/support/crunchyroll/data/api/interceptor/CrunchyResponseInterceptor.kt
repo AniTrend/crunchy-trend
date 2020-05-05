@@ -23,7 +23,9 @@ import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactor
 import co.anitrend.support.crunchyroll.data.api.helper.ResponseHelper
 import co.anitrend.support.crunchyroll.data.arch.extension.isCached
 import co.anitrend.support.crunchyroll.data.authentication.helper.CrunchyAuthenticationHelper
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -43,7 +45,7 @@ internal class CrunchyResponseInterceptor(
 
     private val responseHelper by lazy(LAZY_MODE_SYNCHRONIZED) {
         ResponseHelper(
-            json = CrunchyConverterFactory.GSON_BUILDER.create()
+            CrunchyConverterFactory.GSON
         )
     }
 
@@ -64,12 +66,31 @@ internal class CrunchyResponseInterceptor(
                 if (request != null)
                     return chain.proceed(request)
             } else
-                Timber.tag(moduleTag).w(
+                Timber.tag(moduleTag).v(
                     "Cached network response detected, re-authentication has been skipped"
                 )
         }
 
         return crunchyResponse ?: response
+    }
+
+
+    private fun updateRetryCount(priorResponse: Response?) {
+        if (priorResponse?.isSuccessful != true) {
+            val retries = retryCount.incrementAndGet()
+            if (retries >= 3) {
+                runBlocking(dispatchers.confined) {
+                    delay(retries * 100L)
+                    authentication.invalidateSession()
+                }
+                retryCount.set(0)
+            }
+        } else {
+            Timber.tag(moduleTag).v(
+                "Resetting retry count as prior response was successful"
+            )
+            retryCount.set(0)
+        }
     }
 
 
@@ -83,30 +104,20 @@ internal class CrunchyResponseInterceptor(
      */
     private fun authenticate(response: Response): Request? {
         val origin = response.request
-        Timber.tag(moduleTag).v(
-            "Attempting to authenticate request on for host: ${origin.url.host}"
-        )
         if (connectivity.isConnected) {
-            if (response.priorResponse?.isSuccessful != true) {
-                val retries = retryCount.incrementAndGet()
-                if (retries >= 3) {
-                    val waitDuration = (retries * retries * 100).toLong()
-                    runBlocking(dispatchers.io) {
-                        delay(waitDuration)
-                        authentication.invalidateSession()
-                    }
-                    retryCount.set(0)
-                }
-            }
-
-            return runBlocking(dispatchers.io) {
+            Timber.tag(moduleTag).v(
+                "Attempting to authenticate request on for host: ${origin.url.host}"
+            )
+            updateRetryCount(response.priorResponse)
+            return runBlocking(dispatchers.confined) {
                 authentication.refreshSession(origin).build()
             }
+        } else {
+            Timber.tag(moduleTag).v(
+                "Device is currently offline, skipping authentication process"
+            )
         }
 
-        Timber.tag(moduleTag).d(
-            "Device is currently offline, skipping authentication process"
-        )
         return null
     }
 }

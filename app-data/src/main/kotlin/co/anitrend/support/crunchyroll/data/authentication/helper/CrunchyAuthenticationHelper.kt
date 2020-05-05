@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.data.authentication.helper
 
 import co.anitrend.arch.data.auth.contract.ISupportAuthentication
+import co.anitrend.arch.extension.LAZY_MODE_SYNCHRONIZED
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
@@ -28,6 +29,8 @@ import co.anitrend.support.crunchyroll.data.session.transformer.SessionTransform
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
 import co.anitrend.support.crunchyroll.domain.session.interactors.CoreSessionUseCase
 import co.anitrend.support.crunchyroll.domain.session.interactors.UnblockSessionUseCase
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import okhttp3.Request
 import timber.log.Timber
 
@@ -42,6 +45,14 @@ internal class CrunchyAuthenticationHelper(
 ): ISupportAuthentication {
 
     override val moduleTag: String = javaClass.simpleName
+
+    /**
+     * Since traditional locking mechanisms in java don't work so well with kotlin coroutines
+     * we're going to use mutex instead of synchronized locks.
+     *
+     * [Shared mutable state and concurrency](https://kotlinlang.org/docs/reference/coroutines/shared-mutable-state-and-concurrency.html)
+     */
+    private val mutex = Mutex()
 
     /**
      * Facade to provide information on auth status of the application,
@@ -84,6 +95,7 @@ internal class CrunchyAuthenticationHelper(
     }
 
     private suspend fun getCoreSession(forceRefresh: Boolean = false): Session? {
+        // How do we check if the session is truly invalid?
         val coreSession = sessionCoreDao.findBySessionId(settings.sessionId)
         val core = if (forceRefresh) {
             Timber.tag(moduleTag).d("Force refresh requested for core session -> $coreSession")
@@ -127,7 +139,6 @@ internal class CrunchyAuthenticationHelper(
      * Handles complex task or dispatching of token refreshing to the an external work,
      * optionally the implementation can perform these operation internally
      */
-    @Synchronized
     internal suspend fun refreshSession(request: Request): Request.Builder {
         val session = if (isAuthenticated)
             getUnblockSession(forceRefresh = true)
@@ -142,7 +153,6 @@ internal class CrunchyAuthenticationHelper(
      *
      * @param request the request to build upon
      */
-    @Synchronized
     internal suspend fun injectQueryParameters(request: Request): Request.Builder {
         return if (isAuthenticated) {
             val session = getUnblockSession()
@@ -157,7 +167,6 @@ internal class CrunchyAuthenticationHelper(
      * Handle invalid token state by either renewing it or un-authenticates
      * the user locally if the token cannot be refreshed
      */
-    @Synchronized
     internal suspend fun invalidateSession() {
         if (connectivityHelper.isConnected) {
             settings.authenticatedUserId = IAuthenticationSettings.INVALID_USER_ID

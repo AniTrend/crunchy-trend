@@ -18,6 +18,7 @@
 
 package co.anitrend.support.crunchyroll.data.api.converter
 
+import co.anitrend.arch.extension.LAZY_MODE_SYNCHRONIZED
 import co.anitrend.support.crunchyroll.data.arch.JSON
 import co.anitrend.support.crunchyroll.data.arch.XML
 import com.google.gson.GsonBuilder
@@ -46,21 +47,22 @@ internal class CrunchyConverterFactory private constructor(): Converter.Factory(
                     ).responseBodyConverter(type, annotations, retrofit)
                 }
                 is JSON -> {
-                    return GsonConverterFactory.create(GSON_BUILDER.create())
+                    return GsonConverterFactory.create(GSON)
                         .responseBodyConverter(type, annotations, retrofit)
                 }
             }
         }
-        return GsonConverterFactory.create(GSON_BUILDER.create())
+        return GsonConverterFactory.create(GSON)
             .responseBodyConverter(type, annotations, retrofit)
     }
 
     companion object {
-        internal val GSON_BUILDER by lazy {
+        internal val GSON by lazy(LAZY_MODE_SYNCHRONIZED) {
             GsonBuilder()
                 .generateNonExecutableJson()
                 .serializeNulls()
                 .setLenient()
+                .create()
         }
 
         internal fun create() = CrunchyConverterFactory()

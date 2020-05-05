@@ -26,7 +26,7 @@ internal class CrunchySessionInterceptor : Interceptor {
 
     private val responseHelper by lazy(LAZY_MODE_SYNCHRONIZED) {
         ResponseHelper(
-            json = CrunchyConverterFactory.GSON_BUILDER.create()
+            CrunchyConverterFactory.GSON
         )
     }
 
