@@ -51,7 +51,7 @@ internal fun <T> String.loadClassOrNull(): Class<out T>? =
 
 internal fun <T : Fragment> String.loadFragmentOrNull(): T? =
     try {
-        this.loadClassOrNull<T>()?.newInstance()
+        loadClassOrNull<T>()?.newInstance()
     } catch (e: ClassNotFoundException) {
         Timber.tag("loadFragmentOrNull").e(e)
         null
@@ -64,6 +64,16 @@ fun INavigationTarget.forIntent(): Intent? {
     return "$APPLICATION_PACKAGE_NAME.$packageName.$className".loadIntentOrNull()
 }
 
+/**
+ * Creates a fragment instance from intent
+ */
 fun INavigationTarget.forFragment(): Fragment? {
     return forIntent()?.component?.className?.loadFragmentOrNull()
+}
+
+/**
+ * Build fragment class from intent
+ */
+fun <T: Fragment> INavigationTarget.forFragmentClass(): Class<out T>? {
+    return forIntent()?.component?.className?.loadClassOrNull()
 }
