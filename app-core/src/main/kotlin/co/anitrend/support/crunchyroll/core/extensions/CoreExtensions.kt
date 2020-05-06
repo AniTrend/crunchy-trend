@@ -18,12 +18,19 @@ package co.anitrend.support.crunchyroll.core.extensions
 
 import android.os.Bundle
 import android.os.Parcelable
+import androidx.annotation.IdRes
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.commit
 import co.anitrend.support.crunchyroll.core.CrunchyApplication
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
+import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import com.afollestad.materialdialogs.DialogBehavior
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
+import timber.log.Timber
+
+private const val moduleTag = "CoreExtensions"
 
 fun CrunchyActivity.recreateModules() {
     val coreApplication = applicationContext as CrunchyApplication
@@ -55,3 +62,36 @@ fun Parcelable.toBundle(key: String) =
     Bundle().apply {
         putParcelable(key, this@toBundle)
     }
+
+/**
+ * Checks for existing fragment in [FragmentManager], if one exists that is used otherwise
+ * a new instance is created.
+ *
+ * @return tag of the fragment
+ *
+ * @see androidx.fragment.app.commit
+ */
+fun FragmentManager.commit(
+    @IdRes contentFrame: Int,
+    fragmentItem: FragmentItem<*>?
+) : String? {
+    return if (fragmentItem != null) {
+        val fragmentTag = fragmentItem.tag()
+        val backStack = findFragmentByTag(fragmentTag)
+
+        commit {
+            backStack?.let {
+                replace(contentFrame, it, fragmentTag)
+            } ?: replace(
+                contentFrame,
+                fragmentItem.fragment,
+                fragmentItem.parameter,
+                fragmentTag
+            )
+        }
+        fragmentTag
+    } else {
+        Timber.tag(moduleTag).v("FragmentItem model is null")
+        null
+    }
+}

@@ -14,22 +14,17 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.core.ui.fragment
+package co.anitrend.support.crunchyroll.core.ui.fragment.model
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 
 /**
- * Fragment factory to help us construct new fragments
- *
- * @property fragmentTag unique tag that can be used by
- * [androidx.fragment.app.FragmentManager]
- *
- * @param T type of your fragment
+ * Fragment loader helper
  */
-@Deprecated("Use FragmentItem instead on the calling activity")
-interface IFragmentFactory<T: Fragment> {
-    val fragmentTag: String
-
-    fun newInstance(bundle: Bundle? = null): T
+data class FragmentItem<T: Fragment>(
+    val parameter: Bundle,
+    val fragment: Class<T>
+) {
+    fun tag() = fragment.simpleName
 }

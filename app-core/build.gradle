@@ -47,6 +47,8 @@ dependencies {
     /** Material Design */
     implementation "com.google.android.material:material:$material"
 
+    implementation "androidx.fragment:fragment-ktx:$fragmentKtx"
+
     /** Architecture Components */
     implementation "androidx.core:core-ktx:$ktx"
     implementation "androidx.paging:paging-runtime:$paging"
