@@ -17,11 +17,19 @@
 package co.anitrend.support.crunchyroll.feature.catalog.koin
 
 import co.anitrend.support.crunchyroll.feature.catalog.presenter.CatalogPresenter
+import co.anitrend.support.crunchyroll.feature.catalog.ui.fragment.CatalogContent
 import co.anitrend.support.crunchyroll.feature.catalog.viewmodel.CatalogViewModel
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
+
+private val fragmentModule = module {
+    fragment {
+        CatalogContent()
+    }
+}
 
 private val presenterModule = module {
     factory {
@@ -41,6 +49,7 @@ private val viewModelModule = module {
 }
 
 private val featureModules = listOf(
+    fragmentModule,
     presenterModule,
     viewModelModule
 )

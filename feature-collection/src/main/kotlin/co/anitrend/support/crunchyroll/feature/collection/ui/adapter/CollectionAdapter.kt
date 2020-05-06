@@ -27,9 +27,9 @@ import co.anitrend.arch.ui.util.StateLayoutConfig
 import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
 import co.anitrend.support.crunchyroll.feature.collection.databinding.AdapterCollectionBinding
 import co.anitrend.support.crunchyroll.feature.collection.presenter.CollectionPresenter
+import co.anitrend.support.crunchyroll.feature.collection.presenter.CollectionPresenter.Companion.titleWithSeason
 
 class CollectionAdapter(
-    private val presenter: CollectionPresenter,
     override val stateConfig: StateLayoutConfig,
     private val itemClickListener: ItemClickListener<CrunchyCollection>
 ) : SupportPagedListAdapter<CrunchyCollection>() {
@@ -60,22 +60,17 @@ class CollectionAdapter(
             false
         )
 
-        val viewHolder =
-            SeriesSeasonViewHolder(
-                binding
-            )
-
-        binding.presenter = presenter
-        binding.container.setOnClickListener {
-            viewHolder.onItemClick(it, itemClickListener)
-        }
-
-        return viewHolder
+        return SeriesSeasonViewHolder(
+            binding, itemClickListener
+        )
     }
 
     internal class SeriesSeasonViewHolder(
-        private val binding: AdapterCollectionBinding
+        private val binding: AdapterCollectionBinding,
+        private val clickListener: ItemClickListener<CrunchyCollection>
     ) : SupportViewHolder<CrunchyCollection>(binding.root) {
+
+        private var model: CrunchyCollection? = null
 
         /**
          * Load images, text, buttons, etc. in this method from the given parameter
@@ -83,28 +78,23 @@ class CollectionAdapter(
          * @param model Is the liveData at the current adapter position
          */
         override fun invoke(model: CrunchyCollection?) {
-            binding.entity = model
-            binding.executePendingBindings()
+            this.model = model
+            binding.collectionTitle.text = model?.titleWithSeason()
+            binding.collectionDescription.text = model?.description
+            binding.container.setOnClickListener {
+                onItemClick(it, clickListener)
+            }
         }
 
-        /**
-         * If any image views are used within the view holder, clear any pending async requests
-         * by using [com.bumptech.glide.RequestManager.clear]
-         *
-         * @see com.bumptech.glide.Glide
-         */
         override fun onViewRecycled() {
-            binding.unbind()
+            binding.container.setOnClickListener(null)
+            model = null
         }
 
-        /**
-         * Handle any onclick events from our views, optionally you can call
-         * [performClick] to dispatch [Pair]<[Int], T> on the [ItemClickListener]
-         *
-         * @param view the view that has been clicked
-         */
         override fun onItemClick(view: View, itemClickListener: ItemClickListener<CrunchyCollection>) {
-            performClick(binding.entity, view, itemClickListener)
+            model?.apply {
+                performClick(this, view, itemClickListener)
+            }
         }
     }
 }

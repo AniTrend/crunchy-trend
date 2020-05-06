@@ -14,15 +14,9 @@
   ~    See the License for the specific language governing permissions and
   ~    limitations under the License.
   -->
+<co.anitrend.arch.ui.view.widget.SupportStateLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/placeHolderState"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/series_image_xl" />
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <data class="co.anitrend.support.crunchyroll.feature.catalog.databinding.ItemPlaceHolderBinding" />
-
-    <co.anitrend.arch.ui.view.widget.SupportStateLayout
-            android:id="@+id/placeHolderState"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/series_image_xl" />
-
-</layout>

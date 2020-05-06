@@ -21,9 +21,11 @@
         xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser" />
+
         <variable
                 name="currentUserModel"
-                type="co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser" />
+                type="CrunchyUser" />
     </data>
 
     <co.anitrend.arch.ui.view.widget.SupportStateLayout

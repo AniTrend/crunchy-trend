@@ -51,9 +51,6 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>>() {
 
     private val viewModel by viewModel<CatalogViewModel>()
 
-    private fun CrunchyCatalogWithSeries.networkState() =
-        if (series.isEmpty()) NetworkState.Loading else NetworkState.Success
-
     /**
      * Invoke view model observer to watch for changes
      */
@@ -77,41 +74,10 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>>() {
         }
     }
 
-    /**
-     * Additional initialization to be done in this method, if the overriding class is type of
-     * [androidx.fragment.app.Fragment] then this method will be called in
-     * [androidx.fragment.app.FragmentActivity.onCreate]. Otherwise
-     * [androidx.fragment.app.FragmentActivity.onPostCreate] invokes this function
-     *
-     * @param savedInstanceState
-     */
     override fun initializeComponents(savedInstanceState: Bundle?) {
         injectFeatureModules()
     }
 
-    /**
-     * Called to have the fragment instantiate its user interface view. This is optional, and
-     * non-graphical fragments can return null. This will be called between
-     * [onCreate] & [onActivityCreated].
-     *
-     * A default View can be returned by calling [Fragment] in your
-     * constructor. Otherwise, this method returns null.
-     *
-     * It is recommended to __only__ inflate the layout in this method and move
-     * logic that operates on the returned View to [onViewCreated].
-     *
-     * If you return a View from here, you will later be called in [onDestroyView]
-     * when the view is being released.
-     *
-     * @param inflater The LayoutInflater object that can be used to inflate any views in the fragment
-     * @param container If non-null, this is the parent view that the fragment's UI should be
-     * attached to.  The fragment should not add the view itself, but this can be used to generate
-     * the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
-     *
-     * @return Return the View for the fragment's UI, or null.
-     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -123,16 +89,6 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>>() {
         it.root
     }
 
-    /**
-     * Called immediately after [.onCreateView]
-     * has returned, but before any saved state has been restored in to the view.
-     * This gives subclasses a chance to initialize themselves once
-     * they know their view hierarchy has been completely created.  The fragment's
-     * view hierarchy is not however attached to its parent at this point.
-     * @param view The View returned by [.onCreateView].
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
-     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         gridLayoutManager = GridLayoutManager(context, groupAdapter.spanCount)
@@ -155,40 +111,16 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>>() {
         onFetchDataInitialize()
     }
 
-    /**
-     * Handles the updating of views, binding, creation or state change, depending on the context
-     * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
-     *
-     * Check implementation for more details
-     */
     override fun onUpdateUserInterface() {
 
     }
 
-    /**
-     * Handles the complex logic required to dispatch network request to [ISupportViewModel]
-     * to either request from the network or database cache.
-     *
-     * The results of the dispatched network or cache call will be published by the
-     * [androidx.lifecycle.LiveData] specifically [ISupportViewModel.model]
-     *
-     * @see [ISupportViewModel.invoke]
-     */
     override fun onFetchDataInitialize() {
         viewModel.viewModelLists.forEach {
             it.requestIfModelIsNotInitialized()
         }
     }
 
-    /**
-     * Called when the view previously created by [.onCreateView] has
-     * been detached from the fragment.  The next time the fragment needs
-     * to be displayed, a new view will be created.  This is called
-     * after [.onStop] and before [.onDestroy].  It is called
-     * *regardless* of whether [.onCreateView] returned a
-     * non-null view.  Internally it is called after the view's state has
-     * been saved but before it has been removed from its parent.
-     */
     override fun onDestroyView() {
         binding.supportRecycler.adapter = null
         super.onDestroyView()

@@ -24,19 +24,23 @@ import androidx.fragment.app.commit
 import co.anitrend.arch.extension.getCompatColor
 import co.anitrend.arch.ui.common.ISupportActionUp
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
+import co.anitrend.support.crunchyroll.core.extensions.commit
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
+import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import co.anitrend.support.crunchyroll.feature.player.R
 import co.anitrend.support.crunchyroll.feature.player.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.player.ui.fragment.MediaStreamContent
 import com.devbrackets.android.exomedia.listener.VideoControlsVisibilityListener
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.koin.androidx.fragment.android.setupKoinFragmentFactory
+import org.koin.androidx.scope.lifecycleScope
 
 class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener {
 
     override val elasticLayout: ElasticDragDismissFrameLayout? = null
-    private var fullScreenListener: MediaStreamContent.FullScreenListener? = null
+    internal var fullScreenListener: MediaStreamContent.FullScreenListener? = null
 
     /**
      * Determines the appropriate fullscreen flags based on the
@@ -62,6 +66,10 @@ class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener {
      */
     override fun configureActivity() {
         super.configureActivity()
+        launch {
+            injectFeatureModules()
+            setupKoinFragmentFactory(lifecycleScope)
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             with (window) {
                 clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
@@ -80,17 +88,8 @@ class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener {
         setContentView(R.layout.activity_streaming)
     }
 
-    /**
-     * Additional initialization to be done in this method, if the overriding class is type of
-     * [androidx.fragment.app.Fragment] then this method will be called in
-     * [androidx.fragment.app.FragmentActivity.onCreate]. Otherwise
-     * [androidx.fragment.app.FragmentActivity.onPostCreate] invokes this function
-     *
-     * @param savedInstanceState
-     */
     override fun initializeComponents(savedInstanceState: Bundle?) {
         launch {
-            injectFeatureModules()
             onUpdateUserInterface()
         }
     }
@@ -103,17 +102,13 @@ class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener {
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        val target = supportFragmentManager.findFragmentByTag(
-            MediaStreamContent.fragmentTag
-        ) ?: MediaStreamContent.newInstance(intent.extras).apply {
-            fullScreenListener = FullScreenListener()
-        }
+        val target = FragmentItem(
+            parameter = intent.extras,
+            fragment = MediaStreamContent::class.java
+        )
 
-        supportActionUp = target as ISupportActionUp
-
-        supportFragmentManager.commit {
+        supportFragmentManager.commit(R.id.contentFrame, target) {
             //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            replace(R.id.contentFrame, target, MediaStreamContent.fragmentTag)
         }
         initUiFlags()
     }

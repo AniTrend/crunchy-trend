@@ -45,11 +45,9 @@ class NewsFeedContent(
     override val columnSize: Int = R.integer.single_list_size
 ) : SupportFragmentPagedList<CrunchyNews>() {
 
-    override val stateConfig by inject<StateLayoutConfig>()
-
-    private val presenter by inject<CrunchyCorePresenter>()
-
     val viewModel by viewModel<NewsViewModel>()
+
+    override val stateConfig: StateLayoutConfig by inject()
 
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         RssNewsAdapter(
@@ -146,10 +144,4 @@ class NewsFeedContent(
      * Proxy for a view model state if one exists
      */
     override fun viewModelState() = viewModel.state
-
-    companion object : IFragmentFactory<NewsFeedContent> {
-        override val fragmentTag = NewsFeedContent::class.java.simpleName
-
-        override fun newInstance(bundle: Bundle?) = NewsFeedContent()
-    }
 }

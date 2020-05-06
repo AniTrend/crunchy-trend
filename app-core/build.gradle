@@ -28,6 +28,9 @@ android {
     defaultConfig {
         consumerProguardFiles 'consumer-rules.pro'
     }
+    dataBinding {
+        enabled = true
+    }
 }
 
 dependencies {

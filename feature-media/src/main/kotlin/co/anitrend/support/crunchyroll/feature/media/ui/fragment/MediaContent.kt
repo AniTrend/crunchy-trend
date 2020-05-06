@@ -55,13 +55,12 @@ class MediaContent(
                 NavigationTargets.Media.PAYLOAD
             )
 
-    private val presenter by inject<MediaPresenter>()
-
     private val viewModel by viewModel<MediaViewModel>()
+
+    override val stateConfig: StateLayoutConfig by inject()
 
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         MediaAdapter(
-            presenter = presenter,
             stateConfig = stateConfig,
             itemClickListener = object : ItemClickListener<CrunchyMedia> {
 
@@ -79,7 +78,7 @@ class MediaContent(
                             )
                             ?.show {
                                 val view = getCustomView()
-                                view.dialog_media_duration.text = presenter.durationFormatted(media.duration)
+                                view.dialog_media_duration.text = MediaPresenter.durationFormatted(media.duration)
                                 view.dialog_media_title.text = media.name
                                 view.dialog_media_description.text = media.description
                                 view.dialog_media_image.setImageUrl(media.screenshotImage)
@@ -147,8 +146,6 @@ class MediaContent(
         )
     }
 
-    override val stateConfig by inject<StateLayoutConfig>()
-
     /**
      * Called when the view previously created by [.onCreateView] has
      * been detached from the fragment.  The next time the fragment needs
@@ -167,13 +164,4 @@ class MediaContent(
      * Proxy for a view model state if one exists
      */
     override fun viewModelState() = viewModel.state
-
-    companion object : IFragmentFactory<MediaContent> {
-        override val fragmentTag = MediaContent::class.java.simpleName
-
-        override fun newInstance(bundle: Bundle?) =
-            MediaContent().apply {
-                arguments = bundle
-            }
-    }
 }

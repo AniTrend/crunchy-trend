@@ -20,9 +20,10 @@
         xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login.LoginViewModel" />
         <variable
                 name="viewModel"
-                type="co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login.LoginViewModel" />
+                type="LoginViewModel" />
     </data>
 
     <co.anitrend.arch.ui.view.widget.SupportStateLayout

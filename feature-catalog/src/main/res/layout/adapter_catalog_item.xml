@@ -14,53 +14,42 @@
   ~    See the License for the specific language governing permissions and
   ~    limitations under the License.
   -->
-
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools">
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/lg_margin"
+        android:orientation="vertical">
 
-    <data class="co.anitrend.support.crunchyroll.feature.catalog.databinding.AdapterCatalogItemBinding">
-        <variable
-                name="entity"
-                type="co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries" />
-    </data>
-
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <com.google.android.material.card.MaterialCardView
+            android:id="@+id/seriesCard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/lg_margin"
-            android:orientation="vertical">
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?selectableItemBackground"
+            app:cardCornerRadius="@dimen/lg_margin"
+            app:cardElevation="0dp">
 
-        <com.google.android.material.card.MaterialCardView
-                android:id="@+id/seriesCard"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?selectableItemBackground"
-                app:cardCornerRadius="@dimen/lg_margin"
-                app:cardElevation="0dp">
+        <co.anitrend.arch.ui.view.image.SupportImageView
+                android:id="@+id/seriesImage"
+                android:layout_width="@dimen/series_image_sm"
+                android:layout_height="0dp"
+                android:adjustViewBounds="true"
+                app:aspectRatio="1.5"
+                tools:src="@sample/poster" />
+    </com.google.android.material.card.MaterialCardView>
 
-            <co.anitrend.arch.ui.view.image.SupportImageView
-                    android:id="@+id/seriesImage"
-                    android:layout_width="@dimen/series_image_sm"
-                    android:layout_height="0dp"
-                    android:adjustViewBounds="true"
-                    app:aspectRatio="1.5"
-                    app:imageUrl="@{entity.portraitImage}"
-                    tools:src="@sample/poster" />
-        </com.google.android.material.card.MaterialCardView>
+    <co.anitrend.arch.ui.view.text.SingleLineTextView
+            android:id="@+id/seriesTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/md_margin"
+            android:layout_marginTop="@dimen/lg_margin"
+            android:layout_marginEnd="@dimen/md_margin"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+            tools:text="@sample/search_response.json/name" />
 
-        <co.anitrend.arch.ui.view.text.SingleLineTextView
-                android:id="@+id/seriesTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/md_margin"
-                android:layout_marginTop="@dimen/lg_margin"
-                android:layout_marginEnd="@dimen/md_margin"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-                android:text="@{entity.name}"
-                tools:text="@sample/search_response.json/name" />
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
-</layout>
+</androidx.appcompat.widget.LinearLayoutCompat>

@@ -24,9 +24,10 @@ import co.anitrend.arch.ui.recycler.adapter.SupportPagedListAdapter
 import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.StateLayoutConfig
+import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.feature.search.databinding.AdapterSeriesBinding
-import co.anitrend.support.crunchyroll.feature.search.presenter.SeriesPresenter
+import coil.request.RequestDisposable
 
 class SeriesViewAdapter(
     override val stateConfig: StateLayoutConfig,
@@ -59,20 +60,18 @@ class SeriesViewAdapter(
                 false
         )
 
-        val viewHolder = SeriesViewHolder(
-            binding
+        return SeriesViewHolder(
+            binding, itemClickListener
         )
-
-        binding.container.setOnClickListener {
-            viewHolder.onItemClick(it, itemClickListener)
-        }
-
-        return viewHolder
     }
 
     internal class SeriesViewHolder(
-        private val binding: AdapterSeriesBinding
+        private val binding: AdapterSeriesBinding,
+        private var clickListener: ItemClickListener<CrunchySeries>?
     ) : SupportViewHolder<CrunchySeries>(binding.root) {
+
+        private var disposable: RequestDisposable? = null
+        private var model: CrunchySeries? = null
 
         /**
          * Load images, text, buttons, etc. in this method from the given parameter
@@ -80,18 +79,22 @@ class SeriesViewAdapter(
          * @param model Is the liveData at the current adapter position
          */
         override fun invoke(model: CrunchySeries?) {
-            binding.entity = model
-            binding.executePendingBindings()
+            this.model = model
+            disposable = binding.seriesImage.setImageUrl(model?.portraitImage)
+            binding.seriesName.text = model?.name
+            binding.seriesDescription.text = model?.description
+            clickListener?.apply {
+                binding.container.setOnClickListener {
+                    onItemClick(it, this)
+                }
+            }
         }
 
-        /**
-         * If any image views are used within the view holder, clear any pending async requests
-         * by using [com.bumptech.glide.RequestManager.clear]
-         *
-         * @see com.bumptech.glide.Glide
-         */
         override fun onViewRecycled() {
-            binding.unbind()
+            binding.container.setOnClickListener(null)
+            clickListener = null
+            disposable?.dispose()
+            disposable = null
         }
 
         /**
@@ -101,7 +104,9 @@ class SeriesViewAdapter(
          * @param view the view that has been clicked
          */
         override fun onItemClick(view: View, itemClickListener: ItemClickListener<CrunchySeries>) {
-            performClick(binding.entity, view, itemClickListener)
+            model.apply {
+                performClick(this, view, itemClickListener)
+            }
         }
     }
 }

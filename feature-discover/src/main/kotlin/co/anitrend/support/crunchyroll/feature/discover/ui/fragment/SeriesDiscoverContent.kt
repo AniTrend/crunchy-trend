@@ -26,7 +26,6 @@ import co.anitrend.arch.ui.fragment.paged.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesBrowseQuery
@@ -38,7 +37,6 @@ import co.anitrend.support.crunchyroll.feature.discover.viewmodel.SeriesDiscover
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@Suppress("unused")
 class SeriesDiscoverContent(
     override val columnSize: Int = R.integer.single_list_size
 ) : SupportFragmentPagedList<CrunchySeries>() {
@@ -46,19 +44,9 @@ class SeriesDiscoverContent(
     private val payload: NavigationTargets.Discover.Payload?
             by argument(NavigationTargets.Discover.PAYLOAD)
 
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return supportPresenter of the generic type specified
-     */
-    private val presenter by inject<SeriesPresenter>()
-
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return view model of the given type
-     */
     private val viewModel by viewModel<SeriesDiscoverViewModel>()
+
+    override val stateConfig: StateLayoutConfig by inject()
 
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         SeriesViewAdapter(
@@ -152,8 +140,6 @@ class SeriesDiscoverContent(
         )
     }
 
-    override val stateConfig by inject<StateLayoutConfig>()
-
     /**
      * Called when the view previously created by [.onCreateView] has
      * been detached from the fragment.  The next time the fragment needs
@@ -172,15 +158,4 @@ class SeriesDiscoverContent(
      * Proxy for a view model state if one exists
      */
     override fun viewModelState() = viewModel.state
-
-    companion object : IFragmentFactory<SeriesDiscoverContent> {
-
-        override val fragmentTag = SeriesDiscoverContent::class.java.simpleName
-
-        override fun newInstance(bundle: Bundle?) =
-            SeriesDiscoverContent()
-                .apply {
-                    arguments = bundle
-                }
-    }
 }

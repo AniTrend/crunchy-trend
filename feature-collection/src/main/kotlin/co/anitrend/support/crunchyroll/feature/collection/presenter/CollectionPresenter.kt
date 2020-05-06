@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.feature.collection.presenter
 
 import android.content.Context
+import co.anitrend.support.crunchyroll.core.extensions.separator
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
 import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
@@ -26,11 +27,9 @@ class CollectionPresenter(
     settings: CrunchySettings
 ) : CrunchyCorePresenter(context, settings) {
 
-    fun titleWithSeason(model: CrunchyCollection) : String {
-        return "Season: ${model.season} $separator ${model.name}"
-    }
-
     companion object {
-        internal const val separator = "\u2022"
+        fun CrunchyCollection.titleWithSeason() : String {
+            return "Season: $season $separator $name"
+        }
     }
 }

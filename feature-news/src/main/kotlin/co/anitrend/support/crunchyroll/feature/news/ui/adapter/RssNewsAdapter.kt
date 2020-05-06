@@ -24,8 +24,11 @@ import co.anitrend.arch.ui.recycler.adapter.SupportPagedListAdapter
 import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.StateLayoutConfig
+import co.anitrend.support.crunchyroll.core.android.extensions.longDate
+import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import co.anitrend.support.crunchyroll.feature.news.databinding.AdapterNewsFeedBinding
+import coil.request.RequestDisposable
 import io.noties.markwon.Markwon
 
 class RssNewsAdapter(
@@ -67,8 +70,11 @@ class RssNewsAdapter(
     internal class NewsRssViewHolder(
         private val clickListener: ItemClickListener<CrunchyNews>,
         private val binding: AdapterNewsFeedBinding,
-        private val markwon: Markwon
+        private var markwon: Markwon?
     ): SupportViewHolder<CrunchyNews>(binding.root) {
+
+        private var model: CrunchyNews? = null
+        private var disposable: RequestDisposable? = null
 
         /**
          * Load images, text, buttons, etc. in this method from the given parameter
@@ -76,26 +82,26 @@ class RssNewsAdapter(
          * @param model Is the liveData at the current adapter position
          */
         override fun invoke(model: CrunchyNews?) {
-            binding.entity = model
-            markwon.setMarkdown(
-                binding.mediaNewsDescription,
+            this.model = model
+            disposable = binding.newsImage.setImageUrl(model?.image)
+            binding.newsTitle.text = model?.title
+            binding.newsSubTitle.text = model?.subTitle
+            binding.newsPublishedOn.longDate(model?.publishedOn)
+            markwon?.setMarkdown(
+                binding.newsDescription,
                 model?.description ?: "No description available"
             )
             binding.container.setOnClickListener {
                 onItemClick(it, clickListener)
             }
-            binding.executePendingBindings()
         }
 
-        /**
-         * If any image views are used within the view holder, clear any pending async requests
-         * by using [com.bumptech.glide.RequestManager.clear]
-         *
-         * @see com.bumptech.glide.Glide
-         */
         override fun onViewRecycled() {
             binding.container.setOnClickListener(null)
-            binding.unbind()
+            disposable?.dispose()
+            disposable = null
+            markwon = null
+            model = null
         }
 
         /**
@@ -105,7 +111,9 @@ class RssNewsAdapter(
          * @param view the view that has been clicked
          */
         override fun onItemClick(view: View, itemClickListener: ItemClickListener<CrunchyNews>) {
-            performClick(binding.entity, view, itemClickListener)
+            model.apply {
+                performClick(this, view, itemClickListener)
+            }
         }
     }
 }

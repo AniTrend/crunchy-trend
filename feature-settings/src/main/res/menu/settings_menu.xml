@@ -14,17 +14,14 @@
   ~    See the License for the specific language governing permissions and
   ~    limitations under the License.
   -->
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/supportRefreshLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-        <co.anitrend.arch.ui.recycler.SupportRecyclerView
-                android:id="@+id/support_recycler"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="vertical" />
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <item
+            android:id="@+id/action_theme"
+            android:icon="@drawable/ic_color_lens_24dp"
+            android:title="@string/title_settings_action_theme"
+            app:showAsAction="ifRoom"
+            />
+</menu>

@@ -17,11 +17,22 @@
 package co.anitrend.support.crunchyroll.feature.media.koin
 
 import co.anitrend.support.crunchyroll.feature.media.presenter.MediaPresenter
+import co.anitrend.support.crunchyroll.feature.media.ui.activity.MediaScreen
+import co.anitrend.support.crunchyroll.feature.media.ui.fragment.MediaContent
 import co.anitrend.support.crunchyroll.feature.media.viewmodel.MediaViewModel
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
+
+private val fragmentModule = module {
+    scope<MediaScreen> {
+        fragment {
+            MediaContent()
+        }
+    }
+}
 
 private val presenterModule = module {
     factory {
@@ -41,6 +52,7 @@ private val viewModelModule = module {
 }
 
 private val featureModules = listOf(
+    fragmentModule,
     presenterModule,
     viewModelModule
 )

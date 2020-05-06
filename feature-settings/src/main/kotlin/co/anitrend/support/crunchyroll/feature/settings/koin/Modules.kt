@@ -16,8 +16,19 @@
 
 package co.anitrend.support.crunchyroll.feature.settings.koin
 
+import co.anitrend.support.crunchyroll.feature.settings.ui.activity.SettingsScreen
+import co.anitrend.support.crunchyroll.feature.settings.ui.fragment.SettingsFragment
+import org.koin.androidx.fragment.dsl.fragment
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
+
+private val fragmentModule = module {
+    scope<SettingsScreen> {
+        fragment {
+            SettingsFragment()
+        }
+    }
+}
 
 private val presenterModule = module {
 
@@ -27,7 +38,7 @@ private val viewModelModule = module {
 
 }
 
-private val featureModules = listOf(presenterModule, viewModelModule)
+private val featureModules = listOf(fragmentModule)
 
 private val koinModules by lazy {
     loadKoinModules(featureModules)

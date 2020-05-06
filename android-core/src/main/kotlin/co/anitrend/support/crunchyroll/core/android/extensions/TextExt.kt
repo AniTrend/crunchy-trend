@@ -17,11 +17,9 @@
 package co.anitrend.support.crunchyroll.core.android.extensions
 
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.databinding.BindingAdapter
 import co.anitrend.support.crunchyroll.data.util.extension.supportDateHelper
 
-@BindingAdapter("longDate")
-fun AppCompatTextView.longDate(time: Long) {
-    val timeStamp = supportDateHelper.convertFromUnixTimeStamp(time)
+fun AppCompatTextView.longDate(time: Long?) {
+    val timeStamp = supportDateHelper.convertFromUnixTimeStamp(time ?: 0)
     text = timeStamp
 }

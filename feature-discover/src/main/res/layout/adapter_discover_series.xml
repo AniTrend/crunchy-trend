@@ -14,67 +14,56 @@
   ~    See the License for the specific language governing permissions and
   ~    limitations under the License.
   -->
-
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools">
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/container"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/xl_margin"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?selectableItemBackground">
 
-    <data>
-        <import type="co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries" />
-        <variable
-                name="entity"
-                type="CrunchySeries" />
-    </data>
+    <co.anitrend.arch.ui.view.image.SupportImageView
+            android:id="@+id/seriesImage"
+            android:layout_width="@dimen/avatar_size_xl"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            app:aspectRatio="1.35"
+            tools:src="@sample/poster" />
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/container"
-            android:orientation="horizontal"
+    <Space
+            android:layout_width="@dimen/lg_margin"
+            android:layout_height="wrap_content" />
+
+    <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/xl_margin"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?selectableItemBackground">
+            android:layout_height="wrap_content">
 
-        <co.anitrend.arch.ui.view.image.SupportImageView
-                android:layout_width="@dimen/avatar_size_xl"
-                android:layout_height="0dp"
-                android:scaleType="centerCrop"
-                app:aspectRatio="1.35"
-                app:imageUrl="@{entity.portraitImage}"
-                tools:src="@sample/poster" />
+        <co.anitrend.arch.ui.view.text.SingleLineTextView
+                android:id="@+id/seriesName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                tools:text="@sample/search_response.json/name" />
 
         <Space
-                android:layout_width="@dimen/lg_margin"
-                android:layout_height="wrap_content" />
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/lg_margin" />
 
-        <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/seriesDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:maxLines="4"
+                android:ellipsize="end"
+                tools:text="@sample/search_response.json/description" />
 
-            <co.anitrend.arch.ui.view.text.SingleLineTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{entity.name}"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    tools:text="@sample/search_response.json/name" />
+    </LinearLayout>
 
-            <Space
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/lg_margin" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                    android:text="@{entity.description}"
-                    android:maxLines="4"
-                    android:ellipsize="end"
-                    tools:text="@sample/search_response.json/description" />
-
-        </LinearLayout>
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-</layout>
+</androidx.appcompat.widget.LinearLayoutCompat>

@@ -61,6 +61,7 @@
                             android:layout_marginTop="-30dp">
 
                         <co.anitrend.arch.ui.view.image.SupportImageView
+                                android:id="@+id/seriesPoster"
                                 android:layout_width="@dimen/series_image_xs"
                                 android:layout_height="0dp"
                                 android:scaleType="centerCrop"

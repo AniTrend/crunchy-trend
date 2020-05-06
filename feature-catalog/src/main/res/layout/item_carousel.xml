@@ -14,16 +14,10 @@
   ~    See the License for the specific language governing permissions and
   ~    limitations under the License.
   -->
-
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <data class="co.anitrend.support.crunchyroll.feature.catalog.databinding.ItemCarouselBinding" />
-
-    <co.anitrend.arch.ui.recycler.SupportRecyclerView
-            android:id="@+id/carouselRecycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:descendantFocusability="afterDescendants"/>
-</layout>
+<co.anitrend.arch.ui.recycler.SupportRecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/carouselRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:descendantFocusability="afterDescendants"/>

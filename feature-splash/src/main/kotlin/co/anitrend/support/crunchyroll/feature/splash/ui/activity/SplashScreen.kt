@@ -72,7 +72,7 @@ class SplashScreen : CrunchyActivity() {
      */
     override fun onUpdateUserInterface() {
         launch {
-            delay(100)
+            delay(300)
             if (isStateAtLeast(Lifecycle.State.RESUMED)) {
                 if (!presenter.settings.isNewInstallation)
                     NavigationTargets.Main(applicationContext)

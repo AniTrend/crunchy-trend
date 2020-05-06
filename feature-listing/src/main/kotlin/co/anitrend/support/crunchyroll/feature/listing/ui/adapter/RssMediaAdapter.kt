@@ -24,8 +24,10 @@ import co.anitrend.arch.ui.recycler.adapter.SupportPagedListAdapter
 import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.StateLayoutConfig
+import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 import co.anitrend.support.crunchyroll.feature.feed.databinding.AdapterMediaFeedBinding
+import coil.request.RequestDisposable
 
 class RssMediaAdapter(
     override val stateConfig: StateLayoutConfig,
@@ -67,6 +69,8 @@ class RssMediaAdapter(
         private val binding: AdapterMediaFeedBinding
     ): SupportViewHolder<CrunchyEpisodeFeed>(binding.root) {
 
+        private var model: CrunchyEpisodeFeed? = null
+        private var disposable: RequestDisposable? = null
 
         /**
          * Load images, text, buttons, etc. in this method from the given parameter
@@ -74,23 +78,20 @@ class RssMediaAdapter(
          * @param model Is the liveData at the current adapter position
          */
         override fun invoke(model: CrunchyEpisodeFeed?) {
-            binding.entity = model
+            this.model = model
+            disposable = binding.mediaThumbnail.setImageUrl(model)
+            binding.mediaTitle.text = model?.title
+            binding.mediaDuration.text = model?.episodeDuration
             binding.mediaThumbnail.setOnClickListener {
                 onItemClick(it, clickListener)
             }
-            binding.executePendingBindings()
         }
 
-        /**
-         * If any image views are used within the view holder, clear any pending async requests
-         * by using [com.bumptech.glide.RequestManager.clear]
-         *
-         * @see com.bumptech.glide.Glide
-         */
         override fun onViewRecycled() {
             binding.mediaThumbnail.setOnClickListener(null)
-            binding.mediaThumbnail.onViewRecycled()
-            binding.unbind()
+            disposable?.dispose()
+            disposable = null
+            model = null
         }
 
         /**
@@ -100,7 +101,9 @@ class RssMediaAdapter(
          * @param view the view that has been clicked
          */
         override fun onItemClick(view: View, itemClickListener: ItemClickListener<CrunchyEpisodeFeed>) {
-            performClick(binding.entity, view, itemClickListener)
+            model.apply {
+                performClick(this, view, itemClickListener)
+            }
         }
     }
 }

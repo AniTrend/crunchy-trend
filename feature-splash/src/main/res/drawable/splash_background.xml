@@ -14,17 +14,17 @@
   ~    See the License for the specific language governing permissions and
   ~    limitations under the License.
   -->
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/supportRefreshLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <co.anitrend.arch.ui.recycler.SupportRecyclerView
-                android:id="@+id/support_recycler"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="vertical" />
-
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:height="40dp"
+        android:width="50dp"
+        android:viewportHeight="100"
+        android:viewportWidth="100"
+        android:alpha="0.85">
+    <group
+            android:name="triableGroup">
+        <path
+                android:name="triangle"
+                android:fillColor="@color/colorAccent"
+                android:pathData="M 0,20 L 0,0 L 100,0 L 100,20 L 54,55  l -1,0.6  l -1,0.4  l -1,0.2  l -1,0   l -1,-0  l -1,-0.2  l -1,-0.4  l -1,-0.6    L 46,55   L 0,20 -100,-100 Z" />
+    </group>
+</vector>

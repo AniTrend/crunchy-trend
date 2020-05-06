@@ -22,9 +22,8 @@ import android.widget.Toast
 import androidx.core.text.HtmlCompat
 import androidx.core.text.parseAsHtml
 import androidx.lifecycle.Observer
-import co.anitrend.arch.core.model.ISupportViewModelState
-import co.anitrend.arch.core.viewmodel.SupportPagingViewModel
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
+import co.anitrend.arch.extension.gone
 import co.anitrend.arch.ui.fragment.paged.SupportFragmentPagedList
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.StateLayoutConfig
@@ -32,14 +31,12 @@ import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
 import co.anitrend.support.crunchyroll.core.extensions.createDialog
 import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
 import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 import co.anitrend.support.crunchyroll.feature.feed.R
 import co.anitrend.support.crunchyroll.feature.listing.koin.injectFeatureModules
-import co.anitrend.support.crunchyroll.feature.listing.presenter.ListingPresenter
 import co.anitrend.support.crunchyroll.feature.listing.ui.adapter.RssMediaAdapter
 import co.anitrend.support.crunchyroll.feature.listing.viewmodel.MediaListingViewModel
 import com.afollestad.materialdialogs.LayoutMode
@@ -56,9 +53,9 @@ class MediaFeedContent(
     override val columnSize: Int = R.integer.single_list_size
 ) : SupportFragmentPagedList<CrunchyEpisodeFeed>() {
 
-    override val stateConfig by inject<StateLayoutConfig>()
-
     private val viewModel by viewModel<MediaListingViewModel>()
+
+    override val stateConfig: StateLayoutConfig by inject()
 
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         RssMediaAdapter(
@@ -80,9 +77,10 @@ class MediaFeedContent(
                                 val view = getCustomView()
                                 view.dialog_media_duration.text = episodeFeed.episodeDuration
                                 view.dialog_media_title.text = episodeFeed.episodeTitle
-                                view.dialog_media_description.text = episodeFeed.description?.parseAsHtml(
+                                view.dialog_media_description.gone()
+                                /*view.dialog_media_description.text = episodeFeed.description?.parseAsHtml(
                                     flags = HtmlCompat.FROM_HTML_MODE_COMPACT
-                                )
+                                )*/
                                 view.dialog_media_image.setImageUrl(episodeFeed.episodeThumbnail)
                                 view.dialog_media_image_container.setOnClickListener {
                                     val mediaPlayerPayload = NavigationTargets.MediaPlayer.Payload(
@@ -140,25 +138,10 @@ class MediaFeedContent(
         injectFeatureModules()
     }
 
-    /**
-     * Handles the updating of views, binding, creation or state change, depending on the context
-     * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
-     *
-     * Check implementation for more details
-     */
     override fun onUpdateUserInterface() {
 
     }
 
-    /**
-     * Handles the complex logic required to dispatch network request to [SupportPagingViewModel]
-     * which uses [SupportRepository] to either request from the network or database cache.
-     *
-     * The results of the dispatched network or cache call will be published by the
-     * [androidx.lifecycle.LiveData] specifically [SupportPagingViewModel.model]
-     *
-     * @see [SupportPagingViewModel.requestBundleLiveData]
-     */
     override fun onFetchDataInitialize() {
         val currentLocale = get<ICrunchySessionLocale>().sessionLocale
         viewModel.state(
@@ -186,10 +169,4 @@ class MediaFeedContent(
      * Proxy for a view model state if one exists
      */
     override fun viewModelState() = viewModel.state
-
-    companion object : IFragmentFactory<MediaFeedContent> {
-        override val fragmentTag = MediaFeedContent::class.java.simpleName
-
-        override fun newInstance(bundle: Bundle?) = MediaFeedContent()
-    }
 }

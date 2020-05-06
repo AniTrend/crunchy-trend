@@ -20,13 +20,13 @@ import android.view.View
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.ui.util.StateLayoutConfig
 import co.anitrend.support.crunchyroll.feature.catalog.R
-import co.anitrend.support.crunchyroll.feature.catalog.databinding.ItemPlaceHolderBinding
-import com.xwray.groupie.databinding.BindableItem
+import co.anitrend.support.crunchyroll.feature.catalog.databinding.ItemPlaceholderBinding
+import com.xwray.groupie.viewbinding.BindableItem
 
 class PlaceHolderItem(
     private val networkState: NetworkState,
     private val onRetry: (() -> Unit)? = null
-) : BindableItem<ItemPlaceHolderBinding>() {
+) : BindableItem<ItemPlaceholderBinding>() {
 
     override fun getLayout() = R.layout.item_placeholder
 
@@ -36,7 +36,7 @@ class PlaceHolderItem(
      * @param viewBinding The ViewDataBinding to bind
      * @param position The adapter position
      */
-    override fun bind(viewBinding: ItemPlaceHolderBinding, position: Int) {
+    override fun bind(viewBinding: ItemPlaceholderBinding, position: Int) {
         viewBinding.placeHolderState.stateConfig = StateLayoutConfig(
             loadingMessage = R.string.label_text_loading
         )
@@ -45,4 +45,7 @@ class PlaceHolderItem(
         }
         viewBinding.placeHolderState.setNetworkState(networkState)
     }
+
+    override fun initializeViewBinding(view: View): ItemPlaceholderBinding =
+        ItemPlaceholderBinding.bind(view)
 }

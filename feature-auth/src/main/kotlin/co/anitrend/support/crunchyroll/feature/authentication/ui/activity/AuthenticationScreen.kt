@@ -18,23 +18,34 @@ package co.anitrend.support.crunchyroll.feature.authentication.ui.activity
 
 import android.os.Bundle
 import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.commit
-import co.anitrend.arch.ui.common.ISupportActionUp
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
-import co.anitrend.support.crunchyroll.feature.authentication.ui.fragment.FragmentLogin
-import co.anitrend.support.crunchyroll.feature.authentication.ui.fragment.FragmentLogout
+import co.anitrend.support.crunchyroll.core.extensions.commit
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
+import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import co.anitrend.support.crunchyroll.feature.authentication.R
 import co.anitrend.support.crunchyroll.feature.authentication.koin.injectFeatureModules
+import co.anitrend.support.crunchyroll.feature.authentication.ui.fragment.FragmentLogin
+import co.anitrend.support.crunchyroll.feature.authentication.ui.fragment.FragmentLogout
 import kotlinx.android.synthetic.main.activity_auth.*
 import org.koin.android.ext.android.inject
+import org.koin.androidx.fragment.android.setupKoinFragmentFactory
+import org.koin.androidx.scope.lifecycleScope
 
 class AuthenticationScreen : CrunchyActivity() {
 
     override val elasticLayout: ElasticDragDismissFrameLayout? = null
 
     private val presenter by inject<CrunchyCorePresenter>()
+
+    /**
+     * Can be used to configure custom theme styling as desired
+     */
+    override fun configureActivity() {
+        super.configureActivity()
+        injectFeatureModules()
+        setupKoinFragmentFactory(lifecycleScope)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +62,6 @@ class AuthenticationScreen : CrunchyActivity() {
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        injectFeatureModules()
         onUpdateUserInterface()
     }
 
@@ -64,27 +74,21 @@ class AuthenticationScreen : CrunchyActivity() {
     override fun onUpdateUserInterface() {
         val target = when (presenter.settings.isAuthenticated) {
             true -> {
-                supportFragmentManager.findFragmentByTag(
-                    FragmentLogout.fragmentTag
-                ) ?: FragmentLogout.newInstance()
+                FragmentItem(
+                    parameter = Bundle.EMPTY,
+                    fragment = FragmentLogout::class.java
+                )
             }
             else -> {
-                supportFragmentManager.findFragmentByTag(
-                    FragmentLogin.fragmentTag
-                ) ?: FragmentLogin.newInstance()
+                FragmentItem(
+                    parameter = Bundle.EMPTY,
+                    fragment = FragmentLogin::class.java
+                )
             }
         }
-        
-        val tag = when (presenter.settings.isAuthenticated) {
-            true -> FragmentLogout.fragmentTag
-            else -> FragmentLogin.fragmentTag
-        }
 
-        supportActionUp = target as ISupportActionUp
-
-        supportFragmentManager.commit {
+        currentFragmentTag = supportFragmentManager.commit(R.id.contentFrame, target) {
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            replace(R.id.contentFrame, target, tag)
         }
     }
 }

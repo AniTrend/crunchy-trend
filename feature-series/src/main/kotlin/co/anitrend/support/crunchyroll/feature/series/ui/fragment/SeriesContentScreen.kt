@@ -22,16 +22,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import co.anitrend.arch.core.model.ISupportViewModelState
-import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.argument
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.arch.ui.util.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesDetailQuery
@@ -211,25 +207,10 @@ class SeriesContentScreen : SupportFragment<CrunchySeries>() {
      */
     override fun viewModelState() = viewModel.state
 
-    /**
-     * Handles the updating of views, binding, creation or state change, depending on the context
-     * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
-     *
-     * Check implementation for more details
-     */
     override fun onUpdateUserInterface() {
 
     }
 
-    /**
-     * Handles the complex logic required to dispatch network request to [ISupportViewModel]
-     * to either request from the network or database cache.
-     *
-     * The results of the dispatched network or cache call will be published by the
-     * [androidx.lifecycle.LiveData] specifically [ISupportViewModel.model]
-     *
-     * @see [ISupportViewModel.invoke]
-     */
     override fun onFetchDataInitialize() {
         payload?.also {
             viewModel.state(
@@ -257,14 +238,5 @@ class SeriesContentScreen : SupportFragment<CrunchySeries>() {
     override fun onDestroyView() {
         binding.seriesGenres.adapter = null
         super.onDestroyView()
-    }
-
-    companion object : IFragmentFactory<SeriesContentScreen> {
-        override val fragmentTag = SeriesContentScreen::class.java.simpleName
-
-        override fun newInstance(bundle: Bundle?) =
-            SeriesContentScreen().apply {
-                arguments = bundle
-            }
     }
 }

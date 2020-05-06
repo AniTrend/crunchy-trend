@@ -17,12 +17,24 @@
 package co.anitrend.support.crunchyroll.feature.collection.koin
 
 import co.anitrend.support.crunchyroll.feature.collection.presenter.CollectionPresenter
+import co.anitrend.support.crunchyroll.feature.collection.ui.activity.CollectionScreen
+import co.anitrend.support.crunchyroll.feature.collection.ui.fragment.CollectionContentScreen
 import co.anitrend.support.crunchyroll.feature.collection.viewmodel.CollectionViewModel
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 
+private val fragmentModule = module {
+    scope<CollectionScreen> {
+        fragment {
+            CollectionContentScreen(
+                stateConfig = get()
+            )
+        }
+    }
+}
 
 private val presenterModule = module {
     factory {
@@ -41,7 +53,7 @@ private val viewModelModule = module {
     }
 }
 
-private val featureModules = listOf(presenterModule, viewModelModule)
+private val featureModules = listOf(fragmentModule, presenterModule, viewModelModule)
 
 private val koinModules by lazy {
     loadKoinModules(featureModules)

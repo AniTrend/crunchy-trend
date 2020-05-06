@@ -17,11 +17,22 @@
 package co.anitrend.support.crunchyroll.feature.search.koin
 
 import co.anitrend.support.crunchyroll.feature.search.presenter.SeriesPresenter
+import co.anitrend.support.crunchyroll.feature.search.ui.activity.SearchScreen
+import co.anitrend.support.crunchyroll.feature.search.ui.fragment.SearchContentScreen
 import co.anitrend.support.crunchyroll.feature.search.viewmodel.SeriesSearchViewModel
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
+
+private val fragmentModule = module {
+    scope<SearchScreen> {
+        fragment {
+            SearchContentScreen()
+        }
+    }
+}
 
 private val presenterModule = module {
     factory {
@@ -40,7 +51,7 @@ private val viewModelModule = module {
     }
 }
 
-private val featureModules = listOf(presenterModule, viewModelModule)
+private val featureModules = listOf(fragmentModule, presenterModule, viewModelModule)
 
 private val koinModules by lazy {
     loadKoinModules(featureModules)

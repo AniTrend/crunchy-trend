@@ -24,14 +24,15 @@ import co.anitrend.arch.ui.recycler.adapter.SupportPagedListAdapter
 import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.StateLayoutConfig
+import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
 import co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia
 import co.anitrend.support.crunchyroll.feature.media.databinding.AdapterMediaBinding
-import co.anitrend.support.crunchyroll.feature.media.presenter.MediaPresenter
+import co.anitrend.support.crunchyroll.feature.media.presenter.MediaPresenter.Companion.mediaDisplayName
+import coil.request.RequestDisposable
 
 class MediaAdapter(
     private val itemClickListener: ItemClickListener<CrunchyMedia>,
-    override val stateConfig: StateLayoutConfig,
-    private val presenter: MediaPresenter
+    override val stateConfig: StateLayoutConfig
 ) : SupportPagedListAdapter<CrunchyMedia>() {
 
     /**
@@ -59,19 +60,17 @@ class MediaAdapter(
             parent,
             false
         )
-        val viewHolder = MediaViewHolder(binding)
 
-        binding.presenter = presenter
-        binding.container.setOnClickListener {
-            viewHolder.onItemClick(it, itemClickListener)
-        }
-
-        return viewHolder
+        return MediaViewHolder(binding, itemClickListener)
     }
 
     internal class MediaViewHolder(
-        private val binding: AdapterMediaBinding
+        private val binding: AdapterMediaBinding,
+        private val clickListener: ItemClickListener<CrunchyMedia>
     ) : SupportViewHolder<CrunchyMedia>(binding.root) {
+
+        private var model: CrunchyMedia? = null
+        private var disposable: RequestDisposable? = null
 
         /**
          * Load images, text, buttons, etc. in this method from the given parameter
@@ -79,18 +78,20 @@ class MediaAdapter(
          * @param model Is the liveData at the current adapter position
          */
         override fun invoke(model: CrunchyMedia?) {
-            binding.entity = model
-            binding.executePendingBindings()
+            this.model = model
+            disposable = binding.mediaImage.setImageUrl(model?.screenshotImage)
+            binding.mediaDescription.text = model?.description
+            binding.mediaTitle.text = model?.mediaDisplayName()
+            binding.container.setOnClickListener {
+                onItemClick(it, clickListener)
+            }
         }
 
-        /**
-         * If any image views are used within the view holder, clear any pending async requests
-         * by using [com.bumptech.glide.RequestManager.clear]
-         *
-         * @see com.bumptech.glide.Glide
-         */
         override fun onViewRecycled() {
-            binding.unbind()
+            binding.container.setOnClickListener(null)
+            disposable?.dispose()
+            disposable = null
+            model = null
         }
 
         /**
@@ -100,7 +101,9 @@ class MediaAdapter(
          * @param view the view that has been clicked
          */
         override fun onItemClick(view: View, itemClickListener: ItemClickListener<CrunchyMedia>) {
-            performClick(binding.entity, view, itemClickListener)
+            model?.apply {
+                performClick(this, view, itemClickListener)
+            }
         }
     }
 }

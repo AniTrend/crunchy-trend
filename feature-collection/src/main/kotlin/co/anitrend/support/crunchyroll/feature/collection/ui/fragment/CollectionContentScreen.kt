@@ -41,7 +41,8 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CollectionContentScreen(
-    override val columnSize: Int = R.integer.single_list_size
+    override val columnSize: Int = R.integer.single_list_size,
+    override val stateConfig: StateLayoutConfig
 ) : SupportFragmentPagedList<CrunchyCollection>() {
 
     private val payload
@@ -51,7 +52,6 @@ class CollectionContentScreen(
 
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         CollectionAdapter(
-            presenter,
             stateConfig,
             object : ItemClickListener<CrunchyCollection> {
                 override fun onItemClick(target: View, data: Pair<Int, CrunchyCollection?>) {
@@ -85,38 +85,12 @@ class CollectionContentScreen(
         )
     }
 
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return supportPresenter of the generic type specified
-     */
-    private val presenter by inject<CollectionPresenter>()
-
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
-     * @return view model of the given type
-     */
     private val viewModel by viewModel<CollectionViewModel>()
 
-    /**
-     * Additional initialization to be done in this method, if the overriding class is type of
-     * [androidx.fragment.app.Fragment] then this method will be called in
-     * [androidx.fragment.app.FragmentActivity.onCreate]. Otherwise
-     * [androidx.fragment.app.FragmentActivity.onPostCreate] invokes this function
-     *
-     * @param savedInstanceState
-     */
     override fun initializeComponents(savedInstanceState: Bundle?) {
 
     }
 
-    /**
-     * Handles the updating of views, binding, creation or state change, depending on the context
-     * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
-     *
-     * Check implementation for more details
-     */
     override fun onUpdateUserInterface() {
 
     }
@@ -146,17 +120,12 @@ class CollectionContentScreen(
     }
 
     /**
-     * State configuration for any underlying state representing widgets
-     */
-    override val stateConfig: StateLayoutConfig by inject()
-
-    /**
-     * Called when the view previously created by [.onCreateView] has
-     * been detached from the fragment.  The next time the fragment needs
+     * Called when the view previously created by [onCreateView] has
+     * been detached from the fragment. The next time the fragment needs
      * to be displayed, a new view will be created.  This is called
-     * after [.onStop] and before [.onDestroy].  It is called
-     * *regardless* of whether [.onCreateView] returned a
-     * non-null view.  Internally it is called after the view's state has
+     * after [onStop] and before [onDestroy].  It is called
+     * *regardless* of whether [onCreateView] returned a
+     * non-null view. Internally it is called after the view's state has
      * been saved but before it has been removed from its parent.
      */
     override fun onDestroyView() {
@@ -168,14 +137,4 @@ class CollectionContentScreen(
      * Proxy for a view model state if one exists
      */
     override fun viewModelState() = viewModel.state
-
-    companion object : IFragmentFactory<CollectionContentScreen> {
-        override val fragmentTag = CollectionContentScreen::class.java.simpleName
-
-        override fun newInstance(bundle: Bundle?)=
-            CollectionContentScreen()
-                .apply {
-                arguments = bundle
-            }
-    }
 }

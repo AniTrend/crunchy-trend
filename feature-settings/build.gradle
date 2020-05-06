@@ -26,7 +26,7 @@ apply from: "../gradle/gradle-common-config-app.gradle"
 apply from: "../gradle/gradle-common-dependencies.gradle"
 
 ext {
-    preference = '1.1.0'
+    preference = '1.1.1'
 }
 
 dependencies {

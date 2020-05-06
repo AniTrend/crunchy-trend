@@ -21,16 +21,29 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import co.anitrend.arch.ui.common.ISupportActionUp
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
+import co.anitrend.support.crunchyroll.core.extensions.commit
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
+import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import co.anitrend.support.crunchyroll.feature.media.R
 import co.anitrend.support.crunchyroll.feature.media.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.media.ui.fragment.MediaContent
 import kotlinx.android.synthetic.main.media_screen.*
+import org.koin.androidx.fragment.android.setupKoinFragmentFactory
+import org.koin.androidx.scope.lifecycleScope
 
 class MediaScreen : CrunchyActivity() {
 
     override val elasticLayout: ElasticDragDismissFrameLayout?
         get() = draggableFrame
+
+    /**
+     * Can be used to configure custom theme styling as desired
+     */
+    override fun configureActivity() {
+        super.configureActivity()
+        injectFeatureModules()
+        setupKoinFragmentFactory(lifecycleScope)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +60,6 @@ class MediaScreen : CrunchyActivity() {
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        injectFeatureModules()
         onUpdateUserInterface()
     }
 
@@ -58,15 +70,13 @@ class MediaScreen : CrunchyActivity() {
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        val target = supportFragmentManager.findFragmentByTag(
-            MediaContent.fragmentTag
-        ) ?: MediaContent.newInstance(intent.extras)
+        val target = FragmentItem(
+            parameter = intent.extras,
+            fragment = MediaContent::class.java
+        )
 
-        supportActionUp = target as ISupportActionUp
-
-        supportFragmentManager.commit {
+        currentFragmentTag = supportFragmentManager.commit(R.id.series_content, target) {
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            replace(R.id.series_content, target, MediaContent.fragmentTag)
         }
     }
 }

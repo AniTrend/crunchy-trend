@@ -20,9 +20,6 @@ android {
         vectorDrawables.useSupportLibrary = true
         consumerProguardFiles 'consumer-rules.pro'
     }
-    dataBinding {
-        enabled = true
-    }
 }
 
 ext {

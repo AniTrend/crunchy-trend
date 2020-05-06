@@ -21,36 +21,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
 import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLogoutBinding
-import co.anitrend.support.crunchyroll.feature.authentication.presenter.AuthPresenter
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login.LoginViewModel
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.logout.LogoutViewModel
 import org.koin.android.ext.android.get
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FragmentLogout : SupportFragment<Boolean>() {
+class FragmentLogout : SupportFragment<Nothing>() {
 
     private lateinit var binding: FragmentLogoutBinding
 
     /**
      * Should be created lazily through injection or lazy delegate
      *
-     * @return supportPresenter of the generic type specified
-     */
-    private val presenter by inject<AuthPresenter>()
-
-    /**
-     * Should be created lazily through injection or lazy delegate
-     *
      * @return view model of the given type
      */
-    private val viewModel by inject<LogoutViewModel>()
-    private val viewModelUser by inject<LoginViewModel>()
+    private val viewModel by viewModel<LogoutViewModel>()
+    private val viewModelUser by viewModel<LoginViewModel>()
 
     /**
      * Invoke view model observer to watch for changes
@@ -60,12 +52,8 @@ class FragmentLogout : SupportFragment<Boolean>() {
             binding.currentUserModel = it
         })
         viewModelState().model.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
-                if (it == true) {
-                    NavigationTargets.Splash(context)
-                    activity?.closeScreen()
-                }
-            }
+            if (it)
+                onUpdateUserInterface()
         })
         viewModelState().networkState.observe(viewLifecycleOwner, Observer {
             binding.supportStateLayout.setNetworkState(it)
@@ -81,32 +69,12 @@ class FragmentLogout : SupportFragment<Boolean>() {
         )
     }
 
-    /**
-     * Called to have the fragment instantiate its user interface view.
-     * This is optional, and non-graphical fragments can return null. This will be called between
-     * [.onCreate] and [.onActivityCreated].
-     *
-     * A default View can be returned by calling [.Fragment] in your
-     * constructor. Otherwise, this method returns null.
-     *
-     *
-     * It is recommended to **only** inflate the layout in this method and move
-     * logic that operates on the returned View to [.onViewCreated].
-     *
-     *
-     * If you return a View from here, you will later be called in
-     * [.onDestroyView] when the view is being released.
-     *
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
-     *
-     * @return Return the View for the fragment's UI, or null.
-     */
+    override fun initializeComponents(savedInstanceState: Bundle?) {
+        lifecycleScope.launchWhenResumed {
+            viewModel.state()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -118,16 +86,6 @@ class FragmentLogout : SupportFragment<Boolean>() {
         }
     }
 
-    /**
-     * Called immediately after [.onCreateView]
-     * has returned, but before any saved state has been restored in to the view.
-     * This gives subclasses a chance to initialize themselves once
-     * they know their view hierarchy has been completely created.  The fragment's
-     * view hierarchy is not however attached to its parent at this point.
-     * @param view The View returned by [.onCreateView].
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
-     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.supportStateLayout.stateConfig = get()
@@ -138,46 +96,15 @@ class FragmentLogout : SupportFragment<Boolean>() {
     }
 
     /**
-     * Additional initialization to be done in this method, if the overriding class is type of
-     * [androidx.fragment.app.Fragment] then this method will be called in
-     * [androidx.fragment.app.FragmentActivity.onCreate]. Otherwise
-     * [androidx.fragment.app.FragmentActivity.onPostCreate] invokes this function
-     *
-     * @param savedInstanceState
-     */
-    override fun initializeComponents(savedInstanceState: Bundle?) {
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-        onUpdateUserInterface()
-    }
-
-    /**
      * Proxy for a view model state if one exists
      */
     override fun viewModelState() = viewModel.state
 
-    /**
-     * Handles the updating of views, binding, creation or state change, depending on the context
-     * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
-     *
-     * Check implementation for more details
-     */
     override fun onUpdateUserInterface() {
-        viewModelUser.state()
+        NavigationTargets.Splash(context)
+        activity?.closeScreen()
     }
 
-    /**
-     * Handles the complex logic required to dispatch network request to [SupportPagingViewModel]
-     * to either request from the network or database cache.
-     *
-     * The results of the dispatched network or cache call will be published by the
-     * [androidx.lifecycle.LiveData] specifically [SupportPagingViewModel.model]
-     *
-     * @see [SupportPagingViewModel.requestBundleLiveData]
-     */
     override fun onFetchDataInitialize() {
         viewModel.state()
     }
@@ -188,12 +115,5 @@ class FragmentLogout : SupportFragment<Boolean>() {
             return true
         }
         return super.hasBackPressableAction()
-    }
-
-
-    companion object : IFragmentFactory<FragmentLogout> {
-        override val fragmentTag = FragmentLogout::class.java.simpleName
-
-        override fun newInstance(bundle: Bundle?) = FragmentLogout()
     }
 }

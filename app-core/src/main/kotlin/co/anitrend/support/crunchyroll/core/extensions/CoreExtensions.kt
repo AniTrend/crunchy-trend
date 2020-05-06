@@ -21,6 +21,7 @@ import android.os.Parcelable
 import androidx.annotation.IdRes
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import co.anitrend.support.crunchyroll.core.CrunchyApplication
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
@@ -30,7 +31,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import timber.log.Timber
 
-private const val moduleTag = "CoreExtensions"
+const val separator = "\u2022"
 
 fun CrunchyActivity.recreateModules() {
     val coreApplication = applicationContext as CrunchyApplication
@@ -63,6 +64,8 @@ fun Parcelable.toBundle(key: String) =
         putParcelable(key, this@toBundle)
     }
 
+const val moduleTag = "CoreExtensions"
+
 /**
  * Checks for existing fragment in [FragmentManager], if one exists that is used otherwise
  * a new instance is created.
@@ -71,15 +74,17 @@ fun Parcelable.toBundle(key: String) =
  *
  * @see androidx.fragment.app.commit
  */
-fun FragmentManager.commit(
+inline fun FragmentManager.commit(
     @IdRes contentFrame: Int,
-    fragmentItem: FragmentItem<*>?
+    fragmentItem: FragmentItem<*>?,
+    action: FragmentTransaction.() -> Unit
 ) : String? {
     return if (fragmentItem != null) {
         val fragmentTag = fragmentItem.tag()
         val backStack = findFragmentByTag(fragmentTag)
 
         commit {
+            action()
             backStack?.let {
                 replace(contentFrame, it, fragmentTag)
             } ?: replace(

@@ -17,6 +17,7 @@
 <resources>
 
     <string name="title_activity_settings_screen">Settings</string>
+    <string name="title_settings_action_theme">Change themes</string>
 
     <!-- Preference Group Titles -->
     <string name="preference_group_title_application">Application</string>

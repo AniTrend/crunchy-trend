@@ -16,16 +16,21 @@
 
 package co.anitrend.support.crunchyroll.feature.catalog.controller.items
 
+import android.view.View
+import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.feature.catalog.R
 import co.anitrend.support.crunchyroll.feature.catalog.databinding.AdapterCatalogItemBinding
-import com.xwray.groupie.databinding.BindableItem
-import com.xwray.groupie.databinding.GroupieViewHolder
+import coil.request.RequestDisposable
+import com.xwray.groupie.viewbinding.BindableItem
+import com.xwray.groupie.viewbinding.GroupieViewHolder
 
 class CatalogItem(
     private val series: CrunchySeries
 ) : BindableItem<AdapterCatalogItemBinding>() {
+
+    private var disposable: RequestDisposable? = null
 
     override fun getLayout() = R.layout.adapter_catalog_item
 
@@ -36,7 +41,8 @@ class CatalogItem(
      * @param position The adapter position
      */
     override fun bind(viewBinding: AdapterCatalogItemBinding, position: Int) {
-        viewBinding.entity = series
+        disposable = viewBinding.seriesImage.setImageUrl(series.portraitImage)
+        viewBinding.seriesTitle.text = series.name
         viewBinding.seriesCard.setOnClickListener {
             val seriesPayload = NavigationTargets.Series.Payload(
                 seriesId = series.seriesId
@@ -45,5 +51,15 @@ class CatalogItem(
                 it.context, seriesPayload
             )
         }
+    }
+
+    override fun initializeViewBinding(view: View): AdapterCatalogItemBinding =
+        AdapterCatalogItemBinding.bind(view)
+
+    override fun unbind(viewHolder: GroupieViewHolder<AdapterCatalogItemBinding>) {
+        viewHolder.binding.seriesCard.setOnClickListener(null)
+        disposable?.dispose()
+        disposable = null
+        super.unbind(viewHolder)
     }
 }

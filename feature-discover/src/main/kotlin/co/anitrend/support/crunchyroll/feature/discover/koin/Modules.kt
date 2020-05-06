@@ -17,11 +17,19 @@
 package co.anitrend.support.crunchyroll.feature.discover.koin
 
 import co.anitrend.support.crunchyroll.feature.discover.presenter.SeriesPresenter
+import co.anitrend.support.crunchyroll.feature.discover.ui.fragment.SeriesDiscoverContent
 import co.anitrend.support.crunchyroll.feature.discover.viewmodel.SeriesDiscoverViewModel
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
+
+private val fragmentModule = module {
+    fragment {
+        SeriesDiscoverContent()
+    }
+}
 
 private val presenterModule = module {
     factory {
@@ -40,7 +48,9 @@ private val viewModelModule = module {
     }
 }
 
-private val featureModules = listOf(presenterModule, viewModelModule)
+private val featureModules = listOf(
+    fragmentModule, presenterModule, viewModelModule
+)
 
 private val koinModules by lazy {
     loadKoinModules(featureModules)

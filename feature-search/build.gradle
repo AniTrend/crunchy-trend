@@ -25,6 +25,12 @@ apply from: "../gradle/gradle-common-config.gradle"
 apply from: "../gradle/gradle-common-config-app.gradle"
 apply from: "../gradle/gradle-common-dependencies.gradle"
 
+android {
+    viewBinding {
+        enabled = true
+    }
+}
+
 ext {
     materialMultiSearch = '0.1.3'
 }

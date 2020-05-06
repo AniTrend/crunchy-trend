@@ -20,6 +20,7 @@ import android.graphics.drawable.Drawable
 import co.anitrend.support.crunchyroll.feature.news.R
 import co.anitrend.support.crunchyroll.feature.news.plugin.CrunchyTagPlugin
 import co.anitrend.support.crunchyroll.feature.news.presenter.NewsPresenter
+import co.anitrend.support.crunchyroll.feature.news.ui.fragment.NewsFeedContent
 import co.anitrend.support.crunchyroll.feature.news.viewmodel.NewsViewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
@@ -34,6 +35,7 @@ import io.noties.markwon.image.glide.GlideImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
@@ -71,6 +73,12 @@ private val coreModule = module {
     }
 }
 
+private val fragmentModule = module {
+    fragment {
+        NewsFeedContent()
+    }
+}
+
 private val presenterModule = module {
     factory {
         NewsPresenter(
@@ -89,7 +97,7 @@ private val viewModelModule = module {
     }
 }
 
-private val featureModules = listOf(coreModule, presenterModule, viewModelModule)
+private val featureModules = listOf(coreModule, fragmentModule, presenterModule, viewModelModule)
 
 private val koinModules by lazy {
     loadKoinModules(featureModules)

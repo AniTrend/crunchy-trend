@@ -20,16 +20,29 @@ import android.os.Bundle
 import androidx.fragment.app.commit
 import co.anitrend.arch.ui.common.ISupportActionUp
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
+import co.anitrend.support.crunchyroll.core.extensions.commit
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
+import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import co.anitrend.support.crunchyroll.feature.discover.R
 import co.anitrend.support.crunchyroll.feature.discover.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.discover.ui.fragment.SeriesDiscoverContent
 import kotlinx.android.synthetic.main.discover_activity.*
+import org.koin.androidx.fragment.android.setupKoinFragmentFactory
+import org.koin.androidx.scope.lifecycleScope
 
 class SeriesDiscoverScreen : CrunchyActivity() {
 
     override val elasticLayout: ElasticDragDismissFrameLayout?
         get() = draggableFrame
+
+    /**
+     * Can be used to configure custom theme styling as desired
+     */
+    override fun configureActivity() {
+        super.configureActivity()
+        injectFeatureModules()
+        setupKoinFragmentFactory(lifecycleScope)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +59,6 @@ class SeriesDiscoverScreen : CrunchyActivity() {
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        injectFeatureModules()
         onUpdateUserInterface()
     }
 
@@ -57,15 +69,13 @@ class SeriesDiscoverScreen : CrunchyActivity() {
      * Check implementation for more details
      */
     override fun onUpdateUserInterface() {
-        val target = supportFragmentManager.findFragmentByTag(
-            SeriesDiscoverContent.fragmentTag
-        ) ?: SeriesDiscoverContent.newInstance(intent.extras)
+        val target = FragmentItem(
+            parameter = intent.extras,
+            fragment = SeriesDiscoverContent::class.java
+        )
 
-        supportActionUp = target as ISupportActionUp
-
-        supportFragmentManager.commit {
+        currentFragmentTag = supportFragmentManager.commit(R.id.discover_content, target) {
             //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-            replace(R.id.discover_content, target, SeriesDiscoverContent.fragmentTag)
         }
     }
 }

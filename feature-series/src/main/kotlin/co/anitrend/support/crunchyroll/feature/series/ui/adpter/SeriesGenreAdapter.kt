@@ -24,7 +24,8 @@ import co.anitrend.arch.ui.recycler.adapter.SupportListAdapter
 import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
 import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
 import co.anitrend.arch.ui.util.StateLayoutConfig
-import co.anitrend.support.crunchyroll.feature.series.databinding.AdapterGenreBinding
+import co.anitrend.support.crunchyroll.feature.series.R
+import kotlinx.android.synthetic.main.adapter_genre.view.*
 
 class SeriesGenreAdapter(
     private val itemClickListener: ItemClickListener<String>,
@@ -52,17 +53,21 @@ class SeriesGenreAdapter(
         layoutInflater: LayoutInflater
     ): SupportViewHolder<String> {
         return SeriesGenreViewHolder(
-            AdapterGenreBinding.inflate(
-                layoutInflater, parent, false
+            layoutInflater.inflate(
+                R.layout.adapter_genre,
+                parent,
+                false
             ),
             itemClickListener
         )
     }
 
     internal class SeriesGenreViewHolder(
-        private val binding: AdapterGenreBinding,
-        private val listener: ItemClickListener<String>
-    ) : SupportViewHolder<String>(binding.root) {
+        view: View,
+        private val clickListener: ItemClickListener<String>
+    ) : SupportViewHolder<String>(view) {
+
+        private var model: String? = null
 
         /**
          * Load images, text, buttons, etc. in this method from the given parameter
@@ -70,22 +75,16 @@ class SeriesGenreAdapter(
          * @param model Is the liveData at the current adapter position
          */
         override fun invoke(model: String?) {
-            binding.entity = model
-            binding.seriesGenre.setOnClickListener {
-                onItemClick(it, listener)
+            this.model = model
+            itemView.seriesGenre.text = model
+            itemView.seriesGenre.setOnClickListener {
+                onItemClick(it, clickListener)
             }
-            binding.executePendingBindings()
         }
 
-        /**
-         * If any image views are used within the view holder, clear any pending async requests
-         * by using [com.bumptech.glide.RequestManager.clear]
-         *
-         * @see com.bumptech.glide.Glide
-         */
         override fun onViewRecycled() {
-            binding.seriesGenre.setOnClickListener(null)
-            binding.unbind()
+            itemView.seriesGenre.setOnClickListener(null)
+            model = null
         }
 
         /**
@@ -98,6 +97,10 @@ class SeriesGenreAdapter(
         override fun onItemClick(
             view: View,
             itemClickListener: ItemClickListener<String>
-        ) = performClick(binding.entity, view, itemClickListener)
+        ) {
+            model.apply {
+                performClick(this, view, itemClickListener)
+            }
+        }
     }
 }

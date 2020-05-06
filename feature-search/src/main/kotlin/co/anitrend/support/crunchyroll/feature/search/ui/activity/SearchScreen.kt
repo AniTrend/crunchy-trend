@@ -21,13 +21,17 @@ import androidx.fragment.app.commit
 import co.anitrend.arch.ui.common.ISupportActionUp
 import co.anitrend.multisearch.model.MultiSearchChangeListener
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
+import co.anitrend.support.crunchyroll.core.extensions.commit
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
+import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesSearchQuery
 import co.anitrend.support.crunchyroll.feature.search.R
 import co.anitrend.support.crunchyroll.feature.search.koin.injectFeatureModules
 import co.anitrend.support.crunchyroll.feature.search.ui.fragment.SearchContentScreen
 import co.anitrend.support.crunchyroll.feature.search.viewmodel.SeriesSearchViewModel
 import kotlinx.android.synthetic.main.search_activity.*
+import org.koin.androidx.fragment.android.setupKoinFragmentFactory
+import org.koin.androidx.scope.lifecycleScope
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchScreen : CrunchyActivity() {
@@ -90,6 +94,15 @@ class SearchScreen : CrunchyActivity() {
 
     private val viewModel by viewModel<SeriesSearchViewModel>()
 
+    /**
+     * Can be used to configure custom theme styling as desired
+     */
+    override fun configureActivity() {
+        super.configureActivity()
+        injectFeatureModules()
+        setupKoinFragmentFactory(lifecycleScope)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_activity)
@@ -105,26 +118,15 @@ class SearchScreen : CrunchyActivity() {
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        injectFeatureModules()
         onUpdateUserInterface()
         multiSearch.setSearchViewListener(multiSearchViewListener)
     }
 
-    /**
-     * Handles the updating of views, binding, creation or state change, depending on the context
-     * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
-     *
-     * Check implementation for more details
-     */
     override fun onUpdateUserInterface() {
-        val target = supportFragmentManager.findFragmentByTag(
-            SearchContentScreen.fragmentTag
-        ) ?: SearchContentScreen.newInstance()
+        val target = FragmentItem(
+            fragment = SearchContentScreen::class.java
+        )
 
-        supportActionUp = target as ISupportActionUp
-
-        supportFragmentManager.commit {
-            replace(R.id.search_content, target, SearchContentScreen.fragmentTag)
-        }
+        currentFragmentTag = supportFragmentManager.commit(R.id.search_content, target) {}
     }
 }

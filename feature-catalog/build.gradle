@@ -26,12 +26,18 @@ apply from: "../gradle/gradle-common-config.gradle"
 apply from: "../gradle/gradle-common-config-app.gradle"
 apply from: "../gradle/gradle-common-dependencies.gradle"
 
+android {
+    viewBinding {
+        enabled = true
+    }
+}
+
 ext {
     groupie = '2.8.0'
 }
 
 dependencies {
-    implementation "com.xwray:groupie:$groupie"
-    implementation "com.xwray:groupie-databinding:$groupie"
-    implementation "com.xwray:groupie-kotlin-android-extensions:$groupie"
+    implementation "com.github.lisawray.groupie:groupie:$groupie"
+    implementation "com.github.lisawray.groupie:groupie-viewbinding:$groupie"
+    implementation "com.github.lisawray.groupie:groupie-kotlin-android-extensions:$groupie"
 }

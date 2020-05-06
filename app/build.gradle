@@ -56,20 +56,23 @@ dependencies {
 
     implementation project(':android-core')
 
-    /** Runtime features */
-    implementation project(':feature-auth')
-    implementation project(':feature-listing')
-    implementation project(':feature-discover')
-    implementation project(':feature-media')
-    implementation project(':feature-news')
-    implementation project(':feature-player')
-    implementation project(':feature-search')
-    implementation project(':feature-settings')
-    implementation project(':feature-series')
-    implementation project(':feature-catalog')
-    implementation project(':feature-collection')
     // this is our application starting point
     implementation project(':feature-splash')
+
+    /** Features that use data binding */
+    implementation project(':feature-auth')
+    implementation project(':feature-series')
+
+    /** Runtime features */
+    runtimeOnly project(':feature-listing')
+    runtimeOnly project(':feature-discover')
+    runtimeOnly project(':feature-media')
+    runtimeOnly project(':feature-news')
+    runtimeOnly project(':feature-player')
+    runtimeOnly project(':feature-search')
+    runtimeOnly project(':feature-settings')
+    runtimeOnly project(':feature-catalog')
+    runtimeOnly project(':feature-collection')
 
     /** Material Design */
     implementation("com.google.android.material:material:$material")

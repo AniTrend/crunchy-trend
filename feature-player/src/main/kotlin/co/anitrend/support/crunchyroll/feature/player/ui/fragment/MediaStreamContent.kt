@@ -24,7 +24,6 @@ import androidx.appcompat.widget.AppCompatImageButton
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.whenResumed
-import androidx.lifecycle.whenStarted
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.*
 import co.anitrend.arch.ui.fragment.SupportFragment
@@ -41,6 +40,7 @@ import co.anitrend.support.crunchyroll.feature.player.model.track.contract.IMedi
 import co.anitrend.support.crunchyroll.feature.player.plugin.MediaPluginImpl
 import co.anitrend.support.crunchyroll.feature.player.plugin.PlaylistManagerPluginImpl
 import co.anitrend.support.crunchyroll.feature.player.presenter.StreamPresenter
+import co.anitrend.support.crunchyroll.feature.player.ui.activity.MediaPlayerScreen
 import co.anitrend.support.crunchyroll.feature.player.viewmodel.MediaStreamViewModel
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
@@ -53,12 +53,14 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_media_player.*
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class MediaStreamContent(
-    override var inflateLayout: Int = R.layout.fragment_media_player
+    override var inflateLayout: Int = R.layout.fragment_media_player,
+    private val sourceFactoryProvider: SourceFactoryProvider,
+    private val playlistManager: PlaylistManagerPluginImpl,
+    private val presenter: StreamPresenter
 ) : SupportFragment<MediaStream?>() {
 
     private val qualityButton by lazy(LAZY_MODE_UNSAFE) {
@@ -124,12 +126,7 @@ class MediaStreamContent(
                 NavigationTargets.MediaPlayer.PAYLOAD
             )
 
-    private val sourceFactoryProvider by inject<SourceFactoryProvider>()
-    private val playlistManager by inject<PlaylistManagerPluginImpl>()
-
     private var controlsVisibilityListener: VideoControlsVisibilityListener? = null
-
-    private val presenter by inject<StreamPresenter>()
 
     private val viewModel by viewModel<MediaStreamViewModel>()
 
@@ -306,8 +303,10 @@ class MediaStreamContent(
      */
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is VideoControlsVisibilityListener)
+        if (context is MediaPlayerScreen) {
             controlsVisibilityListener = context
+            context.fullScreenListener = FullScreenListener()
+        }
         attachComponent(playlistManager)
         //attachComponent(sourceFactoryProvider)
     }
@@ -356,15 +355,5 @@ class MediaStreamContent(
                 exoMediaVideoView.showControls()
             }
         }
-    }
-
-    companion object : IFragmentFactory<MediaStreamContent> {
-
-        override val fragmentTag = MediaStreamContent::class.java.simpleName
-
-        override fun newInstance(bundle: Bundle?) =
-            MediaStreamContent().apply {
-                arguments = bundle
-            }
     }
 }

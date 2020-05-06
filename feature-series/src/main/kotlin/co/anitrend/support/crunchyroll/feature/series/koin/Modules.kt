@@ -17,11 +17,22 @@
 package co.anitrend.support.crunchyroll.feature.series.koin
 
 import co.anitrend.support.crunchyroll.feature.series.presenter.SeriesDetailPresenter
+import co.anitrend.support.crunchyroll.feature.series.ui.activity.SeriesScreen
+import co.anitrend.support.crunchyroll.feature.series.ui.fragment.SeriesContentScreen
 import co.anitrend.support.crunchyroll.feature.series.viewmodel.SeriesDetailViewModel
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
+
+private val fragmentModule = module {
+    scope<SeriesScreen> {
+        fragment {
+            SeriesContentScreen()
+        }
+    }
+}
 
 
 private val presenterModule = module {
@@ -41,7 +52,7 @@ private val viewModelModule = module {
     }
 }
 
-private val featureModules = listOf(presenterModule, viewModelModule)
+private val featureModules = listOf(fragmentModule, presenterModule, viewModelModule)
 
 private val koinModules by lazy {
     loadKoinModules(featureModules)
