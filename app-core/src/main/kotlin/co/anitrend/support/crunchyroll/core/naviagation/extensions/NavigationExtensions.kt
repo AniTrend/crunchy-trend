@@ -60,20 +60,17 @@ internal fun <T : Fragment> String.loadFragmentOrNull(): T? =
 /**
  * Builds a an intent path for the target
  */
-fun INavigationTarget.forIntent(): Intent? {
-    return "$APPLICATION_PACKAGE_NAME.$packageName.$className".loadIntentOrNull()
-}
+fun INavigationTarget.forIntent() =
+    "$APPLICATION_PACKAGE_NAME.$packageName.$className".loadIntentOrNull()
 
 /**
  * Creates a fragment instance from intent
  */
-fun INavigationTarget.forFragment(): Fragment? {
-    return forIntent()?.component?.className?.loadFragmentOrNull()
-}
+fun INavigationTarget.forFragment() =
+    forIntent()?.component?.className?.loadFragmentOrNull<Fragment>()
 
 /**
  * Build fragment class from intent
  */
-fun <T: Fragment> INavigationTarget.forFragmentClass(): Class<out T>? {
-    return forIntent()?.component?.className?.loadClassOrNull()
-}
+fun <T: Fragment> INavigationTarget.forFragment() =
+    forIntent()?.component?.className?.loadClassOrNull<T>()
