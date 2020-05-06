@@ -24,8 +24,10 @@ import co.anitrend.support.crunchyroll.koin.appModules
 import fr.bipi.tressence.file.FileLoggerTree
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
+import org.koin.androidx.fragment.koin.fragmentFactory
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import org.koin.core.logger.Level
 import timber.log.Timber
 
 class App : CrunchyApplication() {
@@ -45,7 +47,10 @@ class App : CrunchyApplication() {
      */
     override fun initializeDependencyInjection() {
         startKoin{
-            androidLogger()
+            fragmentFactory()
+            androidLogger(
+                level = if (BuildConfig.DEBUG) Level.DEBUG else Level.ERROR
+            )
             androidContext(
                 applicationContext
             )
