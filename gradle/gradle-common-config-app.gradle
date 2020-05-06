@@ -25,6 +25,11 @@ android {
     }
 }
 
+ext {
+    // TODO: Remove when material integrates merge adapter and state restoration
+    recycler = '1.2.0-alpha03'
+}
+
 dependencies {
     /** Platform Dependencies */
     implementation project(":support-ui")
@@ -51,6 +56,8 @@ dependencies {
 
     implementation "androidx.work:work-runtime-ktx:$workerKtx"
     implementation "androidx.fragment:fragment-ktx:$fragmentKtx"
+
+    implementation("androidx.recyclerview:recyclerview:$recycler")
 
     implementation "androidx.constraintlayout:constraintlayout:$constraintX"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipeRefreshX"
