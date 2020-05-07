@@ -99,12 +99,23 @@ dependencies {
     implementation("uk.co.samuelwall:material-tap-target-prompt:$tapTarget")
     implementation("fr.bipi.treessence:treessence:$treessence")
 
+    // Recommended: Add the Firebase SDK for Google Analytics.
+    implementation 'com.google.firebase:firebase-analytics:17.4.0'
+
+    // Add the Firebase Crashlytics SDK.
+    implementation 'com.google.firebase:firebase-crashlytics:17.0.0'
+
     /** Testing-only dependencies */
     testImplementation("org.koin:koin-test:$koin")
 
     // debugImplementation because LeakCanary should only run in debug builds.
     debugImplementation("com.squareup.leakcanary:leakcanary-android:$leakCanary")
     debugImplementation("com.amitshekhar.android:debug-db:$debugDB")
+}
+
+if (file("google-services.json").exists()) {
+    apply plugin: 'com.google.gms.google-services'
+    apply plugin: 'com.google.firebase.crashlytics'
 }
 
 repositories {
