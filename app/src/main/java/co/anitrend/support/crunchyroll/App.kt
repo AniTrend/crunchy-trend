@@ -17,7 +17,6 @@
 package co.anitrend.support.crunchyroll
 
 import android.util.Log
-import co.anitrend.support.crunchyroll.core.BuildConfig
 import co.anitrend.support.crunchyroll.core.CrunchyApplication
 import co.anitrend.support.crunchyroll.core.helper.StorageHelper
 import co.anitrend.support.crunchyroll.koin.appModules
