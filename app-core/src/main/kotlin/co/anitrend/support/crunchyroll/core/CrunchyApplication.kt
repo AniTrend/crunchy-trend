@@ -20,20 +20,15 @@ import android.app.Application
 import android.util.Log
 import androidx.work.Configuration
 import co.anitrend.arch.core.analytic.contract.ISupportAnalytics
-import co.anitrend.arch.extension.isLowRamDevice
 import co.anitrend.support.crunchyroll.core.util.theme.ThemeUtil
-import co.anitrend.support.crunchyroll.core.analytics.AnalyticsLogger
 import coil.Coil
 import coil.ImageLoader
-import coil.util.CoilUtils
-import okhttp3.OkHttpClient
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 abstract class CrunchyApplication : Application(), Configuration.Provider {
 
-    private val analytics by inject<ISupportAnalytics>()
     private val themeUtil by inject<ThemeUtil>()
 
     /** [Koin](https://insert-koin.io/docs/2.0/getting-started/)
@@ -58,9 +53,10 @@ abstract class CrunchyApplication : Application(), Configuration.Provider {
      * Timber logging tree depending on the build type we plant the appropriate tree
      */
     protected open fun plantLoggingTree() {
+        val analytics by inject<ISupportAnalytics>()
         when (BuildConfig.DEBUG) {
             true -> Timber.plant(Timber.DebugTree())
-            else -> Timber.plant(analytics as AnalyticsLogger)
+            else -> Timber.plant(analytics as Timber.Tree)
         }
     }
 
