@@ -16,7 +16,9 @@
 
 package co.anitrend.support.crunchyroll.feature.discover.koin
 
+import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.feature.discover.presenter.SeriesPresenter
+import co.anitrend.support.crunchyroll.feature.discover.ui.activity.SeriesDiscoverScreen
 import co.anitrend.support.crunchyroll.feature.discover.ui.fragment.SeriesDiscoverContent
 import co.anitrend.support.crunchyroll.feature.discover.viewmodel.SeriesDiscoverViewModel
 import org.koin.android.ext.koin.androidContext
@@ -26,8 +28,10 @@ import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 
 private val fragmentModule = module {
-    fragment {
-        SeriesDiscoverContent()
+    scope<SeriesDiscoverScreen> {
+        fragment {
+            SeriesDiscoverContent()
+        }
     }
 }
 
