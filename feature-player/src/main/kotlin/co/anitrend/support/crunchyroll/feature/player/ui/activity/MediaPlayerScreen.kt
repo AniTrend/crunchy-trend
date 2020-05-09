@@ -107,9 +107,13 @@ class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener {
             fragment = MediaStreamContent::class.java
         )
 
-        supportFragmentManager.commit(R.id.contentFrame, target) {
+        currentFragmentTag = supportFragmentManager.commit(R.id.contentFrame, target) {
             //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         }
+        val attached = supportFragmentManager.findFragmentByTag(currentFragmentTag)
+        if (attached is MediaStreamContent)
+            fullScreenListener = attached.FullScreenListener()
+
         initUiFlags()
     }
 

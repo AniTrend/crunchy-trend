@@ -303,10 +303,8 @@ class MediaStreamContent(
      */
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is MediaPlayerScreen) {
+        if (context is VideoControlsVisibilityListener)
             controlsVisibilityListener = context
-            context.fullScreenListener = FullScreenListener()
-        }
         attachComponent(playlistManager)
         //attachComponent(sourceFactoryProvider)
     }
