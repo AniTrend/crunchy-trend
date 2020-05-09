@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2020 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,20 +14,17 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.series.datasource.local.transformer
+package co.anitrend.support.crunchyroll.data.series.converters
 
-import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
+import co.anitrend.arch.data.converter.SupportConverter
 import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesEntity
 import co.anitrend.support.crunchyroll.data.series.model.CrunchySeriesModel
+import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchyMediaType
 
-internal object CrunchySeriesEntityTransformer : ISupportMapperHelper<CrunchySeriesModel, CrunchySeriesEntity> {
-
-    /**
-     * Transforms the the [source] to the target type
-     */
-    override fun transform(source: CrunchySeriesModel): CrunchySeriesEntity {
-        return CrunchySeriesEntity(
+internal object SeriesModelConverter : SupportConverter<CrunchySeriesModel, CrunchySeriesEntity>() {
+    override val fromType: (CrunchySeriesModel) -> CrunchySeriesEntity = { source ->
+        CrunchySeriesEntity(
             id = source.series_id,
             url = source.url,
             name = source.name,
@@ -45,5 +42,33 @@ internal object CrunchySeriesEntityTransformer : ISupportMapperHelper<CrunchySer
             year = source.year,
             genres = source.genres
         )
+    }
+
+    override val toType: (CrunchySeriesEntity) -> CrunchySeriesModel = {
+        TODO()
+    }
+}
+
+internal object SeriesEntityConverter : SupportConverter<CrunchySeriesEntity, CrunchySeries>() {
+    override val fromType: (CrunchySeriesEntity) -> CrunchySeries = { source ->
+        CrunchySeries(
+            seriesId = source.id,
+            url = source.url,
+            name = source.name,
+            landscapeImage = source.landscapeImage,
+            portraitImage = source.portraitImage,
+            description = source.description,
+            queued = source.queued,
+            rating = source.rating,
+            mediaCount = source.mediaCount,
+            collectionCount = source.collectionCount,
+            publisher = source.publisher,
+            year = source.year,
+            genres = source.genres
+        )
+    }
+
+    override val toType: (CrunchySeries) -> CrunchySeriesEntity = { source ->
+        TODO()
     }
 }

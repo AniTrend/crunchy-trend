@@ -17,8 +17,8 @@
 package co.anitrend.support.crunchyroll.data.series.mapper
 
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
+import co.anitrend.support.crunchyroll.data.series.converters.SeriesModelConverter
 import co.anitrend.support.crunchyroll.data.series.datasource.local.CrunchySeriesDao
-import co.anitrend.support.crunchyroll.data.series.datasource.local.transformer.CrunchySeriesEntityTransformer
 import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesEntity
 import co.anitrend.support.crunchyroll.data.series.model.CrunchySeriesModel
 
@@ -34,9 +34,7 @@ internal class SeriesResponseMapper(
      * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
      */
     override suspend fun onResponseMapFrom(source: List<CrunchySeriesModel>): List<CrunchySeriesEntity> {
-        return source.map {
-            CrunchySeriesEntityTransformer.transform(it)
-        }
+        return SeriesModelConverter.convertFrom(source)
     }
 
     /**

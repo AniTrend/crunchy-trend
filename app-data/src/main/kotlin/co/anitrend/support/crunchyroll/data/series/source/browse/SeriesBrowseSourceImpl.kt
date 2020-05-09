@@ -31,11 +31,11 @@ import co.anitrend.support.crunchyroll.data.arch.database.settings.IRefreshBehav
 import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.arch.helper.CrunchyClearDataHelper
 import co.anitrend.support.crunchyroll.data.arch.helper.CrunchyPagingConfigHelper
+import co.anitrend.support.crunchyroll.data.series.converters.SeriesEntityConverter
 import co.anitrend.support.crunchyroll.data.series.datasource.local.CrunchySeriesDao
 import co.anitrend.support.crunchyroll.data.series.datasource.remote.CrunchySeriesEndpoint
 import co.anitrend.support.crunchyroll.data.series.mapper.SeriesResponseMapper
 import co.anitrend.support.crunchyroll.data.series.source.browse.contract.SeriesBrowseSource
-import co.anitrend.support.crunchyroll.data.series.transformer.CrunchySeriesTransformer
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
 import kotlinx.coroutines.async
@@ -73,7 +73,7 @@ internal class SeriesBrowseSourceImpl(
                 }
 
                 val result = localSource.map {
-                    CrunchySeriesTransformer.transform(it)
+                    SeriesEntityConverter.convertFrom(it)
                 }
 
                 return result.toLiveData(
@@ -103,14 +103,14 @@ internal class SeriesBrowseSourceImpl(
                 query.filter.attribute
             }
             CrunchySeriesBrowseFilter.PREFIX -> {
-                val prefix = buildQueryForDatabase()
+                val prefix = "${query.filter.attribute}${query.option}"
                 CrunchyPagingConfigHelper(requestType, supportPagingHelper) {
                     seriesDao.countStartingWith(prefix)
                 }
                 prefix
             }
             CrunchySeriesBrowseFilter.TAG ->{
-                val genre = buildQueryForDatabase()
+                val genre = "${query.filter.attribute}${query.option}"
                 CrunchyPagingConfigHelper(requestType, supportPagingHelper) {
                     seriesDao.countContainingGenre(genre)
                 }

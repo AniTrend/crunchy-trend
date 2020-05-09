@@ -25,11 +25,11 @@ import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.Onli
 import co.anitrend.support.crunchyroll.data.arch.database.settings.IRefreshBehaviourSettings
 import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.arch.helper.CrunchyClearDataHelper
+import co.anitrend.support.crunchyroll.data.series.converters.SeriesEntityConverter
 import co.anitrend.support.crunchyroll.data.series.datasource.local.CrunchySeriesDao
 import co.anitrend.support.crunchyroll.data.series.datasource.remote.CrunchySeriesEndpoint
 import co.anitrend.support.crunchyroll.data.series.mapper.SeriesResponseMapper
 import co.anitrend.support.crunchyroll.data.series.source.detail.contract.SeriesDetailSource
-import co.anitrend.support.crunchyroll.data.series.transformer.CrunchySeriesTransformer
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import kotlinx.coroutines.async
 
@@ -56,14 +56,14 @@ internal class SeriesDetailSourceImpl(
 
                 return Transformations.map(localSource) {
                     it?.let { s->
-                        CrunchySeriesTransformer.transform(s)
+                        SeriesEntityConverter.convertFrom(s)
                     }
                 }
             }
         }
 
     override suspend fun browseSeries() {
-        val deffered = async {
+        /*val differed = async {
             endpoint.getSeriesInfo(
                 seriesId = query.seriesId
             )
@@ -76,8 +76,8 @@ internal class SeriesDetailSourceImpl(
                     supportConnectivity
                 )
             )
-        // TODO: Use converter instead of controller so as not to enforce this rigid structure
-        //controller(deffered, networkState)
+
+        controller(differed, networkState)*/
     }
 
     /**

@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.data.catalog.transformer
 
 import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
 import co.anitrend.support.crunchyroll.data.catalog.entity.CrunchyCatalogWithSeriesEntity
-import co.anitrend.support.crunchyroll.data.series.transformer.CrunchySeriesTransformer
+import co.anitrend.support.crunchyroll.data.series.converters.SeriesEntityConverter
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 
 internal object CrunchyCatalogTransformer : ISupportMapperHelper<List<CrunchyCatalogWithSeriesEntity>, CrunchyCatalogWithSeries?> {
@@ -28,7 +28,7 @@ internal object CrunchyCatalogTransformer : ISupportMapperHelper<List<CrunchyCat
     override fun transform(source: List<CrunchyCatalogWithSeriesEntity>): CrunchyCatalogWithSeries? {
          return if (source.isNotEmpty()) {
              val values = source.map { temp ->
-                 CrunchySeriesTransformer.transform(temp.relation)
+                 SeriesEntityConverter.convertFrom(temp.relation)
              }
 
              CrunchyCatalogWithSeries(
