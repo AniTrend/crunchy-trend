@@ -41,13 +41,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            <co.anitrend.arch.ui.view.text.SingleLineTextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                     android:text="@string/label_information" />
 
-            <co.anitrend.arch.ui.view.text.SingleLineTextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/seriesSeasons"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -74,13 +74,13 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-                <co.anitrend.arch.ui.view.text.SingleLineTextView
+                <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/label_total_seasons"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"/>
 
-                <co.anitrend.arch.ui.view.text.SingleLineTextView
+                <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{presenter.collectionCount(viewModel.state.model)}"
@@ -95,13 +95,13 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-                <co.anitrend.arch.ui.view.text.SingleLineTextView
+                <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/label_total_episodes"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"/>
 
-                <co.anitrend.arch.ui.view.text.SingleLineTextView
+                <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{presenter.mediaCount(viewModel.state.model)}"

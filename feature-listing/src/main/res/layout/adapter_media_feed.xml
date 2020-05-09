@@ -67,7 +67,7 @@
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <co.anitrend.arch.ui.view.text.SingleLineTextView
+    <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/mediaTitle"
             android:layout_gravity="bottom|center_horizontal"
             android:textColor="@color/colorWhite"

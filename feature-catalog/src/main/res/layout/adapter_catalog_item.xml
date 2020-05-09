@@ -42,7 +42,7 @@
                 tools:src="@sample/poster" />
     </com.google.android.material.card.MaterialCardView>
 
-    <co.anitrend.arch.ui.view.text.SingleLineTextView
+    <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/seriesTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

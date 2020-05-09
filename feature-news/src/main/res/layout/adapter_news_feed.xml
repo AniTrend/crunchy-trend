@@ -46,10 +46,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/md_margin" />
 
-        <co.anitrend.arch.ui.view.text.SingleLineTextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/newsSubTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 tools:text="@sample/news.json/subTitle" />
 

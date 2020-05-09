@@ -44,11 +44,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <co.anitrend.arch.ui.view.text.SingleLineTextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/seriesName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{entity.name}"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 tools:text="@sample/search_response.json/name"/>
 

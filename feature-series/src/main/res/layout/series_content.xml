@@ -92,7 +92,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="@dimen/xl_margin" />
 
-                            <co.anitrend.arch.ui.view.text.SingleLineTextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
@@ -140,7 +140,7 @@
                             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                             tools:text="@sample/series_detail.json/description" />
 
-                    <co.anitrend.arch.ui.view.text.SingleLineTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/xl_margin"
