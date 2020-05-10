@@ -103,14 +103,14 @@ internal class SeriesBrowseSourceImpl(
                 query.filter.attribute
             }
             CrunchySeriesBrowseFilter.PREFIX -> {
-                val prefix = "${query.filter.attribute}${query.option}"
+                val prefix = "${query.filter.attribute}${query.option.toLowerCase()}"
                 CrunchyPagingConfigHelper(requestType, supportPagingHelper) {
                     seriesDao.countStartingWith(prefix)
                 }
                 prefix
             }
             CrunchySeriesBrowseFilter.TAG ->{
-                val genre = "${query.filter.attribute}${query.option}"
+                val genre = "${query.filter.attribute}${query.option.toLowerCase()}"
                 CrunchyPagingConfigHelper(requestType, supportPagingHelper) {
                     seriesDao.countContainingGenre(genre)
                 }
