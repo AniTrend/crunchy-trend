@@ -16,21 +16,28 @@
 
 package co.anitrend.support.crunchyroll.feature.series.ui.adpter
 
+import android.content.res.Resources
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import co.anitrend.arch.ui.recycler.adapter.SupportListAdapter
-import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
-import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.arch.ui.util.StateLayoutConfig
-import co.anitrend.support.crunchyroll.feature.series.R
-import kotlinx.android.synthetic.main.adapter_genre.view.*
+import co.anitrend.arch.core.model.IStateLayoutConfig
+import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
+import co.anitrend.arch.recycler.adapter.SupportListAdapter
+import co.anitrend.arch.recycler.model.contract.IRecyclerItem
+import co.anitrend.arch.theme.animator.contract.ISupportAnimator
+import co.anitrend.support.crunchyroll.feature.series.controller.model.GenreItem
 
 class SeriesGenreAdapter(
-    private val itemClickListener: ItemClickListener<String>,
-    override val stateConfig: StateLayoutConfig
-) : SupportListAdapter<String>() {
+    override val resources: Resources,
+    override val stateConfiguration: IStateLayoutConfig,
+    override val customSupportAnimator: ISupportAnimator? = null,
+    override val mapper: (String?) -> IRecyclerItem = { GenreItem(it) }
+) : SupportListAdapter<String>(GenreItem.DIFFER) {
+
+    /**
+     * Assigned if the current adapter supports needs to supports action mode
+     */
+    override var supportAction: ISupportSelectionMode<Long>? = null
 
     /**
      * Used to get stable ids for [androidx.recyclerview.widget.RecyclerView.Adapter] but only if
@@ -44,63 +51,13 @@ class SeriesGenreAdapter(
     }
 
     /**
-     * Should provide the required view holder, this function is a substitute for [onCreateViewHolder] which now
+     * Should provide the required view holder,
+     * this function is a substitute for [onCreateViewHolder] which now
      * has extended functionality
      */
     override fun createDefaultViewHolder(
         parent: ViewGroup,
         viewType: Int,
         layoutInflater: LayoutInflater
-    ): SupportViewHolder<String> {
-        return SeriesGenreViewHolder(
-            layoutInflater.inflate(
-                R.layout.adapter_genre,
-                parent,
-                false
-            ),
-            itemClickListener
-        )
-    }
-
-    internal class SeriesGenreViewHolder(
-        view: View,
-        private val clickListener: ItemClickListener<String>
-    ) : SupportViewHolder<String>(view) {
-
-        private var model: String? = null
-
-        /**
-         * Load images, text, buttons, etc. in this method from the given parameter
-         *
-         * @param model Is the liveData at the current adapter position
-         */
-        override fun invoke(model: String?) {
-            this.model = model
-            itemView.seriesGenre.text = model
-            itemView.seriesGenre.setOnClickListener {
-                onItemClick(it, clickListener)
-            }
-        }
-
-        override fun onViewRecycled() {
-            itemView.seriesGenre.setOnClickListener(null)
-            model = null
-        }
-
-        /**
-         * Handle any onclick events from our views, optionally you can call
-         * [performClick] to dispatch [Pair]<[Int], T> on the [ItemClickListener]
-         *
-         * @param view the view that has been clicked
-         * @param itemClickListener callback for handing clicks
-         */
-        override fun onItemClick(
-            view: View,
-            itemClickListener: ItemClickListener<String>
-        ) {
-            model.apply {
-                performClick(this, view, itemClickListener)
-            }
-        }
-    }
+    ) = GenreItem.createViewHolder(parent, layoutInflater)
 }

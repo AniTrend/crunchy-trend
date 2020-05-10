@@ -87,8 +87,13 @@ class MainScreen : CrunchyActivity(), NavigationView.OnNavigationItemSelectedLis
             setNavigationItemSelectedListener(this@MainScreen)
             setCheckedItem(selectedItem)
         }
-        onUpdateUserInterface()
+        updateUserInterface()
     }
+
+    /**
+     * Expects a module helper if one is available for the current scope, otherwise return null
+     */
+    override fun featureModuleHelper(): Nothing? = null
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putInt(keyNavigationSelected, selectedItem)
@@ -207,13 +212,7 @@ class MainScreen : CrunchyActivity(), NavigationView.OnNavigationItemSelectedLis
         }
     }
 
-    /**
-     * Handles the updating of views, binding, creation or state change, depending on the context
-     * [androidx.lifecycle.LiveData] for a given [getSupportFragmentManager] will be available by this point.
-     *
-     * Check implementation for more details
-     */
-    override fun onUpdateUserInterface() {
+    private fun updateUserInterface() {
         if (selectedItem != 0)
             onNavigateToTarget(selectedItem)
         else

@@ -32,5 +32,6 @@ android {
 }
 
 dependencies {
-    
+
+    implementation project(":ui-shared-series")
 }

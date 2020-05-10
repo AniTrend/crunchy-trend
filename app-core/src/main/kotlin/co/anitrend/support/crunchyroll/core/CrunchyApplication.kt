@@ -46,7 +46,7 @@ abstract class CrunchyApplication : Application(), Configuration.Provider {
 
     private fun setupCoil() {
         val imageLoader = get<ImageLoader>()
-        Coil.setDefaultImageLoader(imageLoader)
+        Coil.setImageLoader(imageLoader)
     }
 
     /**

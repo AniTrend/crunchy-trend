@@ -52,9 +52,12 @@ class DynamicFeatureModuleHelper(
     override fun onDestroy() {
         super.onDestroy()
         Timber.tag(moduleTag).v(
+            "Module unloading temporarily disabled, current loaded modules: ${modules.size}"
+        )
+        /*Timber.tag(moduleTag).v(
             "Unloading ${modules.size} feature modules"
         )
-        unloadModules()
+        unloadModules()*/
     }
 
     companion object {

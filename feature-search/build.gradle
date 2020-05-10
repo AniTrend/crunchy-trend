@@ -36,5 +36,7 @@ ext {
 }
 
 dependencies {
+    implementation project(":ui-shared-series")
+
     implementation "com.github.anitrend:material-multi-search:$materialMultiSearch"
 }

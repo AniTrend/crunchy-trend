@@ -20,13 +20,12 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.fragment.app.commit
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.extensions.commit
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import co.anitrend.support.crunchyroll.feature.settings.R
-import co.anitrend.support.crunchyroll.feature.settings.koin.injectFeatureModules
+import co.anitrend.support.crunchyroll.feature.settings.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.settings.ui.fragment.SettingsFragment
 import kotlinx.android.synthetic.main.settings_activity.*
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
@@ -42,7 +41,6 @@ class SettingsScreen : CrunchyActivity() {
      */
     override fun configureActivity() {
         super.configureActivity()
-        injectFeatureModules()
         setupKoinFragmentFactory(lifecycleScope)
     }
 
@@ -65,37 +63,37 @@ class SettingsScreen : CrunchyActivity() {
     }
 
     /**
+     * Expects a module helper if one is available for the current scope, otherwise return null
+     */
+    override fun featureModuleHelper() = moduleHelper
+
+    /**
      * Initialize the contents of the Activity's standard options menu.  You
-     * should place your menu items in to <var>menu</var>.
-     *
+     * should place your menu items in to [menu].
      *
      * This is only called once, the first time the options menu is
      * displayed.  To update the menu every time it is displayed, see
-     * [.onPrepareOptionsMenu].
-     *
+     * [onPrepareOptionsMenu].
      *
      * The default implementation populates the menu with standard system
-     * menu items.  These are placed in the [Menu.CATEGORY_SYSTEM] group so that
+     * menu items. These are placed in the [Menu.CATEGORY_SYSTEM] group so that
      * they will be correctly ordered with application-defined menu items.
      * Deriving classes should always call through to the base implementation.
      *
-     *
      * You can safely hold on to <var>menu</var> (and any items created
      * from it), making modifications to it as desired, until the next
-     * time onCreateOptionsMenu() is called.
-     *
+     * time [onCreateOptionsMenu] is called.
      *
      * When you add items to the menu, you can implement the Activity's
-     * [.onOptionsItemSelected] method to handle them there.
+     * [onOptionsItemSelected] method to handle them there.
      *
      * @param menu The options menu in which you place your items.
      *
      * @return You must return true for the menu to be displayed;
      * if you return false it will not be shown.
      *
-     * @see .onPrepareOptionsMenu
-     *
-     * @see .onOptionsItemSelected
+     * @see onPrepareOptionsMenu
+     * @see onOptionsItemSelected
      */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.settings_menu, menu)
@@ -116,13 +114,7 @@ class SettingsScreen : CrunchyActivity() {
         }
     }
 
-    /**
-     * Handles the updating of views, binding, creation or state change, depending on the context
-     * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
-     *
-     * Check implementation for more details
-     */
-    override fun onUpdateUserInterface() {
+    private fun onUpdateUserInterface() {
         val target = FragmentItem(
             fragment = SettingsFragment::class.java
         )

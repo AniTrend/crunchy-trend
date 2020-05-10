@@ -25,9 +25,14 @@ import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.argument
+import co.anitrend.arch.extension.attachComponent
+import co.anitrend.arch.extension.detachComponent
+import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.ui.fragment.SupportFragment
-import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
+import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
+import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
+import co.anitrend.support.crunchyroll.core.ui.fragment.CrunchyFragment
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesDetailQuery
@@ -35,12 +40,16 @@ import co.anitrend.support.crunchyroll.feature.series.databinding.SeriesContentB
 import co.anitrend.support.crunchyroll.feature.series.presenter.SeriesDetailPresenter
 import co.anitrend.support.crunchyroll.feature.series.ui.adpter.SeriesGenreAdapter
 import co.anitrend.support.crunchyroll.feature.series.viewmodel.SeriesDetailViewModel
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SeriesContentScreen : SupportFragment<CrunchySeries>() {
+class SeriesContentScreen : CrunchyFragment() {
 
     private val payload
             by argument<NavigationTargets.Series.Payload>(
@@ -51,38 +60,8 @@ class SeriesContentScreen : SupportFragment<CrunchySeries>() {
 
     private val seriesGenreAdapter by lazy(LAZY_MODE_UNSAFE) {
         SeriesGenreAdapter(
-            object : ItemClickListener<String> {
-                /**
-                 * When the target view from [View.OnClickListener]
-                 * is clicked from a view holder this method will be called
-                 *
-                 * @param target view that has been clicked
-                 * @param data the liveData that at the click index
-                 */
-                override fun onItemClick(target: View, data: Pair<Int, String?>) {
-                    val genre = data.second
-                    if (!genre.isNullOrEmpty()) {
-                        val payload = NavigationTargets.Discover.Payload(
-                            browseFilter = CrunchySeriesBrowseFilter.TAG,
-                            filterOption = genre
-                        )
-
-                        NavigationTargets.DiscoverScreen(context, payload)
-                    }
-                }
-
-                /**
-                 * When the target view from [View.OnLongClickListener]
-                 * is clicked from a view holder this method will be called
-                 *
-                 * @param target view that has been long clicked
-                 * @param data the liveData that at the long click index
-                 */
-                override fun onItemLongClick(target: View, data: Pair<Int, String?>) {
-
-                }
-            },
-            get()
+            resources = resources,
+            stateConfiguration = StateLayoutConfig()
         )
     }
 
@@ -94,7 +73,7 @@ class SeriesContentScreen : SupportFragment<CrunchySeries>() {
             viewLifecycleOwner,
             Observer {
                 if (it != null) {
-                    binding.supportStateLayout.setNetworkState(NetworkState.Success)
+                    binding.supportStateLayout.networkStateLiveData.postValue(NetworkState.Success)
                     seriesGenreAdapter.submitList(it.genres)
                 }
             }
@@ -102,13 +81,7 @@ class SeriesContentScreen : SupportFragment<CrunchySeries>() {
         viewModelState().networkState.observe(
             viewLifecycleOwner,
             Observer {
-                binding.supportStateLayout.setNetworkState(it)
-            }
-        )
-        binding.supportStateLayout.interactionLiveData.observe(
-            viewLifecycleOwner,
-            Observer {
-                viewModelState().retry()
+                binding.supportStateLayout.networkStateLiveData.postValue(it)
             }
         )
     }
@@ -123,16 +96,43 @@ class SeriesContentScreen : SupportFragment<CrunchySeries>() {
      *
      * @param savedInstanceState
      */
+    @FlowPreview
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        launch {
-            lifecycleScope.launchWhenResumed {
-                if (viewModelState().isEmpty())
-                    onFetchDataInitialize()
-                else
-                    onUpdateUserInterface()
-            }
+        lifecycleScope.launchWhenResumed {
+            if (viewModelState().isEmpty())
+                onFetchDataInitialize()
+        }
+        lifecycleScope.launchWhenResumed {
+            binding.supportStateLayout.interactionFlow
+                .debounce(16)
+                .collect {
+                    viewModelState().retry()
+                }
+        }
+        lifecycleScope.launchWhenResumed {
+            seriesGenreAdapter.clickableFlow.debounce(16)
+                .filterIsInstance<DefaultClickableItem<String>>()
+                .collect {
+                    val genre = it.data
+                    if (!genre.isNullOrEmpty()) {
+                        val payload = NavigationTargets.Discover.Payload(
+                            browseFilter = CrunchySeriesBrowseFilter.TAG,
+                            filterOption = genre
+                        )
+
+                        NavigationTargets.DiscoverScreen(context, payload)
+                    }
+                }
+        }
+        lifecycleScope.launchWhenStarted {
+            attachComponent(binding.seriesGenres)
         }
     }
+
+    /**
+     * Expects a module helper if one is available for the current scope, otherwise return null
+     */
+    override fun featureModuleHelper(): Nothing? = null
 
     /**
      * Called to have the fragment instantiate its user interface view. This is optional, and
@@ -163,7 +163,6 @@ class SeriesContentScreen : SupportFragment<CrunchySeries>() {
         savedInstanceState: Bundle?
     ): View? {
         binding = SeriesContentBinding.inflate(inflater, container, false)
-
         binding.supportStateLayout.stateConfig = get()
 
         binding.lifecycleOwner = this
@@ -207,11 +206,7 @@ class SeriesContentScreen : SupportFragment<CrunchySeries>() {
      */
     override fun viewModelState() = viewModel.state
 
-    override fun onUpdateUserInterface() {
-
-    }
-
-    override fun onFetchDataInitialize() {
+    private fun onFetchDataInitialize() {
         payload?.also {
             viewModel.state(
                 parameter = CrunchySeriesDetailQuery(
@@ -236,7 +231,7 @@ class SeriesContentScreen : SupportFragment<CrunchySeries>() {
      * been saved but before it has been removed from its parent.
      */
     override fun onDestroyView() {
-        binding.seriesGenres.adapter = null
+        detachComponent(binding.seriesGenres)
         super.onDestroyView()
     }
 }

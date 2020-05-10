@@ -19,62 +19,35 @@ package co.anitrend.support.crunchyroll.feature.search.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import co.anitrend.arch.core.model.ISupportViewModelState
-import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
+import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
-import co.anitrend.arch.ui.fragment.paged.SupportFragmentPagedList
-import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.arch.ui.util.StateLayoutConfig
+import co.anitrend.arch.recycler.common.DefaultClickableItem
+import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
+import co.anitrend.support.crunchyroll.core.ui.fragment.paged.CrunchyFragmentPaged
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.feature.search.R
-import co.anitrend.support.crunchyroll.feature.search.presenter.SeriesPresenter
-import co.anitrend.support.crunchyroll.feature.search.ui.adapter.SeriesViewAdapter
 import co.anitrend.support.crunchyroll.feature.search.viewmodel.SeriesSearchViewModel
+import co.anitrend.support.crunchyroll.shared.series.adapter.SeriesViewAdapter
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filterIsInstance
 import org.koin.android.ext.android.get
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SearchContentScreen(
-    override val columnSize: Int = R.integer.single_list_size
-) : SupportFragmentPagedList<CrunchySeries>() {
+    override val defaultSpanSize: Int = R.integer.single_list_size
+) : CrunchyFragmentPaged<CrunchySeries>() {
 
     private val viewModel by sharedViewModel<SeriesSearchViewModel>()
 
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         SeriesViewAdapter(
-            get(),
-            object : ItemClickListener<CrunchySeries> {
-                /**
-                 * When the target view from [View.OnClickListener]
-                 * is clicked from a view holder this method will be called
-                 *
-                 * @param target view that has been clicked
-                 * @param data the liveData that at the click index
-                 */
-                override fun onItemClick(target: View, data: Pair<Int, CrunchySeries?>) {
-                    val seriesPayload = NavigationTargets.Series.Payload(
-                        seriesId = data.second?.seriesId ?: 0
-                    )
-                    NavigationTargets.Series(
-                        target.context, seriesPayload
-                    )
-                }
-
-                /**
-                 * When the target view from [View.OnLongClickListener]
-                 * is clicked from a view holder this method will be called
-                 *
-                 * @param target view that has been long clicked
-                 * @param data the liveData that at the long click index
-                 */
-                override fun onItemLongClick(target: View, data: Pair<Int, CrunchySeries?>) {
-
-                }
-            }
+            resources = resources,
+            stateConfiguration = get()
         )
     }
 
@@ -108,7 +81,7 @@ class SearchContentScreen(
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        supportStateLayout?.setNetworkState(
+        supportStateLayout?.networkStateLiveData?.postValue(
             NetworkState.Error(
                 heading = "Looking for something?",
                 message = "Tap the ${Emote.Search} to get started"
@@ -117,19 +90,27 @@ class SearchContentScreen(
     }
 
     /**
-     * Additional initialization to be done in this method, if the overriding class is type of
-     * [androidx.fragment.app.Fragment] then this method will be called in
-     * [androidx.fragment.app.FragmentActivity.onCreate]. Otherwise
-     * [androidx.fragment.app.FragmentActivity.onPostCreate] invokes this function
+     * Additional initialization to be done in this method, this method will be called in
+     * [androidx.fragment.app.FragmentActivity.onCreate].
      *
      * @param savedInstanceState
      */
+    @FlowPreview
     override fun initializeComponents(savedInstanceState: Bundle?) {
-
-    }
-
-    override fun onUpdateUserInterface() {
-
+        super.initializeComponents(savedInstanceState)
+        lifecycleScope.launchWhenResumed {
+            supportViewAdapter.clickableFlow.debounce(16)
+                .filterIsInstance<DefaultClickableItem<CrunchySeries>>()
+                .collect {
+                    val data = it.data
+                    val seriesPayload = NavigationTargets.Series.Payload(
+                        seriesId = data?.seriesId ?: 0
+                    )
+                    NavigationTargets.Series(
+                        it.view.context, seriesPayload
+                    )
+                }
+        }
     }
 
     /**
@@ -176,4 +157,9 @@ class SearchContentScreen(
      * Proxy for a view model state if one exists
      */
     override fun viewModelState() = viewModel.state
+
+    /**
+     * Expects a module helper if one is available for the current scope, otherwise return null
+     */
+    override fun featureModuleHelper(): Nothing? = null
 }

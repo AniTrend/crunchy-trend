@@ -16,27 +16,32 @@
 
 package co.anitrend.support.crunchyroll.feature.news.ui.adapter
 
+import android.content.res.Resources
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import co.anitrend.arch.ui.recycler.adapter.SupportPagedListAdapter
-import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
-import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.arch.ui.util.StateLayoutConfig
-import co.anitrend.support.crunchyroll.core.android.extensions.longDate
-import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
+import co.anitrend.arch.core.model.IStateLayoutConfig
+import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
+import co.anitrend.arch.recycler.adapter.SupportPagedListAdapter
+import co.anitrend.arch.recycler.model.contract.IRecyclerItem
+import co.anitrend.arch.theme.animator.ScaleAnimator
+import co.anitrend.arch.theme.animator.contract.ISupportAnimator
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
-import co.anitrend.support.crunchyroll.feature.news.databinding.AdapterNewsFeedBinding
-import coil.request.RequestDisposable
+import co.anitrend.support.crunchyroll.feature.news.controller.model.NewsItem
 import io.noties.markwon.Markwon
 
 class RssNewsAdapter(
-    private val markwon: Markwon,
-    override val stateConfig: StateLayoutConfig,
-    private val itemClickListener: ItemClickListener<CrunchyNews>
-) : SupportPagedListAdapter<CrunchyNews>() {
+    markwon: Markwon,
+    override val resources: Resources,
+    override val stateConfiguration: IStateLayoutConfig,
+    override val customSupportAnimator: ISupportAnimator? = ScaleAnimator(),
+    override val mapper: (CrunchyNews?) -> IRecyclerItem = { NewsItem(it, markwon) }
+) : SupportPagedListAdapter<CrunchyNews>(NewsItem.DIFFER) {
 
+    /**
+     * Assigned if the current adapter supports needs to supports action mode
+     */
+    override var supportAction: ISupportSelectionMode<Long>? = null
 
     /**
      * Used to get stable ids for [androidx.recyclerview.widget.RecyclerView.Adapter] but only if
@@ -57,63 +62,5 @@ class RssNewsAdapter(
         parent: ViewGroup,
         viewType: Int,
         layoutInflater: LayoutInflater
-    ): SupportViewHolder<CrunchyNews> {
-        val binding = AdapterNewsFeedBinding.inflate(
-            layoutInflater,
-            parent,
-            false
-        )
-
-        return NewsRssViewHolder(itemClickListener, binding, markwon)
-    }
-
-    internal class NewsRssViewHolder(
-        private val clickListener: ItemClickListener<CrunchyNews>,
-        private val binding: AdapterNewsFeedBinding,
-        private var markwon: Markwon?
-    ): SupportViewHolder<CrunchyNews>(binding.root) {
-
-        private var model: CrunchyNews? = null
-        private var disposable: RequestDisposable? = null
-
-        /**
-         * Load images, text, buttons, etc. in this method from the given parameter
-         *
-         * @param model Is the liveData at the current adapter position
-         */
-        override fun invoke(model: CrunchyNews?) {
-            this.model = model
-            disposable = binding.newsImage.setImageUrl(model?.image)
-            binding.newsTitle.text = model?.title
-            binding.newsSubTitle.text = model?.subTitle
-            binding.newsPublishedOn.longDate(model?.publishedOn)
-            markwon?.setMarkdown(
-                binding.newsDescription,
-                model?.description ?: "No description available"
-            )
-            binding.container.setOnClickListener {
-                onItemClick(it, clickListener)
-            }
-        }
-
-        override fun onViewRecycled() {
-            binding.container.setOnClickListener(null)
-            disposable?.dispose()
-            disposable = null
-            markwon = null
-            model = null
-        }
-
-        /**
-         * Handle any onclick events from our views, optionally you can call
-         * [performClick] to dispatch [Pair]<[Int], T> on the [ItemClickListener]
-         *
-         * @param view the view that has been clicked
-         */
-        override fun onItemClick(view: View, itemClickListener: ItemClickListener<CrunchyNews>) {
-            model.apply {
-                performClick(this, view, itemClickListener)
-            }
-        }
-    }
+    ) = NewsItem.createViewHolder(parent, layoutInflater)
 }

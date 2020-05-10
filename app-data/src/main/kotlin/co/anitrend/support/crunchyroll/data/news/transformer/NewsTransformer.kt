@@ -27,6 +27,7 @@ internal object NewsTransformer : ISupportMapperHelper<NewsEntity, CrunchyNews> 
      */
     override fun transform(source: NewsEntity): CrunchyNews {
         return CrunchyNews(
+            id = source.guid.hashCode().toLong(),
             title = source.title,
             image = source.image,
             author = source.author,

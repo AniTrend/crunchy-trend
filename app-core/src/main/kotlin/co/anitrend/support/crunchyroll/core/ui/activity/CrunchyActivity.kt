@@ -19,18 +19,22 @@ package co.anitrend.support.crunchyroll.core.ui.activity
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
+import co.anitrend.arch.extension.attachComponent
+import co.anitrend.arch.extension.detachComponent
 import co.anitrend.arch.ui.activity.SupportActivity
 import co.anitrend.support.crunchyroll.core.R
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.extensions.createDialog
+import co.anitrend.support.crunchyroll.core.ui.contract.IFeatureContract
 import co.anitrend.support.crunchyroll.core.util.config.ConfigurationUtil
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import org.koin.android.ext.android.inject
 
-abstract class CrunchyActivity : SupportActivity() {
+abstract class CrunchyActivity : SupportActivity(), IFeatureContract {
 
     private val systemChromeFade by lazy(LAZY_MODE_UNSAFE) {
         object : ElasticDragDismissFrameLayout.SystemChromeFader(this) {
@@ -63,6 +67,7 @@ abstract class CrunchyActivity : SupportActivity() {
      */
     override fun configureActivity() {
         configurationUtil.onCreate(this)
+        featureModuleHelper()?.onCreate()
     }
 
     /**
@@ -84,30 +89,20 @@ abstract class CrunchyActivity : SupportActivity() {
         detachSystemChromeFade()
     }
 
-    /**
-     * Handles the complex logic required to dispatch network request to [co.anitrend.arch.core.viewmodel.contract.ISupportViewModel]
-     * to either request from the network or database cache.
-     *
-     * The results of the dispatched network or cache call will be published by the
-     * [androidx.lifecycle.LiveData] specifically [co.anitrend.arch.core.viewmodel.contract.ISupportViewModel.model]
-     *
-     * @see [co.anitrend.arch.core.viewmodel.contract.ISupportViewModel.invoke]
-     */
-    override fun onFetchDataInitialize() {
-        // may not be used in most activities so we're making it optional
+    override fun onDestroy() {
+        featureModuleHelper()?.onDestroy()
+        super.onDestroy()
     }
 
     /**
      * Callback for the result from requesting permissions. This method
-     * is invoked for every call on [.requestPermissions].
-     *
+     * is invoked for every call on [requestPermissions].
      *
      * **Note:** It is possible that the permissions request interaction
      * with the user is interrupted. In this case you will receive empty permissions
      * and results arrays which should be treated as a cancellation.
      *
-     *
-     * @param requestCode The request code passed in [.requestPermissions].
+     * @param requestCode The request code passed in [requestPermissions].
      * @param permissions The requested permissions. Never null.
      * @param grantResults The grant results for the corresponding permissions
      * which is either [android.content.pm.PackageManager.PERMISSION_GRANTED]

@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.feature.media.koin
 
+import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.feature.media.presenter.MediaPresenter
 import co.anitrend.support.crunchyroll.feature.media.ui.activity.MediaScreen
 import co.anitrend.support.crunchyroll.feature.media.ui.fragment.MediaContent
@@ -51,15 +52,8 @@ private val viewModelModule = module {
     }
 }
 
-private val featureModules = listOf(
-    fragmentModule,
-    presenterModule,
-    viewModelModule
-)
-
-private val koinModules by lazy {
-    loadKoinModules(featureModules)
+val moduleHelper by lazy {
+    DynamicFeatureModuleHelper(
+        listOf(fragmentModule, presenterModule, viewModelModule)
+    )
 }
-
-fun injectFeatureModules() =
-    koinModules

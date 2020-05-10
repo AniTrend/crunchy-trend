@@ -18,11 +18,11 @@ package co.anitrend.support.crunchyroll.feature.series.presenter
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import co.anitrend.arch.recycler.SupportRecyclerView
 import co.anitrend.arch.ui.extension.setUpWith
-import co.anitrend.arch.ui.recycler.SupportRecyclerView
+import co.anitrend.support.crunchyroll.core.extensions.separator
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
-import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
 import co.anitrend.support.crunchyroll.feature.series.model.SeriesModel
 import co.anitrend.support.crunchyroll.feature.series.ui.adpter.SeriesGenreAdapter
 import com.google.android.flexbox.FlexDirection
@@ -77,9 +77,5 @@ class SeriesDetailPresenter(
                 layoutManager.justifyContent = JustifyContent.FLEX_START
             }
         )
-    }
-
-    companion object {
-        internal const val separator = "\u2022"
     }
 }

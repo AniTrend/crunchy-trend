@@ -17,14 +17,13 @@
 package co.anitrend.support.crunchyroll.feature.discover.ui.activity
 
 import android.os.Bundle
-import androidx.fragment.app.commit
-import co.anitrend.arch.ui.common.ISupportActionUp
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.extensions.commit
+import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import co.anitrend.support.crunchyroll.feature.discover.R
-import co.anitrend.support.crunchyroll.feature.discover.koin.injectFeatureModules
+import co.anitrend.support.crunchyroll.feature.discover.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.discover.ui.fragment.SeriesDiscoverContent
 import kotlinx.android.synthetic.main.discover_activity.*
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
@@ -40,7 +39,6 @@ class SeriesDiscoverScreen : CrunchyActivity() {
      */
     override fun configureActivity() {
         super.configureActivity()
-        injectFeatureModules()
         setupKoinFragmentFactory(lifecycleScope)
     }
 
@@ -51,10 +49,8 @@ class SeriesDiscoverScreen : CrunchyActivity() {
     }
 
     /**
-     * Additional initialization to be done in this method, if the overriding class is type of
-     * [androidx.fragment.app.Fragment] then this method will be called in
-     * [androidx.fragment.app.FragmentActivity.onCreate]. Otherwise
-     * [androidx.fragment.app.FragmentActivity.onPostCreate] invokes this function
+     * Additional initialization to be done in this method, this is called in during
+     * [androidx.fragment.app.FragmentActivity.onPostCreate]
      *
      * @param savedInstanceState
      */
@@ -63,12 +59,17 @@ class SeriesDiscoverScreen : CrunchyActivity() {
     }
 
     /**
+     * Expects a module helper if one is available for the current scope, otherwise return null
+     */
+    override fun featureModuleHelper() = moduleHelper
+
+    /**
      * Handles the updating of views, binding, creation or state change, depending on the context
      * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
      *
      * Check implementation for more details
      */
-    override fun onUpdateUserInterface() {
+    private fun onUpdateUserInterface() {
         val target = FragmentItem(
             parameter = intent.extras,
             fragment = SeriesDiscoverContent::class.java

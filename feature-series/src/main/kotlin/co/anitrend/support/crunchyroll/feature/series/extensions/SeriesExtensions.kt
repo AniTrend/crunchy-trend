@@ -19,7 +19,10 @@ package co.anitrend.support.crunchyroll.feature.series.extensions
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.databinding.BindingAdapter
 import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
+import timber.log.Timber
 
 @BindingAdapter("imageUrl")
-fun AppCompatImageView.setImageFromUrl(url: String?) =
+fun AppCompatImageView.setImageFromUrl(url: String?) {
     setImageUrl(url)
+    Timber.tag("SeriesImageBind").v("Image loading requested: $url")
+}

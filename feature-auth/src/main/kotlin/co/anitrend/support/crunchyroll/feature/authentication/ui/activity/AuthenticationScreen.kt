@@ -24,7 +24,7 @@ import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import co.anitrend.support.crunchyroll.feature.authentication.R
-import co.anitrend.support.crunchyroll.feature.authentication.koin.injectFeatureModules
+import co.anitrend.support.crunchyroll.feature.authentication.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.authentication.ui.fragment.FragmentLogin
 import co.anitrend.support.crunchyroll.feature.authentication.ui.fragment.FragmentLogout
 import kotlinx.android.synthetic.main.activity_auth.*
@@ -43,9 +43,13 @@ class AuthenticationScreen : CrunchyActivity() {
      */
     override fun configureActivity() {
         super.configureActivity()
-        injectFeatureModules()
         setupKoinFragmentFactory(lifecycleScope)
     }
+
+    /**
+     * Expects a module helper if one is available for the current scope, otherwise return null
+     */
+    override fun featureModuleHelper() = moduleHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +75,7 @@ class AuthenticationScreen : CrunchyActivity() {
      *
      * Check implementation for more details
      */
-    override fun onUpdateUserInterface() {
+    private fun onUpdateUserInterface() {
         val target = when (presenter.settings.isAuthenticated) {
             true -> {
                 FragmentItem(

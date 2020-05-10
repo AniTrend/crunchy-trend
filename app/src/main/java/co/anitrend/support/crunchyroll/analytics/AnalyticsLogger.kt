@@ -20,14 +20,14 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import co.anitrend.arch.core.analytic.contract.ISupportAnalytics
-import co.anitrend.arch.extension.empty
+import co.anitrend.arch.extension.empty/*
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics*/
 import timber.log.Timber
 
-class AnalyticsLogger(
+class AnalyticsLogger(/*
     private val analytics: FirebaseAnalytics,
-    private val crashlytics: FirebaseCrashlytics
+    private val crashlytics: FirebaseCrashlytics*/
 ) : Timber.Tree(), ISupportAnalytics {
 
     /**
@@ -41,12 +41,12 @@ class AnalyticsLogger(
     override fun log(priority: Int, tag: String?, message: String, throwable: Throwable?) {
         if (priority < Log.INFO)
             return
-
+/*
         runCatching {
             crashlytics.setCustomKey(PRIORITY, priority)
             crashlytics.setCustomKey(TAG, tag ?: "")
             crashlytics.setCustomKey(MESSAGE, message)
-        }.exceptionOrNull()?.printStackTrace()
+        }.exceptionOrNull()?.printStackTrace()*/
 
         runCatching {
             if (throwable == null) log(priority, tag, message)
@@ -56,40 +56,40 @@ class AnalyticsLogger(
 
     override fun logCurrentScreen(context: FragmentActivity, tag : String) {
         runCatching {
-            analytics.setCurrentScreen(context, tag, null)
+            //analytics.setCurrentScreen(context, tag, null)
         }.exceptionOrNull()?.printStackTrace()
     }
 
     override fun logCurrentState(tag: String, bundle: Bundle?) {
         runCatching {
-            bundle?.also { analytics.logEvent(tag, it) }
+            //bundle?.also { analytics.logEvent(tag, it) }
         }.exceptionOrNull()?.printStackTrace()
     }
 
     override fun logException(throwable: Throwable) {
         runCatching {
-            crashlytics.recordException(throwable)
+            //crashlytics.recordException(throwable)
         }.exceptionOrNull()?.printStackTrace()
     }
 
     override fun log(priority: Int, tag: String?, message: String) {
         runCatching {
-            crashlytics.log(message)
+            //crashlytics.log(message)
         }.exceptionOrNull()?.printStackTrace()
     }
 
     override fun clearCrashAnalyticsSession() {
         runCatching {
-            analytics.resetAnalyticsData()
-            analytics.setUserId(String.empty())
-            crashlytics.setUserId(String.empty())
+            //analytics.resetAnalyticsData()
+            //analytics.setUserId(String.empty())
+            //crashlytics.setUserId(String.empty())
         }.exceptionOrNull()?.printStackTrace()
     }
 
     override fun setCrashAnalyticIdentifier(identifier: String) {
         runCatching {
-            analytics.setUserId(identifier)
-            crashlytics.setUserId(identifier)
+            //analytics.setUserId(identifier)
+            //crashlytics.setUserId(identifier)
         }.exceptionOrNull()?.printStackTrace()
     }
 

@@ -19,61 +19,51 @@ package co.anitrend.support.crunchyroll.feature.news.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.startNewActivity
+import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.ui.fragment.paged.SupportFragmentPagedList
-import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.arch.ui.util.StateLayoutConfig
+import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.extensions.toBundle
+import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
+import co.anitrend.support.crunchyroll.core.ui.fragment.paged.CrunchyFragmentPaged
 import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import co.anitrend.support.crunchyroll.feature.news.R
-import co.anitrend.support.crunchyroll.feature.news.koin.injectFeatureModules
+import co.anitrend.support.crunchyroll.feature.news.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.news.ui.activity.NewsScreen
 import co.anitrend.support.crunchyroll.feature.news.ui.adapter.RssNewsAdapter
 import co.anitrend.support.crunchyroll.feature.news.viewmodel.NewsViewModel
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filterIsInstance
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NewsFeedContent(
-    override val columnSize: Int = R.integer.single_list_size
-) : SupportFragmentPagedList<CrunchyNews>() {
+    override val defaultSpanSize: Int = R.integer.single_list_size
+) : CrunchyFragmentPaged<CrunchyNews>() {
 
     val viewModel by viewModel<NewsViewModel>()
 
     override val stateConfig: StateLayoutConfig by inject()
 
+    /**
+     * Expects a module helper if one is available for the current scope, otherwise return null
+     */
+    override fun featureModuleHelper() = moduleHelper
+
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         RssNewsAdapter(
-            get(),
-            stateConfig,
-            object : ItemClickListener<CrunchyNews> {
-
-                override fun onItemClick(target: View, data: Pair<Int, CrunchyNews?>) {
-                    val model = data.second
-                    if (model != null) {
-                        val payload = NavigationTargets.News.Payload(
-                            model.title,
-                            model.subTitle,
-                            model.description,
-                            model.content,
-                            model.publishedOn
-                        ).toBundle(NavigationTargets.News.PAYLOAD)
-
-                        target.context.startNewActivity<NewsScreen>(payload)
-                    }
-                }
-
-                override fun onItemLongClick(target: View, data: Pair<Int, CrunchyNews?>) {
-
-                }
-            }
+            resources = resources,
+            stateConfiguration = stateConfig,
+            markwon = get()
         )
     }
 
@@ -87,36 +77,35 @@ class NewsFeedContent(
     }
 
     /**
-     * Additional initialization to be done in this method, if the overriding class is type of
-     * [androidx.fragment.app.Fragment] then this method will be called in
-     * [androidx.fragment.app.FragmentActivity.onCreate]. Otherwise
-     * [androidx.fragment.app.FragmentActivity.onPostCreate] invokes this function
+     * Additional initialization to be done in this method, this method will be called in
+     * [androidx.fragment.app.FragmentActivity.onCreate].
      *
      * @param savedInstanceState
      */
+    @FlowPreview
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        injectFeatureModules()
+        super.initializeComponents(savedInstanceState)
+        lifecycleScope.launchWhenResumed {
+            supportViewAdapter.clickableFlow.debounce(16)
+                .filterIsInstance<DefaultClickableItem<CrunchyNews>>()
+                .collect {
+                    val model = it.data
+                    if (model != null) {
+                        val payload = NavigationTargets.News.Payload(
+                            model.title,
+                            model.subTitle,
+                            model.description,
+                            model.content,
+                            model.publishedOn
+                        ).toBundle(NavigationTargets.News.PAYLOAD)
+
+                        it.view.context.startNewActivity<NewsScreen>(payload)
+                    }
+                }
+        }
     }
 
-    /**
-     * Handles the updating of views, binding, creation or state change, depending on the context
-     * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
-     *
-     * Check implementation for more details
-     */
-    override fun onUpdateUserInterface() {
 
-    }
-
-    /**
-     * Handles the complex logic required to dispatch network request to [SupportViewModel]
-     * which uses [SupportRepository] to either request from the network or database cache.
-     *
-     * The results of the dispatched network or cache call will be published by the
-     * [androidx.lifecycle.LiveData] specifically [SupportViewModel.model]
-     *
-     * @see [SupportViewModel.requestBundleLiveData]
-     */
     override fun onFetchDataInitialize() {
         val currentLocale = get<ICrunchySessionLocale>().sessionLocale
         viewModel.state(

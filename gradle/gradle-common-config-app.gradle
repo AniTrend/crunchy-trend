@@ -30,11 +30,12 @@ ext {
 dependencies {
     /** Platform Dependencies */
     implementation project(":support-ui")
+    implementation project(":support-ext")
     implementation project(":support-core")
     implementation project(":support-data")
     implementation project(":support-theme")
     implementation project(":support-domain")
-    implementation project(":support-ext")
+    implementation project(":support-recycler")
 
     implementation project(':app-core')
     implementation project(':app-data')

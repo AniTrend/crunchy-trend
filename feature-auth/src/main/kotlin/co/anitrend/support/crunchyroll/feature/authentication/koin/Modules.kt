@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.feature.authentication.koin
 
+import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.feature.authentication.presenter.AuthPresenter
 import co.anitrend.support.crunchyroll.feature.authentication.ui.activity.AuthenticationScreen
 import co.anitrend.support.crunchyroll.feature.authentication.ui.fragment.FragmentLogin
@@ -65,10 +66,8 @@ private val viewModelModule = module {
     }
 }
 
-private val featureModules = listOf(fragmentModule, presenterModule, viewModelModule)
-
-private val koinModules by lazy {
-    loadKoinModules(featureModules)
+val moduleHelper by lazy {
+    DynamicFeatureModuleHelper(
+        listOf(fragmentModule, presenterModule, viewModelModule)
+    )
 }
-
-fun injectFeatureModules() = koinModules

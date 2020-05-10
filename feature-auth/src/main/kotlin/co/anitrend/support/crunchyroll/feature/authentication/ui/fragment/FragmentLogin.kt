@@ -21,20 +21,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
+import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
+import co.anitrend.support.crunchyroll.core.ui.fragment.CrunchyFragment
 import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLoginBinding
 import co.anitrend.support.crunchyroll.feature.authentication.presenter.AuthPresenter
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login.LoginViewModel
 import kotlinx.android.synthetic.main.login_anonymous_controls.view.*
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FragmentLogin(
     private val presenter: AuthPresenter
-) : SupportFragment<Nothing>() {
+) : CrunchyFragment() {
 
     private lateinit var binding: FragmentLoginBinding
 
@@ -56,12 +62,6 @@ class FragmentLogin(
         viewModelState().refreshState.observe(viewLifecycleOwner, Observer {
             binding.supportStateLayout.setNetworkState(it)
         })
-        binding.supportStateLayout.interactionLiveData.observe(
-            viewLifecycleOwner,
-            Observer {
-                viewModelState().retry()
-            }
-        )
         with(binding) {
             lifecycleOwner = this@FragmentLogin
             viewModel = viewModel
@@ -73,8 +73,15 @@ class FragmentLogin(
      */
     override fun viewModelState() = viewModel.state
 
+    @FlowPreview
     override fun initializeComponents(savedInstanceState: Bundle?) {
-
+        lifecycleScope.launchWhenResumed {
+            binding.supportStateLayout.interactionFlow
+                .debounce(16)
+                .collect {
+                    viewModelState().retry()
+                }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
@@ -96,12 +103,12 @@ class FragmentLogin(
         binding.supportStateLayout.setNetworkState(NetworkState.Success)
     }
 
-    override fun onUpdateUserInterface() {
+    private fun onUpdateUserInterface() {
         NavigationTargets.Main(context)
         activity?.closeScreen()
     }
 
-    override fun onFetchDataInitialize() {
+    private fun onFetchDataInitialize() {
         presenter.onSubmit(
             viewModel.loginQuery,
             binding
@@ -115,4 +122,9 @@ class FragmentLogin(
         }
         return super.hasBackPressableAction()
     }
+
+    /**
+     * Expects a module helper if one is available for the current scope, otherwise return null
+     */
+    override fun featureModuleHelper(): Nothing? = null
 }

@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.feature.search.koin
 
+import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.feature.search.presenter.SeriesPresenter
 import co.anitrend.support.crunchyroll.feature.search.ui.activity.SearchScreen
 import co.anitrend.support.crunchyroll.feature.search.ui.fragment.SearchContentScreen
@@ -23,7 +24,6 @@ import co.anitrend.support.crunchyroll.feature.search.viewmodel.SeriesSearchView
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 
 private val fragmentModule = module {
@@ -51,10 +51,8 @@ private val viewModelModule = module {
     }
 }
 
-private val featureModules = listOf(fragmentModule, presenterModule, viewModelModule)
-
-private val koinModules by lazy {
-    loadKoinModules(featureModules)
+val moduleHelper by lazy {
+    DynamicFeatureModuleHelper(
+        listOf(fragmentModule, presenterModule, viewModelModule)
+    )
 }
-
-fun injectFeatureModules() = koinModules

@@ -23,7 +23,6 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.feature.settings.R
 import org.koin.android.ext.android.inject

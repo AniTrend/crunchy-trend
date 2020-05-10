@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.feature.splash.koin
 
+import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 
@@ -27,10 +28,8 @@ private val viewModelModule = module {
 
 }
 
-private val featureModules = listOf(presenterModule, viewModelModule)
-
-private val koinModules by lazy {
-    loadKoinModules(featureModules)
+val moduleHelper by lazy {
+    DynamicFeatureModuleHelper(
+        listOf(presenterModule, viewModelModule)
+    )
 }
-
-fun injectFeatureModules() = koinModules

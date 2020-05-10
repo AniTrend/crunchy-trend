@@ -16,23 +16,30 @@
 
 package co.anitrend.support.crunchyroll.feature.collection.ui.adapter
 
+import android.content.res.Resources
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import co.anitrend.arch.ui.recycler.adapter.SupportPagedListAdapter
-import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
-import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.arch.ui.util.StateLayoutConfig
+import co.anitrend.arch.core.model.IStateLayoutConfig
+import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
+import co.anitrend.arch.recycler.adapter.SupportPagedListAdapter
+import co.anitrend.arch.recycler.model.contract.IRecyclerItem
+import co.anitrend.arch.theme.animator.ScaleAnimator
+import co.anitrend.arch.theme.animator.contract.ISupportAnimator
 import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
-import co.anitrend.support.crunchyroll.feature.collection.databinding.AdapterCollectionBinding
-import co.anitrend.support.crunchyroll.feature.collection.presenter.CollectionPresenter
-import co.anitrend.support.crunchyroll.feature.collection.presenter.CollectionPresenter.Companion.titleWithSeason
+import co.anitrend.support.crunchyroll.feature.collection.controller.model.CollectionItem
 
 class CollectionAdapter(
-    override val stateConfig: StateLayoutConfig,
-    private val itemClickListener: ItemClickListener<CrunchyCollection>
-) : SupportPagedListAdapter<CrunchyCollection>() {
+    override val resources: Resources,
+    override val stateConfiguration: IStateLayoutConfig,
+    override val customSupportAnimator: ISupportAnimator? = ScaleAnimator(),
+    override val mapper: (CrunchyCollection?) -> IRecyclerItem = { CollectionItem(it) }
+) : SupportPagedListAdapter<CrunchyCollection>(CollectionItem.DIFFER) {
+
+    /**
+     * Assigned if the current adapter supports needs to supports action mode
+     */
+    override var supportAction: ISupportSelectionMode<Long>? = null
 
     /**
      * Used to get stable ids for [androidx.recyclerview.widget.RecyclerView.Adapter] but only if
@@ -46,55 +53,13 @@ class CollectionAdapter(
     }
 
     /**
-     * Should provide the required view holder, this function is a substitute for [onCreateViewHolder] which now
+     * Should provide the required view holder, this function is a substitute for
+     * [androidx.recyclerview.widget.RecyclerView.Adapter.onCreateViewHolder] which now
      * has extended functionality
      */
     override fun createDefaultViewHolder(
         parent: ViewGroup,
         viewType: Int,
         layoutInflater: LayoutInflater
-    ): SupportViewHolder<CrunchyCollection> {
-        val binding = AdapterCollectionBinding.inflate(
-            layoutInflater,
-            parent,
-            false
-        )
-
-        return SeriesSeasonViewHolder(
-            binding, itemClickListener
-        )
-    }
-
-    internal class SeriesSeasonViewHolder(
-        private val binding: AdapterCollectionBinding,
-        private val clickListener: ItemClickListener<CrunchyCollection>
-    ) : SupportViewHolder<CrunchyCollection>(binding.root) {
-
-        private var model: CrunchyCollection? = null
-
-        /**
-         * Load images, text, buttons, etc. in this method from the given parameter
-         *
-         * @param model Is the liveData at the current adapter position
-         */
-        override fun invoke(model: CrunchyCollection?) {
-            this.model = model
-            binding.collectionTitle.text = model?.titleWithSeason()
-            binding.collectionDescription.text = model?.description
-            binding.container.setOnClickListener {
-                onItemClick(it, clickListener)
-            }
-        }
-
-        override fun onViewRecycled() {
-            binding.container.setOnClickListener(null)
-            model = null
-        }
-
-        override fun onItemClick(view: View, itemClickListener: ItemClickListener<CrunchyCollection>) {
-            model?.apply {
-                performClick(this, view, itemClickListener)
-            }
-        }
-    }
+    ) = CollectionItem.createViewHolder(parent, layoutInflater)
 }

@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.feature.settings.koin
 
+import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.feature.settings.ui.activity.SettingsScreen
 import co.anitrend.support.crunchyroll.feature.settings.ui.fragment.SettingsFragment
 import org.koin.androidx.fragment.dsl.fragment
@@ -38,10 +39,8 @@ private val viewModelModule = module {
 
 }
 
-private val featureModules = listOf(fragmentModule)
-
-private val koinModules by lazy {
-    loadKoinModules(featureModules)
+val moduleHelper by lazy {
+    DynamicFeatureModuleHelper(
+        listOf(fragmentModule)
+    )
 }
-
-fun injectFeatureModules() = koinModules

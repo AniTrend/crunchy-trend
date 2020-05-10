@@ -17,29 +17,33 @@
 package co.anitrend.support.crunchyroll.feature.discover.ui.fragment
 
 import android.os.Bundle
-import android.view.View
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.argument
-import co.anitrend.arch.ui.fragment.paged.SupportFragmentPagedList
-import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.arch.ui.util.StateLayoutConfig
+import co.anitrend.arch.recycler.common.DefaultClickableItem
+import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
+import co.anitrend.support.crunchyroll.core.ui.fragment.paged.CrunchyFragmentPaged
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesBrowseQuery
 import co.anitrend.support.crunchyroll.feature.discover.R
-import co.anitrend.support.crunchyroll.feature.discover.koin.injectFeatureModules
-import co.anitrend.support.crunchyroll.feature.discover.presenter.SeriesPresenter
-import co.anitrend.support.crunchyroll.feature.discover.ui.adapter.SeriesViewAdapter
+import co.anitrend.support.crunchyroll.feature.discover.koin.moduleHelper
+import co.anitrend.support.crunchyroll.feature.discover.ui.activity.SeriesDiscoverScreen
 import co.anitrend.support.crunchyroll.feature.discover.viewmodel.SeriesDiscoverViewModel
+import co.anitrend.support.crunchyroll.shared.series.adapter.SeriesViewAdapter
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filterIsInstance
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SeriesDiscoverContent(
-    override val columnSize: Int = R.integer.single_list_size
-) : SupportFragmentPagedList<CrunchySeries>() {
+    override val defaultSpanSize: Int = R.integer.single_list_size
+) : CrunchyFragmentPaged<CrunchySeries>() {
 
     private val payload: NavigationTargets.Discover.Payload?
             by argument(NavigationTargets.Discover.PAYLOAD)
@@ -50,35 +54,8 @@ class SeriesDiscoverContent(
 
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         SeriesViewAdapter(
-            stateConfig,
-            object : ItemClickListener<CrunchySeries> {
-                /**
-                 * When the target view from [View.OnClickListener]
-                 * is clicked from a view holder this method will be called
-                 *
-                 * @param target view that has been clicked
-                 * @param data the liveData that at the click index
-                 */
-                override fun onItemClick(target: View, data: Pair<Int, CrunchySeries?>) {
-                    val seriesPayload = NavigationTargets.Series.Payload(
-                        seriesId = data.second?.seriesId ?: 0
-                    )
-                    NavigationTargets.Series(
-                        target.context, seriesPayload
-                    )
-                }
-
-                /**
-                 * When the target view from [View.OnLongClickListener]
-                 * is clicked from a view holder this method will be called
-                 *
-                 * @param target view that has been long clicked
-                 * @param data the liveData that at the long click index
-                 */
-                override fun onItemLongClick(target: View, data: Pair<Int, CrunchySeries?>) {
-
-                }
-            }
+            resources = resources,
+            stateConfiguration = stateConfig
         )
     }
 
@@ -95,25 +72,27 @@ class SeriesDiscoverContent(
     }
 
     /**
-     * Additional initialization to be done in this method, if the overriding class is type of
-     * [androidx.fragment.app.Fragment] then this method will be called in
-     * [androidx.fragment.app.FragmentActivity.onCreate]. Otherwise
-     * [androidx.fragment.app.FragmentActivity.onPostCreate] invokes this function
+     * Additional initialization to be done in this method, this method will be called in
+     * [androidx.fragment.app.FragmentActivity.onCreate].
      *
      * @param savedInstanceState
      */
+    @FlowPreview
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        injectFeatureModules()
-    }
-
-    /**
-     * Handles the updating of views, binding, creation or state change, depending on the context
-     * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
-     *
-     * Check implementation for more details
-     */
-    override fun onUpdateUserInterface() {
-
+        super.initializeComponents(savedInstanceState)
+        lifecycleScope.launchWhenResumed {
+            supportViewAdapter.clickableFlow.debounce(16)
+                .filterIsInstance<DefaultClickableItem<CrunchySeries>>()
+                .collect {
+                    val data = it.data
+                    val seriesPayload = NavigationTargets.Series.Payload(
+                        seriesId = data?.seriesId ?: 0
+                    )
+                    NavigationTargets.Series(
+                        it.view.context, seriesPayload
+                    )
+                }
+        }
     }
 
     /**
@@ -141,21 +120,13 @@ class SeriesDiscoverContent(
     }
 
     /**
-     * Called when the view previously created by [.onCreateView] has
-     * been detached from the fragment.  The next time the fragment needs
-     * to be displayed, a new view will be created.  This is called
-     * after [.onStop] and before [.onDestroy].  It is called
-     * *regardless* of whether [.onCreateView] returned a
-     * non-null view.  Internally it is called after the view's state has
-     * been saved but before it has been removed from its parent.
-     */
-    override fun onDestroyView() {
-        supportRecyclerView?.adapter = null
-        super.onDestroyView()
-    }
-
-    /**
      * Proxy for a view model state if one exists
      */
     override fun viewModelState() = viewModel.state
+
+    /**
+     * Expects a module helper if one is available for the current scope, otherwise return null
+     */
+    override fun featureModuleHelper() =
+        if (context is SeriesDiscoverScreen) null else moduleHelper
 }

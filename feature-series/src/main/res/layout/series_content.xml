@@ -147,7 +147,7 @@
                             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                             android:text="@string/label_genres" />
 
-                    <co.anitrend.arch.ui.recycler.SupportRecyclerView
+                    <co.anitrend.arch.recycler.SupportRecyclerView
                             android:id="@+id/seriesGenres"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

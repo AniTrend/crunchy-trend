@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2020 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,4 +14,14 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.feature.discover.util
+package co.anitrend.support.crunchyroll.core.ui.contract
+
+import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
+
+interface IFeatureContract {
+
+    /**
+     * Expects a module helper if one is available for the current scope, otherwise return null
+     */
+    fun featureModuleHelper(): DynamicFeatureModuleHelper?
+}

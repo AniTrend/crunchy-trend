@@ -17,8 +17,6 @@
 package co.anitrend.support.crunchyroll.feature.search.ui.activity
 
 import android.os.Bundle
-import androidx.fragment.app.commit
-import co.anitrend.arch.ui.common.ISupportActionUp
 import co.anitrend.multisearch.model.MultiSearchChangeListener
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.extensions.commit
@@ -26,7 +24,7 @@ import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesSearchQuery
 import co.anitrend.support.crunchyroll.feature.search.R
-import co.anitrend.support.crunchyroll.feature.search.koin.injectFeatureModules
+import co.anitrend.support.crunchyroll.feature.search.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.search.ui.fragment.SearchContentScreen
 import co.anitrend.support.crunchyroll.feature.search.viewmodel.SeriesSearchViewModel
 import kotlinx.android.synthetic.main.search_activity.*
@@ -99,7 +97,6 @@ class SearchScreen : CrunchyActivity() {
      */
     override fun configureActivity() {
         super.configureActivity()
-        injectFeatureModules()
         setupKoinFragmentFactory(lifecycleScope)
     }
 
@@ -118,11 +115,16 @@ class SearchScreen : CrunchyActivity() {
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        onUpdateUserInterface()
         multiSearch.setSearchViewListener(multiSearchViewListener)
+        onUpdateUserInterface()
     }
 
-    override fun onUpdateUserInterface() {
+    /**
+     * Expects a module helper if one is available for the current scope, otherwise return null
+     */
+    override fun featureModuleHelper() = moduleHelper
+
+    private fun onUpdateUserInterface() {
         val target = FragmentItem(
             fragment = SearchContentScreen::class.java
         )

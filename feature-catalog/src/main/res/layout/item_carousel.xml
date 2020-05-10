@@ -14,7 +14,7 @@
   ~    See the License for the specific language governing permissions and
   ~    limitations under the License.
   -->
-<co.anitrend.arch.ui.recycler.SupportRecyclerView
+<co.anitrend.arch.recycler.SupportRecyclerView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/carouselRecycler"
         android:layout_width="match_parent"

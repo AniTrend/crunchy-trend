@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.feature.collection.koin
 
+import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.feature.collection.presenter.CollectionPresenter
 import co.anitrend.support.crunchyroll.feature.collection.ui.activity.CollectionScreen
 import co.anitrend.support.crunchyroll.feature.collection.ui.fragment.CollectionContentScreen
@@ -53,10 +54,8 @@ private val viewModelModule = module {
     }
 }
 
-private val featureModules = listOf(fragmentModule, presenterModule, viewModelModule)
-
-private val koinModules by lazy {
-    loadKoinModules(featureModules)
+val moduleHelper by lazy {
+    DynamicFeatureModuleHelper(
+        listOf(fragmentModule, presenterModule, viewModelModule)
+    )
 }
-
-fun injectFeatureModules() = koinModules

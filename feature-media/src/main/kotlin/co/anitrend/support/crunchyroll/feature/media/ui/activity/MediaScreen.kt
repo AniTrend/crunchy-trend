@@ -18,14 +18,13 @@ package co.anitrend.support.crunchyroll.feature.media.ui.activity
 
 import android.os.Bundle
 import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.commit
-import co.anitrend.arch.ui.common.ISupportActionUp
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.extensions.commit
+import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import co.anitrend.support.crunchyroll.feature.media.R
-import co.anitrend.support.crunchyroll.feature.media.koin.injectFeatureModules
+import co.anitrend.support.crunchyroll.feature.media.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.media.ui.fragment.MediaContent
 import kotlinx.android.synthetic.main.media_screen.*
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
@@ -41,7 +40,6 @@ class MediaScreen : CrunchyActivity() {
      */
     override fun configureActivity() {
         super.configureActivity()
-        injectFeatureModules()
         setupKoinFragmentFactory(lifecycleScope)
     }
 
@@ -64,12 +62,17 @@ class MediaScreen : CrunchyActivity() {
     }
 
     /**
+     * Expects a module helper if one is available for the current scope, otherwise return null
+     */
+    override fun featureModuleHelper() = moduleHelper
+
+    /**
      * Handles the updating of views, binding, creation or state change, depending on the context
      * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
      *
      * Check implementation for more details
      */
-    override fun onUpdateUserInterface() {
+    private fun onUpdateUserInterface() {
         val target = FragmentItem(
             parameter = intent.extras,
             fragment = MediaContent::class.java

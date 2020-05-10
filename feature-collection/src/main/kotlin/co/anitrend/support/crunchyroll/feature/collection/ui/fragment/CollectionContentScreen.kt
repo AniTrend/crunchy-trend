@@ -19,31 +19,34 @@ package co.anitrend.support.crunchyroll.feature.collection.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import co.anitrend.arch.core.model.ISupportViewModelState
+import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.argument
 import co.anitrend.arch.extension.empty
+import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.ui.fragment.paged.SupportFragmentPagedList
-import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.arch.ui.util.StateLayoutConfig
+import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
+import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
+import co.anitrend.support.crunchyroll.core.ui.fragment.paged.CrunchyFragmentPaged
 import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
 import co.anitrend.support.crunchyroll.domain.collection.models.CrunchyCollectionQuery
 import co.anitrend.support.crunchyroll.feature.collection.R
-import co.anitrend.support.crunchyroll.feature.collection.presenter.CollectionPresenter
 import co.anitrend.support.crunchyroll.feature.collection.ui.adapter.CollectionAdapter
 import co.anitrend.support.crunchyroll.feature.collection.viewmodel.CollectionViewModel
-import org.koin.android.ext.android.inject
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filterIsInstance
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CollectionContentScreen(
-    override val columnSize: Int = R.integer.single_list_size,
+    override val defaultSpanSize: Int = R.integer.single_list_size,
     override val stateConfig: StateLayoutConfig
-) : SupportFragmentPagedList<CrunchyCollection>() {
+) : CrunchyFragmentPaged<CrunchyCollection>() {
 
     private val payload
             by argument<NavigationTargets.Collection.Payload>(
@@ -52,24 +55,8 @@ class CollectionContentScreen(
 
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         CollectionAdapter(
-            stateConfig,
-            object : ItemClickListener<CrunchyCollection> {
-                override fun onItemClick(target: View, data: Pair<Int, CrunchyCollection?>) {
-                    val payload = NavigationTargets.Media.Payload(
-                        collectionThumbnail = data.second?.portraitImage,
-                        collectionName = data.second?.name ?: String.empty(),
-                        collectionId = data.second?.collectionId ?: 0
-                    )
-                    NavigationTargets.Media.invoke(target.context, payload)
-                }
-
-                override fun onItemLongClick(
-                    target: View,
-                    data: Pair<Int, CrunchyCollection?>
-                ) {
-
-                }
-            }
+            resources = resources,
+            stateConfiguration = stateConfig
         )
     }
 
@@ -87,12 +74,28 @@ class CollectionContentScreen(
 
     private val viewModel by viewModel<CollectionViewModel>()
 
+    /**
+     * Additional initialization to be done in this method, this method will be called in
+     * [androidx.fragment.app.FragmentActivity.onCreate].
+     *
+     * @param savedInstanceState
+     */
+    @FlowPreview
     override fun initializeComponents(savedInstanceState: Bundle?) {
-
-    }
-
-    override fun onUpdateUserInterface() {
-
+        super.initializeComponents(savedInstanceState)
+        lifecycleScope.launchWhenResumed {
+            supportViewAdapter.clickableFlow.debounce(16)
+                .filterIsInstance<DefaultClickableItem<CrunchyCollection>>()
+                .collect {
+                    val data = it.data
+                    val payload = NavigationTargets.Media.Payload(
+                        collectionThumbnail = data?.portraitImage,
+                        collectionName = data?.name ?: String.empty(),
+                        collectionId = data?.collectionId ?: 0
+                    )
+                    NavigationTargets.Media.invoke(it.view.context, payload)
+                }
+        }
     }
 
     /**
@@ -111,7 +114,7 @@ class CollectionContentScreen(
                     seriesId = it.seriesId
                 )
             )
-        } ?: supportStateLayout?.setNetworkState(
+        } ?: supportStateLayout?.networkStateLiveData?.postValue(
             NetworkState.Error(
                 heading = "Invalid fragment parameters ${Emote.Cry}",
                 message = "Invalid or missing payload, request cannot be processed"
@@ -120,21 +123,12 @@ class CollectionContentScreen(
     }
 
     /**
-     * Called when the view previously created by [onCreateView] has
-     * been detached from the fragment. The next time the fragment needs
-     * to be displayed, a new view will be created.  This is called
-     * after [onStop] and before [onDestroy].  It is called
-     * *regardless* of whether [onCreateView] returned a
-     * non-null view. Internally it is called after the view's state has
-     * been saved but before it has been removed from its parent.
-     */
-    override fun onDestroyView() {
-        supportRecyclerView?.adapter = null
-        super.onDestroyView()
-    }
-
-    /**
      * Proxy for a view model state if one exists
      */
     override fun viewModelState() = viewModel.state
+
+    /**
+     * Expects a module helper if one is available for the current scope, otherwise return null
+     */
+    override fun featureModuleHelper(): Nothing? = null
 }

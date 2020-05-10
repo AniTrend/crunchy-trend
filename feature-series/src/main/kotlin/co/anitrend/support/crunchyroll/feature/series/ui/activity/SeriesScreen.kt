@@ -17,14 +17,12 @@
 package co.anitrend.support.crunchyroll.feature.series.ui.activity
 
 import android.os.Bundle
-import androidx.fragment.app.commit
-import co.anitrend.arch.ui.common.ISupportActionUp
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.extensions.commit
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import co.anitrend.support.crunchyroll.feature.series.R
-import co.anitrend.support.crunchyroll.feature.series.koin.injectFeatureModules
+import co.anitrend.support.crunchyroll.feature.series.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.series.ui.fragment.SeriesContentScreen
 import kotlinx.android.synthetic.main.series_activity.*
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
@@ -40,7 +38,6 @@ class SeriesScreen : CrunchyActivity() {
      */
     override fun configureActivity() {
         super.configureActivity()
-        injectFeatureModules()
         setupKoinFragmentFactory(lifecycleScope)
     }
 
@@ -63,12 +60,11 @@ class SeriesScreen : CrunchyActivity() {
     }
 
     /**
-     * Handles the updating of views, binding, creation or state change, depending on the context
-     * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
-     *
-     * Check implementation for more details
+     * Expects a module helper if one is available for the current scope, otherwise return null
      */
-    override fun onUpdateUserInterface() {
+    override fun featureModuleHelper() = moduleHelper
+
+    private fun onUpdateUserInterface() {
         val target = FragmentItem(
             parameter = intent.extras,
             fragment = SeriesContentScreen::class.java

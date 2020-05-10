@@ -19,10 +19,11 @@ package co.anitrend.support.crunchyroll.feature.collection.ui.activity
 import android.os.Bundle
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.extensions.commit
+import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import co.anitrend.support.crunchyroll.feature.collection.R
-import co.anitrend.support.crunchyroll.feature.collection.koin.injectFeatureModules
+import co.anitrend.support.crunchyroll.feature.collection.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.collection.ui.fragment.CollectionContentScreen
 import kotlinx.android.synthetic.main.collection_activity.*
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
@@ -38,7 +39,6 @@ class CollectionScreen : CrunchyActivity() {
      */
     override fun configureActivity() {
         super.configureActivity()
-        injectFeatureModules()
         setupKoinFragmentFactory(lifecycleScope)
     }
 
@@ -61,12 +61,17 @@ class CollectionScreen : CrunchyActivity() {
     }
 
     /**
+     * Expects a module helper if one is available for the current scope, otherwise return null
+     */
+    override fun featureModuleHelper() = moduleHelper
+
+    /**
      * Handles the updating of views, binding, creation or state change, depending on the context
      * [androidx.lifecycle.LiveData] for a given [supportFragmentActivity] will be available by this point.
      *
      * Check implementation for more details
      */
-    override fun onUpdateUserInterface() {
+    private fun onUpdateUserInterface() {
         val target = FragmentItem(
             parameter = intent.extras,
             fragment = CollectionContentScreen::class.java

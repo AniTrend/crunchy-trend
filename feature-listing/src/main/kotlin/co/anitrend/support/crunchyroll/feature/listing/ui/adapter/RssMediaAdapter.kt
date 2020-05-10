@@ -16,23 +16,34 @@
 
 package co.anitrend.support.crunchyroll.feature.listing.ui.adapter
 
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import co.anitrend.arch.ui.recycler.adapter.SupportPagedListAdapter
-import co.anitrend.arch.ui.recycler.holder.SupportViewHolder
-import co.anitrend.arch.ui.recycler.holder.event.ItemClickListener
-import co.anitrend.arch.ui.util.StateLayoutConfig
+import co.anitrend.arch.core.model.IStateLayoutConfig
+import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
+import co.anitrend.arch.recycler.adapter.SupportPagedListAdapter
+import co.anitrend.arch.recycler.model.contract.IRecyclerItem
+import co.anitrend.arch.theme.animator.ScaleAnimator
+import co.anitrend.arch.theme.animator.contract.ISupportAnimator
 import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 import co.anitrend.support.crunchyroll.feature.feed.databinding.AdapterMediaFeedBinding
+import co.anitrend.support.crunchyroll.feature.listing.controller.model.EpisodeFeedItem
 import coil.request.RequestDisposable
 
 class RssMediaAdapter(
-    override val stateConfig: StateLayoutConfig,
-    private val itemClickListener: ItemClickListener<CrunchyEpisodeFeed>
-) : SupportPagedListAdapter<CrunchyEpisodeFeed>() {
+    override val resources: Resources,
+    override val stateConfiguration: IStateLayoutConfig,
+    override val customSupportAnimator: ISupportAnimator? = ScaleAnimator(),
+    override val mapper: (CrunchyEpisodeFeed?) -> IRecyclerItem = { EpisodeFeedItem(it) }
+) : SupportPagedListAdapter<CrunchyEpisodeFeed>(EpisodeFeedItem.DIFFER) {
+
+    /**
+     * Assigned if the current adapter supports needs to supports action mode
+     */
+    override var supportAction: ISupportSelectionMode<Long>? = null
 
     /**
      * Used to get stable ids for [androidx.recyclerview.widget.RecyclerView.Adapter] but only if
@@ -53,57 +64,5 @@ class RssMediaAdapter(
         parent: ViewGroup,
         viewType: Int,
         layoutInflater: LayoutInflater
-    ): SupportViewHolder<CrunchyEpisodeFeed> {
-        val binding = AdapterMediaFeedBinding.inflate(
-            layoutInflater,
-            parent,
-            false
-        )
-
-        return MediaRssViewHolder(itemClickListener, binding)
-    }
-
-
-    internal class MediaRssViewHolder(
-        private val clickListener: ItemClickListener<CrunchyEpisodeFeed>,
-        private val binding: AdapterMediaFeedBinding
-    ): SupportViewHolder<CrunchyEpisodeFeed>(binding.root) {
-
-        private var model: CrunchyEpisodeFeed? = null
-        private var disposable: RequestDisposable? = null
-
-        /**
-         * Load images, text, buttons, etc. in this method from the given parameter
-         *
-         * @param model Is the liveData at the current adapter position
-         */
-        override fun invoke(model: CrunchyEpisodeFeed?) {
-            this.model = model
-            disposable = binding.mediaThumbnail.setImageUrl(model)
-            binding.mediaTitle.text = model?.title
-            binding.mediaDuration.text = model?.episodeDuration
-            binding.mediaThumbnail.setOnClickListener {
-                onItemClick(it, clickListener)
-            }
-        }
-
-        override fun onViewRecycled() {
-            binding.mediaThumbnail.setOnClickListener(null)
-            disposable?.dispose()
-            disposable = null
-            model = null
-        }
-
-        /**
-         * Handle any onclick events from our views, optionally you can call
-         * [performClick] to dispatch [Pair]<[Int], T> on the [ItemClickListener]
-         *
-         * @param view the view that has been clicked
-         */
-        override fun onItemClick(view: View, itemClickListener: ItemClickListener<CrunchyEpisodeFeed>) {
-            model.apply {
-                performClick(this, view, itemClickListener)
-            }
-        }
-    }
+    ) = EpisodeFeedItem.createViewHolder(parent, layoutInflater)
 }

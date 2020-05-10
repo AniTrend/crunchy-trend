@@ -21,26 +21,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import co.anitrend.arch.core.model.ISupportViewModelState
-import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
-import co.anitrend.arch.domain.entities.NetworkState
-import co.anitrend.arch.ui.fragment.SupportFragment
-import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
+import co.anitrend.arch.extension.attachComponent
+import co.anitrend.support.crunchyroll.core.ui.fragment.CrunchyFragment
 import co.anitrend.support.crunchyroll.feature.catalog.R
 import co.anitrend.support.crunchyroll.feature.catalog.controller.decorator.HeaderDecorator
 import co.anitrend.support.crunchyroll.feature.catalog.databinding.ContentSeriesCatalogBinding
-import co.anitrend.support.crunchyroll.feature.catalog.koin.injectFeatureModules
+import co.anitrend.support.crunchyroll.feature.catalog.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.catalog.presenter.CatalogPresenter
 import co.anitrend.support.crunchyroll.feature.catalog.viewmodel.CatalogViewModel
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>>() {
+class CatalogContent : CrunchyFragment() {
 
     private lateinit var binding: ContentSeriesCatalogBinding
 
@@ -75,8 +71,15 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>>() {
     }
 
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        injectFeatureModules()
+        lifecycleScope.launchWhenResumed {
+            attachComponent(binding.supportRecycler)
+        }
     }
+
+    /**
+     * Expects a module helper if one is available for the current scope, otherwise return null
+     */
+    override fun featureModuleHelper() = moduleHelper
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -111,19 +114,10 @@ class CatalogContent : SupportFragment<List<CrunchyCatalogWithSeries>>() {
         onFetchDataInitialize()
     }
 
-    override fun onUpdateUserInterface() {
-
-    }
-
-    override fun onFetchDataInitialize() {
+    private fun onFetchDataInitialize() {
         viewModel.viewModelLists.forEach {
             it.requestIfModelIsNotInitialized()
         }
-    }
-
-    override fun onDestroyView() {
-        binding.supportRecycler.adapter = null
-        super.onDestroyView()
     }
 
     /**

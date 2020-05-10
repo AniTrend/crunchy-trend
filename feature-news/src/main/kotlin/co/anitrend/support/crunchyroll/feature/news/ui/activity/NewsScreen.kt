@@ -17,7 +17,6 @@
 package co.anitrend.support.crunchyroll.feature.news.ui.activity
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.text.util.Linkify
 import android.view.Menu
@@ -28,11 +27,9 @@ import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.extra
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
-import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import co.anitrend.support.crunchyroll.feature.news.R
-import co.anitrend.support.crunchyroll.feature.news.koin.injectFeatureModules
+import co.anitrend.support.crunchyroll.feature.news.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.news.presenter.NewsPresenter
 import io.noties.markwon.Markwon
 import kotlinx.android.synthetic.main.news_screen.*
@@ -61,7 +58,6 @@ class NewsScreen : CrunchyActivity() {
     }
 
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        injectFeatureModules()
         BetterLinkMovementMethod.linkify(
             Linkify.ALL,
             this
@@ -83,6 +79,11 @@ class NewsScreen : CrunchyActivity() {
         }
         onUpdateUserInterface()
     }
+
+    /**
+     * Expects a module helper if one is available for the current scope, otherwise return null
+     */
+    override fun featureModuleHelper() = moduleHelper
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.news_reader_menu, menu)
@@ -110,7 +111,7 @@ class NewsScreen : CrunchyActivity() {
         }
     }
 
-    override fun onUpdateUserInterface() {
+    private fun onUpdateUserInterface() {
         launch {
             val html = presenter.createCustomHtml(payload)
             stateLayout?.setNetworkState(NetworkState.Success)

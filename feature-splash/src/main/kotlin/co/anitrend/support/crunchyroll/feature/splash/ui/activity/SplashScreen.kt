@@ -22,11 +22,11 @@ import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.extension.isStateAtLeast
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
+import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.splash.R
-import co.anitrend.support.crunchyroll.feature.splash.koin.injectFeatureModules
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -42,11 +42,6 @@ class SplashScreen : CrunchyActivity() {
         setContentView(R.layout.activity_splash)
     }
 
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-        onFetchDataInitialize()
-    }
-
     /**
      * Additional initialization to be done in this method, if the overriding class is type of
      * [androidx.fragment.app.Fragment] then this method will be called in
@@ -57,7 +52,6 @@ class SplashScreen : CrunchyActivity() {
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
         launch {
-            injectFeatureModules()
             lifecycleScope.launchWhenResumed {
                 onUpdateUserInterface()
             }
@@ -65,12 +59,11 @@ class SplashScreen : CrunchyActivity() {
     }
 
     /**
-     * Handles the updating of views, binding, creation or state change, depending on the context
-     * [androidx.lifecycle.LiveData] for a given [ISupportFragmentActivity] will be available by this point.
-     *
-     * Check implementation for more details
+     * Expects a module helper if one is available for the current scope, otherwise return null
      */
-    override fun onUpdateUserInterface() {
+    override fun featureModuleHelper(): Nothing? = null
+
+    private fun onUpdateUserInterface() {
         launch {
             delay(300)
             if (isStateAtLeast(Lifecycle.State.RESUMED)) {

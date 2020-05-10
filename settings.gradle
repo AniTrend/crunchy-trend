@@ -9,7 +9,7 @@ include ':app',
         ':feature-discover',
         ':feature-media',
         ':android-core',
-        ':feature-series', 
+        ':feature-series',
         ':feature-catalog',
         ':feature-collection',
         ':support-ext',
@@ -17,10 +17,12 @@ include ':app',
         ':support-data',
         ':support-domain',
         ':support-theme',
-        ':app-core', ':app-data', ':support-ui', ':app-domain'
+        ':app-core', ':app-data', ':support-ui', ':app-domain', ':support-recycler'
 project(':support-ext').projectDir = new File('support-app/support-ext')
 project(':support-core').projectDir = new File('support-app/support-core')
 project(':support-domain').projectDir = new File('support-app/support-domain')
 project(':support-data').projectDir = new File('support-app/support-data')
 project(':support-theme').projectDir = new File('support-app/support-theme')
 project(':support-ui').projectDir = new File('support-app/support-ui')
+project(':support-recycler').projectDir = new File('support-app/support-recycler')
+include ':ui-shared-series'

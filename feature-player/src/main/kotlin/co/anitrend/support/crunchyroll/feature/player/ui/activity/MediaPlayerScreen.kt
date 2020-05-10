@@ -20,20 +20,17 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import androidx.fragment.app.commit
+import androidx.fragment.app.Fragment
 import co.anitrend.arch.extension.getCompatColor
-import co.anitrend.arch.ui.common.ISupportActionUp
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.extensions.commit
-import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import co.anitrend.support.crunchyroll.feature.player.R
-import co.anitrend.support.crunchyroll.feature.player.koin.injectFeatureModules
+import co.anitrend.support.crunchyroll.feature.player.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.player.ui.fragment.MediaStreamContent
 import com.devbrackets.android.exomedia.listener.VideoControlsVisibilityListener
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.scope.lifecycleScope
 
@@ -66,10 +63,7 @@ class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener {
      */
     override fun configureActivity() {
         super.configureActivity()
-        launch {
-            injectFeatureModules()
-            setupKoinFragmentFactory(lifecycleScope)
-        }
+        setupKoinFragmentFactory(lifecycleScope)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             with (window) {
                 clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
@@ -81,27 +75,34 @@ class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener {
         }
     }
 
-    val presenter by inject<CrunchyCorePresenter>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_streaming)
     }
 
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        launch {
-            onUpdateUserInterface()
-        }
+        onUpdateUserInterface()
     }
 
     /**
-     * Handles the updating of views, binding, creation or state change, depending on the context
-     * [androidx.lifecycle.LiveData] for a given [co.anitrend.arch.ui.view.contract.ISupportFragmentActivity]
-     * will be available by this point.
+     * Called when a fragment is attached to the activity.
      *
-     * Check implementation for more details
+     * This is called after the attached fragment's `onAttach` and before
+     * the attached fragment's `onCreate` if the fragment has not yet had a previous
+     * call to `onCreate`.
      */
-    override fun onUpdateUserInterface() {
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
+        if (fragment is MediaStreamContent)
+            fullScreenListener = fragment.FullScreenListener()
+    }
+
+    /**
+     * Expects a module helper if one is available for the current scope, otherwise return null
+     */
+    override fun featureModuleHelper() = moduleHelper
+
+    private fun onUpdateUserInterface() {
         val target = FragmentItem(
             parameter = intent.extras,
             fragment = MediaStreamContent::class.java
@@ -110,9 +111,6 @@ class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener {
         currentFragmentTag = supportFragmentManager.commit(R.id.contentFrame, target) {
             //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         }
-        val attached = supportFragmentManager.findFragmentByTag(currentFragmentTag)
-        if (attached is MediaStreamContent)
-            fullScreenListener = attached.FullScreenListener()
 
         initUiFlags()
     }

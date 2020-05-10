@@ -28,8 +28,6 @@ fun AppCompatImageView.setImageUrl(url: String?) = url?.let {
     load(url) {
         scale(Scale.FIT)
         diskCachePolicy(CachePolicy.ENABLED)
-        if (context is LifecycleOwner)
-            lifecycle(context as LifecycleOwner)
     }
 }
 
@@ -47,7 +45,5 @@ fun AppCompatImageView.setImageUrl(feed: CrunchyEpisodeFeed?) = feed?.let {
                 GrayscaleTransformation()
             )
         diskCachePolicy(CachePolicy.ENABLED)
-        if (context is LifecycleOwner)
-            lifecycle(context as LifecycleOwner)
     }
 }

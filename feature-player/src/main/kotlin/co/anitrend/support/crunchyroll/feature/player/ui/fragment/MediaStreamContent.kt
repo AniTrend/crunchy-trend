@@ -23,15 +23,13 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.whenResumed
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.*
-import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.extensions.createDialog
 import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.model.UserAgent
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.core.ui.fragment.IFragmentFactory
+import co.anitrend.support.crunchyroll.core.ui.fragment.CrunchyFragment
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 import co.anitrend.support.crunchyroll.feature.player.R
@@ -40,7 +38,6 @@ import co.anitrend.support.crunchyroll.feature.player.model.track.contract.IMedi
 import co.anitrend.support.crunchyroll.feature.player.plugin.MediaPluginImpl
 import co.anitrend.support.crunchyroll.feature.player.plugin.PlaylistManagerPluginImpl
 import co.anitrend.support.crunchyroll.feature.player.presenter.StreamPresenter
-import co.anitrend.support.crunchyroll.feature.player.ui.activity.MediaPlayerScreen
 import co.anitrend.support.crunchyroll.feature.player.viewmodel.MediaStreamViewModel
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
@@ -51,17 +48,19 @@ import com.devbrackets.android.exomedia.ui.widget.VideoView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_media_player.*
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
 
 class MediaStreamContent(
     override var inflateLayout: Int = R.layout.fragment_media_player,
     private val sourceFactoryProvider: SourceFactoryProvider,
     private val playlistManager: PlaylistManagerPluginImpl,
     private val presenter: StreamPresenter
-) : SupportFragment<MediaStream?>() {
+) : CrunchyFragment() {
 
     private val qualityButton by lazy(LAZY_MODE_UNSAFE) {
         AppCompatImageButton(context).apply {
@@ -174,38 +173,45 @@ class MediaStreamContent(
             }
         })
         viewModelState().networkState.observe(viewLifecycleOwner, Observer {
-            supportStateLayout.setNetworkState(it)
+            supportStateLayout.networkStateLiveData.postValue(it)
         })
         viewModelState().refreshState.observe(viewLifecycleOwner, Observer {
-            supportStateLayout.setNetworkState(it)
-        })
-        supportStateLayout.interactionLiveData.observe(viewLifecycleOwner, Observer {
-            viewModelState().retry()
+            supportStateLayout.networkStateLiveData.postValue(it)
         })
     }
 
+    /**
+     * Additional initialization to be done in this method, this method will be called in
+     * [androidx.fragment.app.FragmentActivity.onCreate].
+     *
+     * @param savedInstanceState
+     */
+    @FlowPreview
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        launch {
-            lifecycle.whenResumed {
-                if (!viewModelState().isEmpty())
-                    onFetchDataInitialize()
-            }
+        lifecycleScope.launchWhenResumed {
+            if (!viewModelState().isEmpty())
+                onFetchDataInitialize()
+        }
+        lifecycleScope.launchWhenResumed {
+            supportStateLayout.interactionFlow
+                .debounce(16)
+                .collect {
+                    viewModelState().retry()
+                }
         }
     }
+
+    /**
+     * Expects a module helper if one is available for the current scope, otherwise return null
+     */
+    override fun featureModuleHelper(): Nothing? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         launch { onUpdateUserInterface() }
     }
 
-    /**
-     * Handles the updating of views, binding, creation or state change, depending on the context
-     * [androidx.lifecycle.LiveData] for a given [co.anitrend.arch.ui.fragment.contract.ISupportFragmentList]
-     * will be available by this point.
-     *
-     * Check implementation for more details
-     */
-    override fun onUpdateUserInterface() {
+    private fun onUpdateUserInterface() {
         supportStateLayout.stateConfig = get()
         mediaPlugin.onInitializing()
         mediaPlugin.setVisibilityListener(
@@ -254,7 +260,7 @@ class MediaStreamContent(
                 )
             }
         } else
-            supportStateLayout.setNetworkState(
+            supportStateLayout.networkStateLiveData.postValue(
                 NetworkState.Error(
                     heading = "No streams available ${Emote.Eyes}",
                     message = "Content may be unavailable in your country, please check with original source"
@@ -262,24 +268,14 @@ class MediaStreamContent(
             )
     }
 
-    /**
-     * Handles the complex logic required to dispatch network request to [MediaStreamViewModel]
-     * which uses [co.anitrend.arch.data.repository.SupportRepository] to either request
-     * from the network or database cache.
-     *
-     * The results of the dispatched network or cache call will be published by the
-     * [androidx.lifecycle.LiveData] specifically [MediaStreamViewModel.state]
-     *
-     * @see [MediaStreamViewModel.state]
-     */
-    override fun onFetchDataInitialize() {
+    private fun onFetchDataInitialize() {
         payload?.also {
             viewModel.state(
                 parameter = CrunchyMediaStreamQuery(
                     mediaId = it.mediaId
                 )
             )
-        } ?: supportStateLayout.setNetworkState(
+        } ?: supportStateLayout.networkStateLiveData.postValue(
             NetworkState.Error(
                 heading = "Invalid fragment parameters ${Emote.Cry}",
                 message = "Invalid or missing payload, request cannot be processed"

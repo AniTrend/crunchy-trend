@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.feature.news.koin
 
 import android.graphics.drawable.Drawable
+import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.feature.news.R
 import co.anitrend.support.crunchyroll.feature.news.plugin.CrunchyTagPlugin
 import co.anitrend.support.crunchyroll.feature.news.presenter.NewsPresenter
@@ -37,7 +38,6 @@ import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 
 private val coreModule = module {
@@ -97,10 +97,8 @@ private val viewModelModule = module {
     }
 }
 
-private val featureModules = listOf(coreModule, fragmentModule, presenterModule, viewModelModule)
-
-private val koinModules by lazy {
-    loadKoinModules(featureModules)
+val moduleHelper by lazy {
+    DynamicFeatureModuleHelper(
+        listOf(coreModule, fragmentModule, presenterModule, viewModelModule)
+    )
 }
-
-fun injectFeatureModules() = koinModules

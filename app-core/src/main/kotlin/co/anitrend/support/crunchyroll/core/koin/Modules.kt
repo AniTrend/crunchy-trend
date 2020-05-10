@@ -17,10 +17,11 @@
 package co.anitrend.support.crunchyroll.core.koin
 
 import android.webkit.WebView
+import co.anitrend.arch.core.model.IStateLayoutConfig
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.isLowRamDevice
 import co.anitrend.arch.extension.util.contract.ISupportDateHelper
-import co.anitrend.arch.ui.util.StateLayoutConfig
+import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.R
 import co.anitrend.support.crunchyroll.core.helper.StorageHelper
 import co.anitrend.support.crunchyroll.core.model.UserAgent
@@ -37,6 +38,7 @@ import coil.ImageLoader
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
+import org.koin.dsl.bind
 import org.koin.dsl.binds
 import org.koin.dsl.module
 
@@ -53,7 +55,7 @@ private val coreModule = module {
             loadingMessage = R.string.label_text_loading,
             retryAction = R.string.label_text_action_retry
         )
-    }
+    } bind IStateLayoutConfig::class
     factory {
         CrunchySettings(
             context = androidContext()
@@ -97,14 +99,10 @@ private val configurationModule = module {
     factory {
         val isLowRamDevice = androidContext().isLowRamDevice()
         val memoryLimit = if (isLowRamDevice) 0.15 else 0.35
-        ImageLoader(androidContext()) {
-            availableMemoryPercentage(memoryLimit)
-            bitmapPoolPercentage(memoryLimit)
-            if (!isLowRamDevice){
-                crossfade(360)
-                allowRgb565(true)
-            }
-            okHttpClient {
+        val loader = ImageLoader.Builder(androidContext())
+            .availableMemoryPercentage(memoryLimit)
+            .bitmapPoolPercentage(memoryLimit)
+            .okHttpClient {
                 OkHttpClient.Builder().cache(
                     Cache(
                         StorageHelper.getImageCache(
@@ -119,7 +117,12 @@ private val configurationModule = module {
                     )
                 ).build()
             }
-        }
+
+            if (!isLowRamDevice){
+                loader.crossfade(360)
+                loader.allowRgb565(true)
+            }
+        loader.build()
     }
 }
 

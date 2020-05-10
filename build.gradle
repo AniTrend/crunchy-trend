@@ -6,6 +6,10 @@ buildscript {
     ext {
         buildTools = '3.6.3'
         coil = '0.10.1'
+
+        // temporary till material include state restoration and merge adapter
+        recycler = '1.2.0-alpha03'
+        workflow = '0.26.0'
     }
 
     repositories {
@@ -17,9 +21,9 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:$buildTools"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath 'com.google.gms:google-services:4.3.3'
+        //classpath 'com.google.gms:google-services:4.3.3'
         // Add the Crashlytics Gradle plugin.
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.0.0'
+        //classpath 'com.google.firebase:firebase-crashlytics-gradle:2.1.0'
     }
 }
 
