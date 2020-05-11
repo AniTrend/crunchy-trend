@@ -18,6 +18,7 @@ package co.anitrend.support.crunchyroll.data.tracker.datasource.remote
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.arch.JSON
+import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyModelField
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import retrofit2.Response
 import retrofit2.http.GET
@@ -28,7 +29,8 @@ internal interface CrunchyTrackingEndpoint {
     @JSON
     @GET("/add_to_queue.${BuildConfig.apiExtension}.json")
     suspend fun addToQueue(
-        @Query("series_id") seriesId: Long
+        @Query("series_id") seriesId: Long,
+        @Query("fields") seriesFields: String = CrunchyModelField.seriesFields
     ) : Response<CrunchyContainer<Any>>
 
     @JSON
