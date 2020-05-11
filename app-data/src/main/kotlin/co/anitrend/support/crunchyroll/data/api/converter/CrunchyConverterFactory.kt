@@ -59,7 +59,6 @@ internal class CrunchyConverterFactory private constructor(): Converter.Factory(
     companion object {
         internal val GSON by lazy(LAZY_MODE_SYNCHRONIZED) {
             GsonBuilder()
-                .generateNonExecutableJson()
                 .serializeNulls()
                 .setLenient()
                 .create()
