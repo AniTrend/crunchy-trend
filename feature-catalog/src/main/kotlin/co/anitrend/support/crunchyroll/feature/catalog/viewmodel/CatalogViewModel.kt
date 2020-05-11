@@ -17,66 +17,14 @@
 package co.anitrend.support.crunchyroll.feature.catalog.viewmodel
 
 import androidx.lifecycle.ViewModel
-import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.support.crunchyroll.data.catalog.usecase.CatalogUseCaseType
-import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalogFilter
-import co.anitrend.support.crunchyroll.domain.catalog.models.CrunchyCatalogQuery
-import co.anitrend.support.crunchyroll.feature.catalog.model.CatalogViewModelState
+import co.anitrend.support.crunchyroll.feature.catalog.viewmodel.model.CatalogModelState
 
 class CatalogViewModel(
     catalogUseCase: CatalogUseCaseType
 ) : ViewModel() {
 
-    private val viewStateFeatured =
-        CatalogViewModelState(
-            CrunchyCatalogQuery(
-                CrunchySeriesCatalogFilter.FEATURED
-            ),
-            catalogUseCase
-        )
-
-    private val viewStateNewest =
-        CatalogViewModelState(
-            CrunchyCatalogQuery(
-                CrunchySeriesCatalogFilter.NEWEST
-            ),
-            catalogUseCase
-        )
-
-    private val viewStatePopular =
-        CatalogViewModelState(
-            CrunchyCatalogQuery(
-                CrunchySeriesCatalogFilter.POPULAR
-            ),
-            catalogUseCase
-        )
-
-    private val viewStateSimulcast =
-        CatalogViewModelState(
-            CrunchyCatalogQuery(
-                CrunchySeriesCatalogFilter.SIMULCAST
-            ),
-            catalogUseCase
-        )
-
-    private val viewStateUpdated =
-        CatalogViewModelState(
-            CrunchyCatalogQuery(
-                CrunchySeriesCatalogFilter.UPDATED
-            ),
-            catalogUseCase
-        )
-
-
-    val viewModelLists by lazy {
-        listOf(
-            viewStateFeatured,
-            viewStateNewest,
-            viewStatePopular,
-            viewStateSimulcast,
-            viewStateUpdated
-        )
-    }
+    val state = CatalogModelState(catalogUseCase)
 
     /**
      * This method will be called when this ViewModel is no longer used and will be destroyed.
@@ -86,9 +34,7 @@ class CatalogViewModel(
      * prevent a leak of this ViewModel.
      */
     override fun onCleared() {
-        viewModelLists.forEach {
-            it.onCleared()
-        }
+        state.onCleared()
         super.onCleared()
     }
 }

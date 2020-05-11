@@ -23,14 +23,14 @@ import co.anitrend.support.crunchyroll.domain.catalog.repositories.ICatalogRepos
 
 abstract class CatalogUseCase<R: IUserInterfaceState<*>>(
     protected val repository: ICatalogRepository<R>
-) : ISupportUseCase<CrunchyCatalogQuery, R> {
+) : ISupportUseCase<Nothing?, R> {
 
     /**
      * Solves a given use case in the implementation target
      *
      * @param param input for solving a given use case
      */
-    override fun invoke(param: CrunchyCatalogQuery): R {
-        return repository.catalogSeries(param)
+    override fun invoke(param: Nothing?): R {
+        return repository.catalogSeries()
     }
 }

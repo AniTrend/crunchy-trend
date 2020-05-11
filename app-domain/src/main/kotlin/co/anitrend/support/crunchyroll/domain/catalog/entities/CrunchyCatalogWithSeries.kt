@@ -21,5 +21,5 @@ import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 
 data class CrunchyCatalogWithSeries(
     val qualifier: CrunchySeriesCatalogFilter,
-    val series: List<CrunchySeries>
+    val series: Collection<CrunchySeries>
 )

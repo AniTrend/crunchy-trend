@@ -21,5 +21,5 @@ import co.anitrend.support.crunchyroll.domain.catalog.models.CrunchyCatalogQuery
 
 interface ICatalogRepository<R: IUserInterfaceState<*>> {
 
-    fun catalogSeries(catalogQuery: CrunchyCatalogQuery): R
+    fun catalogSeries(): R
 }

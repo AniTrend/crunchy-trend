@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.feature.catalog.model
+package co.anitrend.support.crunchyroll.feature.catalog.viewmodel.model
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -26,12 +26,11 @@ import co.anitrend.support.crunchyroll.data.catalog.usecase.CatalogUseCaseType
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 import co.anitrend.support.crunchyroll.domain.catalog.models.CrunchyCatalogQuery
 
-data class CatalogViewModelState(
-    private val parameter: CrunchyCatalogQuery,
+data class CatalogModelState(
     private val useCase: CatalogUseCaseType
-) : ISupportViewModelState<CrunchyCatalogWithSeries> {
+) : ISupportViewModelState<List<CrunchyCatalogWithSeries>> {
 
-    private val useCaseResult = MutableLiveData<UserInterfaceState<CrunchyCatalogWithSeries>>()
+    private val useCaseResult = MutableLiveData<UserInterfaceState<List<CrunchyCatalogWithSeries>>>()
 
     override val model =
         Transformations.switchMap(useCaseResult) { it.model }
@@ -48,7 +47,7 @@ data class CatalogViewModelState(
     }
 
     operator fun invoke() {
-        val result = useCase(parameter)
+        val result = useCase(null)
         useCaseResult.postValue(result)
     }
 

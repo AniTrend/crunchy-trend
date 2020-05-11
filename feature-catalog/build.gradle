@@ -32,12 +32,6 @@ android {
     }
 }
 
-ext {
-    groupie = '2.8.0'
-}
-
 dependencies {
-    implementation "com.github.lisawray.groupie:groupie:$groupie"
-    implementation "com.github.lisawray.groupie:groupie-viewbinding:$groupie"
-    implementation "com.github.lisawray.groupie:groupie-kotlin-android-extensions:$groupie"
+    implementation project(":ui-shared-series")
 }
