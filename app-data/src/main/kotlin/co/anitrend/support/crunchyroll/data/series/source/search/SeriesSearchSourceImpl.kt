@@ -56,8 +56,11 @@ internal class SeriesSearchSourceImpl(
              * @param parameter to use when executing
              */
             override fun invoke(parameter: Nothing?): LiveData<PagedList<CrunchySeries>> {
+                // Going to use wild cards here since fts isn't matching well with api results
                 val localSource =
-                    seriesDao.findBySeriesNameFactory(query.searchTerm)
+                    seriesDao.findBySeriesNameWildCardFactory("%${query.searchTerm}%")
+                /*val localSource =
+                    seriesDao.findBySeriesNameFactory(query.searchTerm)*/
 
                 val result = localSource.map {
                     SeriesEntityConverter.convertFrom(it)
@@ -76,8 +79,8 @@ internal class SeriesSearchSourceImpl(
         model: CrunchySeries?
     ) {
         CrunchyPagingConfigHelper(requestType, supportPagingHelper) {
-            // TODO: there is an issue with using count on fts tables, so we'll use the `like` operator
-            seriesDao.countBySeriesName(query.searchTerm)
+            // There is an issue with using count on fts tables, so we'll use the `like` operator
+            seriesDao.countBySeriesName("%${query.searchTerm}%")
         }
 
         val deferred = async {

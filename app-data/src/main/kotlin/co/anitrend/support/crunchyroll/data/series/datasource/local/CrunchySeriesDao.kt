@@ -84,7 +84,7 @@ internal interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity>, ISourc
     @Query("""
         select count(id)
         from CrunchySeriesEntity 
-        where name match :seriesName 
+        where name like :seriesName 
     """)
     suspend fun countBySeriesName(seriesName: String): Int
 
@@ -117,6 +117,16 @@ internal interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity>, ISourc
         order by se.name collate nocase asc
     """)
     fun findBySeriesNameFactory(
+        seriesName: String
+    ): DataSource.Factory<Int, CrunchySeriesEntity>
+
+    @Query("""
+        select *
+        from CrunchySeriesEntity
+        where name like :seriesName 
+        order by name collate nocase asc
+    """)
+    fun findBySeriesNameWildCardFactory(
         seriesName: String
     ): DataSource.Factory<Int, CrunchySeriesEntity>
 
