@@ -26,6 +26,7 @@ import co.anitrend.support.crunchyroll.data.api.helper.CacheHelper
 import co.anitrend.support.crunchyroll.data.arch.database.CrunchyDatabase
 import co.anitrend.support.crunchyroll.data.arch.database.common.ICrunchyDatabase
 import co.anitrend.support.crunchyroll.data.authentication.koin.authenticationModules
+import co.anitrend.support.crunchyroll.data.batch.koin.batchModules
 import co.anitrend.support.crunchyroll.data.catalog.koin.catalogModules
 import co.anitrend.support.crunchyroll.data.collection.koin.collectionModules
 import co.anitrend.support.crunchyroll.data.episode.koin.episodeModules
@@ -123,4 +124,5 @@ val crunchDataModules = listOf(
         seriesModules +
         catalogModules +
         collectionModules +
-        mediaModules
+        mediaModules +
+        batchModules

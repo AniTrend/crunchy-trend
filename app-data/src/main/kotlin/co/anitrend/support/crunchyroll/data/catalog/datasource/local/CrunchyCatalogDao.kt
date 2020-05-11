@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.catalog.datasource.local
 
+import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
@@ -61,4 +62,20 @@ internal interface CrunchyCatalogDao : ISupportQuery<CrunchyCatalogEntity>, ISou
         where catalogFilter = :catalogFilter
         """)
     fun findMatchingFlow(catalogFilter: CrunchySeriesCatalogFilter): Flow<List<CrunchyCatalogWithSeriesEntity>>
+
+    @Transaction
+    @Query("""
+        select *
+        from CrunchyCatalogEntity 
+        """)
+    fun findAllFlow(): Flow<List<CrunchyCatalogWithSeriesEntity>>
+
+    @Query("""
+        select *
+        from CrunchyCatalogEntity 
+        where catalogFilter = :catalogFilter
+        """)
+    fun findMatchingFactory(
+        catalogFilter: CrunchySeriesCatalogFilter
+    ): DataSource.Factory<Int, CrunchyCatalogWithSeriesEntity>
 }

@@ -33,20 +33,20 @@ private val dataSourceModule = module {
     factory {
         CatalogSourceImpl(
             catalogDao = db().crunchyCatalogDao(),
-            endpoint = api(EndpointType.JSON),
             supportConnectivity = get(),
             supportDispatchers = get(),
-            settings = get()
+            batchSource = get(),
+            settings = get(),
+            mapper = get()
         )
     } bind CatalogSource::class
 }
 
 private val mapperModule = module {
-    factory { (catalogFilter: CrunchySeriesCatalogFilter) ->
+    factory {
         CatalogResponseMapper(
             dao = db().crunchyCatalogDao(),
-            seriesResponseMapper = get(),
-            catalogFilter = catalogFilter
+            seriesResponseMapper = get()
         )
     }
 }

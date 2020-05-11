@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.data.catalog.mapper
 
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
+import co.anitrend.support.crunchyroll.data.batch.entity.CrunchyBatchEntity
 import co.anitrend.support.crunchyroll.data.catalog.datasource.local.CrunchyCatalogDao
 import co.anitrend.support.crunchyroll.data.catalog.entity.CrunchyCatalogEntity
 import co.anitrend.support.crunchyroll.data.catalog.extension.generateHashCode
@@ -27,9 +28,8 @@ import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalog
 
 internal class CatalogResponseMapper(
     private val dao: CrunchyCatalogDao,
-    private val seriesResponseMapper: SeriesResponseMapper,
-    private val catalogFilter: CrunchySeriesCatalogFilter
-) : CrunchyMapper<List<CrunchySeriesModel>, List<CrunchyCatalogEntity>>() {
+    private val seriesResponseMapper: SeriesResponseMapper
+) : CrunchyMapper<List<CrunchyBatchEntity<CrunchySeriesModel>>, List<CrunchyCatalogEntity>>() {
 
     private suspend fun onResponseMapFromForSeries(source: List<CrunchySeriesModel>): List<CrunchySeriesEntity> {
         val seriesEntities = seriesResponseMapper.onResponseMapFrom(source)
@@ -45,15 +45,22 @@ internal class CatalogResponseMapper(
      * @param source the incoming data source type
      * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
      */
-    override suspend fun onResponseMapFrom(source: List<CrunchySeriesModel>): List<CrunchyCatalogEntity> {
-        val seriesEntities = onResponseMapFromForSeries(source)
-        return seriesEntities.map {
-            CrunchyCatalogEntity(
-                seriesId = it.id,
-                catalogFilter = catalogFilter,
-                catalogId = catalogFilter.generateHashCode(it.id)
-            )
+    override suspend fun onResponseMapFrom(source: List<CrunchyBatchEntity<CrunchySeriesModel>>): List<CrunchyCatalogEntity> {
+        val catalogs = CrunchySeriesCatalogFilter.values()
+        source.mapIndexed { index, entity ->
+            val seriesEntities = onResponseMapFromForSeries(entity.data)
+            val catalogFilter = catalogs[index]
+
+            val catalogItems = seriesEntities.map { series ->
+                CrunchyCatalogEntity(
+                    seriesId = series.id,
+                    catalogFilter = catalogFilter,
+                    catalogId = catalogFilter.generateHashCode(series.id)
+                )
+            }
+            onResponseDatabaseInsert(catalogItems)
         }
+        return emptyList()
     }
 
     /**

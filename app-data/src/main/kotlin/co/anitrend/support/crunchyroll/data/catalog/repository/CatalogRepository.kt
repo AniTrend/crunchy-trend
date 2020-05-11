@@ -27,10 +27,10 @@ import co.anitrend.support.crunchyroll.domain.catalog.repositories.ICatalogRepos
 internal class CatalogRepository(
     private val source: CatalogSource
 ) : SupportRepository(source),
-    ICatalogRepository<UserInterfaceState<CrunchyCatalogWithSeries>> {
+    ICatalogRepository<UserInterfaceState<List<CrunchyCatalogWithSeries>>> {
 
-    override fun catalogSeries(catalogQuery: CrunchyCatalogQuery) =
+    override fun catalogSeries() =
         source.create(
-            model = source(catalogQuery)
+            model = source()
         )
 }

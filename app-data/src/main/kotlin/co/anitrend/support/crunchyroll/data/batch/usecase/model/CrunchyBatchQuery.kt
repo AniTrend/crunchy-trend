@@ -14,10 +14,18 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.feature.catalog.controller.decorator
+package co.anitrend.support.crunchyroll.data.batch.usecase.model
 
-import co.anitrend.support.crunchyroll.feature.catalog.R
-import co.anitrend.support.crunchyroll.feature.catalog.controller.decorator.contract.HeaderItemDecorator
+import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
 
-class HeaderDecorator(sidePaddingPixels: Int) :
-    HeaderItemDecorator(sidePaddingPixels, R.layout.adapter_catalog_header)
+internal data class CrunchyBatchQuery(
+    val method_version: String,
+    val api_method: String,
+    val params: Map<String, Any>
+) {
+    companion object {
+        internal fun toJson(request: List<CrunchyBatchQuery>): String {
+            return CrunchyConverterFactory.GSON.toJson(request)
+        }
+    }
+}

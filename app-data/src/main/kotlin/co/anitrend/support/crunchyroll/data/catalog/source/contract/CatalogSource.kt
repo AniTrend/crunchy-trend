@@ -28,16 +28,12 @@ internal abstract class CatalogSource(
     supportDispatchers: SupportDispatchers
 ) : SupportCoreDataSource(supportDispatchers) {
 
-    protected lateinit var query: CrunchyCatalogQuery
-        private set
-
     protected abstract val observable:
-            ISourceObservable<Nothing?, CrunchyCatalogWithSeries>
+            ISourceObservable<Nothing?, List<CrunchyCatalogWithSeries>>
 
     abstract suspend fun getCatalog()
 
-    operator fun invoke(catalogQuery: CrunchyCatalogQuery): LiveData<CrunchyCatalogWithSeries> {
-        query = catalogQuery
+    operator fun invoke(): LiveData<List<CrunchyCatalogWithSeries>> {
         retry = {
             launch {
                 getCatalog()

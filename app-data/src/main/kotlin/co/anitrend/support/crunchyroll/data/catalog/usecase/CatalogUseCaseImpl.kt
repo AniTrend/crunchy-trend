@@ -35,4 +35,4 @@ internal class CatalogUseCaseImpl(
     }
 }
 
-typealias CatalogUseCaseType = CatalogUseCase<UserInterfaceState<CrunchyCatalogWithSeries>>
+typealias CatalogUseCaseType = CatalogUseCase<UserInterfaceState<List<CrunchyCatalogWithSeries>>>
