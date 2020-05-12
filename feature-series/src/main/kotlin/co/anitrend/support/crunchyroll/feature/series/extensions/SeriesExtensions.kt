@@ -19,10 +19,20 @@ package co.anitrend.support.crunchyroll.feature.series.extensions
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.databinding.BindingAdapter
 import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @BindingAdapter("imageUrl")
 fun AppCompatImageView.setImageFromUrl(url: String?) {
-    setImageUrl(url)
-    Timber.tag("SeriesImageBind").v("Image loading requested: $url")
+    if (context is CoroutineScope) {
+        val scope = context as CoroutineScope
+        scope.launch {
+            delay(16)
+            setImageUrl(url)
+        }
+    }
+    else
+        setImageUrl(url)
 }

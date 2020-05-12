@@ -28,26 +28,24 @@ import co.anitrend.arch.extension.argument
 import co.anitrend.arch.extension.attachComponent
 import co.anitrend.arch.extension.detachComponent
 import co.anitrend.arch.recycler.common.DefaultClickableItem
-import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
-import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.ui.fragment.CrunchyFragment
-import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesDetailQuery
 import co.anitrend.support.crunchyroll.feature.series.databinding.SeriesContentBinding
 import co.anitrend.support.crunchyroll.feature.series.presenter.SeriesDetailPresenter
 import co.anitrend.support.crunchyroll.feature.series.ui.adpter.SeriesGenreAdapter
 import co.anitrend.support.crunchyroll.feature.series.viewmodel.SeriesDetailViewModel
+import coil.request.RequestDisposable
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class SeriesContentScreen : CrunchyFragment() {
 
