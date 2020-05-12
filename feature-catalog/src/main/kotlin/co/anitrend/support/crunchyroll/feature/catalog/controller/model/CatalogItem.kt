@@ -25,6 +25,7 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import co.anitrend.arch.extension.gone
 import co.anitrend.arch.recycler.common.ClickableItem
 import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.recycler.holder.SupportViewHolder
@@ -104,9 +105,11 @@ data class CatalogItem(
     ) {
         val binding = AdapterCatalogBinding.bind(view)
         binding.catalogHeadingTitle.text = entity?.qualifier?.attribute?.capitalize(Locale.getDefault())
-        binding.catalogActionSeeAll.setOnClickListener {
+        binding.catalogActionSeeAll.gone()
+        // too much effort to implement so leaving this out for now
+        /*binding.catalogActionSeeAll.setOnClickListener {
             Toast.makeText(view.context, "Not yet supported.. :smirk", Toast.LENGTH_SHORT).show()
-        }
+        }*/
         setUpCatalogItems(view, clickObservable)
     }
 
