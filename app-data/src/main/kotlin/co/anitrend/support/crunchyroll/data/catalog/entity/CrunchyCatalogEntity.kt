@@ -23,6 +23,10 @@ import androidx.room.PrimaryKey
 import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesEntity
 import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalogFilter
 
+/**
+ * We have a problem
+ * https://stackoverflow.com/questions/47997017/room-persistence-deletes-child-on-update
+ */
 @Entity(
     indices = [
         Index(value = ["seriesId"], unique = false)
@@ -31,9 +35,10 @@ import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalog
         ForeignKey(
             entity = CrunchySeriesEntity::class,
             parentColumns = arrayOf("id"),
-            childColumns = arrayOf("seriesId"),
+            childColumns = arrayOf("seriesId")
+            /*
             onUpdate = ForeignKey.CASCADE,
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE*/
         )
     ]
 )

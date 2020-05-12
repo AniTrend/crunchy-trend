@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "8cd93282b483b455f67f7c45e424383d",
+    "identityHash": "d56be6cd0d0bba4f00923a024046d791",
     "entities": [
       {
         "tableName": "CrunchySessionEntity",
@@ -582,7 +582,7 @@
       },
       {
         "tableName": "CrunchyCatalogEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`catalogFilter` TEXT NOT NULL, `seriesRank` INTEGER NOT NULL, `seriesId` INTEGER NOT NULL, `catalogId` INTEGER NOT NULL, PRIMARY KEY(`catalogId`), FOREIGN KEY(`seriesId`) REFERENCES `CrunchySeriesEntity`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`catalogFilter` TEXT NOT NULL, `seriesRank` INTEGER NOT NULL, `seriesId` INTEGER NOT NULL, `catalogId` INTEGER NOT NULL, PRIMARY KEY(`catalogId`), FOREIGN KEY(`seriesId`) REFERENCES `CrunchySeriesEntity`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "catalogFilter",
@@ -628,8 +628,8 @@
         "foreignKeys": [
           {
             "table": "CrunchySeriesEntity",
-            "onDelete": "CASCADE",
-            "onUpdate": "CASCADE",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
             "columns": [
               "seriesId"
             ],
@@ -850,7 +850,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8cd93282b483b455f67f7c45e424383d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd56be6cd0d0bba4f00923a024046d791')"
     ]
   }
 }
