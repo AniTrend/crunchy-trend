@@ -123,8 +123,8 @@ internal class CrunchyAuthenticationHelper(
 
         if (session != null) {
             urlBuilder
-                .addEncodedQueryParameter(DEVICE_ID, session.deviceId)
-                .addEncodedQueryParameter(DEVICE_TYPE, session.deviceType)
+                /*.addEncodedQueryParameter(DEVICE_ID, session.deviceId)
+                .addEncodedQueryParameter(DEVICE_TYPE, session.deviceType)*/
                 .addEncodedQueryParameter(SESSION_ID, session.sessionId)
             Timber.tag(moduleTag).d("Added parameters to request query with session -> ${session.sessionId}")
         }
