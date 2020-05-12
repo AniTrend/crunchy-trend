@@ -27,6 +27,7 @@ import co.anitrend.support.crunchyroll.feature.player.model.track.VideoTrack
 import co.anitrend.support.crunchyroll.feature.player.plugin.contract.MediaPlugin
 import coil.Coil
 import coil.api.load
+import coil.request.LoadRequestBuilder
 import coil.request.RequestDisposable
 import com.devbrackets.android.exomedia.ExoMedia
 import com.devbrackets.android.exomedia.listener.VideoControlsVisibilityListener
@@ -209,9 +210,12 @@ class MediaPluginImpl(
 
     private fun startPlaybackUsing(mediaStreamItem: MediaStreamItem) {
         checkIfOtherRequestIsOngoing()
-        disposable = Coil.load(exoMediaVideoView.context, mediaStreamItem.thumbnailUrl) {
-            target { exoMediaVideoView.setPreviewImage(it) }
-        }
+        val loadRequest = LoadRequestBuilder(exoMediaVideoView.context)
+            .data(mediaStreamItem.thumbnailUrl)
+            .target{ exoMediaVideoView.setPreviewImage(it) }
+            .build()
+        disposable = Coil.execute(loadRequest)
+
         if (!mediaStreamItem.downloaded)
             exoMediaVideoView.setVideoURI(
                 Uri.parse(mediaStreamItem.mediaUrl),
