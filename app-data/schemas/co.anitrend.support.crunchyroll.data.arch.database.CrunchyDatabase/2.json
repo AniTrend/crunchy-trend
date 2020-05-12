@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "b4b3b760bb1f01b9c34a9e9394c6d65c",
+    "version": 2,
+    "identityHash": "8cd93282b483b455f67f7c45e424383d",
     "entities": [
       {
         "tableName": "CrunchySessionEntity",
@@ -582,12 +582,18 @@
       },
       {
         "tableName": "CrunchyCatalogEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`catalogFilter` TEXT NOT NULL, `seriesId` INTEGER NOT NULL, `catalogId` INTEGER NOT NULL, PRIMARY KEY(`catalogId`), FOREIGN KEY(`seriesId`) REFERENCES `CrunchySeriesEntity`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`catalogFilter` TEXT NOT NULL, `seriesRank` INTEGER NOT NULL, `seriesId` INTEGER NOT NULL, `catalogId` INTEGER NOT NULL, PRIMARY KEY(`catalogId`), FOREIGN KEY(`seriesId`) REFERENCES `CrunchySeriesEntity`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "catalogFilter",
             "columnName": "catalogFilter",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "seriesRank",
+            "columnName": "seriesRank",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -828,14 +834,23 @@
           ],
           "autoGenerate": true
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_CacheLogEntity_cacheItemId",
+            "unique": true,
+            "columnNames": [
+              "cacheItemId"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_CacheLogEntity_cacheItemId` ON `${TABLE_NAME}` (`cacheItemId`)"
+          }
+        ],
         "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b4b3b760bb1f01b9c34a9e9394c6d65c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8cd93282b483b455f67f7c45e424383d')"
     ]
   }
 }

@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.data.arch.database.common
 
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
+import co.anitrend.support.crunchyroll.data.cache.datasource.local.CacheDao
 import co.anitrend.support.crunchyroll.data.catalog.datasource.local.CrunchyCatalogDao
 import co.anitrend.support.crunchyroll.data.collection.datasource.local.CrunchyCollectionDao
 import co.anitrend.support.crunchyroll.data.episode.datasource.local.CrunchyRssEpisodeDao
@@ -44,4 +45,5 @@ internal interface ICrunchyDatabase {
     fun crunchyRssMediaDao(): CrunchyRssEpisodeDao
 
     fun crunchyCatalogDao(): CrunchyCatalogDao
+    fun crunchyCacheDao(): CacheDao
 }

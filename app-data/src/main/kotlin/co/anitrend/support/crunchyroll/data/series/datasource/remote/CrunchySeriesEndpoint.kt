@@ -32,7 +32,8 @@ internal interface CrunchySeriesEndpoint {
     @JSON
     @GET("/info.${BuildConfig.apiExtension}.json")
     suspend fun getSeriesInfo(
-        @Query("series_id") seriesId: Long
+        @Query("series_id") seriesId: Long,
+        @Query("fields") seriesFields: String = CrunchyModelField.seriesFields
     ) : Response<CrunchyContainer<CrunchySeriesModel>>
 
     @JSON

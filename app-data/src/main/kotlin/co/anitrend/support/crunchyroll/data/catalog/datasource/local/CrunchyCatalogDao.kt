@@ -52,6 +52,7 @@ internal interface CrunchyCatalogDao : ISupportQuery<CrunchyCatalogEntity>, ISou
         select *
         from CrunchyCatalogEntity
         where catalogFilter = :catalogFilter
+        order by catalogFilter asc, seriesRank asc
         """)
     suspend fun findMatching(catalogFilter: CrunchySeriesCatalogFilter): List<CrunchyCatalogWithSeriesEntity>
 
@@ -60,13 +61,15 @@ internal interface CrunchyCatalogDao : ISupportQuery<CrunchyCatalogEntity>, ISou
         select *
         from CrunchyCatalogEntity 
         where catalogFilter = :catalogFilter
+        order by catalogFilter asc, seriesRank asc
         """)
     fun findMatchingFlow(catalogFilter: CrunchySeriesCatalogFilter): Flow<List<CrunchyCatalogWithSeriesEntity>>
 
     @Transaction
     @Query("""
         select *
-        from CrunchyCatalogEntity 
+        from CrunchyCatalogEntity
+        order by catalogFilter asc, seriesRank asc
         """)
     fun findAllFlow(): Flow<List<CrunchyCatalogWithSeriesEntity>>
 
@@ -74,6 +77,7 @@ internal interface CrunchyCatalogDao : ISupportQuery<CrunchyCatalogEntity>, ISou
         select *
         from CrunchyCatalogEntity 
         where catalogFilter = :catalogFilter
+        order by catalogFilter asc, seriesRank asc
         """)
     fun findMatchingFactory(
         catalogFilter: CrunchySeriesCatalogFilter

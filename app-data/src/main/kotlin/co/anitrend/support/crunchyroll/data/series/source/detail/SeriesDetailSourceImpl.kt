@@ -28,17 +28,19 @@ import co.anitrend.support.crunchyroll.data.arch.helper.CrunchyClearDataHelper
 import co.anitrend.support.crunchyroll.data.series.converters.SeriesEntityConverter
 import co.anitrend.support.crunchyroll.data.series.datasource.local.CrunchySeriesDao
 import co.anitrend.support.crunchyroll.data.series.datasource.remote.CrunchySeriesEndpoint
-import co.anitrend.support.crunchyroll.data.series.mapper.SeriesResponseMapper
+import co.anitrend.support.crunchyroll.data.series.helper.SeriesCacheHelper
+import co.anitrend.support.crunchyroll.data.series.mapper.SeriesDetailResponseMapper
 import co.anitrend.support.crunchyroll.data.series.source.detail.contract.SeriesDetailSource
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import kotlinx.coroutines.async
 
 internal class SeriesDetailSourceImpl(
-    private val mapper: SeriesResponseMapper,
+    private val mapper: SeriesDetailResponseMapper,
     private val seriesDao: CrunchySeriesDao,
     private val endpoint: CrunchySeriesEndpoint,
     private val supportConnectivity: SupportConnectivity,
     private val settings: IRefreshBehaviourSettings,
+    private val cache: SeriesCacheHelper,
     supportDispatchers: SupportDispatchers
 ) : SeriesDetailSource(supportDispatchers) {
 
@@ -63,21 +65,25 @@ internal class SeriesDetailSourceImpl(
         }
 
     override suspend fun browseSeries() {
-        /*val differed = async {
-            endpoint.getSeriesInfo(
-                seriesId = query.seriesId
-            )
-        }
-
-        val controller =
-            mapper.controller(
-                dispatchers,
-                OnlineControllerPolicy.create(
-                    supportConnectivity
+        if (cache.shouldRefreshSeries(query.seriesId)) {
+            val differed = async {
+                endpoint.getSeriesInfo(
+                    seriesId = query.seriesId
                 )
-            )
+            }
 
-        controller(differed, networkState)*/
+            val controller =
+                mapper.controller(
+                    dispatchers,
+                    OnlineControllerPolicy.create(
+                        supportConnectivity
+                    )
+                )
+
+            val result = controller.invoke(differed, networkState)
+            if (result != null)
+                cache.updateLastRequest(result.id)
+        }
     }
 
     /**
@@ -87,6 +93,7 @@ internal class SeriesDetailSourceImpl(
         CrunchyClearDataHelper(settings, supportConnectivity) {
             val seriesId = query.seriesId
             seriesDao.clearTableById(seriesId)
+            cache.invalidateLastRequest(seriesId)
         }
     }
 }

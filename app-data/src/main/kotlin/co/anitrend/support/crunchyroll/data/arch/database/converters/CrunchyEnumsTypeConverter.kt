@@ -19,6 +19,7 @@ package co.anitrend.support.crunchyroll.data.arch.database.converters
 import androidx.room.TypeConverter
 import co.anitrend.support.crunchyroll.data.arch.database.extension.fromEnum
 import co.anitrend.support.crunchyroll.data.arch.database.extension.toEnum
+import co.anitrend.support.crunchyroll.data.cache.model.CacheRequest
 import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalogFilter
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchyMediaType
 import co.anitrend.support.crunchyroll.domain.user.enums.CrunchyAccessType
@@ -33,4 +34,7 @@ internal class CrunchyEnumsTypeConverter {
 
     @TypeConverter fun fromCatalogFilter(value: CrunchySeriesCatalogFilter?) = value?.fromEnum()
     @TypeConverter fun toCatalogFilter(value: String?) = value?.toEnum<CrunchySeriesCatalogFilter>()
+
+    @TypeConverter fun fromCacheRequest(value: CacheRequest?) = value?.fromEnum()
+    @TypeConverter fun toCacheRequest(value: String?) = value?.toEnum<CacheRequest>()
 }

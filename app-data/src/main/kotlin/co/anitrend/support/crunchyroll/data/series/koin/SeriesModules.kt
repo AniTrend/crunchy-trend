@@ -20,6 +20,9 @@ package co.anitrend.support.crunchyroll.data.series.koin
 import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
 import co.anitrend.support.crunchyroll.data.arch.extension.api
 import co.anitrend.support.crunchyroll.data.arch.extension.db
+import co.anitrend.support.crunchyroll.data.cache.repository.CacheLogStore
+import co.anitrend.support.crunchyroll.data.series.helper.SeriesCacheHelper
+import co.anitrend.support.crunchyroll.data.series.mapper.SeriesDetailResponseMapper
 import co.anitrend.support.crunchyroll.data.series.mapper.SeriesResponseMapper
 import co.anitrend.support.crunchyroll.data.series.repository.browse.SeriesBrowseRepository
 import co.anitrend.support.crunchyroll.data.series.repository.detail.SeriesDetailRepository
@@ -45,6 +48,7 @@ private val dataSourceModule = module {
             endpoint = api(EndpointType.JSON),
             supportDispatchers = get(),
             settings = get(),
+            cache = get(),
             supportConnectivity = get()
         )
     } bind SeriesDetailSource::class
@@ -73,6 +77,11 @@ private val dataSourceModule = module {
 private val mapperModule = module {
     factory {
         SeriesResponseMapper(
+            dao = db().crunchySeriesDao()
+        )
+    }
+    factory {
+        SeriesDetailResponseMapper(
             dao = db().crunchySeriesDao()
         )
     }
@@ -114,6 +123,14 @@ private val useCaseModule = module {
     }
 }
 
+private val cacheModule = module {
+    factory {
+        SeriesCacheHelper(
+            dao = db().crunchyCacheDao()
+        )
+    }
+}
+
 val seriesModules = listOf(
-    dataSourceModule, mapperModule, repositoryModule, useCaseModule
+    dataSourceModule, mapperModule, repositoryModule, useCaseModule, cacheModule
 )

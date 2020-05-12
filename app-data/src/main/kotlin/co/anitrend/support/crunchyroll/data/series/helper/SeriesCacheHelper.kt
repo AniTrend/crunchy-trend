@@ -14,34 +14,20 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.cache.entity
+package co.anitrend.support.crunchyroll.data.series.helper
 
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
+import co.anitrend.support.crunchyroll.data.cache.datasource.local.CacheDao
+import co.anitrend.support.crunchyroll.data.cache.helper.instantInPast
 import co.anitrend.support.crunchyroll.data.cache.model.CacheRequest
+import co.anitrend.support.crunchyroll.data.cache.repository.CacheLogStore
 import org.threeten.bp.Instant
 
-@Entity(
-    indices = [
-        Index(value = ["cacheItemId"], unique = true)
-    ]
-)
-internal data class CacheLogEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
-    val request: CacheRequest,
-    val cacheItemId: Long,
-    val timestamp: Instant
-) {
-    companion object {
-        fun new(
-            request: CacheRequest,
-            cacheItemId: Long
-        ): CacheLogEntity = CacheLogEntity(
-            request = request,
-            cacheItemId = cacheItemId,
-            timestamp = Instant.now()
-        )
-    }
+internal data class SeriesCacheHelper(
+    val dao: CacheDao
+) : CacheLogStore(CacheRequest.SERIES, dao) {
+
+    suspend fun shouldRefreshSeries(
+        seriesId: Long,
+        expiresAfter: Instant = instantInPast(days = 2)
+    ): Boolean = isRequestBefore(seriesId, expiresAfter)
 }

@@ -19,9 +19,13 @@ package co.anitrend.support.crunchyroll.data.arch.database.converters
 import androidx.room.TypeConverter
 import co.anitrend.support.crunchyroll.data.arch.database.extension.fromCommaSeparatedValues
 import co.anitrend.support.crunchyroll.data.arch.database.extension.toCommaSeparatedValues
+import org.threeten.bp.Instant
 
 internal class CrunchyTypeConverters {
 
     @TypeConverter fun fromList(value: List<String>) = value.toCommaSeparatedValues()
     @TypeConverter fun toList(value: String) = value.fromCommaSeparatedValues()
+
+    @TypeConverter fun toInstant(value: Long?) = value?.let { Instant.ofEpochMilli(it) }
+    @TypeConverter fun fromInstant(date: Instant?) = date?.toEpochMilli()
 }

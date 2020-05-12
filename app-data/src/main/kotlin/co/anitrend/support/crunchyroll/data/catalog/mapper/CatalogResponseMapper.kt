@@ -51,9 +51,11 @@ internal class CatalogResponseMapper(
             val seriesEntities = onResponseMapFromForSeries(entity.data)
             val catalogFilter = catalogs[index]
 
-            val catalogItems = seriesEntities.map { series ->
+            val catalogItems = seriesEntities.mapIndexed { seriesIndex, series ->
+                val rank = (seriesIndex + 1) * (index + 1)
                 CrunchyCatalogEntity(
                     seriesId = series.id,
+                    seriesRank = rank,
                     catalogFilter = catalogFilter,
                     catalogId = catalogFilter.generateHashCode(series.id)
                 )

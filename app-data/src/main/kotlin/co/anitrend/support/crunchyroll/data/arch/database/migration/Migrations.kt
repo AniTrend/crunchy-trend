@@ -32,7 +32,15 @@ internal val MIGRATION_1_2 = object : Migration(1, 2) {
      */
     override fun migrate(database: SupportSQLiteDatabase) {
         with(database) {
-            // nothing to apply
+            val tableName = "CacheLogEntity"
+            execSQL("""
+                CREATE TABLE IF NOT EXISTS `${tableName}` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                `request` TEXT NOT NULL, 
+                `cacheItemId` INTEGER NOT NULL, 
+                `timestamp` INTEGER NOT NULL
+                )
+            """.trimIndent())
         }
     }
 }

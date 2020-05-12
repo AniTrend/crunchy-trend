@@ -27,6 +27,7 @@ import co.anitrend.support.crunchyroll.data.arch.database.converters.CrunchyEnum
 import co.anitrend.support.crunchyroll.data.arch.database.converters.CrunchyTypeConverters
 import co.anitrend.support.crunchyroll.data.arch.database.migration.migrations
 import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEntity
+import co.anitrend.support.crunchyroll.data.cache.entity.CacheLogEntity
 import co.anitrend.support.crunchyroll.data.catalog.entity.CrunchyCatalogEntity
 import co.anitrend.support.crunchyroll.data.collection.entity.CrunchyCollectionEntity
 import co.anitrend.support.crunchyroll.data.episode.entity.EpisodeFeedEntity
@@ -50,7 +51,8 @@ import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
         CrunchyMediaEntity::class,
         CrunchyCatalogEntity::class,
         NewsEntity::class,
-        EpisodeFeedEntity::class
+        EpisodeFeedEntity::class,
+        CacheLogEntity::class
     ],
     version = BuildConfig.DATABASE_SCHEMA_VERSION
 )

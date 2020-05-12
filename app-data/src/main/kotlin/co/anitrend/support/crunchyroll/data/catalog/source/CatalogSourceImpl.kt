@@ -23,29 +23,22 @@ import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.arch.extension.util.SupportExtKeyStore
 import co.anitrend.support.crunchyroll.data.BuildConfig
-import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OfflineControllerPolicy
 import co.anitrend.support.crunchyroll.data.arch.database.settings.IRefreshBehaviourSettings
 import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyModelField
-import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.arch.helper.CrunchyClearDataHelper
 import co.anitrend.support.crunchyroll.data.batch.source.contract.BatchSource
 import co.anitrend.support.crunchyroll.data.batch.usecase.model.CrunchyBatchQuery
 import co.anitrend.support.crunchyroll.data.catalog.datasource.local.CrunchyCatalogDao
+import co.anitrend.support.crunchyroll.data.catalog.helper.CatalogCacheHelper
 import co.anitrend.support.crunchyroll.data.catalog.mapper.CatalogResponseMapper
 import co.anitrend.support.crunchyroll.data.catalog.source.contract.CatalogSource
 import co.anitrend.support.crunchyroll.data.catalog.transformer.CrunchyCatalogTransformer
-import co.anitrend.support.crunchyroll.data.series.datasource.remote.CrunchySeriesEndpoint
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalogFilter
-import co.anitrend.support.crunchyroll.domain.catalog.models.CrunchyCatalogQuery
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
-import org.koin.core.get
-import org.koin.core.inject
-import org.koin.core.parameter.parametersOf
+import timber.log.Timber
 
 internal class CatalogSourceImpl(
     private val catalogDao: CrunchyCatalogDao,
@@ -53,29 +46,40 @@ internal class CatalogSourceImpl(
     private val settings: IRefreshBehaviourSettings,
     private val batchSource: BatchSource,
     private val mapper: CatalogResponseMapper,
+    private val cache: CatalogCacheHelper,
     supportDispatchers: SupportDispatchers
 ) : CatalogSource(supportDispatchers), KoinComponent {
 
+    // Random fake id for catalog
+    private val requestId: Long = 100
+
     override suspend fun getCatalog() {
-        val requests = CrunchySeriesCatalogFilter.values().map {
-            CrunchyBatchQuery(
-                method_version = BuildConfig.apiExtension,
-                api_method = "list_series",
-                params = mapOf(
-                    "media_type" to "anime",
-                    "filter" to it.attribute,
-                    "limit" to SupportExtKeyStore.pagingLimit,
-                    "offset" to "0",
-                    "fields" to CrunchyModelField.seriesFields
+        if (cache.shouldUpdateCatalog(requestId, catalogDao.count())) {
+            val requests = CrunchySeriesCatalogFilter.values().map {
+                CrunchyBatchQuery(
+                    method_version = BuildConfig.apiExtension,
+                    api_method = "list_series",
+                    params = mapOf(
+                        "media_type" to "anime",
+                        "filter" to it.attribute,
+                        "limit" to SupportExtKeyStore.pagingLimit,
+                        "offset" to "0",
+                        "fields" to CrunchyModelField.seriesFields
+                    )
                 )
-            )
-        }
+            }
 
-        val results = batchSource
-            .getBatchOfSeries(requests, networkState).orEmpty()
+            val results = batchSource
+                .getBatchOfSeries(requests, networkState).orEmpty()
 
-        mapper.onResponseMapFrom(results)
+            mapper.onResponseMapFrom(results)
 
+            if (results.isNotEmpty()) {
+                cache.updateLastRequest(requestId)
+                Timber.tag(moduleTag).v("Saving request: $requestId to cache log, upon success")
+            }
+        } else
+            Timber.tag(moduleTag).v("Skipping request due to expiry time not satisfied $requestId")
     }
 
     override val observable =
@@ -102,6 +106,7 @@ internal class CatalogSourceImpl(
      */
     override suspend fun clearDataSource() {
         CrunchyClearDataHelper(settings, supportConnectivity) {
+            cache.invalidateLastRequest(requestId)
             catalogDao.clearTable()
         }
     }

@@ -16,16 +16,15 @@
 
 package co.anitrend.support.crunchyroll.data.catalog.koin
 
-import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
-import co.anitrend.support.crunchyroll.data.arch.extension.api
 import co.anitrend.support.crunchyroll.data.arch.extension.db
+import co.anitrend.support.crunchyroll.data.cache.repository.CacheLogStore
+import co.anitrend.support.crunchyroll.data.catalog.helper.CatalogCacheHelper
 import co.anitrend.support.crunchyroll.data.catalog.mapper.CatalogResponseMapper
 import co.anitrend.support.crunchyroll.data.catalog.repository.CatalogRepository
 import co.anitrend.support.crunchyroll.data.catalog.source.CatalogSourceImpl
 import co.anitrend.support.crunchyroll.data.catalog.source.contract.CatalogSource
 import co.anitrend.support.crunchyroll.data.catalog.usecase.CatalogUseCaseImpl
 import co.anitrend.support.crunchyroll.data.catalog.usecase.CatalogUseCaseType
-import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalogFilter
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -37,7 +36,8 @@ private val dataSourceModule = module {
             supportDispatchers = get(),
             batchSource = get(),
             settings = get(),
-            mapper = get()
+            mapper = get(),
+            cache = get()
         )
     } bind CatalogSource::class
 }
@@ -67,6 +67,14 @@ private val useCaseModule = module {
     }
 }
 
+private val cacheModule = module {
+    factory {
+        CatalogCacheHelper(
+            dao = db().crunchyCacheDao()
+        )
+    }
+}
+
 val catalogModules = listOf(
-    dataSourceModule, mapperModule, repositoryModule, useCaseModule
+    dataSourceModule, mapperModule, repositoryModule, useCaseModule, cacheModule
 )
