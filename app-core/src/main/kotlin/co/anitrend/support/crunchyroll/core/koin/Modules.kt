@@ -99,9 +99,11 @@ private val configurationModule = module {
     factory {
         val isLowRamDevice = androidContext().isLowRamDevice()
         val memoryLimit = if (isLowRamDevice) 0.15 else 0.35
+        val dispatchers = get<SupportDispatchers>()
         val loader = ImageLoader.Builder(androidContext())
             .availableMemoryPercentage(memoryLimit)
             .bitmapPoolPercentage(memoryLimit)
+            .dispatcher(dispatchers.io)
             .okHttpClient {
                 OkHttpClient.Builder().cache(
                     Cache(
@@ -118,10 +120,11 @@ private val configurationModule = module {
                 ).build()
             }
 
-            if (!isLowRamDevice){
+            if (!isLowRamDevice)
                 loader.crossfade(360)
+            else
                 loader.allowRgb565(true)
-            }
+
         loader.build()
     }
 }
