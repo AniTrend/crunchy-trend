@@ -50,12 +50,16 @@ internal object CacheHelper {
         request: Request
     ): Request.Builder {
         val host = request.url.host
+        val requestBuilder = request.newBuilder()
+            .removeHeader("Cache-Control")
+            .removeHeader("Pragma")
+
         return if (connectivity.isConnected) {
             Timber.tag(moduleTag).v(
                 "Online cache control applied on request to host: $host"
             )
             // "public, max-age=MAX_CACHE_AGE"
-            request.newBuilder().cacheControl(
+            requestBuilder.cacheControl(
                 CacheControl.Builder()
                     .maxAge(
                         cacheAge.time,
@@ -68,7 +72,7 @@ internal object CacheHelper {
                 "Offline cache control applied on request to host: $host"
             )
             // "public, only-if-cached, max-stale=MAX_STALE_TIME"
-            request.newBuilder().cacheControl(
+            requestBuilder.cacheControl(
                 CacheControl.Builder()
                     .maxStale(
                         staleAge.time,

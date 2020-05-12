@@ -31,8 +31,8 @@ internal class CrunchyCacheInterceptor(
         val original = chain.request()
         val request = CacheHelper.addCacheControl(
             connectivity = connectivity,
-            cacheAge = TimeSpecification(30, TimeUnit.MINUTES),
-            staleAge = TimeSpecification(7, TimeUnit.DAYS),
+            cacheAge = TimeSpecification(15, TimeUnit.MINUTES),
+            staleAge = TimeSpecification(3, TimeUnit.DAYS),
             request = original
         )
         return chain.proceed(request.build())
