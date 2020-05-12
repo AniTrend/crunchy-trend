@@ -55,18 +55,16 @@ internal class CrunchyController<S, D> private constructor(
             val response = resource.fetchBodyWithRetry(dispatchers.io)
             if (!response.error) {
                 response.data?.let {
-                    val mapped = responseMapper.onResponseMapFrom(response.data)
+                    val mapped = responseMapper.onResponseMapFrom(it)
                     withContext(dispatchers.io) {
                         responseMapper.onResponseDatabaseInsert(mapped)
                     }
                     mapped
                 }
-            } else {
-                throw Throwable(
-                    message = response.message,
-                    cause = Throwable(response.code.name.capitalizeWords())
-                )
-            }
+            } else
+                throw Throwable(message = response.message, cause = Throwable(
+                    response.code.name.capitalizeWords()
+                ))
         }, networkState)
     }
 
