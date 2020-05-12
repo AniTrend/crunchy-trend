@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.api.provider
 
-import co.anitrend.arch.extension.LAZY_MODE_SYNCHRONIZED
+import androidx.collection.LruCache
 import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyCacheInterceptor
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyRequestInterceptor
@@ -29,16 +29,11 @@ import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.Scope
 import retrofit2.Retrofit
 import timber.log.Timber
-import java.util.*
-import kotlin.collections.set
 
 internal object EndpointProvider {
 
     private val moduleTag = javaClass.simpleName
-    private val retrofitCache
-            by lazy(LAZY_MODE_SYNCHRONIZED) {
-                HashMap<String, Retrofit>()
-            }
+    private val retrofitCache = LruCache<EndpointType, Retrofit>(3)
 
     private fun provideOkHttpClient(endpointType: EndpointType, scope: Scope) : OkHttpClient {
         val builder = scope.get<OkHttpClient.Builder> {
@@ -124,18 +119,23 @@ internal object EndpointProvider {
     }
 
     fun provideRetrofit(endpointType: EndpointType, scope: Scope): Retrofit {
-        return if (retrofitCache.containsKey(endpointType.name)) {
-            Timber.tag(moduleTag).v("Using cached retrofit instance for endpoint: ${endpointType.name}")
-            retrofitCache[endpointType.name]!!
+        val reference = retrofitCache.get(endpointType)
+        return if (reference != null) {
+            Timber.tag(moduleTag).d(
+                "Using cached retrofit instance for endpoint: ${endpointType.name}"
+            )
+            reference
         }
         else {
-            Timber.tag(moduleTag).v("Creating new retrofit instance for endpoint: ${endpointType.name}")
+            Timber.tag(moduleTag).d(
+                "Creating new retrofit instance for endpoint: ${endpointType.name}"
+            )
             val retrofit =
                 createRetrofit(
                     endpointType,
                     scope
                 )
-            retrofitCache[endpointType.name] = retrofit
+            retrofitCache.put(endpointType, retrofit)
             retrofit
         }
     }
