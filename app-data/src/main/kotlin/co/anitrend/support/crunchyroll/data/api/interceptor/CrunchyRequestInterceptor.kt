@@ -54,14 +54,24 @@ internal class CrunchyRequestInterceptor(
         val original = chain.request()
         val request = run {
             val dynamicRequest = addDynamicParameters(original).build()
-            val cacheControlledRequest = CacheHelper.addCacheControl(
-                connectivity = connectivity,
-                cacheAge = TimeSpecification(15, TimeUnit.MINUTES),
-                staleAge = TimeSpecification(3, TimeUnit.DAYS),
-                request = dynamicRequest
-            )
-            cacheControlledRequest.build()
+            if (original.method == GET_METHOD) {
+                val cacheControlledRequest = CacheHelper.addCacheControl(
+                    connectivity = connectivity,
+                    cacheAge = TimeSpecification(15, TimeUnit.MINUTES),
+                    staleAge = TimeSpecification(3, TimeUnit.DAYS),
+                    request = dynamicRequest
+                )
+                cacheControlledRequest.build()
+            }
+            else {
+                dynamicRequest.newBuilder().build()
+            }
         }
         return chain.proceed(request)
+    }
+
+    companion object {
+        internal const val GET_METHOD = "GET"
+        internal const val POST_METHOD = "POST"
     }
 }

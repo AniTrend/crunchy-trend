@@ -16,10 +16,11 @@
 
 package co.anitrend.support.crunchyroll.data.authentication.source
 
-import androidx.lifecycle.LiveData
 import co.anitrend.arch.domain.entities.NetworkState
-import co.anitrend.arch.domain.extensions.isSuccess
 import co.anitrend.arch.extension.SupportDispatchers
+import co.anitrend.arch.extension.network.SupportConnectivity
+import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
+import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthenticationEndpoint
 import co.anitrend.support.crunchyroll.data.authentication.mapper.LogoutResponseMapper
@@ -27,9 +28,7 @@ import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticat
 import co.anitrend.support.crunchyroll.data.authentication.source.contract.LogoutSource
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionDao
-import co.anitrend.support.crunchyroll.data.session.repository.SessionRepository
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 
 internal class LogoutSourceImpl(
     private val sessionCoreDao: CrunchySessionCoreDao,
@@ -37,41 +36,30 @@ internal class LogoutSourceImpl(
     private val sessionDao: CrunchySessionDao,
     private val endpoint: CrunchyAuthenticationEndpoint,
     private val settings: IAuthenticationSettings,
+    private val supportConnectivity: SupportConnectivity,
     private val dao: CrunchyLoginDao,
-    private val sessionRepository: SessionRepository,
     supportDispatchers: SupportDispatchers
 ) : LogoutSource(supportDispatchers) {
 
-    override fun logoutUser(): LiveData<Boolean> {
-        retry = { logoutUser() }
+    override suspend fun logoutUser(): Boolean {
         networkState.postValue(NetworkState.Loading)
         val deferred = async {
-            val session = if (settings.sessionId == null) {
-                (sessionRepository.getUnblockedSession() ?:
-                    sessionRepository.getNormalSession())?.sessionId
-            } else settings.sessionId
+            endpoint.logoutUser()
+        }
 
-            endpoint.logoutUser(
-                sessionId = session
+        val controller = mapper.controller(
+            dispatchers,
+            OnlineControllerPolicy.create(
+                supportConnectivity
             )
-        }
+        )
 
-        launch {
-            val state = mapper(deferred, dispatchers.io)
-            if (state.isSuccess()) {
-                clearDataSource()
-                with(settings) {
-                    authenticatedUserId = IAuthenticationSettings.INVALID_USER_ID
-                    hasAccessToPremium = false
-                    isAuthenticated = false
-                    sessionId = null
-                }
-            }
-            networkState.postValue(state)
-            observable.postValue(state.isSuccess())
-        }
+        controller(deferred, networkState)
 
-        return observable
+        if (networkState.value == NetworkState.Success)
+            clearDataSource()
+
+        return networkState.value == NetworkState.Success
     }
 
 
@@ -79,6 +67,11 @@ internal class LogoutSourceImpl(
      * Clears data sources (databases, preferences, e.t.c)
      */
     override suspend fun clearDataSource() {
+        settings.authenticatedUserId = IAuthenticationSettings.INVALID_USER_ID
+        settings.hasAccessToPremium = false
+        settings.isAuthenticated = false
+        settings.sessionId = null
+
         sessionCoreDao.clearTable()
         sessionDao.clearTable()
         dao.clearTable()

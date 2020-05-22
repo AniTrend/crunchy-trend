@@ -23,9 +23,7 @@ import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactor
 import co.anitrend.support.crunchyroll.data.api.helper.ResponseHelper
 import co.anitrend.support.crunchyroll.data.arch.extension.isCached
 import co.anitrend.support.crunchyroll.data.authentication.helper.CrunchyAuthenticationHelper
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -62,7 +60,9 @@ internal class CrunchyResponseInterceptor(
 
         if (crunchyResponse?.code == 401) {
             if (!crunchyResponse.isCached()) {
-                val request = authenticate(crunchyResponse)
+                val request = runBlocking(dispatchers.confined) {
+                    authenticate(crunchyResponse)
+                }
                 if (request != null)
                     return chain.proceed(request)
             } else
@@ -75,14 +75,12 @@ internal class CrunchyResponseInterceptor(
     }
 
 
-    private fun updateRetryCount(priorResponse: Response?) {
+    private suspend fun updateRetryCount(priorResponse: Response?) {
         if (priorResponse?.isSuccessful != true) {
             val retries = retryCount.incrementAndGet()
             if (retries >= 3) {
-                runBlocking(dispatchers.confined) {
-                    delay(retries * 100L)
-                    authentication.invalidateSession()
-                }
+                delay(retries * 100L)
+                authentication.invalidateSession()
                 retryCount.set(0)
             }
         } else {
@@ -102,16 +100,14 @@ internal class CrunchyResponseInterceptor(
      * available. It may also not be provided when an authenticator is re-used manually in an
      * application interceptor, such as when implementing client-specific retries.
      */
-    private fun authenticate(response: Response): Request? {
+    private suspend fun authenticate(response: Response): Request? {
         val origin = response.request
         if (connectivity.isConnected) {
             Timber.tag(moduleTag).v(
                 "Attempting to authenticate request on for host: ${origin.url.host}"
             )
             updateRetryCount(response.priorResponse)
-            return runBlocking(dispatchers.confined) {
-                authentication.refreshSession(origin).build()
-            }
+            return authentication.refreshSession(origin).build()
         } else {
             Timber.tag(moduleTag).v(
                 "Device is currently offline, skipping authentication process"

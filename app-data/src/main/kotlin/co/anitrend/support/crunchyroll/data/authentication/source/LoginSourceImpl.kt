@@ -17,24 +17,22 @@
 package co.anitrend.support.crunchyroll.data.authentication.source
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
-import co.anitrend.arch.data.source.contract.ISourceObservable
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.liveData
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
 import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthenticationEndpoint
-import co.anitrend.support.crunchyroll.data.authentication.helper.CrunchyAuthenticationHelper
 import co.anitrend.support.crunchyroll.data.authentication.mapper.LoginResponseMapper
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.data.authentication.source.contract.LoginSource
 import co.anitrend.support.crunchyroll.data.authentication.transformer.CrunchyUserTransformer
-import co.anitrend.support.crunchyroll.data.session.repository.SessionRepository
-import co.anitrend.support.crunchyroll.domain.authentication.models.CrunchyLoginQuery
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
 internal class LoginSourceImpl(
@@ -43,62 +41,48 @@ internal class LoginSourceImpl(
     private val endpoint: CrunchyAuthenticationEndpoint,
     private val mapper: LoginResponseMapper,
     private val supportConnectivity: SupportConnectivity,
-    private val sessionRepository: SessionRepository,
-    private val authenticationHelper: CrunchyAuthenticationHelper,
     supportDispatchers: SupportDispatchers
 ) : LoginSource(supportDispatchers) {
 
     override val observable =
-        object : ISourceObservable<CrunchyLoginQuery, CrunchyUser?> {
-            /**
-             * Returns the appropriate observable which we will monitor for updates,
-             * common implementation may include but not limited to returning
-             * data source live data for a database
-             *
-             * @param parameter to use when executing
-             */
-            override fun invoke(parameter: CrunchyLoginQuery): LiveData<CrunchyUser?> {
-                val login = dao.findLatestByAccountX(parameter.account)
+        liveData(coroutineContext) {
+            val login = dao.findLatestByAccountX(query.account)
 
-                return Transformations.map(login) {
-                    CrunchyUserTransformer.transform(it)
-                }
+            val loginFlow = login.map {
+                CrunchyUserTransformer.transform(it)
+            }
+
+            loginFlow.collect {
+                emit(it)
             }
         }
 
-    override fun loginUser(query: CrunchyLoginQuery): LiveData<CrunchyUser?> {
-        retry = { loginUser(query) }
+    override suspend fun loginUser() {
         val deferred = async {
-            val session = authenticationHelper.getCoreSession()
             endpoint.loginUser(
                 account = query.account,
-                password = query.password,
-                sessionId = session?.sessionId
+                password = query.password
             )
         }
 
-        launch {
-            val controller =
-                mapper.controller(
-                    dispatchers,
-                    OnlineControllerPolicy.create(
-                        supportConnectivity
-                    )
+        val controller =
+            mapper.controller(
+                dispatchers,
+                OnlineControllerPolicy.create(
+                    supportConnectivity
                 )
+            )
 
-            val response = controller(deferred, networkState)
-            Timber.tag(moduleTag).i("Logged in userId: ${response?.userId}")
-        }
-
-        return observable(query)
+        val response = controller(deferred, networkState)
+        Timber.tag(moduleTag).i("Logged in userId: ${response?.userId}")
     }
 
     override fun loggedInUser(): LiveData<CrunchyUser?> {
         val userId = settings.authenticatedUserId
-        val crunchyLogin = dao.findByUserIdX(userId)
-        return Transformations.map(crunchyLogin) {
+        val userFlow = dao.findByUserIdX(userId).map {
             CrunchyUserTransformer.transform(it)
         }
+        return userFlow.asLiveData(context = coroutineContext)
     }
 
     /**

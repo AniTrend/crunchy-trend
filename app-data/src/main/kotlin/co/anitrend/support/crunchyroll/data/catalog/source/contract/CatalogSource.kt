@@ -19,6 +19,7 @@ package co.anitrend.support.crunchyroll.data.catalog.source.contract
 import androidx.lifecycle.LiveData
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.data.source.core.SupportCoreDataSource
+import co.anitrend.arch.data.source.coroutine.SupportCoroutineDataSource
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 import co.anitrend.support.crunchyroll.domain.catalog.models.CrunchyCatalogQuery
@@ -26,19 +27,15 @@ import kotlinx.coroutines.launch
 
 internal abstract class CatalogSource(
     supportDispatchers: SupportDispatchers
-) : SupportCoreDataSource(supportDispatchers) {
+) : SupportCoroutineDataSource(supportDispatchers) {
 
     protected abstract val observable:
             ISourceObservable<Nothing?, List<CrunchyCatalogWithSeries>>
 
-    abstract suspend fun getCatalog()
+    protected abstract suspend fun getCatalog()
 
     operator fun invoke(): LiveData<List<CrunchyCatalogWithSeries>> {
-        retry = {
-            launch {
-                getCatalog()
-            }
-        }
+        retry = { getCatalog() }
         launch { getCatalog() }
         return observable(null)
     }

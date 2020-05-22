@@ -32,6 +32,7 @@ import co.anitrend.support.crunchyroll.data.authentication.usecase.LoginUseCaseT
 import co.anitrend.support.crunchyroll.data.authentication.usecase.LogoutUseCaseImpl
 import co.anitrend.support.crunchyroll.data.authentication.usecase.LogoutUseCaseType
 import co.anitrend.support.crunchyroll.data.session.usecase.CoreSessionUseCaseImpl
+import co.anitrend.support.crunchyroll.data.session.usecase.NormalSessionUseCaseImpl
 import co.anitrend.support.crunchyroll.data.session.usecase.UnblockSessionUseCaseImpl
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -41,8 +42,9 @@ private val coreModule = module {
         CrunchyAuthenticationHelper(
             connectivityHelper = get(),
             settings = get(),
-            unblockSessionUseCase = get<UnblockSessionUseCaseImpl>(),
-            coreSessionUseCase = get<CoreSessionUseCaseImpl>(),
+            unblockSessionUseCase = get(),
+            normalSessionUseCase = get(),
+            coreSessionUseCase = get(),
             sessionDao = db().crunchySessionDao(),
             sessionCoreDao = db().crunchySessionCoreDao(),
             sessionLocale = get()
@@ -58,9 +60,7 @@ private val dataSourceModule = module {
             mapper = get(),
             settings = get(),
             supportDispatchers = get(),
-            supportConnectivity = get(),
-            sessionRepository = get(),
-            authenticationHelper = get()
+            supportConnectivity = get()
         )
     } bind LoginSource::class
     factory {
@@ -69,10 +69,10 @@ private val dataSourceModule = module {
             sessionDao = db().crunchySessionDao(),
             dao = db().crunchyLoginDao(),
             endpoint = api(EndpointType.AUTH),
+            supportConnectivity = get(),
             mapper = get(),
             settings = get(),
-            supportDispatchers = get(),
-            sessionRepository = get()
+            supportDispatchers = get()
         )
     } bind LogoutSource::class
 }

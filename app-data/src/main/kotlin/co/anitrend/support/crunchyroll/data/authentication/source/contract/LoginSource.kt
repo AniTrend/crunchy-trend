@@ -17,17 +17,36 @@
 package co.anitrend.support.crunchyroll.data.authentication.source.contract
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.liveData
 import co.anitrend.arch.data.source.contract.ISourceObservable
-import co.anitrend.arch.data.source.core.SupportCoreDataSource
+import co.anitrend.arch.data.source.coroutine.SupportCoroutineDataSource
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.support.crunchyroll.domain.authentication.models.CrunchyLoginQuery
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 
 internal abstract class LoginSource(
     supportDispatchers: SupportDispatchers
-) : SupportCoreDataSource(supportDispatchers) {
+) : SupportCoroutineDataSource(supportDispatchers) {
 
-    protected abstract val observable: ISourceObservable<CrunchyLoginQuery, CrunchyUser?>
-    abstract fun loginUser(query: CrunchyLoginQuery): LiveData<CrunchyUser?>
+    protected lateinit var query: CrunchyLoginQuery
+        private set
+
+    protected abstract val observable: LiveData<CrunchyUser?>
+
+    protected abstract suspend fun loginUser()
     abstract fun loggedInUser(): LiveData<CrunchyUser?>
+
+    operator fun invoke(param: CrunchyLoginQuery) =
+        liveData(coroutineContext) {
+            query = param
+            retry = { loginUser() }
+            loginUser()
+            emitSource(
+                observable
+            )
+        }
 }

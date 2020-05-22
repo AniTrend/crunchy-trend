@@ -16,7 +16,9 @@
 
 package co.anitrend.support.crunchyroll.data.authentication.helper
 
+import co.anitrend.arch.extension.empty
 import co.anitrend.arch.extension.network.SupportConnectivity
+import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyRequestInterceptor
 import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
@@ -26,14 +28,21 @@ import co.anitrend.support.crunchyroll.data.session.transformer.CoreSessionTrans
 import co.anitrend.support.crunchyroll.data.session.transformer.SessionTransformer
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
 import co.anitrend.support.crunchyroll.domain.session.interactors.CoreSessionUseCase
+import co.anitrend.support.crunchyroll.domain.session.interactors.NormalSessionUseCase
 import co.anitrend.support.crunchyroll.domain.session.interactors.UnblockSessionUseCase
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import okhttp3.FormBody
 import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import okio.Buffer
 import timber.log.Timber
 
 internal class CrunchyAuthenticationHelper(
     private val connectivityHelper: SupportConnectivity,
     private val coreSessionUseCase: CoreSessionUseCase,
+    private val normalSessionUseCase: NormalSessionUseCase,
     private val unblockSessionUseCase: UnblockSessionUseCase,
     private val sessionDao: CrunchySessionDao,
     private val sessionCoreDao: CrunchySessionCoreDao,
@@ -91,17 +100,49 @@ internal class CrunchyAuthenticationHelper(
         return unblock
     }
 
-    internal suspend fun getCoreSession(forceRefresh: Boolean = false): Session? {
+    private suspend fun getNormalSession(forceRefresh: Boolean = false): Session? {
+        val unblockSession = sessionDao.findBySessionId(
+            settings.sessionId
+        )
+        val expired = hasSessionExpired(unblockSession?.expiresAt)
+        val normalSession = sessionCoreDao.findBySessionId(settings.sessionId)
+        val core = if (forceRefresh) {
+            Timber.tag(moduleTag).d(
+                "Force refresh requested for normal session -> $normalSession | hasExpired: $expired"
+            )
+            val session = normalSessionUseCase()
+            Timber.tag(moduleTag)
+                .d("Refreshed normal session from remote source -> ${session?.sessionId}")
+            session
+        } else {
+            val session = CoreSessionTransformer.transform(normalSession)
+            Timber.tag(moduleTag).d(
+                "Using existing normal session from local source -> ${session?.sessionId} | hasExpired: $expired"
+            )
+            session
+        }
+
+        if (core == null)
+            Timber.tag(moduleTag).w(
+                "Normal session entity is null, proceeding requests may fail!"
+            )
+
+        return core
+    }
+
+    private suspend fun getCoreSession(forceRefresh: Boolean = false): Session? {
         // How do we check if the session is truly invalid?
-        val coreSession = sessionCoreDao.findBySessionId(settings.sessionId)
+        val coreSession = sessionDao.findBySessionId(settings.sessionId)
         val core = if (forceRefresh) {
             Timber.tag(moduleTag).d("Force refresh requested for core session -> $coreSession")
             val session = coreSessionUseCase()
-            Timber.tag(moduleTag).d("Refreshed core session from remote source -> ${session?.sessionId}")
+            Timber.tag(moduleTag)
+                .d("Refreshed core session from remote source -> ${session?.sessionId}")
             session
         } else {
-            val session = CoreSessionTransformer.transform(coreSession)
-            Timber.tag(moduleTag).d("Using existing core session from local source -> ${session?.sessionId}")
+            val session = SessionTransformer.transform(coreSession)
+            Timber.tag(moduleTag)
+                .d("Using existing core session from local source -> ${session?.sessionId}")
             session
         }
 
@@ -114,19 +155,36 @@ internal class CrunchyAuthenticationHelper(
     }
 
     private fun buildRequest(request: Request, session: Session?): Request.Builder {
-        val originalHttpUrl = request.url
-        val urlBuilder = originalHttpUrl.newBuilder()
-            .addEncodedQueryParameter(LOCALE, sessionLocale.sessionLocale.toCrunchyLocale())
+        val requestBuilder = request.newBuilder()
+        val urlBuilder = request.url.newBuilder()
 
         if (session != null) {
-            urlBuilder
-                .addEncodedQueryParameter(SESSION_ID, session.sessionId)
-            Timber.tag(moduleTag).d("Added parameters to request query with session -> ${session.sessionId}")
-        }
-        else
+            when (request.method) {
+                CrunchyRequestInterceptor.GET_METHOD -> {
+                    urlBuilder.addEncodedQueryParameter(SESSION_ID, session.sessionId)
+                        .addEncodedQueryParameter(
+                            LOCALE,
+                            sessionLocale.sessionLocale.toCrunchyLocale()
+                        )
+                    Timber.tag(moduleTag)
+                        .d("Added parameters to request query with session -> ${session.sessionId}")
+                }
+                else -> {
+                    val mimeType = request.body?.contentType()
+                    val requestBody = request.body.bodyToString(moduleTag)
+                    val formBody = FormBody.Builder()
+                        .addEncoded(SESSION_ID, session.sessionId)
+                        .build().bodyToString(moduleTag)
+
+                    val body = ("${requestBody}&${formBody}")
+                        .toRequestBody(mimeType)
+                    requestBuilder.post(body)
+                }
+            }
+        } else
             Timber.tag(moduleTag).w("No parameters added to request query because session is null")
 
-        return request.newBuilder().url(
+        return requestBuilder.url(
             urlBuilder.build()
         )
     }
@@ -135,13 +193,13 @@ internal class CrunchyAuthenticationHelper(
      * Handles complex task or dispatching of token refreshing to the an external work,
      * optionally the implementation can perform these operation internally
      */
-    internal suspend fun refreshSession(request: Request): Request.Builder {
+    internal suspend fun refreshSession(request: Request, forceRefresh: Boolean = true) = mutex.withLock {
         val session = if (isAuthenticated)
-            getUnblockSession(forceRefresh = true)
+            getUnblockSession(forceRefresh) ?: getNormalSession(forceRefresh)
         else
-            getCoreSession(forceRefresh = true)
+            getCoreSession(forceRefresh)
 
-        return buildRequest(request, session)
+        buildRequest(request, session)
     }
 
     /**
@@ -149,35 +207,47 @@ internal class CrunchyAuthenticationHelper(
      *
      * @param request the request to build upon
      */
-    internal suspend fun injectQueryParameters(request: Request): Request.Builder {
-        return if (isAuthenticated) {
-            val session = getUnblockSession()
+    internal suspend fun injectQueryParameters(request: Request) = mutex.withLock {
+        if (isAuthenticated) {
+            val session = getUnblockSession() ?: getNormalSession()
             buildRequest(request, session)
         } else {
             val session = getCoreSession()
             buildRequest(request, session)
         }
     }
-
     /**
      * Handle invalid token state by either renewing it or un-authenticates
      * the user locally if the token cannot be refreshed
      */
     internal suspend fun invalidateSession() {
-        if (connectivityHelper.isConnected) {
-            settings.authenticatedUserId = IAuthenticationSettings.INVALID_USER_ID
-            settings.isAuthenticated = false
-            settings.sessionId = null
-            sessionCoreDao.clearTable()
-            sessionDao.clearTable()
-            Timber.tag(moduleTag).w(
-                "All sessions and authentication states have been invalidated/reset!"
-            )
+        mutex.withLock {
+            if (connectivityHelper.isConnected) {
+                settings.authenticatedUserId = IAuthenticationSettings.INVALID_USER_ID
+                settings.isAuthenticated = false
+                settings.sessionId = null
+                sessionCoreDao.clearTable()
+                sessionDao.clearTable()
+                Timber.tag(moduleTag).w(
+                    "All sessions and authentication states have been invalidated/reset!"
+                )
+            }
         }
     }
 
     companion object {
         private const val SESSION_ID = "session_id"
         private const val LOCALE = "locale"
+
+        internal fun RequestBody?.bodyToString(tag: String) = runCatching {
+            if (this == null)
+                return@runCatching String.empty()
+            val buffer = Buffer()
+            writeTo(buffer)
+            buffer.readUtf8()
+        }.getOrElse {
+            Timber.tag(tag).e(it)
+            String.empty()
+        }
     }
 }

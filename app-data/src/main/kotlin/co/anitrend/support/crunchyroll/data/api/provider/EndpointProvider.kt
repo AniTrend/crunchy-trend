@@ -18,6 +18,7 @@ package co.anitrend.support.crunchyroll.data.api.provider
 
 import androidx.collection.LruCache
 import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
+import co.anitrend.support.crunchyroll.data.api.interceptor.*
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyCacheInterceptor
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyRequestInterceptor
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyResponseInterceptor
@@ -39,7 +40,6 @@ internal object EndpointProvider {
         val builder = scope.get<OkHttpClient.Builder> {
             parametersOf(
                 when (endpointType) {
-                    EndpointType.SESSION,
                     EndpointType.SESSION_PROXY,
                     EndpointType.SESSION_CORE,
                     EndpointType.SESSION_JSON,
@@ -51,6 +51,7 @@ internal object EndpointProvider {
         }
 
         when (endpointType) {
+            EndpointType.AUTH,
             EndpointType.JSON -> {
                 Timber.tag(moduleTag).d("""
                     Adding request and response interceptors for request: ${endpointType.name}
@@ -89,8 +90,7 @@ internal object EndpointProvider {
             }
             EndpointType.SESSION_PROXY,
             EndpointType.SESSION_CORE,
-            EndpointType.SESSION_JSON,
-            EndpointType.SESSION -> {
+            EndpointType.SESSION_JSON -> {
                 Timber.tag(moduleTag).d(
                     "Adding response converter interceptor for: ${endpointType.name}"
                 )

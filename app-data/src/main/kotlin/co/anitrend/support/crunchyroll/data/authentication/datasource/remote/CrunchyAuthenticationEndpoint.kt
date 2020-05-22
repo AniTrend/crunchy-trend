@@ -31,16 +31,13 @@ internal interface CrunchyAuthenticationEndpoint {
     @POST("/login.${BuildConfig.apiExtensionV2}.json")
     suspend fun loginUser(
         @Field("account") account: String,
-        @Field("password") password: String,
-        @Field("session_id") sessionId: String?
+        @Field("password") password: String
     ): Response<CrunchyContainer<CrunchyLoginModel>>
 
     @JSON
     @FormUrlEncoded
     @POST("/logout.${BuildConfig.apiExtension}.json")
-    suspend fun logoutUser(
-        @Field("session_id") sessionId: String?
-    ): Response<CrunchyContainer<Any>>
+    suspend fun logoutUser(): Response<CrunchyContainer<Any?>>
 
     @JSON
     @GET("/start_session.${BuildConfig.apiExtension}.json")

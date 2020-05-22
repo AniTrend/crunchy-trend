@@ -29,6 +29,9 @@ import co.anitrend.support.crunchyroll.data.session.source.UnblockSessionSourceI
 import co.anitrend.support.crunchyroll.data.session.usecase.CoreSessionUseCaseImpl
 import co.anitrend.support.crunchyroll.data.session.usecase.NormalSessionUseCaseImpl
 import co.anitrend.support.crunchyroll.data.session.usecase.UnblockSessionUseCaseImpl
+import co.anitrend.support.crunchyroll.domain.session.interactors.CoreSessionUseCase
+import co.anitrend.support.crunchyroll.domain.session.interactors.NormalSessionUseCase
+import co.anitrend.support.crunchyroll.domain.session.interactors.UnblockSessionUseCase
 import org.koin.dsl.module
 
 private val dataSourceModule = module {
@@ -93,17 +96,17 @@ private val repositoryModule = module {
 }
 
 private val useCaseModule = module {
-    factory {
+    factory<CoreSessionUseCase> {
         CoreSessionUseCaseImpl(
             repository = get<SessionRepository>()
         )
     }
-    factory {
+    factory<NormalSessionUseCase> {
         NormalSessionUseCaseImpl(
             repository = get<SessionRepository>()
         )
     }
-    factory {
+    factory<UnblockSessionUseCase> {
         UnblockSessionUseCaseImpl(
             repository = get<SessionRepository>()
         )

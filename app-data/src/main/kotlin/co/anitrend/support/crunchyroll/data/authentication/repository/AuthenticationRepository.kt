@@ -33,7 +33,6 @@ internal class AuthenticationRepository(
     ILoginRepository<UserInterfaceState<CrunchyUser?>>,
     ILogoutRepository<UserInterfaceState<Boolean>> {
 
-
     override fun loggedInUser() =
         loginSource.create(
             model = loginSource.loggedInUser()
@@ -44,7 +43,7 @@ internal class AuthenticationRepository(
      */
     override fun loginUser(query: CrunchyLoginQuery) =
         loginSource.create(
-            model = loginSource.loginUser(query)
+            model = loginSource(query)
         )
 
     /**
@@ -52,7 +51,7 @@ internal class AuthenticationRepository(
      */
     override fun logoutUser() =
         logoutSource.create(
-            model = logoutSource.logoutUser()
+            model = logoutSource()
         )
 
     /**

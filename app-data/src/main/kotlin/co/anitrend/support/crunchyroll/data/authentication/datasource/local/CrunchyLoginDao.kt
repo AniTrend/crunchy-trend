@@ -22,6 +22,7 @@ import androidx.room.Query
 import co.anitrend.arch.data.dao.ISupportQuery
 import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
 import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 internal interface CrunchyLoginDao : ISupportQuery<CrunchyLoginEntity>, ISourceDao {
@@ -43,7 +44,7 @@ internal interface CrunchyLoginDao : ISupportQuery<CrunchyLoginEntity>, ISourceD
         """)
     fun findLatestByAccountX(
         account: String
-    ): LiveData<CrunchyLoginEntity?>
+    ): Flow<CrunchyLoginEntity?>
 
 
     @Query("""
@@ -62,5 +63,5 @@ internal interface CrunchyLoginDao : ISupportQuery<CrunchyLoginEntity>, ISourceD
         """)
     fun findByUserIdX(
         userId: Long
-    ): LiveData<CrunchyLoginEntity?>
+    ): Flow<CrunchyLoginEntity?>
 }
