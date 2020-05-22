@@ -20,12 +20,15 @@ import co.anitrend.support.crunchyroll.feature.news.plugin.decorator.FrameTagHan
 import co.anitrend.support.crunchyroll.feature.news.plugin.decorator.TagAlignmentHandler
 import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.MarkwonPlugin
+import io.noties.markwon.html.HtmlEmptyTagReplacement
 import io.noties.markwon.html.HtmlPlugin
 
 internal class CrunchyTagPlugin private constructor(): AbstractMarkwonPlugin() {
 
     override fun configure(registry: MarkwonPlugin.Registry) {
         registry.require(HtmlPlugin::class.java) {
+            //it.allowNonClosedTags(true)
+            it.emptyTagReplacement(HtmlEmptyTagReplacement.create())
             it.addHandler(TagAlignmentHandler.create())
             it.addHandler(FrameTagHandler.create())
         }

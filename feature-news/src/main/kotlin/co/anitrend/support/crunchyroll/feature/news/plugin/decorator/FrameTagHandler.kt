@@ -26,6 +26,7 @@ import io.noties.markwon.image.ImageProps
 import io.noties.markwon.image.ImageSize
 import org.commonmark.node.Image
 import org.commonmark.node.Link
+import org.commonmark.node.Paragraph
 import org.commonmark.node.Text
 
 /**
@@ -64,16 +65,17 @@ internal class FrameTagHandler private constructor() : SimpleTagHandler() {
                 .spansFactory()
                 .get(Link::class.java)
 
-            val width = attributes["width"]?.toFloat()
+            // ignoring width for the sake to allow auto size matching
+            //val width = attributes["width"]?.toFloat()
             val height = attributes["height"]?.toFloat()
             val imageSize = ImageSize(
-                width?.let { ImageSize.Dimension(it, "px") },
+                null,
                 height?.let { ImageSize.Dimension(it, "px") }
             )
 
             ImageProps.DESTINATION.set(renderProps, createImageLink(source))
-            ImageProps.IMAGE_SIZE.set(renderProps, imageSize);
-            ImageProps.REPLACEMENT_TEXT_IS_LINK.set(renderProps, false);
+            ImageProps.IMAGE_SIZE.set(renderProps, imageSize)
+            ImageProps.REPLACEMENT_TEXT_IS_LINK.set(renderProps, false)
             CoreProps.LINK_DESTINATION.set(renderProps, getVideoUrl(source))
 
             arrayOf(

@@ -38,7 +38,7 @@ class NewsPresenter(
 ) : CrunchyCorePresenter(context, settings) {
 
     // TODO: Remove invalid characters from url
-    private val regex = Regex(",|#|!|'|")
+    private val regex = Regex("[,#!'\"]")
 
     private val posters = ArrayList<Poster>()
 
@@ -51,9 +51,7 @@ class NewsPresenter(
                 <h5>${payload?.subTitle}</h5>
             """.trimIndent()
             val document = Jsoup.parse("$template${payload?.content}")
-            document.getElementsByTag("iframe").forEach { tag ->
-                tag.append(" ")
-            }
+
             document.getElementsByTag("img").forEach { tag ->
                 val src = tag.attr("src")
 
