@@ -105,7 +105,7 @@ internal class CrunchyAuthenticationHelper(
             settings.sessionId
         )
         val expired = hasSessionExpired(unblockSession?.expiresAt)
-        val normalSession = sessionCoreDao.findBySessionId(settings.sessionId)
+        val normalSession = sessionDao.findBySessionId(settings.sessionId)
         val core = if (forceRefresh) {
             Timber.tag(moduleTag).d(
                 "Force refresh requested for normal session -> $normalSession | hasExpired: $expired"
@@ -115,7 +115,7 @@ internal class CrunchyAuthenticationHelper(
                 .d("Refreshed normal session from remote source -> ${session?.sessionId}")
             session
         } else {
-            val session = CoreSessionTransformer.transform(normalSession)
+            val session = SessionTransformer.transform(normalSession)
             Timber.tag(moduleTag).d(
                 "Using existing normal session from local source -> ${session?.sessionId} | hasExpired: $expired"
             )
@@ -132,7 +132,7 @@ internal class CrunchyAuthenticationHelper(
 
     private suspend fun getCoreSession(forceRefresh: Boolean = false): Session? {
         // How do we check if the session is truly invalid?
-        val coreSession = sessionDao.findBySessionId(settings.sessionId)
+        val coreSession = sessionCoreDao.findBySessionId(settings.sessionId)
         val core = if (forceRefresh) {
             Timber.tag(moduleTag).d("Force refresh requested for core session -> $coreSession")
             val session = coreSessionUseCase()
@@ -140,7 +140,7 @@ internal class CrunchyAuthenticationHelper(
                 .d("Refreshed core session from remote source -> ${session?.sessionId}")
             session
         } else {
-            val session = SessionTransformer.transform(coreSession)
+            val session = CoreSessionTransformer.transform(coreSession)
             Timber.tag(moduleTag)
                 .d("Using existing core session from local source -> ${session?.sessionId}")
             session

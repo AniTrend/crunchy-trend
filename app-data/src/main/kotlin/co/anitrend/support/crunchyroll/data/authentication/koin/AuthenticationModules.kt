@@ -56,7 +56,7 @@ private val dataSourceModule = module {
     factory {
         LoginSourceImpl(
             dao = db().crunchyLoginDao(),
-            endpoint = api(EndpointType.AUTH),
+            endpoint = api(EndpointType.JSON),
             mapper = get(),
             settings = get(),
             supportDispatchers = get(),
@@ -68,7 +68,7 @@ private val dataSourceModule = module {
             sessionCoreDao = db().crunchySessionCoreDao(),
             sessionDao = db().crunchySessionDao(),
             dao = db().crunchyLoginDao(),
-            endpoint = api(EndpointType.AUTH),
+            endpoint = api(EndpointType.JSON),
             supportConnectivity = get(),
             mapper = get(),
             settings = get(),

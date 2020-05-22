@@ -60,9 +60,7 @@ internal class CrunchyResponseInterceptor(
 
         if (crunchyResponse?.code == 401) {
             if (!crunchyResponse.isCached()) {
-                val request = runBlocking(dispatchers.confined) {
-                    authenticate(crunchyResponse)
-                }
+                val request = authenticate(crunchyResponse)
                 if (request != null)
                     return chain.proceed(request)
             } else
@@ -100,14 +98,16 @@ internal class CrunchyResponseInterceptor(
      * available. It may also not be provided when an authenticator is re-used manually in an
      * application interceptor, such as when implementing client-specific retries.
      */
-    private suspend fun authenticate(response: Response): Request? {
+    private fun authenticate(response: Response): Request? {
         val origin = response.request
         if (connectivity.isConnected) {
             Timber.tag(moduleTag).v(
                 "Attempting to authenticate request on for host: ${origin.url.host}"
             )
-            updateRetryCount(response.priorResponse)
-            return authentication.refreshSession(origin).build()
+            return runBlocking(dispatchers.confined) {
+                updateRetryCount(response.priorResponse)
+                authentication.refreshSession(origin).build()
+            }
         } else {
             Timber.tag(moduleTag).v(
                 "Device is currently offline, skipping authentication process"

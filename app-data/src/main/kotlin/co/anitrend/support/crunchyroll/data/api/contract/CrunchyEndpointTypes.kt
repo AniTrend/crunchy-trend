@@ -25,7 +25,6 @@ internal enum class EndpointType(val url: String) {
     SESSION_PROXY(BuildConfig.apiSessionV1),
     SESSION_CORE(BuildConfig.apiSession),
     SESSION_JSON(BuildConfig.apiUrl),
-    AUTH(BuildConfig.apiUrl),
     JSON(BuildConfig.apiUrl),
     XML(BuildConfig.apiFeed),
     SLUG(BuildConfig.crunchyUrl)

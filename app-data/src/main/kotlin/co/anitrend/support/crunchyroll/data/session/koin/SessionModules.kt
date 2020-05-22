@@ -32,6 +32,7 @@ import co.anitrend.support.crunchyroll.data.session.usecase.UnblockSessionUseCas
 import co.anitrend.support.crunchyroll.domain.session.interactors.CoreSessionUseCase
 import co.anitrend.support.crunchyroll.domain.session.interactors.NormalSessionUseCase
 import co.anitrend.support.crunchyroll.domain.session.interactors.UnblockSessionUseCase
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 private val dataSourceModule = module {
@@ -48,7 +49,7 @@ private val dataSourceModule = module {
     }
     factory {
         NormalSessionSourceImpl(
-            endpoint = api(EndpointType.AUTH),
+            endpoint = api(EndpointType.SESSION_JSON),
             dao = db().crunchySessionDao(),
             coreSessionDao = db().crunchySessionCoreDao(),
             loginDao = db().crunchyLoginDao(),
@@ -96,21 +97,21 @@ private val repositoryModule = module {
 }
 
 private val useCaseModule = module {
-    factory<CoreSessionUseCase> {
+    factory {
         CoreSessionUseCaseImpl(
             repository = get<SessionRepository>()
         )
-    }
-    factory<NormalSessionUseCase> {
+    } bind CoreSessionUseCase::class
+    factory {
         NormalSessionUseCaseImpl(
             repository = get<SessionRepository>()
         )
-    }
-    factory<UnblockSessionUseCase> {
+    } bind NormalSessionUseCase::class
+    factory {
         UnblockSessionUseCaseImpl(
             repository = get<SessionRepository>()
         )
-    }
+    } bind UnblockSessionUseCase::class
 }
 
 val sessionModules = listOf(
