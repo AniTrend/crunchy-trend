@@ -59,7 +59,8 @@ private val dataSourceModule = module {
             settings = get(),
             supportDispatchers = get(),
             supportConnectivity = get(),
-            sessionRepository = get()
+            sessionRepository = get(),
+            authenticationHelper = get()
         )
     } bind LoginSource::class
     factory {

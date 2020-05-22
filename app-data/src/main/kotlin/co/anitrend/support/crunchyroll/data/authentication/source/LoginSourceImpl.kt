@@ -25,6 +25,7 @@ import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.Onli
 import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthenticationEndpoint
+import co.anitrend.support.crunchyroll.data.authentication.helper.CrunchyAuthenticationHelper
 import co.anitrend.support.crunchyroll.data.authentication.mapper.LoginResponseMapper
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.data.authentication.source.contract.LoginSource
@@ -43,6 +44,7 @@ internal class LoginSourceImpl(
     private val mapper: LoginResponseMapper,
     private val supportConnectivity: SupportConnectivity,
     private val sessionRepository: SessionRepository,
+    private val authenticationHelper: CrunchyAuthenticationHelper,
     supportDispatchers: SupportDispatchers
 ) : LoginSource(supportDispatchers) {
 
@@ -67,7 +69,7 @@ internal class LoginSourceImpl(
     override fun loginUser(query: CrunchyLoginQuery): LiveData<CrunchyUser?> {
         retry = { loginUser(query) }
         val deferred = async {
-            val session = sessionRepository.getCoreSession()
+            val session = authenticationHelper.getCoreSession()
             endpoint.loginUser(
                 account = query.account,
                 password = query.password,

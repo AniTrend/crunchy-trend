@@ -30,6 +30,8 @@ import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.shared.series.databinding.AdapterSeriesGridBinding
 import coil.request.RequestDisposable
 import kotlinx.android.synthetic.main.adapter_series_grid.view.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 
 data class SeriesGridItem(
     val entity: CrunchySeries?
@@ -44,24 +46,24 @@ data class SeriesGridItem(
      * @param view view that was inflated
      * @param position current position
      * @param payloads optional payloads which maybe empty
-     * @param clickObservable observable to broadcast click events
+     * @param stateFlow observable to broadcast click events
      */
+    @ExperimentalCoroutinesApi
     override fun bind(
         view: View,
         position: Int,
         payloads: List<Any>,
-        clickObservable: MutableLiveData<ClickableItem>
+        stateFlow: MutableStateFlow<ClickableItem?>
     ) {
         val binding = AdapterSeriesGridBinding.bind(view)
         disposable = binding.seriesImage.setImageUrl(entity?.portraitImage)
         binding.seriesTitle.text = entity?.name
         binding.container.setOnClickListener {
-            clickObservable.postValue(
+            stateFlow.value =
                 DefaultClickableItem(
                     data = entity,
                     view = view
                 )
-            )
         }
     }
 

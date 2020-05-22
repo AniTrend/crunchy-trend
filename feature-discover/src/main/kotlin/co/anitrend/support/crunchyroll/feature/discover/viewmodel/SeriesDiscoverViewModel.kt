@@ -17,11 +17,7 @@
 package co.anitrend.support.crunchyroll.feature.discover.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.paging.PagedList
-import co.anitrend.arch.core.viewmodel.SupportPagingViewModel
 import co.anitrend.support.crunchyroll.data.series.usecase.SeriesBrowseUseCaseType
-import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
-import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesBrowseQuery
 import co.anitrend.support.crunchyroll.feature.discover.viewmodel.model.SeriesDiscoverModelState
 
 class SeriesDiscoverViewModel(

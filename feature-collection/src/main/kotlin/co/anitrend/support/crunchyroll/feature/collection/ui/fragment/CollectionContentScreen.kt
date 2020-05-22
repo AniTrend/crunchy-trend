@@ -17,26 +17,23 @@
 package co.anitrend.support.crunchyroll.feature.collection.ui.fragment
 
 import android.os.Bundle
-import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.argument
 import co.anitrend.arch.extension.empty
 import co.anitrend.arch.recycler.common.DefaultClickableItem
-import co.anitrend.arch.ui.fragment.paged.SupportFragmentPagedList
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
-import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.core.ui.fragment.paged.CrunchyFragmentPaged
+import co.anitrend.support.crunchyroll.core.ui.fragment.list.CrunchyFragmentList
 import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
 import co.anitrend.support.crunchyroll.domain.collection.models.CrunchyCollectionQuery
 import co.anitrend.support.crunchyroll.feature.collection.R
 import co.anitrend.support.crunchyroll.feature.collection.ui.adapter.CollectionAdapter
 import co.anitrend.support.crunchyroll.feature.collection.viewmodel.CollectionViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
@@ -46,7 +43,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class CollectionContentScreen(
     override val defaultSpanSize: Int = R.integer.single_list_size,
     override val stateConfig: StateLayoutConfig
-) : CrunchyFragmentPaged<CrunchyCollection>() {
+) : CrunchyFragmentList<CrunchyCollection>() {
 
     private val payload
             by argument<NavigationTargets.Collection.Payload>(
@@ -63,9 +60,10 @@ class CollectionContentScreen(
     /**
      * Invoke view model observer to watch for changes
      */
+    @ExperimentalCoroutinesApi
     override fun setUpViewModelObserver() {
         viewModelState().model.observe(
-            this,
+            viewLifecycleOwner,
             Observer {
                 onPostModelChange(it)
             }
@@ -81,10 +79,11 @@ class CollectionContentScreen(
      * @param savedInstanceState
      */
     @FlowPreview
+    @ExperimentalCoroutinesApi
     override fun initializeComponents(savedInstanceState: Bundle?) {
         super.initializeComponents(savedInstanceState)
         lifecycleScope.launchWhenResumed {
-            supportViewAdapter.clickableFlow.debounce(16)
+            supportViewAdapter.clickableStateFlow.debounce(16)
                 .filterIsInstance<DefaultClickableItem<CrunchyCollection>>()
                 .collect {
                     val data = it.data
@@ -98,28 +97,23 @@ class CollectionContentScreen(
         }
     }
 
-    /**
-     * Handles the complex logic required to dispatch network request to [ISupportViewModel]
-     * to either request from the network or database cache.
-     *
-     * The results of the dispatched network or cache call will be published by the
-     * [androidx.lifecycle.LiveData] specifically [ISupportViewModel.model]
-     *
-     * @see [ISupportViewModel.invoke]
-     */
+    @ExperimentalCoroutinesApi
     override fun onFetchDataInitialize() {
-        payload?.also {
+        val collectionPayload = payload
+        if (collectionPayload != null) {
             viewModel.state(
                 parameter = CrunchyCollectionQuery(
-                    seriesId = it.seriesId
+                    seriesId = collectionPayload.seriesId
                 )
             )
-        } ?: supportStateLayout?.networkStateLiveData?.postValue(
-            NetworkState.Error(
-                heading = "Invalid fragment parameters ${Emote.Cry}",
-                message = "Invalid or missing payload, request cannot be processed"
-            )
-        )
+        } else {
+            supportStateLayout?.networkMutableStateFlow?.value =
+                NetworkState.Error(
+                    heading = "Invalid fragment parameters ${Emote.Cry}",
+                    message = "Invalid or missing payload, request cannot be processed"
+
+                )
+        }
     }
 
     /**

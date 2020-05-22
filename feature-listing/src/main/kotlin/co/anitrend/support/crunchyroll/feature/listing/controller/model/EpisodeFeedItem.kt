@@ -32,6 +32,8 @@ import co.anitrend.support.crunchyroll.feature.feed.R
 import co.anitrend.support.crunchyroll.feature.feed.databinding.AdapterMediaFeedBinding
 import coil.request.RequestDisposable
 import kotlinx.android.synthetic.main.adapter_media_feed.view.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 
 data class EpisodeFeedItem(
     val entity: CrunchyEpisodeFeed?
@@ -46,25 +48,25 @@ data class EpisodeFeedItem(
      * @param view view that was inflated
      * @param position current position
      * @param payloads optional payloads which maybe empty
-     * @param clickObservable observable to broadcast click events
+     * @param stateFlow observable to broadcast click events
      */
+    @ExperimentalCoroutinesApi
     override fun bind(
         view: View,
         position: Int,
         payloads: List<Any>,
-        clickObservable: MutableLiveData<ClickableItem>
+        stateFlow: MutableStateFlow<ClickableItem?>
     ) {
         val binding = AdapterMediaFeedBinding.bind(view)
         disposable = binding.mediaThumbnail.setImageUrl(entity)
         binding.mediaTitle.text = entity?.title
         binding.mediaDuration.text = entity?.episodeDuration
         binding.mediaThumbnail.setOnClickListener {
-            clickObservable.postValue(
+            stateFlow.value =
                 DefaultClickableItem(
                     data = entity,
                     view = view
                 )
-            )
         }
     }
 

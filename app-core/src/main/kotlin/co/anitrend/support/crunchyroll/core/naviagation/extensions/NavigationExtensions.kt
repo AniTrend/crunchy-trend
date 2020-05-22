@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.core.naviagation.extensions
 
 import android.content.Intent
+import androidx.collection.LruCache
 import androidx.fragment.app.Fragment
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.naviagation.contract.INavigationTarget
@@ -24,7 +25,31 @@ import timber.log.Timber
 
 private const val APPLICATION_PACKAGE_NAME = "co.anitrend.support.crunchyroll"
 
-private val classMap = mutableMapOf<String, Class<*>>()
+private const val moduleTag = "NavigationExtensions"
+
+private val classMap = object: LruCache<String, Class<*>>(4) {
+    /**
+     * Called after a cache miss to compute a value for the corresponding key.
+     * Returns the computed value or null if no value can be computed. The
+     * default implementation returns null.
+     *
+     *
+     * The method is called without synchronization: other threads may
+     * access the cache while this method is executing.
+     *
+     *
+     * If a value for `key` exists in the cache when this method
+     * returns, the created value will be released with [.entryRemoved]
+     * and discarded. This can occur when multiple threads request the same key
+     * at the same time (causing multiple values to be created), or when one
+     * thread calls [.put] while another is creating a value for the same
+     * key.
+     */
+    override fun create(key: String): Class<*>? {
+        Timber.tag(moduleTag).v("Creating after cache miss for package: $key")
+        return Class.forName(key)
+    }
+}
 
 private inline fun <reified T : Any> Any.castOrNull() = this as? T
 
@@ -45,9 +70,7 @@ internal fun String.loadIntentOrNull(): Intent? =
 
 @Throws(ClassNotFoundException::class)
 internal fun <T> String.loadClassOrNull(): Class<out T>? =
-    classMap.getOrPut(this) {
-        Class.forName(this)
-    }.castOrNull()
+    classMap.get(this)?.castOrNull()
 
 internal fun <T : Fragment> String.loadFragmentOrNull(): T? =
     try {

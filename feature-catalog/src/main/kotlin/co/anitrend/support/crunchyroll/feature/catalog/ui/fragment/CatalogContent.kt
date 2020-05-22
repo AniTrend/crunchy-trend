@@ -26,6 +26,7 @@ import co.anitrend.support.crunchyroll.feature.catalog.R
 import co.anitrend.support.crunchyroll.feature.catalog.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.catalog.ui.adpater.CatalogAdapter
 import co.anitrend.support.crunchyroll.feature.catalog.viewmodel.CatalogViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -46,6 +47,7 @@ class CatalogContent(
     /**
      * Invoke view model observer to watch for changes
      */
+    @ExperimentalCoroutinesApi
     override fun setUpViewModelObserver() {
         viewModelState().model.observe(viewLifecycleOwner, Observer { model ->
             onPostModelChange(model)

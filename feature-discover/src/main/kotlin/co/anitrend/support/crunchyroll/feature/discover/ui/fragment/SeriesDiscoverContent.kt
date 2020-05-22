@@ -19,13 +19,12 @@ package co.anitrend.support.crunchyroll.feature.discover.ui.fragment
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import co.anitrend.arch.core.viewmodel.contract.ISupportViewModel
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.argument
 import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.core.ui.fragment.paged.CrunchyFragmentPaged
+import co.anitrend.support.crunchyroll.core.ui.fragment.list.CrunchyFragmentList
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesBrowseQuery
@@ -34,6 +33,7 @@ import co.anitrend.support.crunchyroll.feature.discover.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.discover.ui.activity.SeriesDiscoverScreen
 import co.anitrend.support.crunchyroll.feature.discover.viewmodel.SeriesDiscoverViewModel
 import co.anitrend.support.crunchyroll.shared.series.adapter.SeriesViewAdapter
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
@@ -43,7 +43,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SeriesDiscoverContent(
     override val defaultSpanSize: Int = R.integer.single_list_size
-) : CrunchyFragmentPaged<CrunchySeries>() {
+) : CrunchyFragmentList<CrunchySeries>() {
 
     private val payload: NavigationTargets.Discover.Payload?
             by argument(NavigationTargets.Discover.PAYLOAD)
@@ -62,6 +62,7 @@ class SeriesDiscoverContent(
     /**
      * Invoke view model observer to watch for changes
      */
+    @ExperimentalCoroutinesApi
     override fun setUpViewModelObserver() {
         viewModelState().model.observe(
             viewLifecycleOwner,
@@ -78,10 +79,11 @@ class SeriesDiscoverContent(
      * @param savedInstanceState
      */
     @FlowPreview
+    @ExperimentalCoroutinesApi
     override fun initializeComponents(savedInstanceState: Bundle?) {
         super.initializeComponents(savedInstanceState)
         lifecycleScope.launchWhenResumed {
-            supportViewAdapter.clickableFlow.debounce(16)
+            supportViewAdapter.clickableStateFlow.debounce(16)
                 .filterIsInstance<DefaultClickableItem<CrunchySeries>>()
                 .collect {
                     val data = it.data
@@ -95,15 +97,6 @@ class SeriesDiscoverContent(
         }
     }
 
-    /**
-     * Handles the complex logic required to dispatch network request to [ISupportViewModel]
-     * to either request from the network or database cache.
-     *
-     * The results of the dispatched network or cache call will be published by the
-     * [androidx.lifecycle.LiveData] specifically [ISupportViewModel.model]
-     *
-     * @see [ISupportViewModel.invoke]
-     */
     override fun onFetchDataInitialize() {
         val query = payload?.let {
             CrunchySeriesBrowseQuery(

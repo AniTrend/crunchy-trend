@@ -28,6 +28,8 @@ import co.anitrend.arch.recycler.holder.SupportViewHolder
 import co.anitrend.arch.recycler.model.RecyclerItem
 import co.anitrend.support.crunchyroll.feature.series.R
 import kotlinx.android.synthetic.main.adapter_genre.view.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 
 data class GenreItem(
     val entity: String?
@@ -40,22 +42,22 @@ data class GenreItem(
      * @param view view that was inflated
      * @param position current position
      * @param payloads optional payloads which maybe empty
-     * @param clickObservable observable to broadcast click events
+     * @param stateFlow observable to broadcast click events
      */
+    @ExperimentalCoroutinesApi
     override fun bind(
         view: View,
         position: Int,
         payloads: List<Any>,
-        clickObservable: MutableLiveData<ClickableItem>
+        stateFlow: MutableStateFlow<ClickableItem?>
     ) {
         view.seriesGenre.text = entity
         view.seriesGenre.setOnClickListener {
-            clickObservable.postValue(
+            stateFlow.value =
                 DefaultClickableItem(
                     data = entity,
                     view = view
                 )
-            )
         }
     }
 

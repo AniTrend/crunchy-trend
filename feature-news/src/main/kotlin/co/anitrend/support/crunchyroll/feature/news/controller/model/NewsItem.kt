@@ -34,6 +34,8 @@ import co.anitrend.support.crunchyroll.feature.news.databinding.AdapterNewsFeedB
 import coil.request.RequestDisposable
 import io.noties.markwon.Markwon
 import kotlinx.android.synthetic.main.adapter_news_feed.view.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class NewsItem(
     val entity: CrunchyNews?,
@@ -49,13 +51,14 @@ class NewsItem(
      * @param view view that was inflated
      * @param position current position
      * @param payloads optional payloads which maybe empty
-     * @param clickObservable observable to broadcast click events
+     * @param stateFlow observable to broadcast click events
      */
+    @ExperimentalCoroutinesApi
     override fun bind(
         view: View,
         position: Int,
         payloads: List<Any>,
-        clickObservable: MutableLiveData<ClickableItem>
+        stateFlow: MutableStateFlow<ClickableItem?>
     ) {
         val binding = AdapterNewsFeedBinding.bind(view)
         disposable = binding.newsImage.setImageUrl(entity?.image)
@@ -67,12 +70,11 @@ class NewsItem(
             entity?.description ?: "No description available"
         )
         binding.container.setOnClickListener {
-            clickObservable.postValue(
+            stateFlow.value =
                 DefaultClickableItem(
                     data = entity,
                     view = view
                 )
-            )
         }
     }
 

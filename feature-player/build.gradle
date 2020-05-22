@@ -43,7 +43,8 @@ dependencies {
     implementation("com.github.brianwernick:ExoMedia:$exoMedia")
 
     /** Playlist support */
-    implementation("com.github.brianwernick:PlaylistCore:$exoPlaylist")
+    //implementation("com.github.brianwernick:PlaylistCore:$exoPlaylist")
+    implementation("com.github.wax911:PlaylistCore:2.1.0")
 
     /** Exo player extensions */
     implementation("com.google.android.exoplayer:extension-workmanager:$exoMediaPlayer")

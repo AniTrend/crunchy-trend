@@ -46,13 +46,13 @@ internal class LogoutSourceImpl(
         retry = { logoutUser() }
         networkState.postValue(NetworkState.Loading)
         val deferred = async {
-            if (settings.sessionId == null) {
-                val unblocked = sessionRepository.getUnblockedSession()
-                if (unblocked == null)
-                    sessionRepository.getCoreSession()
-            }
+            val session = if (settings.sessionId == null) {
+                (sessionRepository.getUnblockedSession() ?:
+                    sessionRepository.getNormalSession())?.sessionId
+            } else settings.sessionId
+
             endpoint.logoutUser(
-                sessionId = settings.sessionId
+                sessionId = session
             )
         }
 

@@ -37,15 +37,15 @@ import co.anitrend.support.crunchyroll.feature.series.databinding.SeriesContentB
 import co.anitrend.support.crunchyroll.feature.series.presenter.SeriesDetailPresenter
 import co.anitrend.support.crunchyroll.feature.series.ui.adpter.SeriesGenreAdapter
 import co.anitrend.support.crunchyroll.feature.series.viewmodel.SeriesDetailViewModel
-import coil.request.RequestDisposable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.filterNotNull
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 class SeriesContentScreen : CrunchyFragment() {
 
@@ -66,12 +66,13 @@ class SeriesContentScreen : CrunchyFragment() {
     /**
      * Invoke view model observer to watch for changes
      */
+    @ExperimentalCoroutinesApi
     override fun setUpViewModelObserver() {
         viewModelState().model.observe(
             viewLifecycleOwner,
             Observer {
                 if (it != null) {
-                    binding.supportStateLayout.networkStateLiveData.postValue(NetworkState.Success)
+                    binding.supportStateLayout.networkMutableStateFlow.value = NetworkState.Success
                     seriesGenreAdapter.submitList(it.genres)
                 }
             }
@@ -79,7 +80,7 @@ class SeriesContentScreen : CrunchyFragment() {
         viewModelState().networkState.observe(
             viewLifecycleOwner,
             Observer {
-                binding.supportStateLayout.networkStateLiveData.postValue(it)
+                binding.supportStateLayout.networkMutableStateFlow.value = it
             }
         )
     }
@@ -95,20 +96,22 @@ class SeriesContentScreen : CrunchyFragment() {
      * @param savedInstanceState
      */
     @FlowPreview
+    @ExperimentalCoroutinesApi
     override fun initializeComponents(savedInstanceState: Bundle?) {
         lifecycleScope.launchWhenResumed {
             if (viewModelState().isEmpty())
                 onFetchDataInitialize()
         }
         lifecycleScope.launchWhenResumed {
-            binding.supportStateLayout.interactionFlow
+            binding.supportStateLayout.interactionStateFlow
+                .filterNotNull()
                 .debounce(16)
                 .collect {
                     viewModelState().retry()
                 }
         }
         lifecycleScope.launchWhenResumed {
-            seriesGenreAdapter.clickableFlow.debounce(16)
+            seriesGenreAdapter.clickableStateFlow.debounce(16)
                 .filterIsInstance<DefaultClickableItem<String>>()
                 .collect {
                     val genre = it.data
@@ -155,13 +158,14 @@ class SeriesContentScreen : CrunchyFragment() {
      *
      * @return Return the View for the fragment's UI, or null.
      */
+    @ExperimentalCoroutinesApi
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = SeriesContentBinding.inflate(inflater, container, false)
-        binding.supportStateLayout.stateConfig = get()
+        binding.supportStateLayout.stateConfigFlow.value = get()
 
         binding.lifecycleOwner = this
         return binding.root
@@ -204,19 +208,22 @@ class SeriesContentScreen : CrunchyFragment() {
      */
     override fun viewModelState() = viewModel.state
 
+    @ExperimentalCoroutinesApi
     private fun onFetchDataInitialize() {
-        payload?.also {
+        val seriesPayload = payload
+        if (seriesPayload != null) {
             viewModel.state(
                 parameter = CrunchySeriesDetailQuery(
-                    seriesId = it.seriesId
+                    seriesId = seriesPayload.seriesId
                 )
             )
-        } ?: binding.supportStateLayout.setNetworkState(
-            NetworkState.Error(
-                heading = "Invalid Parameter/s State",
-                message = "Invalid or missing payload"
-            )
-        )
+        } else {
+            binding.supportStateLayout.networkMutableStateFlow.value =
+                NetworkState.Error(
+                    heading = "Invalid Parameter/s State",
+                    message = "Invalid or missing payload"
+                )
+        }
     }
 
     /**

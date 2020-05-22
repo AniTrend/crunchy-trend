@@ -17,11 +17,7 @@
 package co.anitrend.support.crunchyroll.feature.collection.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.paging.PagedList
-import co.anitrend.arch.core.viewmodel.SupportPagingViewModel
 import co.anitrend.support.crunchyroll.data.collection.usecase.CollectionUseCaseType
-import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
-import co.anitrend.support.crunchyroll.domain.collection.models.CrunchyCollectionQuery
 import co.anitrend.support.crunchyroll.feature.collection.viewmodel.model.CollectionModelState
 
 class CollectionViewModel(

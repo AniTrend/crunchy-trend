@@ -17,10 +17,7 @@
 package co.anitrend.support.crunchyroll.feature.player.viewmodel
 
 import androidx.lifecycle.ViewModel
-import co.anitrend.arch.core.viewmodel.SupportViewModel
 import co.anitrend.support.crunchyroll.data.stream.usecase.MediaStreamUseCaseType
-import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
-import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.feature.player.viewmodel.model.MediaStreamModelState
 
 class MediaStreamViewModel(

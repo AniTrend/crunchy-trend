@@ -26,11 +26,12 @@ import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.core.ui.fragment.paged.CrunchyFragmentPaged
+import co.anitrend.support.crunchyroll.core.ui.fragment.list.CrunchyFragmentList
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.feature.search.R
 import co.anitrend.support.crunchyroll.feature.search.viewmodel.SeriesSearchViewModel
 import co.anitrend.support.crunchyroll.shared.series.adapter.SeriesViewAdapter
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
@@ -40,7 +41,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SearchContentScreen(
     override val defaultSpanSize: Int = R.integer.single_list_size
-) : CrunchyFragmentPaged<CrunchySeries>() {
+) : CrunchyFragmentList<CrunchySeries>() {
 
     private val viewModel by sharedViewModel<SeriesSearchViewModel>()
 
@@ -54,6 +55,7 @@ class SearchContentScreen(
     /**
      * Invoke view model observer to watch for changes
      */
+    @ExperimentalCoroutinesApi
     override fun setUpViewModelObserver() {
         viewModelState().model.observe(
             viewLifecycleOwner,
@@ -70,23 +72,25 @@ class SearchContentScreen(
     }
 
     /**
-     * Called immediately after [.onCreateView]
+     * Called immediately after [onCreateView]
      * has returned, but before any saved state has been restored in to the view.
      * This gives subclasses a chance to initialize themselves once
-     * they know their view hierarchy has been completely created.  The fragment's
+     * they know their view hierarchy has been completely created. The fragment's
      * view hierarchy is not however attached to its parent at this point.
-     * @param view The View returned by [.onCreateView].
+     *
+     * @param view The View returned by [onCreateView].
      * @param savedInstanceState If non-null, this fragment is being re-constructed
      * from a previous saved state as given here.
      */
+    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        supportStateLayout?.networkStateLiveData?.postValue(
+        supportStateLayout?.networkMutableStateFlow?.value =
             NetworkState.Error(
                 heading = "Looking for something?",
                 message = "Tap the ${Emote.Search} to get started"
             )
-        )
+
     }
 
     /**
@@ -96,10 +100,11 @@ class SearchContentScreen(
      * @param savedInstanceState
      */
     @FlowPreview
+    @ExperimentalCoroutinesApi
     override fun initializeComponents(savedInstanceState: Bundle?) {
         super.initializeComponents(savedInstanceState)
         lifecycleScope.launchWhenResumed {
-            supportViewAdapter.clickableFlow.debounce(16)
+            supportViewAdapter.clickableStateFlow.debounce(16)
                 .filterIsInstance<DefaultClickableItem<CrunchySeries>>()
                 .collect {
                     val data = it.data
@@ -113,15 +118,6 @@ class SearchContentScreen(
         }
     }
 
-    /**
-     * Handles the complex logic required to dispatch network request to [ISupportViewModel]
-     * to either request from the network or database cache.
-     *
-     * The results of the dispatched network or cache call will be published by the
-     * [androidx.lifecycle.LiveData] specifically [ISupportViewModel.model]
-     *
-     * @see [ISupportViewModel.invoke]
-     */
     override fun onFetchDataInitialize() {
         val searchQuery = viewModel.searchQueryLiveData.value
         if (searchQuery != null) {

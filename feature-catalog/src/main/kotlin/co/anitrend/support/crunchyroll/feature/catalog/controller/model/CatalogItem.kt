@@ -20,7 +20,6 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
@@ -40,9 +39,10 @@ import co.anitrend.support.crunchyroll.feature.catalog.databinding.AdapterCatalo
 import co.anitrend.support.crunchyroll.shared.series.adapter.SeriesGridViewAdapter
 import kotlinx.android.synthetic.main.adapter_catalog.view.*
 import kotlinx.android.synthetic.main.item_carousel.view.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -54,9 +54,10 @@ data class CatalogItem(
     //private var catalogSeriesRecycler: SupportRecyclerView? = null
     private var job: Job? = null
 
+    @FlowPreview
+    @ExperimentalCoroutinesApi
     private fun setUpCatalogItems(
-        view: View,
-        clickObservable: MutableLiveData<ClickableItem>
+        view: View
     ) {
         val catalogSeriesAdapter = SeriesGridViewAdapter(
             view.resources,
@@ -73,7 +74,7 @@ data class CatalogItem(
         )
         catalogSeriesAdapter.submitList(entity?.series as List)
         job = scope.launch {
-            catalogSeriesAdapter.clickableFlow
+            catalogSeriesAdapter.clickableStateFlow.debounce(16)
                 .filterIsInstance<DefaultClickableItem<CrunchySeries>>()
                 .collect {
                     val model = it.data
@@ -94,14 +95,16 @@ data class CatalogItem(
      * @param view view that was inflated
      * @param position current position
      * @param payloads optional payloads which maybe empty
-     * @param clickObservable observable to broadcast click events
+     * @param stateFlow observable to broadcast click events
      */
+    @ExperimentalCoroutinesApi
     @ExperimentalStdlibApi
+    @FlowPreview
     override fun bind(
         view: View,
         position: Int,
         payloads: List<Any>,
-        clickObservable: MutableLiveData<ClickableItem>
+        stateFlow: MutableStateFlow<ClickableItem?>
     ) {
         val binding = AdapterCatalogBinding.bind(view)
         binding.catalogHeadingTitle.text = entity?.qualifier?.attribute?.capitalize(Locale.getDefault())
@@ -110,7 +113,7 @@ data class CatalogItem(
         /*binding.catalogActionSeeAll.setOnClickListener {
             Toast.makeText(view.context, "Not yet supported.. :smirk", Toast.LENGTH_SHORT).show()
         }*/
-        setUpCatalogItems(view, clickObservable)
+        setUpCatalogItems(view)
     }
 
     /**

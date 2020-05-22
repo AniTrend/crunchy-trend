@@ -17,11 +17,7 @@
 package co.anitrend.support.crunchyroll.feature.media.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.paging.PagedList
-import co.anitrend.arch.core.viewmodel.SupportPagingViewModel
 import co.anitrend.support.crunchyroll.data.media.usecase.MediaUseCaseType
-import co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia
-import co.anitrend.support.crunchyroll.domain.media.models.CrunchyMediaQuery
 import co.anitrend.support.crunchyroll.feature.media.viewmodel.model.MediaModelState
 
 class MediaViewModel(

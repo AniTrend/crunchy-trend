@@ -16,8 +16,6 @@
 
 package co.anitrend.support.crunchyroll.data.authentication.helper
 
-import co.anitrend.arch.data.auth.contract.ISupportAuthentication
-import co.anitrend.arch.extension.LAZY_MODE_SYNCHRONIZED
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
@@ -30,7 +28,6 @@ import co.anitrend.support.crunchyroll.domain.session.entities.Session
 import co.anitrend.support.crunchyroll.domain.session.interactors.CoreSessionUseCase
 import co.anitrend.support.crunchyroll.domain.session.interactors.UnblockSessionUseCase
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import okhttp3.Request
 import timber.log.Timber
 
@@ -42,9 +39,9 @@ internal class CrunchyAuthenticationHelper(
     private val sessionCoreDao: CrunchySessionCoreDao,
     private val settings: IAuthenticationSettings,
     private val sessionLocale: ICrunchySessionLocale
-): ISupportAuthentication {
+) {
 
-    override val moduleTag: String = javaClass.simpleName
+    private val moduleTag: String = javaClass.simpleName
 
     /**
      * Since traditional locking mechanisms in java don't work so well with kotlin coroutines
@@ -58,7 +55,7 @@ internal class CrunchyAuthenticationHelper(
      * Facade to provide information on auth status of the application,
      * on demand
      */
-    override val isAuthenticated: Boolean
+    private val isAuthenticated: Boolean
         get() = settings.isAuthenticated
 
     private fun hasSessionExpired(sessionExpiryTime: Long?): Boolean {
@@ -94,7 +91,7 @@ internal class CrunchyAuthenticationHelper(
         return unblock
     }
 
-    private suspend fun getCoreSession(forceRefresh: Boolean = false): Session? {
+    internal suspend fun getCoreSession(forceRefresh: Boolean = false): Session? {
         // How do we check if the session is truly invalid?
         val coreSession = sessionCoreDao.findBySessionId(settings.sessionId)
         val core = if (forceRefresh) {
@@ -123,16 +120,15 @@ internal class CrunchyAuthenticationHelper(
 
         if (session != null) {
             urlBuilder
-                /*.addEncodedQueryParameter(DEVICE_ID, session.deviceId)
-                .addEncodedQueryParameter(DEVICE_TYPE, session.deviceType)*/
                 .addEncodedQueryParameter(SESSION_ID, session.sessionId)
             Timber.tag(moduleTag).d("Added parameters to request query with session -> ${session.sessionId}")
         }
         else
             Timber.tag(moduleTag).w("No parameters added to request query because session is null")
 
-        return request.newBuilder()
-            .url(urlBuilder.build())
+        return request.newBuilder().url(
+            urlBuilder.build()
+        )
     }
 
     /**
@@ -181,8 +177,6 @@ internal class CrunchyAuthenticationHelper(
     }
 
     companion object {
-        private const val DEVICE_TYPE = "device_type"
-        private const val DEVICE_ID = "device_id"
         private const val SESSION_ID = "session_id"
         private const val LOCALE = "locale"
     }

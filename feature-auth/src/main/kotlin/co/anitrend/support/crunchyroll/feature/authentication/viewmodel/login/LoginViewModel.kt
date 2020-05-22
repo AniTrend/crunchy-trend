@@ -17,11 +17,9 @@
 package co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login
 
 import androidx.lifecycle.ViewModel
-import co.anitrend.arch.core.viewmodel.SupportViewModel
 import co.anitrend.arch.extension.empty
 import co.anitrend.support.crunchyroll.data.authentication.usecase.LoginUseCaseType
 import co.anitrend.support.crunchyroll.domain.authentication.models.CrunchyLoginQuery
-import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login.model.LoginModelState
 
 class LoginViewModel(

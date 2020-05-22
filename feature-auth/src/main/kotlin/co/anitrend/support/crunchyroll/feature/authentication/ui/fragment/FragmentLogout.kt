@@ -23,17 +23,17 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.domain.entities.NetworkState
-import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
-import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.ui.fragment.CrunchyFragment
 import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLogoutBinding
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login.LoginViewModel
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.logout.LogoutViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filterNotNull
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -52,6 +52,7 @@ class FragmentLogout : CrunchyFragment() {
     /**
      * Invoke view model observer to watch for changes
      */
+    @ExperimentalCoroutinesApi
     override fun setUpViewModelObserver() {
         viewModelUser.state.model.observe(viewLifecycleOwner, Observer {
             binding.currentUserModel = it
@@ -61,17 +62,19 @@ class FragmentLogout : CrunchyFragment() {
                 onUpdateUserInterface()
         })
         viewModelState().networkState.observe(viewLifecycleOwner, Observer {
-            binding.supportStateLayout.networkStateLiveData.postValue(it)
+            binding.supportStateLayout.networkMutableStateFlow.value = it
         })
         viewModelState().refreshState.observe(viewLifecycleOwner, Observer {
-            binding.supportStateLayout.networkStateLiveData.postValue(it)
+            binding.supportStateLayout.networkMutableStateFlow.value = it
         })
     }
 
     @FlowPreview
+    @ExperimentalCoroutinesApi
     override fun initializeComponents(savedInstanceState: Bundle?) {
         lifecycleScope.launchWhenResumed {
-            binding.supportStateLayout.interactionFlow
+            binding.supportStateLayout.interactionStateFlow
+                .filterNotNull()
                 .debounce(16)
                 .collect {
                     viewModelState().retry()
@@ -90,10 +93,11 @@ class FragmentLogout : CrunchyFragment() {
         }
     }
 
+    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.supportStateLayout.stateConfig = get()
-        binding.supportStateLayout.networkStateLiveData.postValue(NetworkState.Success)
+        binding.supportStateLayout.stateConfigFlow.value = get()
+        binding.supportStateLayout.networkMutableStateFlow.value = NetworkState.Success
         binding.userLogoutButton.setOnClickListener {
             onFetchDataInitialize()
         }
@@ -118,9 +122,10 @@ class FragmentLogout : CrunchyFragment() {
         viewModel.state()
     }
 
+    @ExperimentalCoroutinesApi
     override fun hasBackPressableAction(): Boolean {
         if (binding.supportStateLayout.isError) {
-            binding.supportStateLayout.setNetworkState(NetworkState.Success)
+            binding.supportStateLayout.networkMutableStateFlow.value = NetworkState.Success
             return true
         }
         return super.hasBackPressableAction()

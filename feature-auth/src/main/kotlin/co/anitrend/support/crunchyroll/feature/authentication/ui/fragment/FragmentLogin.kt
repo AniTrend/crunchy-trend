@@ -23,18 +23,18 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.domain.entities.NetworkState
-import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
-import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.ui.fragment.CrunchyFragment
 import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLoginBinding
 import co.anitrend.support.crunchyroll.feature.authentication.presenter.AuthPresenter
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login.LoginViewModel
 import kotlinx.android.synthetic.main.login_anonymous_controls.view.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filterNotNull
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -49,6 +49,7 @@ class FragmentLogin(
     /**
      * Invoke view model observer to watch for changes
      */
+    @ExperimentalCoroutinesApi
     override fun setUpViewModelObserver() {
         viewModelState().model.observe(viewLifecycleOwner, Observer {
             if (it != null) {
@@ -57,10 +58,10 @@ class FragmentLogin(
             }
         })
         viewModelState().networkState.observe(viewLifecycleOwner, Observer {
-            binding.supportStateLayout.setNetworkState(it)
+            binding.supportStateLayout.networkMutableStateFlow.value = it
         })
         viewModelState().refreshState.observe(viewLifecycleOwner, Observer {
-            binding.supportStateLayout.setNetworkState(it)
+            binding.supportStateLayout.networkMutableStateFlow.value =it
         })
         with(binding) {
             lifecycleOwner = this@FragmentLogin
@@ -74,9 +75,11 @@ class FragmentLogin(
     override fun viewModelState() = viewModel.state
 
     @FlowPreview
+    @ExperimentalCoroutinesApi
     override fun initializeComponents(savedInstanceState: Bundle?) {
         lifecycleScope.launchWhenResumed {
-            binding.supportStateLayout.interactionFlow
+            binding.supportStateLayout.interactionStateFlow
+                .filterNotNull()
                 .debounce(16)
                 .collect {
                     viewModelState().retry()
@@ -90,6 +93,7 @@ class FragmentLogin(
             it.root
         }
 
+    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.loginButton.setOnClickListener {
@@ -99,8 +103,8 @@ class FragmentLogin(
             NavigationTargets.Main(context)
             activity?.closeScreen()
         }
-        binding.supportStateLayout.stateConfig = get()
-        binding.supportStateLayout.setNetworkState(NetworkState.Success)
+        binding.supportStateLayout.stateConfigFlow.value = get()
+        binding.supportStateLayout.networkMutableStateFlow.value = NetworkState.Success
     }
 
     private fun onUpdateUserInterface() {
@@ -115,9 +119,10 @@ class FragmentLogin(
         ) { viewModel.state(viewModel.loginQuery) }
     }
 
+    @ExperimentalCoroutinesApi
     override fun hasBackPressableAction(): Boolean {
         if (binding.supportStateLayout.isError) {
-            binding.supportStateLayout.setNetworkState(NetworkState.Success)
+            binding.supportStateLayout.networkMutableStateFlow.value = NetworkState.Success
             return true
         }
         return super.hasBackPressableAction()

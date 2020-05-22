@@ -29,7 +29,7 @@ import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
 import co.anitrend.support.crunchyroll.core.extensions.createDialog
 import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.core.ui.fragment.paged.CrunchyFragmentPaged
+import co.anitrend.support.crunchyroll.core.ui.fragment.list.CrunchyFragmentList
 import co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia
 import co.anitrend.support.crunchyroll.domain.media.models.CrunchyMediaQuery
 import co.anitrend.support.crunchyroll.feature.media.R
@@ -42,6 +42,7 @@ import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.bottomsheets.setPeekHeight
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
@@ -51,7 +52,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MediaContent(
     override val defaultSpanSize: Int = R.integer.single_list_size
-) : CrunchyFragmentPaged<CrunchyMedia>() {
+) : CrunchyFragmentList<CrunchyMedia>() {
 
     private val payload
             by argument<NavigationTargets.Media.Payload>(
@@ -74,10 +75,14 @@ class MediaContent(
         )
     }
 
+    @ExperimentalCoroutinesApi
     override fun setUpViewModelObserver() {
-        viewModelState().model.observe(viewLifecycleOwner, Observer {
-            onPostModelChange(it)
-        })
+        viewModelState().model.observe(
+            viewLifecycleOwner,
+            Observer {
+                onPostModelChange(it)
+            }
+        )
     }
 
     /**
@@ -87,10 +92,11 @@ class MediaContent(
      * @param savedInstanceState
      */
     @FlowPreview
+    @ExperimentalCoroutinesApi
     override fun initializeComponents(savedInstanceState: Bundle?) {
         super.initializeComponents(savedInstanceState)
         lifecycleScope.launchWhenResumed {
-            supportViewAdapter.clickableFlow.debounce(16)
+            supportViewAdapter.clickableStateFlow.debounce(16)
                 .filterIsInstance<DefaultClickableItem<CrunchyMedia>>()
                 .collect {
                     val media = it.data
@@ -140,19 +146,22 @@ class MediaContent(
         }
     }
 
+    @ExperimentalCoroutinesApi
     override fun onFetchDataInitialize() {
-        payload?.also {
+        val mediaPayload = payload
+        if (mediaPayload != null) {
             viewModel.state(
                 CrunchyMediaQuery(
-                    collectionId = it.collectionId
+                    collectionId = mediaPayload.collectionId
                 )
             )
-        } ?: supportStateLayout?.setNetworkState(
-            NetworkState.Error(
-                heading = "Invalid fragment parameters ${Emote.Cry}",
-                message = "Invalid or missing payload, request cannot be processed"
-            )
-        )
+        } else {
+            supportStateLayout?.networkMutableStateFlow?.value =
+                NetworkState.Error(
+                    heading = "Invalid fragment parameters ${Emote.Cry}",
+                    message = "Invalid or missing payload, request cannot be processed"
+                )
+        }
     }
 
     /**

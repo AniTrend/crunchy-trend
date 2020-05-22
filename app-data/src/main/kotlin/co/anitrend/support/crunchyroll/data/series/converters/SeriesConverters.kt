@@ -68,7 +68,7 @@ internal object SeriesEntityConverter : SupportConverter<CrunchySeriesEntity, Cr
         )
     }
 
-    override val toType: (CrunchySeries) -> CrunchySeriesEntity = { source ->
+    override val toType: (CrunchySeries) -> CrunchySeriesEntity = { _ ->
         TODO()
     }
 }

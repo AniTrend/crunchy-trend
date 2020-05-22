@@ -34,6 +34,7 @@ import co.anitrend.support.crunchyroll.feature.news.presenter.NewsPresenter
 import io.noties.markwon.Markwon
 import kotlinx.android.synthetic.main.news_screen.*
 import kotlinx.android.synthetic.main.news_screen_content.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import org.koin.android.ext.android.get
@@ -50,13 +51,15 @@ class NewsScreen : CrunchyActivity() {
 
     private val presenter by inject<NewsPresenter>()
 
+    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.news_screen)
         setSupportActionBar(bottomAppBar)
-        stateLayout.stateConfig = get()
+        stateLayout.stateConfigFlow.value = get()
     }
 
+    @ExperimentalCoroutinesApi
     override fun initializeComponents(savedInstanceState: Bundle?) {
         BetterLinkMovementMethod.linkify(
             Linkify.ALL,
@@ -111,10 +114,11 @@ class NewsScreen : CrunchyActivity() {
         }
     }
 
+    @ExperimentalCoroutinesApi
     private fun onUpdateUserInterface() {
         launch {
             val html = presenter.createCustomHtml(payload)
-            stateLayout?.setNetworkState(NetworkState.Success)
+            stateLayout?.networkMutableStateFlow?.value = NetworkState.Success
             get<Markwon>().setMarkdown(mediaNewsContent, html)
         }
     }

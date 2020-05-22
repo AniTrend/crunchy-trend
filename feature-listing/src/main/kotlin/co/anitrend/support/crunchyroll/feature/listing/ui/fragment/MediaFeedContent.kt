@@ -23,14 +23,12 @@ import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.gone
 import co.anitrend.arch.recycler.common.DefaultClickableItem
-import co.anitrend.arch.ui.fragment.paged.SupportFragmentPagedList
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
 import co.anitrend.support.crunchyroll.core.extensions.createDialog
-import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.core.ui.fragment.paged.CrunchyFragmentPaged
+import co.anitrend.support.crunchyroll.core.ui.fragment.list.CrunchyFragmentList
 import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
@@ -45,6 +43,7 @@ import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.bottomsheets.setPeekHeight
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
@@ -55,7 +54,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MediaFeedContent(
     override val defaultSpanSize: Int = R.integer.single_list_size
-) : CrunchyFragmentPaged<CrunchyEpisodeFeed>() {
+) : CrunchyFragmentList<CrunchyEpisodeFeed>() {
 
     private val viewModel by viewModel<MediaListingViewModel>()
 
@@ -71,6 +70,7 @@ class MediaFeedContent(
     /**
      * Invoke view model observer to watch for changes
      */
+    @ExperimentalCoroutinesApi
     override fun setUpViewModelObserver() {
         viewModelState().model.observe(viewLifecycleOwner, Observer {
             onPostModelChange(it)
@@ -84,10 +84,11 @@ class MediaFeedContent(
      * @param savedInstanceState
      */
     @FlowPreview
+    @ExperimentalCoroutinesApi
     override fun initializeComponents(savedInstanceState: Bundle?) {
         super.initializeComponents(savedInstanceState)
         lifecycleScope.launchWhenResumed {
-            supportViewAdapter.clickableFlow.debounce(16)
+            supportViewAdapter.clickableStateFlow.debounce(16)
                 .filterIsInstance<DefaultClickableItem<CrunchyEpisodeFeed>>()
                 .collect {
                     val episodeFeed = it.data
@@ -102,16 +103,16 @@ class MediaFeedContent(
                                 dialogWrapContent = true
                             )
                             ?.show {
-                                val bidning = DialogMediaBinding.bind(getCustomView())
+                                val binding = DialogMediaBinding.bind(getCustomView())
 
-                                bidning.dialogMediaDuration.text = episodeFeed.episodeDuration
-                                bidning.dialogMediaTitle.text = episodeFeed.episodeTitle
-                                bidning.dialogMediaDescription.gone()
+                                binding.dialogMediaDuration.text = episodeFeed.episodeDuration
+                                binding.dialogMediaTitle.text = episodeFeed.episodeTitle
+                                binding.dialogMediaDescription.gone()
                                 /*view.dialog_media_description.text = episodeFeed.description?.parseAsHtml(
                                     flags = HtmlCompat.FROM_HTML_MODE_COMPACT
                                 )*/
-                                bidning.dialogMediaImage.setImageUrl(episodeFeed.episodeThumbnail)
-                                bidning.dialogMediaImageContainer.setOnClickListener { _ ->
+                                binding.dialogMediaImage.setImageUrl(episodeFeed.episodeThumbnail)
+                                binding.dialogMediaImageContainer.setOnClickListener { _ ->
                                     val mediaPlayerPayload = NavigationTargets.MediaPlayer.Payload(
                                         mediaId = episodeFeed.id,
                                         collectionName = episodeFeed.title,
@@ -120,13 +121,13 @@ class MediaFeedContent(
                                         episodeThumbnail = episodeFeed.episodeThumbnail
                                     )
                                     NavigationTargets.MediaPlayer(
-                                        bidning.root.context, mediaPlayerPayload
+                                        binding.root.context, mediaPlayerPayload
                                     )
                                 }
-                                bidning.dialogMediaDownload.setOnClickListener { _ ->
+                                binding.dialogMediaDownload.setOnClickListener { _ ->
                                     // TODO: Move download to the player screen?
                                     Toast.makeText(
-                                        bidning.root.context,
+                                        binding.root.context,
                                         "Not yet implemented.. ${Emote.Heart}",
                                         Toast.LENGTH_SHORT
                                     ).show()

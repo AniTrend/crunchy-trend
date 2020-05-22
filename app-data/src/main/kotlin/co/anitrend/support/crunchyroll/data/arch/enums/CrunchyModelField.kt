@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.data.arch.enums
 
 import co.anitrend.support.crunchyroll.data.arch.enums.contract.ICrunchyEnumAttribute
 
-enum class CrunchyModelField(
+internal enum class CrunchyModelField(
     override val attribute: String
 ) : ICrunchyEnumAttribute {
     IMAGE_FULL_URL("image.full_url"),
@@ -32,6 +32,7 @@ enum class CrunchyModelField(
     IMAGE_WIDE_URL("image.wide_url"),
     IMAGE_WIDESTAR_URL("image.widestar_url"),
     IMAGE_WIDTH("image.width"),
+    COLLECTION("collection"),
     MEDIA("media"),
     MEDIA_AVAILABILITY_NOTES("media.availability_notes"),
     MEDIA_AVAILABLE("media.available"),
@@ -70,6 +71,7 @@ enum class CrunchyModelField(
     ORDERING("ordering"),
     PLAYHEAD("playhead"),
     QUEUE_ENTRY_ID("queue_entry_id"),
+    TIME_STAMP("timestamp"),
     SERIES("series"),
     SERIES_CLASS("series.class"),
     SERIES_COLLECTION_COUNT("series.collection_count"),
@@ -133,6 +135,94 @@ enum class CrunchyModelField(
         val streamFields = listOf(
             MEDIA_PLAYHEAD.attribute,
             MEDIA_STREAM_DATA.attribute
+        ).joinToString(separator = ",")
+
+        val collectionFields = listOf(
+            COLLECTION.attribute
+        ).joinToString(separator = ",")
+
+        val recentlyWatchedFields = listOf(
+            PLAYHEAD.attribute,
+            TIME_STAMP.attribute,
+            IMAGE_FULL_URL.attribute,
+            SERIES.attribute,
+            SERIES_COLLECTION_COUNT.attribute,
+            SERIES_DESCRIPTION.attribute,
+            SERIES_GENRES.attribute,
+            SERIES_IN_QUEUE.attribute,
+            SERIES_LANDSCAPE_IMAGE.attribute,
+            SERIES_MEDIA_COUNT.attribute,
+            SERIES_MEDIA_TYPE.attribute,
+            SERIES_NAME.attribute,
+            SERIES_PORTRAIT_IMAGE.attribute,
+            SERIES_PUBLISHER_NAME.attribute,
+            SERIES_RATING.attribute,
+            SERIES_SERIES_ID.attribute,
+            SERIES_URL.attribute,
+            SERIES_YEAR.attribute,
+            MEDIA_COLLECTION_NAME.attribute,
+            MEDIA.attribute,
+            MEDIA_NAME.attribute,
+            MEDIA_DESCRIPTION.attribute,
+            MEDIA_EPISODE_NUMBER.attribute,
+            MEDIA_DURATION.attribute,
+            MEDIA_PLAYHEAD.attribute,
+            MEDIA_SCREENSHOT_IMAGE.attribute,
+            MEDIA_MEDIA_ID.attribute,
+            MEDIA_SERIES_ID.attribute,
+            MEDIA_SERIES_NAME.attribute,
+            MEDIA_COLLECTION_ID.attribute,
+            MEDIA_URL.attribute,
+            MEDIA_ETP_GUID.attribute,
+            MEDIA_AVAILABLE_TIME.attribute,
+            MEDIA_PREMIUM_AVAILABLE_TIME.attribute,
+            MEDIA_FREE_AVAILABLE_TIME.attribute,
+            MEDIA_AVAILABILITY_NOTES.attribute,
+            COLLECTION.attribute
+        ).joinToString(separator = ",")
+
+        val queueFields = listOf(
+            QUEUE_ENTRY_ID.attribute,
+            ORDERING.attribute,
+            MOST_LIKELY_MEDIA.attribute,
+            MOST_LIKELY_MEDIA_PLAYHEAD.attribute,
+            LAST_WATCHED_MEDIA.attribute,
+            LAST_WATCHED_MEDIA_PLAYHEAD.attribute,
+            PLAYHEAD.attribute,
+            IMAGE_FULL_URL.attribute,
+            SERIES.attribute,
+            SERIES_COLLECTION_COUNT.attribute,
+            SERIES_DESCRIPTION.attribute,
+            SERIES_GENRES.attribute,
+            SERIES_IN_QUEUE.attribute,
+            SERIES_LANDSCAPE_IMAGE.attribute,
+            SERIES_MEDIA_COUNT.attribute,
+            SERIES_MEDIA_TYPE.attribute,
+            SERIES_NAME.attribute,
+            SERIES_PORTRAIT_IMAGE.attribute,
+            SERIES_PUBLISHER_NAME.attribute,
+            SERIES_RATING.attribute,
+            SERIES_SERIES_ID.attribute,
+            SERIES_URL.attribute,
+            SERIES_YEAR.attribute,
+            MEDIA_COLLECTION_NAME.attribute,
+            MOST_LIKELY_MEDIA.attribute,
+            MEDIA_NAME.attribute,
+            MEDIA_DESCRIPTION.attribute,
+            MEDIA_EPISODE_NUMBER.attribute,
+            MEDIA_DURATION.attribute,
+            MEDIA_PLAYHEAD.attribute,
+            MEDIA_SCREENSHOT_IMAGE.attribute,
+            MEDIA_MEDIA_ID.attribute,
+            MEDIA_SERIES_ID.attribute,
+            MEDIA_SERIES_NAME.attribute,
+            MEDIA_COLLECTION_ID.attribute,
+            MEDIA_URL.attribute,
+            MEDIA_ETP_GUID.attribute,
+            MEDIA_AVAILABLE_TIME.attribute,
+            MEDIA_PREMIUM_AVAILABLE_TIME.attribute,
+            MEDIA_FREE_AVAILABLE_TIME.attribute,
+            MEDIA_AVAILABILITY_NOTES.attribute
         ).joinToString(separator = ",")
     }
 }

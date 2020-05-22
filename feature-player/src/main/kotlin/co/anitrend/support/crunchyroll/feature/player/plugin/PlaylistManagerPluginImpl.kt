@@ -41,7 +41,7 @@ class PlaylistManagerPluginImpl(
      */
     override fun onResume() {
         super.onResume()
-        invokePausePlay()
+        invokePlay()
     }
 
     /**
@@ -52,7 +52,7 @@ class PlaylistManagerPluginImpl(
     override fun onPause() {
         super.onPause()
         // find a way to avoid playing an item on pause that is already paused
-        invokePausePlay()
+        invokePause()
     }
 
     /**

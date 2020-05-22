@@ -48,9 +48,11 @@ import com.devbrackets.android.exomedia.ui.widget.VideoView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_media_player.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -166,6 +168,7 @@ class MediaStreamContent(
         showDialogUsing(R.string.player_text_unavailable_audio_tracks, mediaTracks)
     }
 
+    @ExperimentalCoroutinesApi
     override fun setUpViewModelObserver() {
         viewModelState().model.observe(viewLifecycleOwner, Observer {
             launch {
@@ -173,10 +176,10 @@ class MediaStreamContent(
             }
         })
         viewModelState().networkState.observe(viewLifecycleOwner, Observer {
-            supportStateLayout.networkStateLiveData.postValue(it)
+            supportStateLayout.networkMutableStateFlow.value = it
         })
         viewModelState().refreshState.observe(viewLifecycleOwner, Observer {
-            supportStateLayout.networkStateLiveData.postValue(it)
+            supportStateLayout.networkMutableStateFlow.value = it
         })
     }
 
@@ -187,13 +190,15 @@ class MediaStreamContent(
      * @param savedInstanceState
      */
     @FlowPreview
+    @ExperimentalCoroutinesApi
     override fun initializeComponents(savedInstanceState: Bundle?) {
         lifecycleScope.launchWhenResumed {
             if (!viewModelState().isEmpty())
                 onFetchDataInitialize()
         }
         lifecycleScope.launchWhenResumed {
-            supportStateLayout.interactionFlow
+            supportStateLayout.interactionStateFlow
+                .filterNotNull()
                 .debounce(16)
                 .collect {
                     viewModelState().retry()
@@ -206,13 +211,15 @@ class MediaStreamContent(
      */
     override fun featureModuleHelper(): Nothing? = null
 
+    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         launch { onUpdateUserInterface() }
     }
 
+    @ExperimentalCoroutinesApi
     private fun onUpdateUserInterface() {
-        supportStateLayout.stateConfig = get()
+        supportStateLayout.stateConfigFlow.value = get()
         mediaPlugin.onInitializing()
         mediaPlugin.setVisibilityListener(
             controlsVisibilityListener
@@ -237,6 +244,7 @@ class MediaStreamContent(
         }
     }
 
+    @ExperimentalCoroutinesApi
     private fun prepareResults(mediaStreams: List<MediaStream>?) {
         if (!mediaStreams.isNullOrEmpty()) {
             val streams = presenter.mapToStreamItems(
@@ -260,27 +268,29 @@ class MediaStreamContent(
                 )
             }
         } else
-            supportStateLayout.networkStateLiveData.postValue(
+            supportStateLayout.networkMutableStateFlow.value =
                 NetworkState.Error(
                     heading = "No streams available ${Emote.Eyes}",
                     message = "Content may be unavailable in your country, please check with original source"
                 )
-            )
     }
 
+    @ExperimentalCoroutinesApi
     private fun onFetchDataInitialize() {
-        payload?.also {
+        val mediaStreamPayload = payload
+        if (mediaStreamPayload != null) {
             viewModel.state(
                 parameter = CrunchyMediaStreamQuery(
-                    mediaId = it.mediaId
+                    mediaId = mediaStreamPayload.mediaId
                 )
             )
-        } ?: supportStateLayout.networkStateLiveData.postValue(
-            NetworkState.Error(
-                heading = "Invalid fragment parameters ${Emote.Cry}",
-                message = "Invalid or missing payload, request cannot be processed"
-            )
-        )
+        } else {
+            supportStateLayout.networkMutableStateFlow.value =
+                NetworkState.Error(
+                    heading = "Invalid fragment parameters ${Emote.Cry}",
+                    message = "Invalid or missing payload, request cannot be processed"
+                )
+        }
     }
 
     override fun onResume() {

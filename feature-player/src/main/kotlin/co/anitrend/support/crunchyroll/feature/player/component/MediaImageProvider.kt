@@ -23,8 +23,10 @@ import android.graphics.drawable.Drawable
 import androidx.core.graphics.drawable.toBitmap
 import co.anitrend.support.crunchyroll.feature.player.R
 import co.anitrend.support.crunchyroll.feature.player.model.stream.MediaStreamItem
+import coil.Coil
 import coil.ImageLoader
 import coil.api.load
+import coil.request.LoadRequest
 import coil.target.Target
 import com.devbrackets.android.playlistcore.components.image.ImageProvider
 import org.koin.core.KoinComponent
@@ -80,12 +82,17 @@ class MediaImageProvider(
      * due to a playlist item change
      */
     override fun updateImages(playlistItem: MediaStreamItem) {
-        imageLoader.load(context, playlistItem.thumbnailUrl) {
-            target(notificationImageTarget)
-        }
-        imageLoader.load(context, playlistItem.artworkUrl) {
-            target(remoteViewImageTarget)
-        }
+        val thumbnailRequest = LoadRequest.Builder(context)
+            .data(playlistItem.thumbnailUrl)
+            .target(notificationImageTarget)
+            .build()
+        Coil.execute(thumbnailRequest)
+
+        val artWorkRequest = LoadRequest.Builder(context)
+            .data(playlistItem.thumbnailUrl)
+            .target(remoteViewImageTarget)
+            .build()
+        Coil.execute(artWorkRequest)
     }
 
     /**
