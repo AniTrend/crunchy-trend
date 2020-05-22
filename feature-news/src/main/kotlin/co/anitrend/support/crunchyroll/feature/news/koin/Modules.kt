@@ -16,29 +16,26 @@
 
 package co.anitrend.support.crunchyroll.feature.news.koin
 
-import android.graphics.drawable.Drawable
 import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
-import co.anitrend.support.crunchyroll.feature.news.R
 import co.anitrend.support.crunchyroll.feature.news.plugin.CrunchyTagPlugin
+import co.anitrend.support.crunchyroll.feature.news.plugin.store.CrunchyGlideStore
 import co.anitrend.support.crunchyroll.feature.news.presenter.NewsPresenter
 import co.anitrend.support.crunchyroll.feature.news.ui.fragment.NewsFeedContent
 import co.anitrend.support.crunchyroll.feature.news.viewmodel.NewsViewModel
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestBuilder
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.target.Target
+import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
+import io.noties.markwon.MarkwonVisitor
 import io.noties.markwon.SoftBreakAddsNewLinePlugin
 import io.noties.markwon.html.HtmlPlugin
-import io.noties.markwon.image.AsyncDrawable
 import io.noties.markwon.image.glide.GlideImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
+import org.commonmark.node.Paragraph
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
+import timber.log.Timber
 
 private val coreModule = module {
     single {
@@ -47,25 +44,19 @@ private val coreModule = module {
             .usePlugin(LinkifyPlugin.create())
             .usePlugin(CrunchyTagPlugin.create())
             .usePlugin(
-                GlideImagesPlugin.create(
-                    object : GlideImagesPlugin.GlideStore {
-                        override fun cancel(target: Target<*>) {
-                            Glide.with(androidApplication()).clear(target)
-                        }
-
-                        override fun load(drawable: AsyncDrawable): RequestBuilder<Drawable> {
-                            return Glide.with(androidApplication()).load(drawable.destination)
-                                .transform(
-                                    CenterCrop(),
-                                    RoundedCorners(
-                                        androidApplication().resources
-                                            .getDimensionPixelSize(
-                                                R.dimen.md_margin
-                                            )
-                                    )
-                                ).placeholder(R.drawable.ic_launcher_foreground)
+                object : AbstractMarkwonPlugin() {
+                    override fun configureVisitor(builder: MarkwonVisitor.Builder) {
+                        builder.on(
+                            Paragraph::class.java
+                        ) { visitor, paragraph ->
+                            Timber.i("visitor for paragraph: $visitor")
                         }
                     }
+                }
+            )
+            .usePlugin(
+                GlideImagesPlugin.create(
+                    CrunchyGlideStore.create(androidContext())
                 )
             )
             .usePlugin(SoftBreakAddsNewLinePlugin.create())

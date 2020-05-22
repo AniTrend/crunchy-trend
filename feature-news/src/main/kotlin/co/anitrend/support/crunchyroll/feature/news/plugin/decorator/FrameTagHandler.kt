@@ -16,6 +16,8 @@
 
 package co.anitrend.support.crunchyroll.feature.news.plugin.decorator
 
+import android.text.Layout
+import android.text.style.AlignmentSpan
 import io.noties.markwon.MarkwonConfiguration
 import io.noties.markwon.Prop
 import io.noties.markwon.RenderProps
@@ -70,7 +72,7 @@ internal class FrameTagHandler private constructor() : SimpleTagHandler() {
             val height = attributes["height"]?.toFloat()
             val imageSize = ImageSize(
                 null,
-                height?.let { ImageSize.Dimension(it, "px") }
+                height?.let { ImageSize.Dimension(it * 1.8f, "px") }
             )
 
             ImageProps.DESTINATION.set(renderProps, createImageLink(source))
@@ -80,7 +82,8 @@ internal class FrameTagHandler private constructor() : SimpleTagHandler() {
 
             arrayOf(
                 imageSpanFactory?.getSpans(configuration, renderProps),
-                linkSpanFactory?.getSpans(configuration, renderProps)
+                linkSpanFactory?.getSpans(configuration, renderProps),
+                AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER)
             )
         } else {
             // return some sort of unsupported span

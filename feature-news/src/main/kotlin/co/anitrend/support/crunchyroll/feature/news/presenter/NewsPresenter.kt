@@ -38,7 +38,7 @@ class NewsPresenter(
 ) : CrunchyCorePresenter(context, settings) {
 
     // TODO: Remove invalid characters from url
-    private val regex = Regex("[,#!'\"]")
+    private val regex = Regex("[,`:#!'\"]")
 
     private val posters = ArrayList<Poster>()
 
@@ -70,7 +70,8 @@ class NewsPresenter(
                 else
                     Timber.tag(moduleTag).v("Ignoring image -> $src | $width x $height")
             }
-            document.html()
+            val html = document.html()
+            html
         }
     }
 
@@ -106,8 +107,8 @@ class NewsPresenter(
         val url = buildNewsUrl(payload, dateHelper)
 
         val payloadContent = StringBuilder(payload.description!!)
-
-        payloadContent.append(payload.description, "\n\n", url)
+            .append("\n\n")
+            .append(url)
 
         return ShareCompat.IntentBuilder
             .from(newsScreen)
