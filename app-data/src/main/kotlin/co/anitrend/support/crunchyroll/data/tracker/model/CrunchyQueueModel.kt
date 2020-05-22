@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2020 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,13 +19,13 @@ package co.anitrend.support.crunchyroll.data.tracker.model
 import co.anitrend.support.crunchyroll.data.media.model.CrunchyMediaModel
 import co.anitrend.support.crunchyroll.data.series.model.CrunchySeriesModel
 
-internal data class CrunchyQueueEntryModel(
-    val last_watched_media: CrunchyMediaModel,
-    val most_likely_media: CrunchyMediaModel,
-    val ordering: Int,
+internal data class CrunchyQueueModel(
     val queue_entry_id: Long,
-    val last_watched_media_playhead: Int,
-    val most_likely_media_playhead: Int,
-    val playhead: Int,
-    val series: CrunchySeriesModel
+    val ordering: Int,
+    val series: CrunchySeriesModel,
+    val playhead: Short,
+    val last_watched_media: CrunchyMediaModel,
+    val last_watched_media_playhead: Short,
+    val most_likely_media: CrunchyMediaModel,
+    val most_likely_media_playhead: Short
 )

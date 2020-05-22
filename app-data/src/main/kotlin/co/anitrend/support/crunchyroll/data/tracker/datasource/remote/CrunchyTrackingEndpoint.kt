@@ -20,6 +20,8 @@ import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.arch.JSON
 import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyModelField
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
+import co.anitrend.support.crunchyroll.data.tracker.model.CrunchyQueueModel
+import co.anitrend.support.crunchyroll.data.tracker.model.CrunchyRecentlyWatchedModel
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -29,8 +31,7 @@ internal interface CrunchyTrackingEndpoint {
     @JSON
     @GET("/add_to_queue.${BuildConfig.apiExtension}.json")
     suspend fun addToQueue(
-        @Query("series_id") seriesId: Long,
-        @Query("fields") seriesFields: String = CrunchyModelField.seriesFields
+        @Query("series_id") seriesId: Long
     ) : Response<CrunchyContainer<Any>>
 
     @JSON
@@ -42,14 +43,17 @@ internal interface CrunchyTrackingEndpoint {
     @JSON
     @GET("/queue.${BuildConfig.apiExtension}.json")
     suspend fun getQueue(
-        @Query("series_id") seriesId: Long
-    ) : Response<CrunchyContainer<Any>>
+        @Query("series_id") seriesId: Long,
+        @Query("fields") fields: String = CrunchyModelField.queueFields
+    ) : Response<CrunchyContainer<List<CrunchyQueueModel>>>
 
     @JSON
     @GET("/recently_watched.${BuildConfig.apiExtension}.json")
     suspend fun getRecentlyWatched(
-        @Query("series_id") seriesId: Long
-    ) : Response<CrunchyContainer<Any>>
+        @Query("series_id") seriesId: Long,
+        @Query("media_types") mediaType: String,
+        @Query("fields") fields: String = CrunchyModelField.recentlyWatchedFields
+    ) : Response<CrunchyContainer<List<CrunchyRecentlyWatchedModel>>>
 
     @JSON
     @GET("/log.${BuildConfig.apiExtension}.json")
