@@ -22,17 +22,10 @@ import co.anitrend.support.crunchyroll.data.arch.JSON
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionCoreModel
 import retrofit2.Response
-import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
 
 internal interface CrunchySessionEndpoint {
-
-    @JSON
-    @GET("/start_session")
-    suspend fun startCoreSession(
-        @Query("version") version: String = BuildConfig.apiVersion
-    ): Response<CrunchyContainer<CrunchySessionCoreModel>>
 
     @JSON
     @POST("/start_session.${BuildConfig.apiExtensionV1}.json")

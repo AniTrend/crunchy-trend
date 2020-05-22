@@ -26,7 +26,6 @@ import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticat
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.session.datasource.remote.CrunchyProxySessionEndpoint
 import co.anitrend.support.crunchyroll.data.session.datasource.remote.CrunchySessionEndpoint
-import co.anitrend.support.crunchyroll.data.session.datasource.remote.CrunchyUnblockSessionEndpoint
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionCoreEntity
 import co.anitrend.support.crunchyroll.data.session.mapper.CoreSessionResponseMapper
 import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionCoreModel
@@ -71,7 +70,7 @@ internal class CoreSessionSourceImpl(
         }
 
         val session = requestCoreSession(
-            async { proxyEndpoint.startCoreSessionProxy() }
+            async { proxyEndpoint.startCoreSession() }
         ) ?: requestCoreSession(
             async { endpoint.startCoreSessionJson() }
         )

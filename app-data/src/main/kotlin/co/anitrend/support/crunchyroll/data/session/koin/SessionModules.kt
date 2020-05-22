@@ -40,7 +40,8 @@ private val dataSourceModule = module {
         CoreSessionSourceImpl(
             dao = db().crunchySessionCoreDao(),
             endpoint = api(EndpointType.SESSION_JSON),
-            proxyEndpoint = api(EndpointType.SESSION_PROXY),
+            proxyEndpoint = api(EndpointType.SESSION_CORE),
+            //proxyEndpoint = api(EndpointType.SESSION_PROXY),
             mapper = get(),
             settings = get(),
             supportDispatchers = get(),
