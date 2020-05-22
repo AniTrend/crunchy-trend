@@ -31,7 +31,7 @@ import org.commonmark.node.Text
 
 /**
  * Allows us to handle iframes and extract images from it, we will only target youtube iframes
- * to return a clickable image which should trigger the youtube
+ * to return a clickable image which should trigger a youtube handling activity
  *
  * <iframe src="https://www.youtube.com/embed/luWcue3t2OU" width="640" height="360" />
  */
@@ -84,7 +84,10 @@ internal class FrameTagHandler private constructor() : SimpleTagHandler() {
             )
         } else {
             // return some sort of unsupported span
-            val textSpan = configuration.spansFactory().get(Text::class.java)
+            val textSpan = configuration
+                .spansFactory()
+                .get(Text::class.java)
+
             renderProps.set(
                 Prop.of("text-literal"),
                 "Unsupported embedded element"
