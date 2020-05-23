@@ -16,20 +16,13 @@
 
 package co.anitrend.support.crunchyroll.feature.news.plugin.decorator
 
-import android.text.Layout
-import android.text.style.AlignmentSpan
+import co.anitrend.support.crunchyroll.feature.news.extensions.onFrame
+import co.anitrend.support.crunchyroll.feature.news.plugin.model.SizeMeasurementUnit
+import co.anitrend.support.crunchyroll.feature.news.plugin.model.YouTubeSpanConfiguration
 import io.noties.markwon.MarkwonConfiguration
-import io.noties.markwon.Prop
 import io.noties.markwon.RenderProps
-import io.noties.markwon.core.CoreProps
 import io.noties.markwon.html.HtmlTag
 import io.noties.markwon.html.tag.SimpleTagHandler
-import io.noties.markwon.image.ImageProps
-import io.noties.markwon.image.ImageSize
-import org.commonmark.node.Image
-import org.commonmark.node.Link
-import org.commonmark.node.Paragraph
-import org.commonmark.node.Text
 
 /**
  * Allows us to handle iframes and extract images from it, we will only target youtube iframes
@@ -39,67 +32,25 @@ import org.commonmark.node.Text
  */
 internal class FrameTagHandler private constructor() : SimpleTagHandler() {
 
-    private fun getVideoId(src: String) = src.split('/').last()
-
-    private fun getVideoUrl(src: String): String {
-        val videoId = getVideoId(src)
-        return "https://youtube.com/watch?v=$videoId"
-    }
-
-    private fun createImageLink(src: String): String {
-        val videoId = getVideoId(src)
-        return "https://img.youtube.com/vi/$videoId/hqdefault.jpg"
-    }
-
     override fun getSpans(
         configuration: MarkwonConfiguration,
         renderProps: RenderProps,
         tag: HtmlTag
     ): Any? {
-        val attributes = tag.attributes()
-        val source = attributes["src"]
-        return if (source?.contains("youtube") == true) {
-            val imageSpanFactory = configuration
-                .spansFactory()
-                .get(Image::class.java)
+        val imageSpanConfiguration = YouTubeSpanConfiguration(
+            magnificationScale = 1.8f,
+            sizeMeasurementUnit = SizeMeasurementUnit.PIXEL,
+            configuration = configuration,
+            renderProps = renderProps,
+            tag = tag
+        )
 
-            val linkSpanFactory = configuration
-                .spansFactory()
-                .get(Link::class.java)
-
-            // ignoring width for the sake to allow auto size matching
-            //val width = attributes["width"]?.toFloat()
-            val height = attributes["height"]?.toFloat()
-            val imageSize = ImageSize(
-                null,
-                height?.let { ImageSize.Dimension(it * 1.8f, "px") }
-            )
-
-            ImageProps.DESTINATION.set(renderProps, createImageLink(source))
-            ImageProps.IMAGE_SIZE.set(renderProps, imageSize)
-            ImageProps.REPLACEMENT_TEXT_IS_LINK.set(renderProps, false)
-            CoreProps.LINK_DESTINATION.set(renderProps, getVideoUrl(source))
-
-            arrayOf(
-                imageSpanFactory?.getSpans(configuration, renderProps),
-                linkSpanFactory?.getSpans(configuration, renderProps),
-                AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER)
-            )
-        } else {
-            // return some sort of unsupported span
-            val textSpan = configuration
-                .spansFactory()
-                .get(Text::class.java)
-
-            renderProps.set(
-                Prop.of("text-literal"),
-                "Unsupported embedded element"
-            )
-            textSpan?.getSpans(configuration, renderProps)
-        }
+        return imageSpanConfiguration.onFrame()?.toArray()
     }
 
-    override fun supportedTags() = listOf("iframe")
+    override fun supportedTags() = listOf(
+        YouTubeSpanConfiguration.IFRAME_TAG
+    )
 
     companion object {
         fun create() = FrameTagHandler()

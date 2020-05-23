@@ -16,15 +16,13 @@
 
 package co.anitrend.support.crunchyroll.feature.news.plugin.spans
 
+import co.anitrend.support.crunchyroll.feature.news.extensions.onImage
+import co.anitrend.support.crunchyroll.feature.news.plugin.model.ImageSpanConfiguration
+import co.anitrend.support.crunchyroll.feature.news.plugin.model.SizeMeasurementUnit
 import io.noties.markwon.MarkwonConfiguration
 import io.noties.markwon.RenderProps
-import io.noties.markwon.core.CoreProps
 import io.noties.markwon.html.HtmlTag
 import io.noties.markwon.html.tag.SimpleTagHandler
-import io.noties.markwon.image.ImageProps
-import io.noties.markwon.image.ImageSize
-import org.commonmark.node.Image
-import org.commonmark.node.Link
 
 internal class ImageTagHandler private constructor() : SimpleTagHandler() {
 
@@ -33,36 +31,17 @@ internal class ImageTagHandler private constructor() : SimpleTagHandler() {
         renderProps: RenderProps,
         tag: HtmlTag
     ): Any? {
-        val attributes = tag.attributes()
-        val imageDestination = attributes["src"]
-        val height = attributes["height"]?.toFloat()
-        val imageSize = ImageSize(
-            null,
-            height?.let { ImageSize.Dimension(it * 1.5f, "px") }
+        val imageSpanConfiguration = ImageSpanConfiguration(
+            magnificationScale = 1.5f,
+            sizeMeasurementUnit = SizeMeasurementUnit.PIXEL,
+            configuration = configuration,
+            renderProps = renderProps,
+            tag = tag,
+            cutoffImageSize = 80,
+            isClickable = true
         )
 
-        if (imageDestination == null)
-            return null
-
-        ImageProps.DESTINATION.set(renderProps, imageDestination)
-        ImageProps.IMAGE_SIZE.set(renderProps, imageSize)
-        ImageProps.REPLACEMENT_TEXT_IS_LINK.set(renderProps, false)
-
-        val imageSpanFactory = configuration
-            .spansFactory()
-            .get(Image::class.java)
-
-        return if (imageSize.height?.value != null && imageSize.height.value > 100){
-            val linkSpanFactory = configuration
-                .spansFactory()
-                .get(Link::class.java)
-
-            CoreProps.LINK_DESTINATION.set(renderProps, imageDestination)
-            arrayOf(
-                imageSpanFactory?.getSpans(configuration, renderProps),
-                linkSpanFactory?.getSpans(configuration, renderProps)
-            )
-        } else arrayOf(imageSpanFactory?.getSpans(configuration, renderProps))
+        return imageSpanConfiguration.onImage()?.toArray()
     }
 
     override fun supportedTags() = listOf("img")
