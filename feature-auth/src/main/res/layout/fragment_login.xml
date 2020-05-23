@@ -19,13 +19,6 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-        <import type="co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login.LoginViewModel" />
-        <variable
-                name="viewModel"
-                type="LoginViewModel" />
-    </data>
-
     <co.anitrend.arch.ui.view.widget.SupportStateLayout
         android:id="@+id/supportStateLayout"
         android:layout_width="match_parent"
@@ -73,7 +66,6 @@
                             android:layout_height="match_parent"
                             android:inputType="textEmailAddress|text"
                             android:singleLine="true"
-                            android:text="@={viewModel.loginQuery.account}"
                             tools:text="John"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -100,7 +92,6 @@
                             android:layout_height="match_parent"
                             android:inputType="textPassword"
                             android:singleLine="true"
-                            android:text="@={viewModel.loginQuery.password}"
                             tools:text="Doe"/>
 
                 </com.google.android.material.textfield.TextInputLayout>

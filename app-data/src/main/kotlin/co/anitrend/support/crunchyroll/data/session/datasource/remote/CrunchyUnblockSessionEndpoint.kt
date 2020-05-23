@@ -21,13 +21,13 @@ import co.anitrend.support.crunchyroll.data.arch.JSON
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionModel
 import retrofit2.Response
-import retrofit2.http.POST
+import retrofit2.http.GET
 import retrofit2.http.Query
 
 internal interface CrunchyUnblockSessionEndpoint {
 
     @JSON
-    @POST("/start_session")
+    @GET("/start_session")
     suspend fun startUnblockedSession(
         @Query("auth") auth: String,
         @Query("version") version: String = BuildConfig.apiVersion,

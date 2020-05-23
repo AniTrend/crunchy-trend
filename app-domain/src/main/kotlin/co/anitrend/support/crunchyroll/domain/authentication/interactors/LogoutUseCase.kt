@@ -16,20 +16,17 @@
 
 package co.anitrend.support.crunchyroll.domain.authentication.interactors
 
+import co.anitrend.arch.domain.common.IUseCase
 import co.anitrend.arch.domain.common.IUserInterfaceState
 import co.anitrend.arch.domain.usecases.ISupportUseCase
 import co.anitrend.support.crunchyroll.domain.authentication.repositories.ILogoutRepository
 
 abstract class LogoutUseCase<R : IUserInterfaceState<*>>(
     protected val repository: ILogoutRepository<R>
-) : ISupportUseCase<Nothing?, R> {
+) : IUseCase {
 
     /**
-     * Solves a given use case in the implementation target
-     *
-     * @param param input for solving a given use case
+     * Signs out the current user
      */
-    override fun invoke(param: Nothing?): R {
-        return repository.logoutUser()
-    }
+    operator fun invoke() = repository.logoutUser()
 }

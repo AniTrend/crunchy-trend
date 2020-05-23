@@ -32,6 +32,7 @@ class LoginViewModel(
             password = String.empty()
         )
 
+
     val state = LoginModelState(useCase)
 
     /**

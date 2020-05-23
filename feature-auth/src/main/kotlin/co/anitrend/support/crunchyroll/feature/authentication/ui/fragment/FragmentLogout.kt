@@ -57,9 +57,11 @@ class FragmentLogout : CrunchyFragment() {
         viewModelUser.state.model.observe(viewLifecycleOwner, Observer {
             binding.currentUserModel = it
         })
-        viewModelState().model.observe(viewLifecycleOwner, Observer {
-            if (it)
-                onUpdateUserInterface()
+        viewModelState().model.observe(viewLifecycleOwner, Observer { loggedOut ->
+            if (loggedOut) {
+                NavigationTargets.Splash(context)
+                activity?.closeScreen()
+            }
         })
         viewModelState().networkState.observe(viewLifecycleOwner, Observer {
             binding.supportStateLayout.networkMutableStateFlow.value = it
@@ -99,13 +101,9 @@ class FragmentLogout : CrunchyFragment() {
         binding.supportStateLayout.stateConfigFlow.value = get()
         binding.supportStateLayout.networkMutableStateFlow.value = NetworkState.Success
         binding.userLogoutButton.setOnClickListener {
-            onFetchDataInitialize()
+            viewModelState().invoke()
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModelState().invoke()
+        onFetchDataInitialize()
     }
 
     /**
@@ -113,13 +111,8 @@ class FragmentLogout : CrunchyFragment() {
      */
     override fun viewModelState() = viewModel.state
 
-    private fun onUpdateUserInterface() {
-        NavigationTargets.Splash(context)
-        activity?.closeScreen()
-    }
-
     private fun onFetchDataInitialize() {
-        viewModel.state()
+        viewModelUser.state.invoke()
     }
 
     @ExperimentalCoroutinesApi

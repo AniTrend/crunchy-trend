@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="@string/label_action_later"
+            android:text="@string/label_action_start_anonymous_session"
             app:chipIcon="@drawable/ic_verified_user_grey_600_24dp"
             />
 

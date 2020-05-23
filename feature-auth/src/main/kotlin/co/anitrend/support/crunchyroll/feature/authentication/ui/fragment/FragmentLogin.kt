@@ -20,6 +20,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.domain.entities.NetworkState
@@ -51,22 +52,27 @@ class FragmentLogin(
      */
     @ExperimentalCoroutinesApi
     override fun setUpViewModelObserver() {
-        viewModelState().model.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
-                presenter.onLoginStateChange(it)
-                onUpdateUserInterface()
+        viewModelState().model.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (it != null) {
+                    presenter.onLoginStateChange(it)
+                    onUpdateUserInterface()
+                }
             }
-        })
-        viewModelState().networkState.observe(viewLifecycleOwner, Observer {
-            binding.supportStateLayout.networkMutableStateFlow.value = it
-        })
-        viewModelState().refreshState.observe(viewLifecycleOwner, Observer {
-            binding.supportStateLayout.networkMutableStateFlow.value =it
-        })
-        with(binding) {
-            lifecycleOwner = this@FragmentLogin
-            viewModel = viewModel
-        }
+        )
+        viewModelState().networkState.observe(
+            viewLifecycleOwner,
+            Observer {
+                binding.supportStateLayout.networkMutableStateFlow.value = it
+            }
+        )
+        viewModelState().refreshState.observe(
+            viewLifecycleOwner,
+            Observer {
+                binding.supportStateLayout.networkMutableStateFlow.value = it
+            }
+        )
     }
 
     /**
@@ -96,6 +102,7 @@ class FragmentLogin(
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.loginButton.setOnClickListener {
             onFetchDataInitialize()
         }
@@ -105,6 +112,15 @@ class FragmentLogin(
         }
         binding.supportStateLayout.stateConfigFlow.value = get()
         binding.supportStateLayout.networkMutableStateFlow.value = NetworkState.Success
+
+        binding.txtInputEmail.doAfterTextChanged { text ->
+            if (!text.isNullOrEmpty())
+                viewModel.loginQuery.account = text.toString()
+        }
+        binding.txtInputPassword.doAfterTextChanged { text ->
+            if (!text.isNullOrEmpty())
+                viewModel.loginQuery.password = text.toString()
+        }
     }
 
     private fun onUpdateUserInterface() {
@@ -116,7 +132,7 @@ class FragmentLogin(
         presenter.onSubmit(
             viewModel.loginQuery,
             binding
-        ) { viewModel.state(viewModel.loginQuery) }
+        ) { viewModel.state(it) }
     }
 
     @ExperimentalCoroutinesApi

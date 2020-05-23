@@ -50,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                tools:text="@tools:sample/first_names"
+                tools:text="@sample/user.json/first_name"
                 android:text="@{model.username}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
@@ -63,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_vertical"
-                tools:text="@tools:sample/lorem"
+                tools:text="@sample/user.json/email"
                 android:text="@{model.email}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
 
@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_vertical"
-                tools:text="@tools:sample/lorem"
+                tools:text="@sample/user.json/access_type"
                 android:text="@{model.accessType.name()}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
 
@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_vertical"
-                tools:text="@tools:sample/lorem"
+                tools:text="@sample/user.json/premium"
                 android:text="@{model.premium}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
 

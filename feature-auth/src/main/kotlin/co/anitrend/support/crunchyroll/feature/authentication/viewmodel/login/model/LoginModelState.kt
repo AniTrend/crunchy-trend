@@ -39,6 +39,9 @@ data class LoginModelState(
     override val refreshState =
         Transformations.switchMap(useCaseResult) { it.refreshState }
 
+    /**
+     * Authenticates the user using the supplied credentials
+     */
     operator fun invoke(parameter: CrunchyLoginQuery) {
         val result = useCase(parameter)
         useCaseResult.postValue(result)

@@ -38,7 +38,7 @@ data class LogoutModelState(
         Transformations.switchMap(useCaseResult) { it.refreshState }
 
     operator fun invoke() {
-        val result = useCase(null)
+        val result = useCase()
         useCaseResult.postValue(result)
     }
 
