@@ -74,6 +74,7 @@ dependencies {
     runtimeOnly project(':feature-settings')
     runtimeOnly project(':feature-catalog')
     runtimeOnly project(':feature-collection')
+    runtimeOnly project(':ui-image-viewer')
 
     /** Material Design */
     implementation("com.google.android.material:material:$material")
