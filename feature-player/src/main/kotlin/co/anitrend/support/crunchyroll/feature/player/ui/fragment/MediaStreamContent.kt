@@ -25,6 +25,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.*
+import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.extensions.createDialog
 import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.model.UserAgent
@@ -199,7 +200,7 @@ class MediaStreamContent(
         lifecycleScope.launchWhenResumed {
             supportStateLayout.interactionStateFlow
                 .filterNotNull()
-                .debounce(16)
+                .debounce(DEBOUNCE_DURATION)
                 .collect {
                     viewModelState().retry()
                 }

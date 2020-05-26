@@ -19,6 +19,8 @@ package co.anitrend.support.crunchyroll.feature.series.extensions
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.databinding.BindingAdapter
 import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
+import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
+import co.anitrend.support.crunchyroll.core.common.DEFAULT_ANIMATION_DURATION
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -29,7 +31,7 @@ fun AppCompatImageView.setImageFromUrl(url: String?) {
     if (context is CoroutineScope) {
         val scope = context as CoroutineScope
         scope.launch {
-            delay(16)
+            delay(DEFAULT_ANIMATION_DURATION)
             setImageUrl(url)
         }
     }

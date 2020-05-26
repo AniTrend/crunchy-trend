@@ -24,6 +24,7 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.ui.fragment.CrunchyFragment
@@ -86,7 +87,7 @@ class FragmentLogin(
         lifecycleScope.launchWhenResumed {
             binding.supportStateLayout.interactionStateFlow
                 .filterNotNull()
-                .debounce(16)
+                .debounce(DEBOUNCE_DURATION)
                 .collect {
                     viewModelState().retry()
                 }

@@ -27,7 +27,7 @@ private const val APPLICATION_PACKAGE_NAME = "co.anitrend.support.crunchyroll"
 
 private const val moduleTag = "NavigationExtensions"
 
-private val classMap = object: LruCache<String, Class<*>>(4) {
+private val classMap = object: LruCache<String, Class<*>>(6) {
     /**
      * Called after a cache miss to compute a value for the corresponding key.
      * Returns the computed value or null if no value can be computed. The

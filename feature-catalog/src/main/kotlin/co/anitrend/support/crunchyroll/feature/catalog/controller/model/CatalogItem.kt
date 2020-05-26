@@ -21,7 +21,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleCoroutineScope
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import co.anitrend.arch.extension.gone
@@ -31,6 +30,7 @@ import co.anitrend.arch.recycler.holder.SupportViewHolder
 import co.anitrend.arch.recycler.model.RecyclerItem
 import co.anitrend.arch.ui.extension.setUpWith
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
+import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
@@ -42,7 +42,10 @@ import kotlinx.android.synthetic.main.item_carousel.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -74,16 +77,16 @@ data class CatalogItem(
         )
         catalogSeriesAdapter.submitList(entity?.series as List)
         job = scope.launch {
-            catalogSeriesAdapter.clickableStateFlow.debounce(16)
+            catalogSeriesAdapter.clickableStateFlow.debounce(DEBOUNCE_DURATION)
                 .filterIsInstance<DefaultClickableItem<CrunchySeries>>()
                 .collect {
-                    val model = it.data
-                    val seriesPayload = NavigationTargets.Series.Payload(
-                        seriesId = model?.seriesId ?: 0
+                    val data = it.data
+
+                    val payload = NavigationTargets.Series.Payload(
+                        seriesId = data?.seriesId ?: 0
                     )
-                    NavigationTargets.Series(
-                        it.view.context, seriesPayload
-                    )
+
+                    NavigationTargets.Series(it.view.context, payload)
                 }
         }
     }
@@ -153,14 +156,16 @@ data class CatalogItem(
                     oldItem: CrunchyCatalogWithSeries,
                     newItem: CrunchyCatalogWithSeries
                 ): Boolean {
-                    return oldItem.qualifier == newItem.qualifier
+                    return oldItem.qualifier == newItem.qualifier &&
+                            oldItem.series == newItem.series
                 }
 
                 override fun areContentsTheSame(
                     oldItem: CrunchyCatalogWithSeries,
                     newItem: CrunchyCatalogWithSeries
                 ): Boolean {
-                    return oldItem.hashCode() == newItem.hashCode()
+                    return oldItem.qualifier.hashCode() == newItem.qualifier.hashCode() &&
+                            oldItem.series.hashCode() == newItem.series.hashCode()
                 }
             }
     }

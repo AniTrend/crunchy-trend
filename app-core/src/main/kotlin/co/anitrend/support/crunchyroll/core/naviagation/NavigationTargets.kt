@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.core.naviagation
 
 import android.content.Context
+import android.os.Bundle
 import android.os.Parcelable
 import co.anitrend.arch.extension.empty
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets.MediaPlayer.navRouterIntent
@@ -67,13 +68,14 @@ object NavigationTargets {
         /**
          * Starts the target [navRouterIntent] for the implementation
          */
-        operator fun invoke(context: Context?, payload: Payload) {
+        operator fun invoke(context: Context?, payload: Payload, options: Bundle? = null) {
             navRouterIntent?.putExtra(PAYLOAD, payload)
-            super.invoke(context)
+            super.invoke(context, options)
         }
 
         @Parcelize
         data class Payload(
+            val id: Long,
             val title: String,
             val subTitle: String,
             val description: String?,
@@ -100,9 +102,9 @@ object NavigationTargets {
         /**
          * Starts the target [navRouterIntent] for the implementation
          */
-        operator fun invoke(context: Context?, payload: Payload) {
+        operator fun invoke(context: Context?, payload: Payload, options: Bundle? = null) {
             navRouterIntent?.putExtra(PAYLOAD, payload)
-            super.invoke(context)
+            super.invoke(context, options)
         }
 
         @Parcelize
@@ -124,9 +126,9 @@ object NavigationTargets {
         /**
          * Starts the target [navRouterIntent] for the implementation
          */
-        operator fun invoke(context: Context?, payload: Payload) {
+        operator fun invoke(context: Context?, payload: Payload, options: Bundle? = null) {
             navRouterIntent?.putExtra(PAYLOAD, payload)
-            super.invoke(context)
+            super.invoke(context, options)
         }
 
         @Parcelize
@@ -155,9 +157,9 @@ object NavigationTargets {
         /**
          * Starts the target [navRouterIntent] for the implementation
          */
-        operator fun invoke(context: Context?, payload: Discover.Payload) {
+        operator fun invoke(context: Context?, payload: Discover.Payload, options: Bundle? = null) {
             navRouterIntent?.putExtra(Discover.PAYLOAD, payload)
-            super.invoke(context)
+            super.invoke(context, options)
         }
     }
 
@@ -172,9 +174,9 @@ object NavigationTargets {
         /**
          * Starts the target [navRouterIntent] for the implementation
          */
-        operator fun invoke(context: Context?, payload: Payload) {
+        operator fun invoke(context: Context?, payload: Payload, options: Bundle? = null) {
             navRouterIntent?.putExtra(PAYLOAD, payload)
-            super.invoke(context)
+            super.invoke(context, options)
         }
 
         @Parcelize
@@ -202,9 +204,9 @@ object NavigationTargets {
         /**
          * Starts the target [navRouterIntent] for the implementation
          */
-        operator fun invoke(context: Context?, payload: Payload) {
+        operator fun invoke(context: Context?, payload: Payload, options: Bundle? = null) {
             navRouterIntent?.putExtra(PAYLOAD, payload)
-            super.invoke(context)
+            super.invoke(context, options)
         }
 
         @Parcelize
@@ -224,14 +226,36 @@ object NavigationTargets {
         /**
          * Starts the target [navRouterIntent] for the implementation
          */
-        operator fun invoke(context: Context?, payload: Payload) {
+        operator fun invoke(context: Context?, payload: Payload, options: Bundle? = null) {
             navRouterIntent?.putExtra(PAYLOAD, payload)
-            super.invoke(context)
+            super.invoke(context, options)
         }
 
         @Parcelize
         data class Payload(
             val seriesId: Long
+        ) : Parcelable
+    }
+
+    object ImageViewer : INavigationRouter, INavigationTarget {
+        override val packageName = "shared.image.viewer"
+        override val className = "ImageViewerScreen"
+
+        override val navRouterIntent = forIntent()
+
+        const val PAYLOAD = "ImageViewerScreen:Payload"
+
+        /**
+         * Starts the target [navRouterIntent] for the implementation
+         */
+        operator fun invoke(context: Context?, payload: Payload, options: Bundle? = null) {
+            navRouterIntent?.putExtra(PAYLOAD, payload)
+            super.invoke(context, options)
+        }
+
+        @Parcelize
+        data class Payload(
+            val imageSrc: String
         ) : Parcelable
     }
 }

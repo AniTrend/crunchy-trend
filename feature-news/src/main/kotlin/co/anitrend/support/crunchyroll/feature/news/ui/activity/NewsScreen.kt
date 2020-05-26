@@ -23,16 +23,17 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.core.net.toUri
-import co.anitrend.arch.domain.entities.NetworkState
+import androidx.lifecycle.lifecycleScope
+import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.extra
-import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
+import co.anitrend.support.crunchyroll.core.extensions.stackTrace
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.news.R
+import co.anitrend.support.crunchyroll.feature.news.databinding.NewsScreenBinding
 import co.anitrend.support.crunchyroll.feature.news.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.news.presenter.NewsPresenter
 import io.noties.markwon.Markwon
-import kotlinx.android.synthetic.main.news_screen.*
 import kotlinx.android.synthetic.main.news_screen_content.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -42,7 +43,12 @@ import org.koin.android.ext.android.inject
 
 class NewsScreen : CrunchyActivity() {
 
-    override val elasticLayout: ElasticDragDismissFrameLayout? = null
+    private val binding by lazy(LAZY_MODE_UNSAFE) {
+        NewsScreenBinding.inflate(layoutInflater)
+    }
+
+    override val elasticLayout
+        get() = binding.draggableFrame
 
     private val payload
             by extra<NavigationTargets.News.Payload>(
@@ -54,33 +60,29 @@ class NewsScreen : CrunchyActivity() {
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.news_screen)
-        setSupportActionBar(bottomAppBar)
-        stateLayout.stateConfigFlow.value = get()
+        setContentView(binding.root)
+        setSupportActionBar(binding.bottomAppBar)
+        onUpdateUserInterface()
     }
 
     @ExperimentalCoroutinesApi
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        BetterLinkMovementMethod.linkify(
-            Linkify.ALL,
-            this
-        ).setOnLinkClickListener { _, url ->
-            runCatching {
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = url.toUri()
-                startActivity(intent)
-            }.exceptionOrNull()?.printStackTrace()
-            true
-        }
-        floatingShortcutButton.setOnClickListener {
-            val shareCompat = payload?.let {
-                presenter.createShareContent(it, get(), this)
-            }?.createChooserIntent()
-            runCatching {
-                startActivity(shareCompat)
-            }.exceptionOrNull()?.printStackTrace()
-        }
-        onUpdateUserInterface()
+        BetterLinkMovementMethod.linkify(Linkify.ALL, this)
+            .setOnLinkClickListener { view, url ->
+                runCatching {
+                    presenter.handleViewIntent(view, url, this)
+                }.stackTrace(moduleTag)
+                true
+            }
+        binding.floatingShortcutButton
+            .setOnClickListener {
+                val shareCompat = payload?.let {
+                    presenter.createShareContent(it, get(), this)
+                }?.createChooserIntent()
+                runCatching {
+                    startActivity(shareCompat)
+                }.stackTrace(moduleTag)
+            }
     }
 
     /**
@@ -96,14 +98,14 @@ class NewsScreen : CrunchyActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
              R.id.action_open_in_browser -> {
-                 kotlin.runCatching {
+                 runCatching {
                      val url = payload?.let {
                          presenter.buildNewsUrl(it, get())
                      }
                      val intent = Intent(Intent.ACTION_VIEW)
                      intent.data = url?.toUri()
                      startActivity(intent)
-                 }.exceptionOrNull()?.printStackTrace()
+                 }.stackTrace(moduleTag)
                  true
              }
              R.id.action_open_gallery -> {
@@ -116,9 +118,8 @@ class NewsScreen : CrunchyActivity() {
 
     @ExperimentalCoroutinesApi
     private fun onUpdateUserInterface() {
-        launch {
+        lifecycleScope.launch {
             val html = presenter.createCustomHtml(payload)
-            stateLayout?.networkMutableStateFlow?.value = NetworkState.Success
             get<Markwon>().setMarkdown(mediaNewsContent, html)
         }
     }

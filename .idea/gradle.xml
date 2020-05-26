@@ -35,6 +35,7 @@
             <option value="$PROJECT_DIR$/support-app/support-recycler" />
             <option value="$PROJECT_DIR$/support-app/support-theme" />
             <option value="$PROJECT_DIR$/support-app/support-ui" />
+            <option value="$PROJECT_DIR$/ui-image-viewer" />
             <option value="$PROJECT_DIR$/ui-shared-series" />
           </set>
         </option>

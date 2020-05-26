@@ -18,11 +18,9 @@ package co.anitrend.support.crunchyroll.core.ui.activity
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.view.Window
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
-import co.anitrend.arch.extension.attachComponent
-import co.anitrend.arch.extension.detachComponent
 import co.anitrend.arch.ui.activity.SupportActivity
 import co.anitrend.support.crunchyroll.core.R
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
@@ -66,6 +64,7 @@ abstract class CrunchyActivity : SupportActivity(), IFeatureContract {
      * Can be used to configure custom theme styling as desired
      */
     override fun configureActivity() {
+        window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
         configurationUtil.onCreate(this)
         featureModuleHelper()?.onCreate()
     }

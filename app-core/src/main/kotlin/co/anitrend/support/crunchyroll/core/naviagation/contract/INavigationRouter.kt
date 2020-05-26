@@ -26,9 +26,10 @@ interface INavigationRouter {
     /**
      * Starts the target [navRouterIntent] for the implementation
      */
-    operator fun invoke(context: Context?) {
+    operator fun invoke(context: Context?, options: Bundle? = null) {
         runCatching {
-            context?.startActivity(navRouterIntent)
+            navRouterIntent?.action = Intent.ACTION_VIEW
+            context?.startActivity(navRouterIntent, options)
         }.exceptionOrNull()?.printStackTrace()
     }
 }

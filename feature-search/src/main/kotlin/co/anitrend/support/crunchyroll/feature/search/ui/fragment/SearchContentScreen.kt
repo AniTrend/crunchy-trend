@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.feature.search.ui.fragment
 
+import android.app.ActivityOptions
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
@@ -24,6 +25,7 @@ import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
+import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.ui.fragment.list.CrunchyFragmentList
@@ -104,16 +106,21 @@ class SearchContentScreen(
     override fun initializeComponents(savedInstanceState: Bundle?) {
         super.initializeComponents(savedInstanceState)
         lifecycleScope.launchWhenResumed {
-            supportViewAdapter.clickableStateFlow.debounce(16)
+            supportViewAdapter.clickableStateFlow.debounce(DEBOUNCE_DURATION)
                 .filterIsInstance<DefaultClickableItem<CrunchySeries>>()
                 .collect {
                     val data = it.data
-                    val seriesPayload = NavigationTargets.Series.Payload(
+                    val view = it.view
+
+                    val payload = NavigationTargets.Series.Payload(
                         seriesId = data?.seriesId ?: 0
                     )
-                    NavigationTargets.Series(
-                        it.view.context, seriesPayload
-                    )
+
+                    val options = ActivityOptions.makeSceneTransitionAnimation(
+                        activity, view, payload.seriesId.toString()
+                    ).toBundle()
+
+                    NavigationTargets.Series(view.context, payload, options)
                 }
         }
     }

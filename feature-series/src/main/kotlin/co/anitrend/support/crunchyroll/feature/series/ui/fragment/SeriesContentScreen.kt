@@ -20,8 +20,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.*
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.argument
@@ -29,6 +28,7 @@ import co.anitrend.arch.extension.attachComponent
 import co.anitrend.arch.extension.detachComponent
 import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
+import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.ui.fragment.CrunchyFragment
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
@@ -43,6 +43,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -80,7 +81,8 @@ class SeriesContentScreen : CrunchyFragment() {
         viewModelState().networkState.observe(
             viewLifecycleOwner,
             Observer {
-                binding.supportStateLayout.networkMutableStateFlow.value = it
+                if (!binding.supportStateLayout.isContent)
+                    binding.supportStateLayout.networkMutableStateFlow.value = it
             }
         )
     }
@@ -98,20 +100,20 @@ class SeriesContentScreen : CrunchyFragment() {
     @FlowPreview
     @ExperimentalCoroutinesApi
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        lifecycleScope.launchWhenResumed {
+        lifecycleScope.launchWhenCreated {
             if (viewModelState().isEmpty())
                 onFetchDataInitialize()
         }
         lifecycleScope.launchWhenResumed {
             binding.supportStateLayout.interactionStateFlow
                 .filterNotNull()
-                .debounce(16)
+                .debounce(DEBOUNCE_DURATION)
                 .collect {
                     viewModelState().retry()
                 }
         }
         lifecycleScope.launchWhenResumed {
-            seriesGenreAdapter.clickableStateFlow.debounce(16)
+            seriesGenreAdapter.clickableStateFlow.debounce(DEBOUNCE_DURATION)
                 .filterIsInstance<DefaultClickableItem<String>>()
                 .collect {
                     val genre = it.data
@@ -125,8 +127,13 @@ class SeriesContentScreen : CrunchyFragment() {
                     }
                 }
         }
-        lifecycleScope.launchWhenStarted {
-            attachComponent(binding.seriesGenres)
+        lifecycleScope.launch {
+            whenResumed {
+                attachComponent(binding.seriesGenres)
+            }
+            lifecycle.whenStateAtLeast(Lifecycle.State.DESTROYED) {
+                detachComponent(binding.seriesGenres)
+            }
         }
     }
 
@@ -166,7 +173,6 @@ class SeriesContentScreen : CrunchyFragment() {
     ): View? {
         binding = SeriesContentBinding.inflate(inflater, container, false)
         binding.supportStateLayout.stateConfigFlow.value = get()
-
         binding.lifecycleOwner = this
         return binding.root
     }
@@ -224,19 +230,5 @@ class SeriesContentScreen : CrunchyFragment() {
                     message = "Invalid or missing payload"
                 )
         }
-    }
-
-    /**
-     * Called when the view previously created by [.onCreateView] has
-     * been detached from the fragment.  The next time the fragment needs
-     * to be displayed, a new view will be created.  This is called
-     * after [.onStop] and before [.onDestroy].  It is called
-     * *regardless* of whether [.onCreateView] returned a
-     * non-null view.  Internally it is called after the view's state has
-     * been saved but before it has been removed from its parent.
-     */
-    override fun onDestroyView() {
-        detachComponent(binding.seriesGenres)
-        super.onDestroyView()
     }
 }

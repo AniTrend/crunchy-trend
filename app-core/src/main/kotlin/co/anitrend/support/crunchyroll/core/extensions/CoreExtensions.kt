@@ -19,17 +19,18 @@ package co.anitrend.support.crunchyroll.core.extensions
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.annotation.IdRes
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.commit
+import androidx.fragment.app.*
 import co.anitrend.support.crunchyroll.core.CrunchyApplication
+import co.anitrend.support.crunchyroll.core.common.DEFAULT_ANIMATION_DURATION
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import com.afollestad.materialdialogs.DialogBehavior
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
+import com.google.android.material.transition.MaterialArcMotion
+import com.google.android.material.transition.MaterialContainerTransform
 import timber.log.Timber
+import kotlin.Result
 
 const val separator = "\u2022"
 
@@ -42,6 +43,16 @@ fun CrunchyActivity.recreateModules() {
 
 fun FragmentActivity?.closeScreen() {
     this?.finishAfterTransition()
+}
+
+
+/** get a material container arc transform. */
+internal fun getContentTransform(): MaterialContainerTransform {
+    val transform =  MaterialContainerTransform()
+    transform.addTarget(android.R.id.content)
+    transform.pathMotion = MaterialArcMotion()
+    transform.duration = DEFAULT_ANIMATION_DURATION
+    return transform
 }
 
 /**
@@ -99,4 +110,14 @@ inline fun FragmentManager.commit(
         Timber.tag(moduleTag).v("FragmentItem model is null")
         null
     }
+}
+
+fun <T> Result<T>.stackTrace(tag: String): T? {
+    val value = getOrNull()
+    if (isFailure) {
+        val throwable = value as Throwable?
+        if (throwable != null)
+            Timber.tag(tag).v(throwable)
+    }
+    return value
 }

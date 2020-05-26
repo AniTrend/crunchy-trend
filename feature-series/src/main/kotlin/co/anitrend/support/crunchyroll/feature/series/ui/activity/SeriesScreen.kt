@@ -30,7 +30,7 @@ import org.koin.androidx.scope.lifecycleScope
 
 class SeriesScreen : CrunchyActivity() {
 
-    override val elasticLayout: ElasticDragDismissFrameLayout?
+    override val elasticLayout: ElasticDragDismissFrameLayout
         get() = draggableFrame
 
     /**
@@ -45,6 +45,7 @@ class SeriesScreen : CrunchyActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.series_activity)
         setSupportActionBar(bottomAppBar)
+        onUpdateUserInterface()
     }
 
     /**
@@ -56,7 +57,7 @@ class SeriesScreen : CrunchyActivity() {
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        onUpdateUserInterface()
+
     }
 
     /**
@@ -70,7 +71,7 @@ class SeriesScreen : CrunchyActivity() {
             fragment = SeriesContentScreen::class.java
         )
 
-        currentFragmentTag = supportFragmentManager.commit(R.id.series_content, target) {
+        currentFragmentTag = supportFragmentManager.commit(series_content.id, target) {
             //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         }
     }

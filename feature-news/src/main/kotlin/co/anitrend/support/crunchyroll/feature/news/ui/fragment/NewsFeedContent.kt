@@ -17,12 +17,14 @@
 package co.anitrend.support.crunchyroll.feature.news.ui.fragment
 
 import android.os.Bundle
+import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.startNewActivity
 import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
+import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.extensions.toBundle
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.ui.fragment.list.CrunchyFragmentList
@@ -89,12 +91,13 @@ class NewsFeedContent(
     override fun initializeComponents(savedInstanceState: Bundle?) {
         super.initializeComponents(savedInstanceState)
         lifecycleScope.launchWhenResumed {
-            supportViewAdapter.clickableStateFlow.debounce(16)
+            supportViewAdapter.clickableStateFlow.debounce(DEBOUNCE_DURATION)
                 .filterIsInstance<DefaultClickableItem<CrunchyNews>>()
                 .collect {
                     val model = it.data
                     if (model != null) {
                         val payload = NavigationTargets.News.Payload(
+                            model.id,
                             model.title,
                             model.subTitle,
                             model.description,

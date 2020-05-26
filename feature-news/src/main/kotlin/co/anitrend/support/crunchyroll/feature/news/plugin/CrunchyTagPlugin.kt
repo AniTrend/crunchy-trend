@@ -33,8 +33,8 @@ internal class CrunchyTagPlugin private constructor(): AbstractMarkwonPlugin() {
             plugin.emptyTagReplacement(EmptyTagHandler.create())
             plugin.addHandler(FrameTagHandler.create())
             plugin.addHandler(ImageTagHandler.create())
-            //plugin.addHandler(ParagraphTagHandler.create())
-            //plugin.addHandler(TagAlignmentHandler.create())
+            //plugin.addHandler(ParagraphTagHandler.create()) //ignore for now
+            plugin.addHandler(TagAlignmentHandler.create())
         }
     }
 

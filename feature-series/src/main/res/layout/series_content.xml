@@ -132,6 +132,7 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/seriesDescription"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/xl_margin"

@@ -16,3 +16,5 @@
 
 package co.anitrend.support.crunchyroll.core.common
 
+const val DEBOUNCE_DURATION = 32L
+const val DEFAULT_ANIMATION_DURATION = 450L

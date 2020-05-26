@@ -113,7 +113,7 @@ private fun <T> Response<T>.bodyOrThrow(): T {
 }
 
 private fun defaultShouldRetry(exception: Exception) = when (exception) {
-    is HttpException -> exception.code() == 429
+    is HttpException -> exception.code() == 429 || exception.code() == 401
     is IOException -> true
     else -> false
 }

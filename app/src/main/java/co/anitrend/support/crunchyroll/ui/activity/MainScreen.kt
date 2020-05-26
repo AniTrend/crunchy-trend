@@ -22,12 +22,14 @@ import android.view.MenuItem
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.extension.extra
 import co.anitrend.arch.ui.activity.SupportActivity
 import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.R
 import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
+import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.extensions.commit
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
@@ -38,6 +40,7 @@ import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -199,11 +202,15 @@ class MainScreen : CrunchyActivity(), NavigationView.OnNavigationItemSelectedLis
 
         bottomAppBar.setTitle(selectedTitle)
         bottomDrawerBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        currentFragmentTag = supportFragmentManager.commit(R.id.contentFrame, fragmentItem) {}
+
+        delay(DEBOUNCE_DURATION)
+        currentFragmentTag = supportFragmentManager.commit(
+            R.id.contentFrame, fragmentItem
+        ) {}
     }
 
     private fun onNavigateToTarget(@IdRes menu: Int) {
-        launch {
+        lifecycleScope.launch {
             runCatching {
                 onNavigate(menu)
             }.onFailure {

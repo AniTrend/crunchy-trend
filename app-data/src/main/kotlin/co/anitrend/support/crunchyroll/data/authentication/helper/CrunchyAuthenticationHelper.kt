@@ -72,62 +72,32 @@ internal class CrunchyAuthenticationHelper(
         return currentTime > (sessionExpiryTime ?: 0)
     }
 
-    private suspend fun getUnblockSession(forceRefresh: Boolean = false): Session? {
+    private suspend fun getAuthSession(forceRefresh: Boolean = false): Session? {
         val unblockSession = sessionDao.findBySessionId(
             settings.sessionId
         )
         val expired = hasSessionExpired(unblockSession?.expiresAt)
         val unblock = if (forceRefresh) {
             Timber.tag(moduleTag).d(
-                "Force refresh requested for unblock session -> ${unblockSession?.sessionId} | hasExpired: $expired"
+                "Force refresh requested for auth session -> ${unblockSession?.sessionId} | hasExpired: $expired"
             )
-            val session = unblockSessionUseCase()
-            Timber.tag(moduleTag).d("Refreshed unblock session from remote source -> $session")
+            val session = unblockSessionUseCase() ?: normalSessionUseCase()
+            Timber.tag(moduleTag).d("Refreshed auth session from remote source -> $session")
             session
         } else {
             val session = SessionTransformer.transform(unblockSession)
             Timber.tag(moduleTag).d(
-                "Using existing core session from local source -> ${unblockSession?.sessionId} | hasExpired: $expired"
+                "Using existing auth session from local source -> ${unblockSession?.sessionId} | hasExpired: $expired"
             )
             session
         }
 
         if (unblock == null)
             Timber.tag(moduleTag).w(
-                "Unblock session entity is null, proceeding requests may fail!"
+                "Auth session entity is null, proceeding requests may fail!"
             )
 
         return unblock
-    }
-
-    private suspend fun getNormalSession(forceRefresh: Boolean = false): Session? {
-        val unblockSession = sessionDao.findBySessionId(
-            settings.sessionId
-        )
-        val expired = hasSessionExpired(unblockSession?.expiresAt)
-        val normalSession = sessionDao.findBySessionId(settings.sessionId)
-        val core = if (forceRefresh) {
-            Timber.tag(moduleTag).d(
-                "Force refresh requested for normal session -> $normalSession | hasExpired: $expired"
-            )
-            val session = normalSessionUseCase()
-            Timber.tag(moduleTag)
-                .d("Refreshed normal session from remote source -> ${session?.sessionId}")
-            session
-        } else {
-            val session = SessionTransformer.transform(normalSession)
-            Timber.tag(moduleTag).d(
-                "Using existing normal session from local source -> ${session?.sessionId} | hasExpired: $expired"
-            )
-            session
-        }
-
-        if (core == null)
-            Timber.tag(moduleTag).w(
-                "Normal session entity is null, proceeding requests may fail!"
-            )
-
-        return core
     }
 
     private suspend fun getCoreSession(forceRefresh: Boolean = false): Session? {
@@ -195,7 +165,7 @@ internal class CrunchyAuthenticationHelper(
      */
     internal suspend fun refreshSession(request: Request, forceRefresh: Boolean = true) = mutex.withLock {
         val session = if (isAuthenticated)
-            getUnblockSession(forceRefresh) ?: getNormalSession(forceRefresh)
+            getAuthSession(forceRefresh)
         else
             getCoreSession(forceRefresh)
 
@@ -209,7 +179,7 @@ internal class CrunchyAuthenticationHelper(
      */
     internal suspend fun injectQueryParameters(request: Request) = mutex.withLock {
         if (isAuthenticated) {
-            val session = getUnblockSession() ?: getNormalSession()
+            val session = getAuthSession()
             buildRequest(request, session)
         } else {
             val session = getCoreSession()

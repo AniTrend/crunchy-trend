@@ -10,6 +10,7 @@ buildscript {
         // temporary till material include state restoration and merge adapter
         recycler = '1.2.0-alpha03'
         workflow = '0.26.0'
+        kotlin_version = '1.3.72'
     }
 
     repositories {

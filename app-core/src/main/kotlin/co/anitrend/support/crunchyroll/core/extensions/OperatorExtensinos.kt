@@ -16,22 +16,25 @@
 
 package co.anitrend.support.crunchyroll.core.extensions
 
-sealed class Result<T> {
-    data class Success<T>(val value: T): Result<T>()
-    data class Failure<T>(val errorMessage: Any): Result<T>()
+sealed class State<T> {
+    data class Success<T>(val value: T): State<T>()
+    data class Failure<T>(val error: Throwable): State<T>()
 }
 
 // Pipe input
-infix fun <T,U> T.begin(f: (T) -> Result<U>) =
-    Result.Success(this) then f
+infix fun <T,U> T.validate(f: (T) -> State<U>) =
+    State.Success(this) then f
 
 // Composition: apply a function f to Success results
-infix fun <T,U> Result<T>.then(f: (T) -> Result<U>) =
+infix fun <T,U> State<T>.then(f: (T) -> State<U>) =
     when (this) {
-        is Result.Success -> f(value)
-        is Result.Failure -> Result.Failure(errorMessage)
+        is State.Success -> f(value)
+        is State.Failure -> State.Failure(error)
     }
 
 // Handle error output: the end of a railway
-infix fun <T> Result<T>.otherwise(f: (Any) -> Unit) =
-    if (this is Result.Failure) f(errorMessage) else Unit
+infix fun <T> State<T>.otherwise(f: (Any) -> Unit) =
+    when (this) {
+        is State.Failure -> f(error)
+        else -> Unit
+    }

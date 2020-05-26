@@ -16,11 +16,23 @@
 
 package co.anitrend.support.crunchyroll.feature.news.presenter
 
+import android.app.ActivityOptions
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import android.widget.TextView
 import androidx.core.app.ShareCompat
+import androidx.core.content.ContextCompat.startActivity
+import androidx.core.net.toUri
+import androidx.core.view.ViewCompat
+import androidx.fragment.app.FragmentActivity
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.util.contract.ISupportDateHelper
+import co.anitrend.support.crunchyroll.core.extensions.stackTrace
+import co.anitrend.support.crunchyroll.core.extensions.toBundle
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
+import co.anitrend.support.crunchyroll.core.naviagation.extensions.forIntent
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
 import co.anitrend.support.crunchyroll.feature.news.model.Poster
@@ -57,11 +69,11 @@ class NewsPresenter(
 
                 val width = runCatching{
                     tag.attr("width")?.toShort()
-                }.getOrElse { it.printStackTrace(); null }  ?: 0
+                }.stackTrace(moduleTag) ?: 0
 
                 val height = runCatching{
                     tag.attr("height")?.toShort()
-                }.getOrElse { it.printStackTrace(); null }  ?: 0
+                }.stackTrace(moduleTag) ?: 0
 
                 if (height > 100) {
                     Timber.tag(moduleTag).v("Image found -> $src | $width x $height")
@@ -115,5 +127,17 @@ class NewsPresenter(
             .setType("text/plain")
             .setSubject(payload.title)
             .setHtmlText(payloadContent.toString())
+    }
+
+    fun handleViewIntent(view: View, url: String, context: FragmentActivity) {
+        if (url.startsWith("https://img1.ak.crunchyroll")) {
+            ViewCompat.setTransitionName(view, url)
+            val payload = NavigationTargets.ImageViewer.Payload(url)
+            NavigationTargets.ImageViewer(context, payload)
+        } else {
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = url.toUri()
+            context.startActivity(intent)
+        }
     }
 }

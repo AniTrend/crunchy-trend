@@ -20,7 +20,6 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import co.anitrend.arch.recycler.common.ClickableItem
 import co.anitrend.arch.recycler.common.DefaultClickableItem

@@ -26,6 +26,7 @@ import co.anitrend.arch.extension.argument
 import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
+import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.extensions.createDialog
 import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
@@ -96,7 +97,7 @@ class MediaContent(
     override fun initializeComponents(savedInstanceState: Bundle?) {
         super.initializeComponents(savedInstanceState)
         lifecycleScope.launchWhenResumed {
-            supportViewAdapter.clickableStateFlow.debounce(16)
+            supportViewAdapter.clickableStateFlow.debounce(DEBOUNCE_DURATION)
                 .filterIsInstance<DefaultClickableItem<CrunchyMedia>>()
                 .collect {
                     val media = it.data

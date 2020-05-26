@@ -20,8 +20,12 @@ import android.text.Layout
 import android.text.style.AlignmentSpan
 import android.text.style.LeadingMarginSpan
 import io.noties.markwon.MarkwonConfiguration
+import io.noties.markwon.MarkwonVisitor
 import io.noties.markwon.RenderProps
+import io.noties.markwon.SpannableBuilder
 import io.noties.markwon.html.HtmlTag
+import io.noties.markwon.html.MarkwonHtmlRenderer
+import io.noties.markwon.html.TagHandler
 import io.noties.markwon.html.tag.SimpleTagHandler
 
 /**
@@ -33,39 +37,44 @@ import io.noties.markwon.html.tag.SimpleTagHandler
  * <p style="margin-left %%px;"></p>
  * <p class="p%"></p>
  */
-internal class ParagraphTagHandler private constructor(): SimpleTagHandler() {
+internal class ParagraphTagHandler private constructor(): TagHandler() {
 
-    override fun getSpans(
-        configuration: MarkwonConfiguration,
-        renderProps: RenderProps,
+    override fun handle(
+        visitor: MarkwonVisitor,
+        renderer: MarkwonHtmlRenderer,
         tag: HtmlTag
-    ): Any? {
+    ) {
+        val spans = ArrayList<Any>(2)
         val attributes = tag.attributes()
         val style = attributes["style"]
         val styleClass = attributes["class"]
 
-        val layoutAlignment = when (style) {
-            CENTER_ALIGN -> Layout.Alignment.ALIGN_CENTER
-            RIGHT_ALIGN -> Layout.Alignment.ALIGN_OPPOSITE
-            else -> null
-        }
-        if (layoutAlignment != null)
-           return AlignmentSpan.Standard(layoutAlignment)
+        if (tag.isBlock)
+            visitChildren(visitor, renderer, tag.asBlock)
 
-        val leadingMarginSize = if (style?.startsWith(MARGIN_PREFIX) == true) {
+        if (style == CENTER_ALIGN)
+            spans.add(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER))
+        else if (style == RIGHT_ALIGN)
+            spans.add(AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE))
+
+        if (style?.startsWith(MARGIN_PREFIX) == true) {
             // e.g. margin-left: 30px;
             val length = style.length
             val start = length - 5
             val end = length - 3
 
             val paddingSize = style.substring(start, end).toInt()
-            paddingSize
-        } else null
+            spans.add(LeadingMarginSpan.Standard(paddingSize))
+        }
 
-        if (leadingMarginSize != null)
-            return LeadingMarginSpan.Standard(leadingMarginSize)
+        if (spans.isNotEmpty())
+            SpannableBuilder.setSpans(
+                visitor.builder(),
+                spans.toArray(),
+                tag.start(),
+                tag.end()
+            )
 
-        return null
     }
 
     override fun supportedTags(): List<String> = listOf("p")

@@ -15,13 +15,17 @@
   ~    limitations under the License.
   -->
 
-<co.anitrend.arch.ui.view.widget.SupportStateLayout
+<co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/stateLayout"
+        android:id="@+id/draggableFrame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:dragDismissDistance="@dimen/nav_item_selector_margin"
+        app:dragDismissScale="0.95"
+        android:clipToPadding="false"
+        tools:context=".ui.activity.NewsScreen">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
@@ -51,4 +55,4 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-</co.anitrend.arch.ui.view.widget.SupportStateLayout>
+</co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout>
