@@ -49,7 +49,10 @@ android {
         exclude("META-INF/*.kotlin_module")
     }
     testOptions {
-        unitTests.returnDefaultValues = true
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+        }
     }
     compileOptions {
         sourceCompatibility = 1.8
