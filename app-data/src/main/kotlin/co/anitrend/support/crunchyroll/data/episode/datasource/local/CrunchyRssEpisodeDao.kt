@@ -20,12 +20,11 @@ import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Query
-import co.anitrend.arch.data.dao.ISupportQuery
-import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
+import co.anitrend.support.crunchyroll.data.arch.database.dao.IDao
 import co.anitrend.support.crunchyroll.data.episode.entity.EpisodeFeedEntity
 
 @Dao
-internal interface CrunchyRssEpisodeDao : ISupportQuery<EpisodeFeedEntity>, ISourceDao {
+internal interface CrunchyRssEpisodeDao : IDao<EpisodeFeedEntity> {
 
     @Query("""
         select count(mediaId) from EpisodeFeedEntity 

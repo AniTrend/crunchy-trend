@@ -18,13 +18,12 @@ package co.anitrend.support.crunchyroll.data.cache.datasource.local
 
 import androidx.room.Dao
 import androidx.room.Query
-import co.anitrend.arch.data.dao.ISupportQuery
-import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
+import co.anitrend.support.crunchyroll.data.arch.database.dao.IDao
 import co.anitrend.support.crunchyroll.data.cache.entity.CacheLogEntity
 import co.anitrend.support.crunchyroll.data.cache.model.CacheRequest
 
 @Dao
-internal interface CacheDao : ISupportQuery<CacheLogEntity>, ISourceDao{
+internal interface CacheDao : IDao<CacheLogEntity> {
     @Query("""
         delete from CacheLogEntity
     """)

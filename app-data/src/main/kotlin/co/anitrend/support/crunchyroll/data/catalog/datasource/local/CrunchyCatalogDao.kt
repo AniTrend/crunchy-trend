@@ -20,15 +20,14 @@ import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import co.anitrend.arch.data.dao.ISupportQuery
-import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
+import co.anitrend.support.crunchyroll.data.arch.database.dao.IDao
 import co.anitrend.support.crunchyroll.data.catalog.entity.CrunchyCatalogEntity
 import co.anitrend.support.crunchyroll.data.catalog.entity.CrunchyCatalogWithSeriesEntity
 import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalogFilter
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-internal interface CrunchyCatalogDao : ISupportQuery<CrunchyCatalogEntity>, ISourceDao {
+internal interface CrunchyCatalogDao : IDao<CrunchyCatalogEntity> {
 
     @Query("""
         select count(catalogId) from CrunchyCatalogEntity

@@ -16,16 +16,14 @@
 
 package co.anitrend.support.crunchyroll.data.authentication.datasource.local
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
-import co.anitrend.arch.data.dao.ISupportQuery
-import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
+import co.anitrend.support.crunchyroll.data.arch.database.dao.IDao
 import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-internal interface CrunchyLoginDao : ISupportQuery<CrunchyLoginEntity>, ISourceDao {
+internal interface CrunchyLoginDao : IDao<CrunchyLoginEntity> {
 
     @Query("""
         select count(userId) from CrunchyLoginEntity 

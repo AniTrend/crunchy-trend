@@ -21,12 +21,11 @@ import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import co.anitrend.arch.data.dao.ISupportQuery
-import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
+import co.anitrend.support.crunchyroll.data.arch.database.dao.IDao
 import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesEntity
 
 @Dao
-internal interface CrunchySeriesDao : ISupportQuery<CrunchySeriesEntity>, ISourceDao {
+internal interface CrunchySeriesDao : IDao<CrunchySeriesEntity> {
 
     @Query("""
         select count(id) from CrunchySeriesEntity

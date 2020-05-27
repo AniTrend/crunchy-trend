@@ -19,12 +19,11 @@ package co.anitrend.support.crunchyroll.data.locale.datasource.local
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
-import co.anitrend.arch.data.dao.ISupportQuery
-import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
+import co.anitrend.support.crunchyroll.data.arch.database.dao.IDao
 import co.anitrend.support.crunchyroll.data.locale.entity.CrunchyLocaleEntity
 
 @Dao
-internal interface CrunchyLocaleDao : ISupportQuery<CrunchyLocaleEntity>, ISourceDao {
+internal interface CrunchyLocaleDao : IDao<CrunchyLocaleEntity> {
 
     @Query("""
         select count(localeId) from CrunchyLocaleEntity

@@ -37,6 +37,7 @@ import co.anitrend.support.crunchyroll.feature.series.databinding.SeriesContentB
 import co.anitrend.support.crunchyroll.feature.series.presenter.SeriesDetailPresenter
 import co.anitrend.support.crunchyroll.feature.series.ui.adpter.SeriesGenreAdapter
 import co.anitrend.support.crunchyroll.feature.series.viewmodel.SeriesDetailViewModel
+import kotlinx.android.synthetic.main.series_info_section.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect

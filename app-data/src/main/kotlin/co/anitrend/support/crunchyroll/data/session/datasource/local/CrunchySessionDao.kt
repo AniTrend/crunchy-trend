@@ -18,12 +18,11 @@ package co.anitrend.support.crunchyroll.data.session.datasource.local
 
 import androidx.room.Dao
 import androidx.room.Query
-import co.anitrend.arch.data.dao.ISupportQuery
-import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
+import co.anitrend.support.crunchyroll.data.arch.database.dao.IDao
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
 
 @Dao
-internal interface CrunchySessionDao : ISupportQuery<CrunchySessionEntity>, ISourceDao {
+internal interface CrunchySessionDao : IDao<CrunchySessionEntity> {
 
     @Query("""
         select count(sessionId) from CrunchySessionEntity
