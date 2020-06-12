@@ -50,7 +50,7 @@ fun FragmentActivity?.closeScreen() {
 internal fun getContentTransform(): MaterialContainerTransform {
     val transform =  MaterialContainerTransform()
     transform.addTarget(android.R.id.content)
-    transform.pathMotion = MaterialArcMotion()
+    transform.setPathMotion(MaterialArcMotion())
     transform.duration = DEFAULT_ANIMATION_DURATION
     return transform
 }
