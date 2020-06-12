@@ -71,7 +71,6 @@ class MediaFeedContent(
     /**
      * Invoke view model observer to watch for changes
      */
-    @ExperimentalCoroutinesApi
     override fun setUpViewModelObserver() {
         viewModelState().model.observe(viewLifecycleOwner, Observer {
             onPostModelChange(it)
@@ -84,8 +83,6 @@ class MediaFeedContent(
      *
      * @param savedInstanceState
      */
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     override fun initializeComponents(savedInstanceState: Bundle?) {
         super.initializeComponents(savedInstanceState)
         lifecycleScope.launchWhenResumed {

@@ -76,7 +76,6 @@ class MediaContent(
         )
     }
 
-    @ExperimentalCoroutinesApi
     override fun setUpViewModelObserver() {
         viewModelState().model.observe(
             viewLifecycleOwner,
@@ -92,8 +91,6 @@ class MediaContent(
      *
      * @param savedInstanceState
      */
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     override fun initializeComponents(savedInstanceState: Bundle?) {
         super.initializeComponents(savedInstanceState)
         lifecycleScope.launchWhenResumed {
@@ -147,7 +144,6 @@ class MediaContent(
         }
     }
 
-    @ExperimentalCoroutinesApi
     override fun onFetchDataInitialize() {
         val mediaPayload = payload
         if (mediaPayload != null) {

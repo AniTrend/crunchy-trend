@@ -53,7 +53,6 @@ class FragmentLogout : CrunchyFragment() {
     /**
      * Invoke view model observer to watch for changes
      */
-    @ExperimentalCoroutinesApi
     override fun setUpViewModelObserver() {
         viewModelUser.state.model.observe(viewLifecycleOwner, Observer {
             binding.currentUserModel = it
@@ -72,8 +71,6 @@ class FragmentLogout : CrunchyFragment() {
         })
     }
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     override fun initializeComponents(savedInstanceState: Bundle?) {
         lifecycleScope.launchWhenResumed {
             binding.supportStateLayout.interactionStateFlow
@@ -96,7 +93,6 @@ class FragmentLogout : CrunchyFragment() {
         }
     }
 
-    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.supportStateLayout.stateConfigFlow.value = get()
@@ -116,8 +112,7 @@ class FragmentLogout : CrunchyFragment() {
         viewModelUser.state.invoke()
     }
 
-    @ExperimentalCoroutinesApi
-    override fun hasBackPressableAction(): Boolean {
+        override fun hasBackPressableAction(): Boolean {
         if (binding.supportStateLayout.isError) {
             binding.supportStateLayout.networkMutableStateFlow.value = NetworkState.Success
             return true

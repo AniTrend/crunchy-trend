@@ -63,7 +63,6 @@ class SeriesDiscoverContent(
     /**
      * Invoke view model observer to watch for changes
      */
-    @ExperimentalCoroutinesApi
     override fun setUpViewModelObserver() {
         viewModelState().model.observe(
             viewLifecycleOwner,
@@ -79,8 +78,6 @@ class SeriesDiscoverContent(
      *
      * @param savedInstanceState
      */
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     override fun initializeComponents(savedInstanceState: Bundle?) {
         super.initializeComponents(savedInstanceState)
         lifecycleScope.launchWhenResumed {

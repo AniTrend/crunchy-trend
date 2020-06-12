@@ -24,6 +24,7 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import co.anitrend.arch.extension.gone
+import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
 import co.anitrend.arch.recycler.common.ClickableItem
 import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.recycler.holder.SupportViewHolder
@@ -57,9 +58,7 @@ data class CatalogItem(
     //private var catalogSeriesRecycler: SupportRecyclerView? = null
     private var job: Job? = null
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
-    private fun setUpCatalogItems(
+        private fun setUpCatalogItems(
         view: View
     ) {
         val catalogSeriesAdapter = SeriesGridViewAdapter(
@@ -100,17 +99,15 @@ data class CatalogItem(
      * @param payloads optional payloads which maybe empty
      * @param stateFlow observable to broadcast click events
      */
-    @ExperimentalCoroutinesApi
-    @ExperimentalStdlibApi
-    @FlowPreview
     override fun bind(
         view: View,
         position: Int,
         payloads: List<Any>,
-        stateFlow: MutableStateFlow<ClickableItem?>
+        stateFlow: MutableStateFlow<ClickableItem?>,
+        selectionMode: ISupportSelectionMode<Long>?
     ) {
         val binding = AdapterCatalogBinding.bind(view)
-        binding.catalogHeadingTitle.text = entity?.qualifier?.attribute?.capitalize(Locale.getDefault())
+        binding.catalogHeadingTitle.text = entity?.qualifier?.attribute?.capitalize()
         binding.catalogActionSeeAll.gone()
         // too much effort to implement so leaving this out for now
         /*binding.catalogActionSeeAll.setOnClickListener {

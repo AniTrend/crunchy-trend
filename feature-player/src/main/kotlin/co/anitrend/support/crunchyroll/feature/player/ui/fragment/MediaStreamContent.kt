@@ -169,8 +169,7 @@ class MediaStreamContent(
         showDialogUsing(R.string.player_text_unavailable_audio_tracks, mediaTracks)
     }
 
-    @ExperimentalCoroutinesApi
-    override fun setUpViewModelObserver() {
+        override fun setUpViewModelObserver() {
         viewModelState().model.observe(viewLifecycleOwner, Observer {
             launch {
                 prepareResults(it)
@@ -190,8 +189,6 @@ class MediaStreamContent(
      *
      * @param savedInstanceState
      */
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     override fun initializeComponents(savedInstanceState: Bundle?) {
         lifecycleScope.launchWhenResumed {
             if (!viewModelState().isEmpty())
@@ -212,13 +209,11 @@ class MediaStreamContent(
      */
     override fun featureModuleHelper(): Nothing? = null
 
-    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         launch { onUpdateUserInterface() }
     }
 
-    @ExperimentalCoroutinesApi
     private fun onUpdateUserInterface() {
         supportStateLayout.stateConfigFlow.value = get()
         mediaPlugin.onInitializing()
@@ -245,7 +240,6 @@ class MediaStreamContent(
         }
     }
 
-    @ExperimentalCoroutinesApi
     private fun prepareResults(mediaStreams: List<MediaStream>?) {
         if (!mediaStreams.isNullOrEmpty()) {
             val streams = presenter.mapToStreamItems(
@@ -276,7 +270,6 @@ class MediaStreamContent(
                 )
     }
 
-    @ExperimentalCoroutinesApi
     private fun onFetchDataInitialize() {
         val mediaStreamPayload = payload
         if (mediaStreamPayload != null) {

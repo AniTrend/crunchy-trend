@@ -68,7 +68,6 @@ class SeriesContentScreen : CrunchyFragment() {
     /**
      * Invoke view model observer to watch for changes
      */
-    @ExperimentalCoroutinesApi
     override fun setUpViewModelObserver() {
         viewModelState().model.observe(
             viewLifecycleOwner,
@@ -98,8 +97,6 @@ class SeriesContentScreen : CrunchyFragment() {
      *
      * @param savedInstanceState
      */
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     override fun initializeComponents(savedInstanceState: Bundle?) {
         lifecycleScope.launchWhenCreated {
             if (viewModelState().isEmpty())
@@ -166,7 +163,6 @@ class SeriesContentScreen : CrunchyFragment() {
      *
      * @return Return the View for the fragment's UI, or null.
      */
-    @ExperimentalCoroutinesApi
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -215,7 +211,6 @@ class SeriesContentScreen : CrunchyFragment() {
      */
     override fun viewModelState() = viewModel.state
 
-    @ExperimentalCoroutinesApi
     private fun onFetchDataInitialize() {
         val seriesPayload = payload
         if (seriesPayload != null) {

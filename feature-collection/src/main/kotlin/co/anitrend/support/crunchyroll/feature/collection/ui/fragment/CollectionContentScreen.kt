@@ -61,7 +61,6 @@ class CollectionContentScreen(
     /**
      * Invoke view model observer to watch for changes
      */
-    @ExperimentalCoroutinesApi
     override fun setUpViewModelObserver() {
         viewModelState().model.observe(
             viewLifecycleOwner,
@@ -79,8 +78,6 @@ class CollectionContentScreen(
      *
      * @param savedInstanceState
      */
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     override fun initializeComponents(savedInstanceState: Bundle?) {
         super.initializeComponents(savedInstanceState)
         lifecycleScope.launchWhenResumed {
@@ -98,7 +95,6 @@ class CollectionContentScreen(
         }
     }
 
-    @ExperimentalCoroutinesApi
     override fun onFetchDataInitialize() {
         val collectionPayload = payload
         if (collectionPayload != null) {

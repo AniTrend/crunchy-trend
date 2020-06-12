@@ -21,6 +21,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
 import co.anitrend.arch.recycler.common.ClickableItem
 import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.recycler.holder.SupportViewHolder
@@ -48,13 +49,14 @@ data class SeriesItem(
      * @param position current position
      * @param payloads optional payloads which maybe empty
      * @param stateFlow observable to broadcast click events
+     * @param selectionMode action mode helper or null if none was provided
      */
-    @ExperimentalCoroutinesApi
     override fun bind(
         view: View,
         position: Int,
         payloads: List<Any>,
-        stateFlow: MutableStateFlow<ClickableItem?>
+        stateFlow: MutableStateFlow<ClickableItem?>,
+        selectionMode: ISupportSelectionMode<Long>?
     ) {
         val binding = AdapterDiscoverSeriesBinding.bind(view)
         disposable = binding.seriesImage.setImageUrl(entity?.portraitImage)

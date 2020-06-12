@@ -51,7 +51,6 @@ class FragmentLogin(
     /**
      * Invoke view model observer to watch for changes
      */
-    @ExperimentalCoroutinesApi
     override fun setUpViewModelObserver() {
         viewModelState().model.observe(
             viewLifecycleOwner,
@@ -81,8 +80,6 @@ class FragmentLogin(
      */
     override fun viewModelState() = viewModel.state
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     override fun initializeComponents(savedInstanceState: Bundle?) {
         lifecycleScope.launchWhenResumed {
             binding.supportStateLayout.interactionStateFlow
@@ -100,7 +97,6 @@ class FragmentLogin(
             it.root
         }
 
-    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = viewLifecycleOwner
@@ -136,7 +132,6 @@ class FragmentLogin(
         ) { viewModel.state(it) }
     }
 
-    @ExperimentalCoroutinesApi
     override fun hasBackPressableAction(): Boolean {
         if (binding.supportStateLayout.isError) {
             binding.supportStateLayout.networkMutableStateFlow.value = NetworkState.Success

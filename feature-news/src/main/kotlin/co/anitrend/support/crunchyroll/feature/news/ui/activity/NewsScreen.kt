@@ -57,7 +57,6 @@ class NewsScreen : CrunchyActivity() {
 
     private val presenter by inject<NewsPresenter>()
 
-    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -65,7 +64,6 @@ class NewsScreen : CrunchyActivity() {
         onUpdateUserInterface()
     }
 
-    @ExperimentalCoroutinesApi
     override fun initializeComponents(savedInstanceState: Bundle?) {
         BetterLinkMovementMethod.linkify(Linkify.ALL, this)
             .setOnLinkClickListener { view, url ->
@@ -116,7 +114,6 @@ class NewsScreen : CrunchyActivity() {
         }
     }
 
-    @ExperimentalCoroutinesApi
     private fun onUpdateUserInterface() {
         lifecycleScope.launch {
             val html = presenter.createCustomHtml(payload)

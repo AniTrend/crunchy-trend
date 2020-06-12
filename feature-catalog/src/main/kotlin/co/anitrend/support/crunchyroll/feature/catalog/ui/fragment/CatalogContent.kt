@@ -47,7 +47,6 @@ class CatalogContent(
     /**
      * Invoke view model observer to watch for changes
      */
-    @ExperimentalCoroutinesApi
     override fun setUpViewModelObserver() {
         viewModelState().model.observe(viewLifecycleOwner, Observer { model ->
             onPostModelChange(model)
