@@ -16,23 +16,17 @@
 
 package co.anitrend.support.crunchyroll.feature.news.presenter
 
-import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.view.View
-import android.widget.TextView
 import androidx.core.app.ShareCompat
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentActivity
 import co.anitrend.arch.extension.SupportDispatchers
 import co.anitrend.arch.extension.util.contract.ISupportDateHelper
 import co.anitrend.support.crunchyroll.core.extensions.stackTrace
-import co.anitrend.support.crunchyroll.core.extensions.toBundle
 import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
-import co.anitrend.support.crunchyroll.core.naviagation.extensions.forIntent
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
 import co.anitrend.support.crunchyroll.feature.news.model.Poster

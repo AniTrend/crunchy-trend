@@ -34,7 +34,6 @@ import co.anitrend.support.crunchyroll.feature.news.databinding.AdapterNewsFeedB
 import coil.request.RequestDisposable
 import io.noties.markwon.Markwon
 import kotlinx.android.synthetic.main.adapter_news_feed.view.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class NewsItem(

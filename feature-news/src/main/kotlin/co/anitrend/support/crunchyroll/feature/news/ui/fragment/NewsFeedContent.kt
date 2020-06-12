@@ -17,7 +17,6 @@
 package co.anitrend.support.crunchyroll.feature.news.ui.fragment
 
 import android.os.Bundle
-import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
@@ -37,8 +36,6 @@ import co.anitrend.support.crunchyroll.feature.news.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.news.ui.activity.NewsScreen
 import co.anitrend.support.crunchyroll.feature.news.ui.adapter.RssNewsAdapter
 import co.anitrend.support.crunchyroll.feature.news.viewmodel.NewsViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterIsInstance
@@ -86,6 +83,7 @@ class NewsFeedContent(
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
+        featureModuleHelper().onCreate()
         super.initializeComponents(savedInstanceState)
         lifecycleScope.launchWhenResumed {
             supportViewAdapter.clickableStateFlow.debounce(DEBOUNCE_DURATION)
@@ -116,20 +114,6 @@ class NewsFeedContent(
                 language = currentLocale.toCrunchyLocale()
             )
         )
-    }
-
-    /**
-     * Called when the view previously created by [.onCreateView] has
-     * been detached from the fragment.  The next time the fragment needs
-     * to be displayed, a new view will be created.  This is called
-     * after [.onStop] and before [.onDestroy].  It is called
-     * *regardless* of whether [.onCreateView] returned a
-     * non-null view.  Internally it is called after the view's state has
-     * been saved but before it has been removed from its parent.
-     */
-    override fun onDestroyView() {
-        supportRecyclerView?.adapter = null
-        super.onDestroyView()
     }
 
     /**

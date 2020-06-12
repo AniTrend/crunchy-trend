@@ -35,7 +35,6 @@ import co.anitrend.support.crunchyroll.feature.news.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.news.presenter.NewsPresenter
 import io.noties.markwon.Markwon
 import kotlinx.android.synthetic.main.news_screen_content.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import org.koin.android.ext.android.get

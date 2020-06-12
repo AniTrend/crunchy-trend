@@ -18,13 +18,11 @@ package co.anitrend.support.crunchyroll.feature.news.plugin
 
 import co.anitrend.support.crunchyroll.feature.news.plugin.decorator.EmptyTagHandler
 import co.anitrend.support.crunchyroll.feature.news.plugin.decorator.FrameTagHandler
-import co.anitrend.support.crunchyroll.feature.news.plugin.decorator.ParagraphTagHandler
 import co.anitrend.support.crunchyroll.feature.news.plugin.decorator.TagAlignmentHandler
 import co.anitrend.support.crunchyroll.feature.news.plugin.spans.ImageTagHandler
-import io.noties.markwon.*
+import io.noties.markwon.AbstractMarkwonPlugin
+import io.noties.markwon.MarkwonPlugin
 import io.noties.markwon.html.HtmlPlugin
-import org.commonmark.node.Paragraph
-import timber.log.Timber
 
 internal class CrunchyTagPlugin private constructor(): AbstractMarkwonPlugin() {
 
