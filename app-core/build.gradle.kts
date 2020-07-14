@@ -14,29 +14,17 @@
  *    limitations under the License.
  */
 
+import co.anitrend.support.crunchyroll.buildSrc.Libraries
+
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
-    id("kotlin-kapt")
-    id("kotlin-android-extensions")
-}
-
-apply from: "../gradle/gradle-common-config.gradle"
-apply from: "../gradle/gradle-common-config-app.gradle"
-apply from: "../gradle/gradle-common-dependencies.gradle"
-
-android {
-    viewBinding {
-        enabled = true
-    }
-}
-
-ext {
-    materialMultiSearch = '0.1.3'
+    id("co.anitrend.crunchyroll.plugin")
 }
 
 dependencies {
-    implementation project(":ui-shared-series")
+    /** Material Dialogs */
+    implementation(Libraries.MaterialDialogs.core)
+    implementation(Libraries.MaterialDialogs.lifecycle)
+    implementation(Libraries.MaterialDialogs.bottomsheets)
 
-    implementation "com.github.anitrend:material-multi-search:$materialMultiSearch"
+    implementation(Libraries.Square.OkHttp.logging)
 }

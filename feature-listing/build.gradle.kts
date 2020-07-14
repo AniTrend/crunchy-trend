@@ -14,22 +14,12 @@
  *    limitations under the License.
  */
 
+import co.anitrend.support.crunchyroll.buildSrc.Libraries
+
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
-    id("kotlin-android-extensions")
-}
-
-apply from: "../gradle/gradle-common-config.gradle"
-
-android {
-    defaultConfig {
-        consumerProguardFiles 'consumer-rules.pro'
-    }
+    id("co.anitrend.crunchyroll.plugin")
 }
 
 dependencies {
-
-    /** Platform Dependencies */
-    implementation project(":support-domain")
+    implementation(Libraries.MaterialDialogs.bottomsheets)
 }

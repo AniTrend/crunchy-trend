@@ -14,22 +14,12 @@
  *    limitations under the License.
  */
 
+import co.anitrend.support.crunchyroll.buildSrc.Libraries
+
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
-    id("kotlin-kapt")
-    id("kotlin-android-extensions")
-}
-
-apply from: "../gradle/gradle-common-config.gradle"
-apply from: "../gradle/gradle-common-config-app.gradle"
-apply from: "../gradle/gradle-common-dependencies.gradle"
-
-ext {
-    preference = '1.1.1'
+    id("co.anitrend.crunchyroll.plugin")
 }
 
 dependencies {
-    implementation("androidx.preference:preference:$preference")
-    implementation("androidx.preference:preference-ktx:$preference")
+    implementation(Libraries.MaterialDialogs.bottomsheets)
 }

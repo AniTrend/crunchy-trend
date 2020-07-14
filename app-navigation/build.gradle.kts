@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2020 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,23 +15,9 @@
  */
 
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
-    id("kotlin-kapt")
-    id("kotlin-android-extensions")
-}
-
-apply from: "../gradle/gradle-common-config.gradle"
-apply from: "../gradle/gradle-common-config-app.gradle"
-apply from: "../gradle/gradle-common-dependencies.gradle"
-
-android {
-    viewBinding {
-        enabled = true
-    }
+    id("co.anitrend.crunchyroll.plugin")
 }
 
 dependencies {
-
-    implementation("com.afollestad.material-dialogs:bottomsheets:$materialDialogs")
+    implementation(project(":app-domain"))
 }

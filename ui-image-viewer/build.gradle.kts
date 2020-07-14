@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2020 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,25 +14,12 @@
  *    limitations under the License.
  */
 
+import co.anitrend.support.crunchyroll.buildSrc.Libraries
+
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
-    id("kotlin-kapt")
-    id("kotlin-android-extensions")
-}
-
-apply from: "../gradle/gradle-common-config.gradle"
-apply from: "../gradle/gradle-common-config-app.gradle"
-apply from: "../gradle/gradle-common-dependencies.gradle"
-
-android {
-    dataBinding {
-        enabled = true
-    }
+    id("co.anitrend.crunchyroll.plugin")
 }
 
 dependencies {
-
-    /** Flex Box */
-    implementation "com.google.android:flexbox:$flexBox"
+    implementation(Libraries.scalingImageView)
 }

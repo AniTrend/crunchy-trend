@@ -14,23 +14,12 @@
  *    limitations under the License.
  */
 
+import co.anitrend.support.crunchyroll.buildSrc.Libraries
+
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
-    id("kotlin-kapt")
-    id("kotlin-android-extensions")
-}
-
-apply from: "../gradle/gradle-common-config.gradle"
-apply from: "../gradle/gradle-common-config-app.gradle"
-apply from: "../gradle/gradle-common-dependencies.gradle"
-
-android {
-    dataBinding {
-        enabled = true
-    }
+    id("co.anitrend.crunchyroll.plugin")
 }
 
 dependencies {
-
+    implementation(Libraries.Google.FlexBox.flexBox)
 }

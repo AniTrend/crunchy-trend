@@ -14,41 +14,23 @@
  *    limitations under the License.
  */
 
+import co.anitrend.support.crunchyroll.buildSrc.Libraries
+
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
-    id("kotlin-kapt")
-    id("kotlin-android-extensions")
+    id("co.anitrend.crunchyroll.plugin")
 }
 
-apply from: "../gradle/gradle-common-config.gradle"
-apply from: "../gradle/gradle-common-config-app.gradle"
-apply from: "../gradle/gradle-common-dependencies.gradle"
-
-ext {
-    glide = '4.11.0'
-    jsoup = '1.13.1'
-    markwon = '4.4.0'
-    betterLinkMovement = '2.2.0'
-}
-
-android {
-    viewBinding {
-        enabled = true
-    }
-}
+val jsoup = "1.13.1"
+val betterLinkMovement = "2.2.0"
 
 dependencies {
-
-    implementation("com.github.bumptech.glide:glide:$glide")
-
     implementation("org.jsoup:jsoup:$jsoup")
 
     /** Markwon */
-    implementation("io.noties.markwon:core:$markwon")
-    implementation("io.noties.markwon:html:$markwon")
-    implementation("io.noties.markwon:linkify:$markwon")
-    implementation("io.noties.markwon:image-glide:$markwon")
+    implementation(Libraries.Markwon.core)
+    implementation(Libraries.Markwon.html)
+    implementation(Libraries.Markwon.linkify)
+    implementation(Libraries.Markwon.glide)
 
     implementation("me.saket:better-link-movement-method:$betterLinkMovement")
 }
