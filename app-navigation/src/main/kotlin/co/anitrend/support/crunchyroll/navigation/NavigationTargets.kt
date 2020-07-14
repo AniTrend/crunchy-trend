@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2020 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,17 +14,16 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.core.naviagation
+package co.anitrend.support.crunchyroll.navigation
 
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
-import co.anitrend.arch.extension.empty
-import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets.MediaPlayer.navRouterIntent
-import co.anitrend.support.crunchyroll.core.naviagation.contract.INavigationRouter
-import co.anitrend.support.crunchyroll.core.naviagation.contract.INavigationTarget
-import co.anitrend.support.crunchyroll.core.naviagation.extensions.forIntent
+import co.anitrend.support.crunchyroll.navigation.NavigationTargets.MediaPlayer.navRouterIntent
+import co.anitrend.support.crunchyroll.navigation.contract.INavigationRouter
+import co.anitrend.support.crunchyroll.navigation.contract.INavigationTarget
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
+import co.anitrend.support.crunchyroll.navigation.extensions.forIntent
 import kotlinx.android.parcel.Parcelize
 
 object NavigationTargets {
@@ -68,8 +67,13 @@ object NavigationTargets {
         /**
          * Starts the target [navRouterIntent] for the implementation
          */
-        operator fun invoke(context: Context?, payload: Payload, options: Bundle? = null) {
-            navRouterIntent?.putExtra(PAYLOAD, payload)
+        operator fun invoke(
+            context: Context?,
+            payload: Payload,
+            options: Bundle? = null
+        ) {
+            navRouterIntent?.putExtra(
+                PAYLOAD, payload)
             super.invoke(context, options)
         }
 
@@ -102,8 +106,13 @@ object NavigationTargets {
         /**
          * Starts the target [navRouterIntent] for the implementation
          */
-        operator fun invoke(context: Context?, payload: Payload, options: Bundle? = null) {
-            navRouterIntent?.putExtra(PAYLOAD, payload)
+        operator fun invoke(
+            context: Context?,
+            payload: Payload,
+            options: Bundle? = null
+        ) {
+            navRouterIntent?.putExtra(
+                PAYLOAD, payload)
             super.invoke(context, options)
         }
 
@@ -126,7 +135,11 @@ object NavigationTargets {
         /**
          * Starts the target [navRouterIntent] for the implementation
          */
-        operator fun invoke(context: Context?, payload: Payload, options: Bundle? = null) {
+        operator fun invoke(
+            context: Context?,
+            payload: Payload,
+            options: Bundle? = null
+        ) {
             navRouterIntent?.putExtra(PAYLOAD, payload)
             super.invoke(context, options)
         }
@@ -157,8 +170,13 @@ object NavigationTargets {
         /**
          * Starts the target [navRouterIntent] for the implementation
          */
-        operator fun invoke(context: Context?, payload: Discover.Payload, options: Bundle? = null) {
-            navRouterIntent?.putExtra(Discover.PAYLOAD, payload)
+        operator fun invoke(
+            context: Context?,
+            payload: Discover.Payload,
+            options: Bundle? = null
+        ) {
+            navRouterIntent?.putExtra(
+                Discover.PAYLOAD, payload)
             super.invoke(context, options)
         }
     }
@@ -175,14 +193,15 @@ object NavigationTargets {
          * Starts the target [navRouterIntent] for the implementation
          */
         operator fun invoke(context: Context?, payload: Payload, options: Bundle? = null) {
-            navRouterIntent?.putExtra(PAYLOAD, payload)
+            navRouterIntent?.putExtra(
+                PAYLOAD, payload)
             super.invoke(context, options)
         }
 
         @Parcelize
         data class Payload(
             val browseFilter: CrunchySeriesBrowseFilter,
-            val filterOption: String = String.empty()
+            val filterOption: String = ""
         ) : Parcelable
     }
 
@@ -204,8 +223,13 @@ object NavigationTargets {
         /**
          * Starts the target [navRouterIntent] for the implementation
          */
-        operator fun invoke(context: Context?, payload: Payload, options: Bundle? = null) {
-            navRouterIntent?.putExtra(PAYLOAD, payload)
+        operator fun invoke(
+            context: Context?,
+            payload: Payload,
+            options: Bundle? = null
+        ) {
+            navRouterIntent?.putExtra(
+                PAYLOAD, payload)
             super.invoke(context, options)
         }
 
@@ -226,8 +250,13 @@ object NavigationTargets {
         /**
          * Starts the target [navRouterIntent] for the implementation
          */
-        operator fun invoke(context: Context?, payload: Payload, options: Bundle? = null) {
-            navRouterIntent?.putExtra(PAYLOAD, payload)
+        operator fun invoke(
+            context: Context?,
+            payload: Payload,
+            options: Bundle? = null
+        ) {
+            navRouterIntent?.putExtra(
+                PAYLOAD, payload)
             super.invoke(context, options)
         }
 
@@ -248,8 +277,13 @@ object NavigationTargets {
         /**
          * Starts the target [navRouterIntent] for the implementation
          */
-        operator fun invoke(context: Context?, payload: Payload, options: Bundle? = null) {
-            navRouterIntent?.putExtra(PAYLOAD, payload)
+        operator fun invoke(
+            context: Context?,
+            payload: Payload,
+            options: Bundle? = null
+        ) {
+            navRouterIntent?.putExtra(
+                PAYLOAD, payload)
             super.invoke(context, options)
         }
 

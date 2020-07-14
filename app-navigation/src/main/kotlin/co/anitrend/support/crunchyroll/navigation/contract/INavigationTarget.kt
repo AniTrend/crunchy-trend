@@ -14,22 +14,9 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.core.naviagation.contract
+package co.anitrend.support.crunchyroll.navigation.contract
 
-import android.content.Context
-import android.content.Intent
-import android.os.Bundle
-
-interface INavigationRouter {
-    val navRouterIntent: Intent?
-
-    /**
-     * Starts the target [navRouterIntent] for the implementation
-     */
-    operator fun invoke(context: Context?, options: Bundle? = null) {
-        runCatching {
-            navRouterIntent?.action = Intent.ACTION_VIEW
-            context?.startActivity(navRouterIntent, options)
-        }.exceptionOrNull()?.printStackTrace()
-    }
+interface INavigationTarget {
+    val packageName: String
+    val className: String
 }

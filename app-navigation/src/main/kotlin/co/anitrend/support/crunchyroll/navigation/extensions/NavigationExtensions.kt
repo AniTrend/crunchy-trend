@@ -14,13 +14,12 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.core.naviagation.extensions
+package co.anitrend.support.crunchyroll.navigation.extensions
 
 import android.content.Intent
 import androidx.collection.LruCache
 import androidx.fragment.app.Fragment
-import co.anitrend.arch.ui.fragment.SupportFragment
-import co.anitrend.support.crunchyroll.core.naviagation.contract.INavigationTarget
+import co.anitrend.support.crunchyroll.navigation.contract.INavigationTarget
 import timber.log.Timber
 
 private const val APPLICATION_PACKAGE_NAME = "co.anitrend.support.crunchyroll"
