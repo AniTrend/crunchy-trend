@@ -21,7 +21,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.arch.database.common.ICrunchyDatabase
 import co.anitrend.support.crunchyroll.data.arch.database.converters.CrunchyEnumsTypeConverter
 import co.anitrend.support.crunchyroll.data.arch.database.converters.CrunchyTypeConverters
@@ -54,7 +53,7 @@ import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
         EpisodeFeedEntity::class,
         CacheLogEntity::class
     ],
-    version = BuildConfig.DATABASE_SCHEMA_VERSION
+    version = CrunchyDatabase.DATABASE_SCHEMA_VERSION
 )
 @TypeConverters(
     value = [
@@ -65,6 +64,7 @@ import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
 internal abstract class CrunchyDatabase: RoomDatabase(), ICrunchyDatabase {
 
     companion object {
+        const val DATABASE_SCHEMA_VERSION = 2
         fun newInstance(context: Context): CrunchyDatabase {
             return Room.databaseBuilder(
                 context,
