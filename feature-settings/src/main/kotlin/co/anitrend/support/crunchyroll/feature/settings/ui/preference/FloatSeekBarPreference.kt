@@ -24,7 +24,7 @@ import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
-import co.anitrend.arch.extension.use
+import co.anitrend.arch.extension.ext.use
 import co.anitrend.support.crunchyroll.core.helper.StorageHelper
 import co.anitrend.support.crunchyroll.core.helper.StorageHelper.toHumanReadableByteValue
 import co.anitrend.support.crunchyroll.feature.settings.R

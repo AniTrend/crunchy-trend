@@ -24,10 +24,10 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
-import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
-import co.anitrend.arch.extension.extra
+import co.anitrend.arch.extension.ext.LAZY_MODE_UNSAFE
+import co.anitrend.arch.extension.ext.extra
 import co.anitrend.support.crunchyroll.core.extensions.stackTrace
-import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
+import co.anitrend.support.crunchyroll.navigation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.news.R
 import co.anitrend.support.crunchyroll.feature.news.databinding.NewsScreenBinding
@@ -45,9 +45,6 @@ class NewsScreen : CrunchyActivity() {
     private val binding by lazy(LAZY_MODE_UNSAFE) {
         NewsScreenBinding.inflate(layoutInflater)
     }
-
-    override val elasticLayout
-        get() = binding.draggableFrame
 
     private val payload
             by extra<NavigationTargets.News.Payload>(

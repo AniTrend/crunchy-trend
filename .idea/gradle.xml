@@ -16,6 +16,8 @@
             <option value="$PROJECT_DIR$/app-core" />
             <option value="$PROJECT_DIR$/app-data" />
             <option value="$PROJECT_DIR$/app-domain" />
+            <option value="$PROJECT_DIR$/app-navigation" />
+            <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/feature-auth" />
             <option value="$PROJECT_DIR$/feature-catalog" />
             <option value="$PROJECT_DIR$/feature-collection" />
@@ -28,13 +30,6 @@
             <option value="$PROJECT_DIR$/feature-series" />
             <option value="$PROJECT_DIR$/feature-settings" />
             <option value="$PROJECT_DIR$/feature-splash" />
-            <option value="$PROJECT_DIR$/support-app/support-core" />
-            <option value="$PROJECT_DIR$/support-app/support-data" />
-            <option value="$PROJECT_DIR$/support-app/support-domain" />
-            <option value="$PROJECT_DIR$/support-app/support-ext" />
-            <option value="$PROJECT_DIR$/support-app/support-recycler" />
-            <option value="$PROJECT_DIR$/support-app/support-theme" />
-            <option value="$PROJECT_DIR$/support-app/support-ui" />
             <option value="$PROJECT_DIR$/ui-image-viewer" />
             <option value="$PROJECT_DIR$/ui-shared-series" />
           </set>

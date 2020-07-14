@@ -18,7 +18,7 @@
 
 package co.anitrend.support.crunchyroll.data.api.converter
 
-import co.anitrend.arch.extension.LAZY_MODE_SYNCHRONIZED
+import co.anitrend.arch.extension.ext.LAZY_MODE_SYNCHRONIZED
 import co.anitrend.support.crunchyroll.data.arch.JSON
 import co.anitrend.support.crunchyroll.data.arch.XML
 import com.google.gson.GsonBuilder

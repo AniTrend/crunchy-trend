@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.news.helper
 
-import co.anitrend.arch.extension.empty
+import co.anitrend.arch.extension.ext.empty
 
 internal object NewsHelper {
     private val imageRegex = Regex("<img src\\s*=\\s*\\\\*\"(.+?)\\\\*\"\\s*/>")

@@ -19,11 +19,9 @@ package co.anitrend.support.crunchyroll.feature.splash.ui.activity
 import android.os.Bundle
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import co.anitrend.arch.extension.isStateAtLeast
-import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
+import co.anitrend.arch.extension.ext.isStateAtLeast
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
-import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
-import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
+import co.anitrend.support.crunchyroll.navigation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.splash.R
@@ -32,8 +30,6 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class SplashScreen : CrunchyActivity() {
-
-    override val elasticLayout: ElasticDragDismissFrameLayout? = null
 
     private val presenter by inject<CrunchyCorePresenter>()
 

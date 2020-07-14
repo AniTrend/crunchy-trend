@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.api.interceptor
 
-import co.anitrend.arch.extension.LAZY_MODE_SYNCHRONIZED
+import co.anitrend.arch.extension.ext.LAZY_MODE_SYNCHRONIZED
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
 import co.anitrend.support.crunchyroll.data.api.helper.ResponseHelper
 import okhttp3.Interceptor

@@ -15,16 +15,12 @@
   ~    limitations under the License.
   -->
 
-<co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
+<FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/draggableFrame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:dragDismissDistance="@dimen/nav_item_selector_margin"
-        app:dragDismissScale="0.95"
-        android:clipToPadding="false"
         tools:context=".ImageViewerScreen">
 
     <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
@@ -42,4 +38,4 @@
             app:backgroundTint="@color/colorAccent"
             app:icon="@android:drawable/stat_sys_download_done"/>
 
-</co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout>
+</FrameLayout>

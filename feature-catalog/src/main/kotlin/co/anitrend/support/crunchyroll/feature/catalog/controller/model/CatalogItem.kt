@@ -23,7 +23,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import co.anitrend.arch.extension.gone
+import co.anitrend.arch.extension.ext.gone
 import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
 import co.anitrend.arch.recycler.common.ClickableItem
 import co.anitrend.arch.recycler.common.DefaultClickableItem
@@ -32,7 +32,7 @@ import co.anitrend.arch.recycler.model.RecyclerItem
 import co.anitrend.arch.ui.extension.setUpWith
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
-import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
+import co.anitrend.support.crunchyroll.navigation.NavigationTargets
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.feature.catalog.R
@@ -40,15 +40,12 @@ import co.anitrend.support.crunchyroll.feature.catalog.databinding.AdapterCatalo
 import co.anitrend.support.crunchyroll.shared.series.adapter.SeriesGridViewAdapter
 import kotlinx.android.synthetic.main.adapter_catalog.view.*
 import kotlinx.android.synthetic.main.item_carousel.view.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
-import java.util.*
 
 data class CatalogItem(
     val entity: CrunchyCatalogWithSeries?,

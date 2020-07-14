@@ -13,41 +13,29 @@
   ~    See the License for the specific language governing permissions and
   ~    limitations under the License.
   -->
-
-<co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/draggableFrame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:dragDismissDistance="@dimen/nav_item_selector_margin"
-        app:dragDismissScale="0.95"
-        android:clipToPadding="false"
         tools:context=".ui.activity.SettingsScreen">
-    
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+
+    <FrameLayout
+            android:id="@+id/settings_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        <FrameLayout
-                android:id="@+id/settings_content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
-        <com.google.android.material.bottomappbar.BottomAppBar
-                android:id="@+id/bottomAppBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:hapticFeedbackEnabled="true"
-                android:backgroundTint="@color/primaryColor"
-                app:fabAlignmentMode="end"
-                app:hideOnScroll="true"/>
+    <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottomAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:hapticFeedbackEnabled="true"
+            android:backgroundTint="@color/primaryColor"
+            app:fabAlignmentMode="end"
+            app:hideOnScroll="true"/>
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
-</co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

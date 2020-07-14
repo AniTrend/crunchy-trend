@@ -26,11 +26,11 @@ import android.os.Environment
 import android.view.Window
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
-import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
-import co.anitrend.arch.extension.extra
-import co.anitrend.arch.extension.systemServiceOf
+import co.anitrend.arch.extension.ext.LAZY_MODE_UNSAFE
+import co.anitrend.arch.extension.ext.extra
+import co.anitrend.arch.extension.ext.systemServiceOf
 import co.anitrend.support.crunchyroll.core.common.DEFAULT_ANIMATION_DURATION
-import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
+import co.anitrend.support.crunchyroll.navigation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.shared.image.viewer.databinding.ImageViewScreenBinding
 import com.bumptech.glide.Glide
@@ -95,9 +95,6 @@ class ImageViewerScreen : CrunchyActivity() {
                     }
                 }
             }
-
-    override val elasticLayout
-        get() = binding.draggableFrame
 
     private fun loadImage(context: Context) {
         Glide.with(context)

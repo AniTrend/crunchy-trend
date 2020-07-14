@@ -17,7 +17,7 @@
 package co.anitrend.support.crunchyroll.data.authentication.source
 
 import co.anitrend.arch.domain.entities.NetworkState
-import co.anitrend.arch.extension.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
 import co.anitrend.support.crunchyroll.data.arch.extension.controller

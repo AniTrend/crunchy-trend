@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.arch.extension
 
-import co.anitrend.arch.extension.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
 import co.anitrend.support.crunchyroll.data.api.provider.EndpointProvider
 import co.anitrend.support.crunchyroll.data.arch.controller.json.CrunchyController

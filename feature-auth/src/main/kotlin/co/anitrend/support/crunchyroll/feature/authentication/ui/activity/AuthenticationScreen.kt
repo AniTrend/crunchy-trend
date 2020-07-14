@@ -18,7 +18,6 @@ package co.anitrend.support.crunchyroll.feature.authentication.ui.activity
 
 import android.os.Bundle
 import androidx.fragment.app.FragmentTransaction
-import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.extensions.commit
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
@@ -33,8 +32,6 @@ import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.scope.lifecycleScope
 
 class AuthenticationScreen : CrunchyActivity() {
-
-    override val elasticLayout: ElasticDragDismissFrameLayout? = null
 
     private val presenter by inject<CrunchyCorePresenter>()
 

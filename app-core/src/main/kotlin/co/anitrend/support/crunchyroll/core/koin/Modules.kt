@@ -18,8 +18,8 @@ package co.anitrend.support.crunchyroll.core.koin
 
 import android.webkit.WebView
 import co.anitrend.arch.core.model.IStateLayoutConfig
-import co.anitrend.arch.extension.SupportDispatchers
-import co.anitrend.arch.extension.isLowRamDevice
+import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.ext.isLowRamDevice
 import co.anitrend.arch.extension.util.contract.ISupportDateHelper
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.R

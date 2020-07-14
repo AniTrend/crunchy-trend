@@ -19,7 +19,7 @@ package co.anitrend.support.crunchyroll.data.batch.source.contract
 import androidx.lifecycle.MutableLiveData
 import co.anitrend.arch.data.source.coroutine.SupportCoroutineDataSource
 import co.anitrend.arch.domain.entities.NetworkState
-import co.anitrend.arch.extension.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.support.crunchyroll.data.batch.entity.CrunchyBatchEntity
 import co.anitrend.support.crunchyroll.data.batch.usecase.model.CrunchyBatchQuery
 import co.anitrend.support.crunchyroll.data.series.model.CrunchySeriesModel

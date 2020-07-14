@@ -21,8 +21,8 @@ import androidx.paging.PagingRequestHelper
 import co.anitrend.arch.data.common.ISupportPagingResponse
 import co.anitrend.arch.data.common.ISupportResponse
 import co.anitrend.arch.domain.entities.NetworkState
-import co.anitrend.arch.extension.SupportDispatchers
-import co.anitrend.arch.extension.capitalizeWords
+import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.ext.capitalizeWords
 import co.anitrend.support.crunchyroll.data.arch.controller.strategy.contract.ControllerStrategy
 import co.anitrend.support.crunchyroll.data.arch.extension.fetchBodyWithRetry
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper

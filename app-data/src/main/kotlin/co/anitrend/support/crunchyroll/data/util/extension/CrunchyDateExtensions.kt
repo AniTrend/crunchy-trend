@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.util.extension
 
-import co.anitrend.arch.extension.LAZY_MODE_PUBLICATION
+import co.anitrend.arch.extension.ext.LAZY_MODE_PUBLICATION
 import co.anitrend.arch.extension.util.contract.ISupportDateHelper
 import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
 import co.anitrend.support.crunchyroll.data.arch.RCF822Date

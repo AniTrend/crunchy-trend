@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.authentication.helper
 
-import co.anitrend.arch.extension.empty
+import co.anitrend.arch.extension.ext.empty
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyRequestInterceptor
 import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale

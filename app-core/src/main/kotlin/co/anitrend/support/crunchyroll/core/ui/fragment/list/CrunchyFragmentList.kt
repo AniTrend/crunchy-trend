@@ -17,8 +17,8 @@
 package co.anitrend.support.crunchyroll.core.ui.fragment.list
 
 import android.content.Context
-import co.anitrend.arch.extension.attachComponent
-import co.anitrend.arch.extension.detachComponent
+import co.anitrend.arch.extension.ext.attachComponent
+import co.anitrend.arch.extension.ext.detachComponent
 import co.anitrend.arch.ui.fragment.list.SupportFragmentList
 import co.anitrend.support.crunchyroll.core.ui.contract.IFeatureContract
 

@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.arch.database.extension
 
-import co.anitrend.arch.extension.empty
+import co.anitrend.arch.extension.ext.empty
 
 internal fun List<*>.toCommaSeparatedValues(): String {
     return if (isNotEmpty()) {

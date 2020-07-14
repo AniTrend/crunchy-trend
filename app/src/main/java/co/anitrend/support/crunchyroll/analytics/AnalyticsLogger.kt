@@ -20,9 +20,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import co.anitrend.arch.core.analytic.contract.ISupportAnalytics
-import co.anitrend.arch.extension.empty/*
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.crashlytics.FirebaseCrashlytics*/
 import timber.log.Timber
 
 class AnalyticsLogger(/*

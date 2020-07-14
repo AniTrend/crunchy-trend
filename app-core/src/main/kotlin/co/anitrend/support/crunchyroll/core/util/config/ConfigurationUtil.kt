@@ -33,7 +33,6 @@ class ConfigurationUtil(
     private val settings: IConfigurationSettings,
     private val localeUtil: LocaleUtil,
     private val themeUtil: ThemeUtil
-
 ) : IConfigurationUtil {
 
     override val moduleTag: String = this::class.java.simpleName

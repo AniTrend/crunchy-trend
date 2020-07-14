@@ -18,8 +18,8 @@ package co.anitrend.support.crunchyroll.data.batch.source
 
 import androidx.lifecycle.MutableLiveData
 import co.anitrend.arch.domain.entities.NetworkState
-import co.anitrend.arch.extension.SupportDispatchers
-import co.anitrend.arch.extension.capitalizeWords
+import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.ext.capitalizeWords
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.controller.strategy.contract.ControllerStrategy
 import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OfflineControllerPolicy

@@ -17,7 +17,7 @@
 package co.anitrend.support.crunchyroll.data.arch.controller.xml
 
 import androidx.paging.PagingRequestHelper
-import co.anitrend.arch.extension.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.support.crunchyroll.data.arch.controller.strategy.contract.ControllerStrategy
 import co.anitrend.support.crunchyroll.data.arch.extension.fetchBodyWithRetry
 import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyRssMapper

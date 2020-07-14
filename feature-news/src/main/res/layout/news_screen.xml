@@ -14,45 +14,33 @@
   ~    See the License for the specific language governing permissions and
   ~    limitations under the License.
   -->
-
-<co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/draggableFrame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:dragDismissDistance="@dimen/nav_item_selector_margin"
-        app:dragDismissScale="0.95"
-        android:clipToPadding="false"
         tools:context=".ui.activity.NewsScreen">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".ui.activity.NewsScreen">
+    <include layout="@layout/news_screen_content" />
 
-        <include layout="@layout/news_screen_content" />
+    <com.google.android.material.bottomappbar.BottomAppBar
+                android:id="@+id/bottomAppBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:hapticFeedbackEnabled="true"
+                android:backgroundTint="@color/primaryColor"
+                app:hideOnScroll="true"
+                app:fabAlignmentMode="end" />
 
-        <com.google.android.material.bottomappbar.BottomAppBar
-                    android:id="@+id/bottomAppBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:hapticFeedbackEnabled="true"
-                    android:backgroundTint="@color/primaryColor"
-                    app:hideOnScroll="true"
-                    app:fabAlignmentMode="end" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/floatingShortcutButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_anchorGravity="end|right"
+                app:layout_anchor="@id/bottomAppBar"
+                app:backgroundTint="@color/material_300"
+                app:srcCompat="@drawable/ic_share_24dp" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/floatingShortcutButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_anchorGravity="end|right"
-                    app:layout_anchor="@id/bottomAppBar"
-                    app:backgroundTint="@color/material_300"
-                    app:srcCompat="@drawable/ic_share_24dp" />
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-</co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

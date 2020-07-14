@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.data.authentication.source.contract
 
 import androidx.lifecycle.liveData
 import co.anitrend.arch.data.source.coroutine.SupportCoroutineDataSource
-import co.anitrend.arch.extension.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 
 internal abstract class LogoutSource(
     supportDispatchers: SupportDispatchers

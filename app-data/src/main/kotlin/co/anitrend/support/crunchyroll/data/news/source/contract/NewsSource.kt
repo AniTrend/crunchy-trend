@@ -21,7 +21,7 @@ import androidx.paging.PagedList
 import androidx.paging.PagingRequestHelper
 import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.data.source.paging.SupportPagingDataSource
-import co.anitrend.arch.extension.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import kotlinx.coroutines.launch

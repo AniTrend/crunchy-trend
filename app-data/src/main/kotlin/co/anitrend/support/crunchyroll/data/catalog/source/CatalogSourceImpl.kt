@@ -19,7 +19,7 @@ package co.anitrend.support.crunchyroll.data.catalog.source
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import co.anitrend.arch.data.source.contract.ISourceObservable
-import co.anitrend.arch.extension.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.arch.extension.util.SupportExtKeyStore
 import co.anitrend.support.crunchyroll.data.BuildConfig

@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.episode.model
 
-import co.anitrend.arch.extension.empty
+import co.anitrend.arch.extension.ext.empty
 import co.anitrend.support.crunchyroll.data.arch.RCF822Date
 import co.anitrend.support.crunchyroll.data.rss.contract.IRssCopyright
 import org.simpleframework.xml.Element

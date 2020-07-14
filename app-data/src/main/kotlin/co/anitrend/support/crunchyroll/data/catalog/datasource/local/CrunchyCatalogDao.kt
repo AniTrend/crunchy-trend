@@ -78,6 +78,7 @@ internal interface CrunchyCatalogDao : IDao<CrunchyCatalogEntity> {
         where catalogFilter = :catalogFilter
         order by catalogFilter asc, seriesRank asc
         """)
+    @Transaction
     fun findMatchingFactory(
         catalogFilter: CrunchySeriesCatalogFilter
     ): DataSource.Factory<Int, CrunchyCatalogWithSeriesEntity>

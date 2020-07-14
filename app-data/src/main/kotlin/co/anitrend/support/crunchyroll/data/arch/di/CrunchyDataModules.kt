@@ -19,7 +19,7 @@ package co.anitrend.support.crunchyroll.data.arch.di
 import android.content.Context
 import android.net.ConnectivityManager
 import co.anitrend.arch.extension.network.SupportConnectivity
-import co.anitrend.arch.extension.systemServiceOf
+import co.anitrend.arch.extension.ext.systemServiceOf
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
 import co.anitrend.support.crunchyroll.data.api.helper.CacheHelper

@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.feature.catalog.ui.fragment
 
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
+import co.anitrend.arch.extension.ext.LAZY_MODE_UNSAFE
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.ui.fragment.list.CrunchyFragmentList
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
@@ -26,7 +26,6 @@ import co.anitrend.support.crunchyroll.feature.catalog.R
 import co.anitrend.support.crunchyroll.feature.catalog.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.catalog.ui.adpater.CatalogAdapter
 import co.anitrend.support.crunchyroll.feature.catalog.viewmodel.CatalogViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

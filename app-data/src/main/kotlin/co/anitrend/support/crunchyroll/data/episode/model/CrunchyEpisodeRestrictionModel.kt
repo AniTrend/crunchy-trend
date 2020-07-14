@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.episode.model
 
-import co.anitrend.arch.extension.empty
+import co.anitrend.arch.extension.ext.empty
 import org.simpleframework.xml.Attribute
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.Root

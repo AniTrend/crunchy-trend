@@ -25,16 +25,11 @@ import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
-import co.anitrend.support.crunchyroll.core.naviagation.NavigationTargets
+import co.anitrend.support.crunchyroll.navigation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.ui.fragment.CrunchyFragment
 import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLogoutBinding
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login.LoginViewModel
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.logout.LogoutViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.filterNotNull
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -72,14 +67,14 @@ class FragmentLogout : CrunchyFragment() {
     }
 
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        lifecycleScope.launchWhenResumed {
+        /*lifecycleScope.launchWhenResumed {
             binding.supportStateLayout.interactionStateFlow
                 .filterNotNull()
                 .debounce(DEBOUNCE_DURATION)
                 .collect {
                     viewModelState().retry()
                 }
-        }
+        }*/
     }
 
     override fun onCreateView(

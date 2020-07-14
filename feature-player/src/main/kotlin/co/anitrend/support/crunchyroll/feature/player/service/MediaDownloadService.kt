@@ -60,24 +60,17 @@ class MediaDownloadService : DownloadService(
     }
 
     /**
-     * Returns a notification to be displayed when this service running in the foreground. This method
-     * is called when there is a download state change and periodically while there are active
-     * downloads. The periodic update interval can be set using [.DownloadService].
-     *
-     *
-     * On API level 26 and above, this method may also be called just before the service stops,
-     * with an empty `downloads` array. The returned notification is used to satisfy system
-     * requirements for foreground services.
+     * Returns a notification to be displayed when this service running in the foreground.
      *
      *
      * Download services that do not wish to run in the foreground should be created by setting the
-     * `foregroundNotificationId` constructor argument to [ ][.FOREGROUND_NOTIFICATION_ID_NONE]. This method will not be called in this case, meaning it can
+     * `foregroundNotificationId` constructor argument to [ ][.FOREGROUND_NOTIFICATION_ID_NONE]. This method is not called for such services, meaning it can
      * be implemented to throw [UnsupportedOperationException].
      *
      * @param downloads The current downloads.
      * @return The foreground notification to display.
      */
-    override fun getForegroundNotification(downloads: MutableList<Download>?): Notification {
+    override fun getForegroundNotification(downloads: MutableList<Download>): Notification {
         return get<DownloadNotificationHelper>().buildProgressNotification(
             android.R.drawable.stat_sys_download,
             null,
@@ -107,14 +100,16 @@ class MediaDownloadService : DownloadService(
         private val nextNotificationId: Int,
         private val notificationHelper: DownloadNotificationHelper
     ) : DownloadManager.Listener {
+
         /**
          * Called when the state of a download changes.
          *
          * @param downloadManager The reporting instance.
          * @param download The state of the download.
          */
-        override fun onDownloadChanged(downloadManager: DownloadManager?, download: Download?) {
-            val notification: Notification = when (download?.state) {
+        override fun onDownloadChanged(downloadManager: DownloadManager, download: Download) {
+            super.onDownloadChanged(downloadManager, download)
+            val notification: Notification = when (download.state) {
                 Download.STATE_COMPLETED -> {
                     notificationHelper.buildDownloadCompletedNotification(
                         android.R.drawable.stat_sys_download_done,

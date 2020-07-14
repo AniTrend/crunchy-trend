@@ -18,7 +18,6 @@ package co.anitrend.support.crunchyroll.feature.search.ui.activity
 
 import android.os.Bundle
 import co.anitrend.multisearch.model.MultiSearchChangeListener
-import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.extensions.commit
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
@@ -33,9 +32,6 @@ import org.koin.androidx.scope.lifecycleScope
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchScreen : CrunchyActivity() {
-
-    override val elasticLayout: ElasticDragDismissFrameLayout?
-        get() = draggableFrame
 
     private val multiSearchViewListener =
         object : MultiSearchChangeListener {

@@ -20,11 +20,8 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.view.Window
 import androidx.core.app.ActivityCompat
-import co.anitrend.arch.extension.LAZY_MODE_UNSAFE
 import co.anitrend.arch.ui.activity.SupportActivity
 import co.anitrend.support.crunchyroll.core.R
-import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
-import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.extensions.createDialog
 import co.anitrend.support.crunchyroll.core.ui.contract.IFeatureContract
 import co.anitrend.support.crunchyroll.core.util.config.ConfigurationUtil
@@ -34,31 +31,7 @@ import org.koin.android.ext.android.inject
 
 abstract class CrunchyActivity : SupportActivity(), IFeatureContract {
 
-    private val systemChromeFade by lazy(LAZY_MODE_UNSAFE) {
-        object : ElasticDragDismissFrameLayout.SystemChromeFader(this) {
-            override fun onDragDismissed() {
-                closeScreen()
-            }
-        }
-    }
-
-    protected abstract val elasticLayout: ElasticDragDismissFrameLayout?
-
     protected val configurationUtil by inject<ConfigurationUtil>()
-
-    /**
-     * Must be called on [onResume]
-     */
-    private fun attachSystemChromeFade() {
-        elasticLayout?.addListener(systemChromeFade)
-    }
-
-    /**
-     * Must be called in [onPause]
-     */
-    private fun detachSystemChromeFade() {
-        elasticLayout?.removeListener(systemChromeFade)
-    }
 
     /**
      * Can be used to configure custom theme styling as desired
@@ -77,15 +50,6 @@ abstract class CrunchyActivity : SupportActivity(), IFeatureContract {
     override fun onResume() {
         super.onResume()
         configurationUtil.onResume(this)
-        attachSystemChromeFade()
-    }
-
-    /**
-     * Dispatch onPause() to fragments.
-     */
-    override fun onPause() {
-        super.onPause()
-        detachSystemChromeFade()
     }
 
     override fun onDestroy() {
@@ -114,13 +78,13 @@ abstract class CrunchyActivity : SupportActivity(), IFeatureContract {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == compatViewPermissionValue) {
             val denied = grantResults.filter {
                 it != PackageManager.PERMISSION_GRANTED
             }
             if (denied.isNotEmpty())
                 checkStoragePermission()
-
         }
     }
 

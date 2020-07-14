@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.core.util.locale
 
-import co.anitrend.arch.extension.empty
+import co.anitrend.arch.extension.ext.empty
 import java.util.*
 
 /**

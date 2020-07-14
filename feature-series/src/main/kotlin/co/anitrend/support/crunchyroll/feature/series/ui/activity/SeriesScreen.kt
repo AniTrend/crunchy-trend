@@ -17,7 +17,6 @@
 package co.anitrend.support.crunchyroll.feature.series.ui.activity
 
 import android.os.Bundle
-import co.anitrend.support.crunchyroll.core.android.widgets.ElasticDragDismissFrameLayout
 import co.anitrend.support.crunchyroll.core.extensions.commit
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
@@ -29,9 +28,6 @@ import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.scope.lifecycleScope
 
 class SeriesScreen : CrunchyActivity() {
-
-    override val elasticLayout: ElasticDragDismissFrameLayout
-        get() = draggableFrame
 
     /**
      * Can be used to configure custom theme styling as desired
