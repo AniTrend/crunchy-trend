@@ -16,33 +16,8 @@
 
 package co.anitrend.support.crunchyroll.core.ui.fragment.list
 
-import android.content.Context
-import co.anitrend.arch.extension.ext.attachComponent
-import co.anitrend.arch.extension.ext.detachComponent
 import co.anitrend.arch.ui.fragment.list.SupportFragmentList
+import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.core.ui.contract.IFeatureContract
 
-abstract class CrunchyFragmentList<M> : SupportFragmentList<M>(), IFeatureContract {
-
-    /**
-     * Called when a fragment is first attached to its context.
-     * [onCreate] will be called after this.
-     */
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        featureModuleHelper()?.also {
-            attachComponent(it)
-        }
-    }
-
-    /**
-     * Called when the fragment is no longer attached to its activity. This
-     * is called after [onDestroy].
-     */
-    override fun onDetach() {
-        featureModuleHelper()?.also {
-            detachComponent(it)
-        }
-        super.onDetach()
-    }
-}
+abstract class CrunchyFragmentList<M> : SupportFragmentList<M>(), IFeatureContract

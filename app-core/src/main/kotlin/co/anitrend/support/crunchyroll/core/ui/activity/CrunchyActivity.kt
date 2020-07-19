@@ -23,6 +23,7 @@ import androidx.core.app.ActivityCompat
 import co.anitrend.arch.ui.activity.SupportActivity
 import co.anitrend.support.crunchyroll.core.R
 import co.anitrend.support.crunchyroll.core.extensions.createDialog
+import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.core.ui.contract.IFeatureContract
 import co.anitrend.support.crunchyroll.core.util.config.ConfigurationUtil
 import com.afollestad.materialdialogs.LayoutMode
@@ -39,7 +40,6 @@ abstract class CrunchyActivity : SupportActivity(), IFeatureContract {
     override fun configureActivity() {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
         configurationUtil.onCreate(this)
-        featureModuleHelper()?.onCreate()
     }
 
     /**
@@ -50,11 +50,6 @@ abstract class CrunchyActivity : SupportActivity(), IFeatureContract {
     override fun onResume() {
         super.onResume()
         configurationUtil.onResume(this)
-    }
-
-    override fun onDestroy() {
-        featureModuleHelper()?.onDestroy()
-        super.onDestroy()
     }
 
     /**
