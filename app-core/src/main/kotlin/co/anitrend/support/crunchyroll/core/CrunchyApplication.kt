@@ -27,7 +27,7 @@ import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-abstract class CrunchyApplication : Application(), Configuration.Provider {
+abstract class CrunchyApplication : Application() {
 
     private val themeUtil by inject<ThemeUtil>()
 
@@ -36,7 +36,7 @@ abstract class CrunchyApplication : Application(), Configuration.Provider {
      * Initializes dependencies for the entire application, this function is automatically called
      * in [onCreate] as the first call to assure all injections are available
      */
-    protected abstract fun initializeDependencyInjection()
+    protected abstract fun initializeKoin()
 
     /** [Koin](https://insert-koin.io/docs/2.0/getting-started/)
      *
@@ -47,17 +47,6 @@ abstract class CrunchyApplication : Application(), Configuration.Provider {
     private fun setupCoil() {
         val imageLoader = get<ImageLoader>()
         Coil.setImageLoader(imageLoader)
-    }
-
-    /**
-     * Timber logging tree depending on the build type we plant the appropriate tree
-     */
-    protected open fun plantLoggingTree() {
-        val analytics by inject<ISupportAnalytics>()
-        when (BuildConfig.DEBUG) {
-            true -> Timber.plant(Timber.DebugTree())
-            else -> Timber.plant(analytics as Timber.Tree)
-        }
     }
 
     /**
@@ -78,22 +67,7 @@ abstract class CrunchyApplication : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
         checkApplicationMigration()
-        initializeDependencyInjection()
-        plantLoggingTree()
         applyNightMode()
         setupCoil()
-    }
-
-    /**
-     * @return The [Configuration] used to initialize WorkManager
-     */
-    override fun getWorkManagerConfiguration(): Configuration {
-        val logLevel = when (BuildConfig.DEBUG) {
-            true -> Log.VERBOSE
-            else -> Log.ERROR
-        }
-        return Configuration.Builder()
-            .setMinimumLoggingLevel(logLevel)
-            .build()
     }
 }
