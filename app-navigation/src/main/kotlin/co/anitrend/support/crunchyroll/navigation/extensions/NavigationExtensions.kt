@@ -22,7 +22,7 @@ import androidx.fragment.app.Fragment
 import co.anitrend.support.crunchyroll.navigation.contract.INavigationTarget
 import timber.log.Timber
 
-private const val APPLICATION_PACKAGE_NAME = "co.anitrend.support.crunchyroll"
+internal const val APPLICATION_PACKAGE_NAME = "co.anitrend.support.crunchyroll"
 
 private const val moduleTag = "NavigationExtensions"
 

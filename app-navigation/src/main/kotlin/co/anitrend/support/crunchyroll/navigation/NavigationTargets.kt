@@ -23,7 +23,9 @@ import co.anitrend.support.crunchyroll.navigation.NavigationTargets.MediaPlayer.
 import co.anitrend.support.crunchyroll.navigation.contract.INavigationRouter
 import co.anitrend.support.crunchyroll.navigation.contract.INavigationTarget
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
+import co.anitrend.support.crunchyroll.navigation.extensions.APPLICATION_PACKAGE_NAME
 import co.anitrend.support.crunchyroll.navigation.extensions.forIntent
+import co.anitrend.support.crunchyroll.navigation.extensions.loadClassOrNull
 import kotlinx.android.parcel.Parcelize
 
 object NavigationTargets {
@@ -33,6 +35,11 @@ object NavigationTargets {
         override val className = "MainScreen"
 
         override val navRouterIntent = forIntent()
+
+        fun <T> koinInitializer(): Class<out T>? {
+            val classPath = "$APPLICATION_PACKAGE_NAME.initializer.KoinInitializer"
+            return classPath.loadClassOrNull()
+        }
     }
 
     object Splash : INavigationRouter, INavigationTarget {
