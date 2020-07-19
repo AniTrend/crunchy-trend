@@ -16,17 +16,10 @@
 
 package co.anitrend.support.crunchyroll
 
-import android.util.Log
+import androidx.startup.AppInitializer
 import co.anitrend.support.crunchyroll.core.CrunchyApplication
-import co.anitrend.support.crunchyroll.core.helper.StorageHelper
-import co.anitrend.support.crunchyroll.koin.appModules
-import fr.bipi.tressence.file.FileLoggerTree
-import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
-import org.koin.androidx.fragment.koin.fragmentFactory
-import org.koin.core.context.startKoin
+import co.anitrend.support.crunchyroll.initializer.KoinInitializer
 import org.koin.core.context.stopKoin
-import org.koin.core.logger.Level
 import timber.log.Timber
 
 class App : CrunchyApplication() {
@@ -44,17 +37,9 @@ class App : CrunchyApplication() {
      * Initializes dependencies for the entire application, this function is automatically called
      * in [onCreate] as the first call to assure all injections are available
      */
-    override fun initializeDependencyInjection() {
-        startKoin{
-            fragmentFactory()
-            androidLogger(
-                level = if (BuildConfig.DEBUG) Level.DEBUG else Level.ERROR
-            )
-            androidContext(
-                applicationContext
-            )
-            modules(appModules)
-        }
+    override fun initializeKoin() {
+        AppInitializer.getInstance(this)
+            .initializeComponent(KoinInitializer::class.java)
     }
 
     /** [Koin](https://insert-koin.io/docs/2.0/getting-started/)
@@ -63,26 +48,7 @@ class App : CrunchyApplication() {
      */
     override fun restartDependencyInjection() {
         stopKoin()
-        initializeDependencyInjection()
-    }
-
-    /**
-     * Timber logging tree depending on the build type we plant the appropriate tree
-     */
-    override fun plantLoggingTree() {
-        super.plantLoggingTree()
-        val logLevel = if (BuildConfig.DEBUG) Log.VERBOSE else Log.WARN
-        val file = StorageHelper.getLogsCache(applicationContext)
-        val logSizeLimit = 750 * 1024
-        val fileLogger = FileLoggerTree.Builder()
-            .withFileName("$packageName.log")
-            .withDirName(file.absolutePath)
-            .withSizeLimit(logSizeLimit)
-            .withFileLimit(1)
-            .withMinPriority(logLevel)
-            .appendToFile(true)
-            .build()
-        Timber.plant(fileLogger)
+        initializeKoin()
     }
 
     override fun onCreate() {
