@@ -169,9 +169,7 @@ class MediaStreamContent(
 
         override fun setUpViewModelObserver() {
         viewModelState().model.observe(viewLifecycleOwner, Observer {
-            launch {
-                prepareResults(it)
-            }
+            lifecycleScope.launch { prepareResults(it) }
         })
         viewModelState().networkState.observe(viewLifecycleOwner, Observer {
             supportStateLayout.networkMutableStateFlow.value = it
@@ -201,11 +199,6 @@ class MediaStreamContent(
                 }
         }
     }
-
-    /**
-     * Expects a module helper if one is available for the current scope, otherwise return null
-     */
-    override fun featureModuleHelper(): Nothing? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

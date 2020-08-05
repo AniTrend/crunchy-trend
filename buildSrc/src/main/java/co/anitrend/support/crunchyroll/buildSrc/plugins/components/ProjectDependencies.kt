@@ -105,6 +105,7 @@ private fun Project.applyBaseModuleDependencies() {
     println("Applying base module dependencies for module -> $path")
     when (name) {
         core -> {
+            dependencies.add("implementation", project(":$navigation"))
             dependencies.add("implementation", project(":$domain"))
             dependencies.add("implementation", project(":$data"))
 

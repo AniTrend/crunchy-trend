@@ -53,11 +53,6 @@ class CatalogContent(
     }
 
     /**
-     * Expects a module helper if one is available for the current scope, otherwise return null
-     */
-    override fun featureModuleHelper() = moduleHelper
-
-    /**
      * Proxy for a view model state if one exists
      */
     override fun viewModelState() = viewModel.state

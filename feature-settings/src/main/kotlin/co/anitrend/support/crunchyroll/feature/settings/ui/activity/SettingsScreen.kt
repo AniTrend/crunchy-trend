@@ -59,11 +59,6 @@ class SettingsScreen : CrunchyActivity() {
     }
 
     /**
-     * Expects a module helper if one is available for the current scope, otherwise return null
-     */
-    override fun featureModuleHelper() = moduleHelper
-
-    /**
      * Initialize the contents of the Activity's standard options menu.  You
      * should place your menu items in to [menu].
      *

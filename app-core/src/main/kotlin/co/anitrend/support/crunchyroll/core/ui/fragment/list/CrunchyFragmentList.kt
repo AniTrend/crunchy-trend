@@ -16,33 +16,13 @@
 
 package co.anitrend.support.crunchyroll.core.ui.fragment.list
 
-import android.content.Context
-import co.anitrend.arch.extension.ext.attachComponent
-import co.anitrend.arch.extension.ext.detachComponent
+import androidx.lifecycle.Observer
+import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.ui.fragment.list.SupportFragmentList
-import co.anitrend.support.crunchyroll.core.ui.contract.IFeatureContract
 
-abstract class CrunchyFragmentList<M> : SupportFragmentList<M>(), IFeatureContract {
+abstract class CrunchyFragmentList<M> : SupportFragmentList<M>() {
 
-    /**
-     * Called when a fragment is first attached to its context.
-     * [onCreate] will be called after this.
-     */
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        featureModuleHelper()?.also {
-            attachComponent(it)
-        }
-    }
-
-    /**
-     * Called when the fragment is no longer attached to its activity. This
-     * is called after [onDestroy].
-     */
-    override fun onDetach() {
-        featureModuleHelper()?.also {
-            detachComponent(it)
-        }
-        super.onDetach()
+    override val onRefreshObserver = Observer<NetworkState> {
+        // do nothing
     }
 }

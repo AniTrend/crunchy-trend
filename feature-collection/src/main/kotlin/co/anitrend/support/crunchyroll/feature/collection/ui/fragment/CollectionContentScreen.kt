@@ -115,9 +115,4 @@ class CollectionContentScreen(
      * Proxy for a view model state if one exists
      */
     override fun viewModelState() = viewModel.state
-
-    /**
-     * Expects a module helper if one is available for the current scope, otherwise return null
-     */
-    override fun featureModuleHelper(): Nothing? = null
 }

@@ -158,11 +158,6 @@ class ImageViewerScreen : CrunchyActivity() {
         downloadManager?.enqueue(request)
     }
 
-    /**
-     * Expects a module helper if one is available for the current scope, otherwise return null
-     */
-    override fun featureModuleHelper(): Nothing? = null
-
     companion object {
         const val VISIBLE = 1f
         const val HIDDEN = 0f

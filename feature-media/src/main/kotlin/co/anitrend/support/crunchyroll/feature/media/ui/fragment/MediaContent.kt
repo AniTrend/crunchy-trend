@@ -62,11 +62,6 @@ class MediaContent(
 
     override val stateConfig: StateLayoutConfig by inject()
 
-    /**
-     * Expects a module helper if one is available for the current scope, otherwise return null
-     */
-    override fun featureModuleHelper(): Nothing? = null
-
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         MediaAdapter(
             resources = resources,

@@ -56,11 +56,6 @@ class CollectionScreen : CrunchyActivity() {
     }
 
     /**
-     * Expects a module helper if one is available for the current scope, otherwise return null
-     */
-    override fun featureModuleHelper() = moduleHelper
-
-    /**
      * Handles the updating of views, binding, creation or state change, depending on the context
      * [androidx.lifecycle.LiveData] for a given [supportFragmentActivity] will be available by this point.
      *

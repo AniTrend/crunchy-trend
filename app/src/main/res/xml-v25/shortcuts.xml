@@ -35,7 +35,7 @@
             android:shortcutShortLabel="@string/nav_shows">
         <intent
                 android:action="android.intent.action.VIEW"
-                android:targetClass="co.anitrend.support.crunchyroll.ui.activity.MainScreen" />
+                android:targetClass="co.anitrend.support.crunchyroll.ui.MainScreen" />
     </shortcut>
 
     <shortcut
@@ -45,7 +45,7 @@
             android:shortcutShortLabel="@string/label_text_action_search">
         <intent
                 android:action="android.intent.action.VIEW"
-                android:targetClass="co.anitrend.support.crunchyroll.ui.activity.MainScreen" />
+                android:targetClass="co.anitrend.support.crunchyroll.ui.MainScreen" />
     </shortcut>
 
     <shortcut
@@ -55,7 +55,7 @@
             android:shortcutShortLabel="@string/nav_series_catalog">
         <intent
                 android:action="android.intent.action.VIEW"
-                android:targetClass="co.anitrend.support.crunchyroll.ui.activity.MainScreen" />
+                android:targetClass="co.anitrend.support.crunchyroll.ui.MainScreen" />
     </shortcut>
 
 </shortcuts>

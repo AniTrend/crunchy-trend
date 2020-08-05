@@ -23,5 +23,5 @@ interface IFeatureContract {
     /**
      * Expects a module helper if one is available for the current scope, otherwise return null
      */
-    fun featureModuleHelper(): DynamicFeatureModuleHelper?
+    fun featureModuleHelper(): DynamicFeatureModuleHelper? = null
 }

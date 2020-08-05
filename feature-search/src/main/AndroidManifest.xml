@@ -15,6 +15,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         package="co.anitrend.support.crunchyroll.feature.search">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -23,5 +24,14 @@
 
     <application>
         <activity android:name=".ui.activity.SearchScreen" />
+
+        <provider
+                android:name="androidx.startup.InitializationProvider"
+                android:authorities="${applicationId}.androidx-startup"
+                android:exported="false"
+                tools:node="merge">
+            <meta-data  android:name="co.anitrend.support.crunchyroll.feature.search.initializer.FeatureInitializer"
+                    android:value="androidx.startup" />
+        </provider>
     </application>
 </manifest>

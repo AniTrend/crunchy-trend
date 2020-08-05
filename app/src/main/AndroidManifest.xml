@@ -33,7 +33,7 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
 
-        <activity android:name=".ui.activity.MainScreen"/>
+        <activity android:name=".ui.MainScreen"/>
 
         <provider
                 android:authorities="${applicationId}.provider"
@@ -45,6 +45,26 @@
                     android:resource="@xml/support_file_provider_paths"/>
         </provider>
 
+        <provider
+                android:name="androidx.startup.InitializationProvider"
+                android:authorities="${applicationId}.androidx-startup"
+                android:exported="false"
+                tools:node="merge">
+            <meta-data  android:name="co.anitrend.support.crunchyroll.initializer.KoinInitializer"
+                    android:value="androidx.startup" />
+            <meta-data  android:name="co.anitrend.support.crunchyroll.initializer.WorkerInitializer"
+                    android:value="androidx.startup" />
+            <meta-data  android:name="co.anitrend.support.crunchyroll.initializer.TimberInitializer"
+                    android:value="androidx.startup" />
+            <!-- Disable automatic startup for emojify -->
+            <meta-data android:name="io.wax911.emojify.initializer.EmojiInitializer"
+                    tools:node="remove" />
+        </provider>
+
+        <!--
+        Disable default work manager initializer
+        https://developer.android.com/topic/libraries/architecture/workmanager/advanced/custom-configuration
+        -->
         <provider
                 android:name="androidx.work.impl.WorkManagerInitializer"
                 android:authorities="${applicationId}.workmanager-init"

@@ -51,11 +51,6 @@ class NewsFeedContent(
 
     override val stateConfig: StateLayoutConfig by inject()
 
-    /**
-     * Expects a module helper if one is available for the current scope, otherwise return null
-     */
-    override fun featureModuleHelper() = moduleHelper
-
     override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
         RssNewsAdapter(
             resources = resources,
@@ -83,7 +78,6 @@ class NewsFeedContent(
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        featureModuleHelper().onCreate()
         super.initializeComponents(savedInstanceState)
         lifecycleScope.launchWhenResumed {
             supportViewAdapter.clickableStateFlow.debounce(DEBOUNCE_DURATION)
