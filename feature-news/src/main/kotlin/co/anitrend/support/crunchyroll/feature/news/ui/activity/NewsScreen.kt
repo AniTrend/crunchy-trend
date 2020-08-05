@@ -79,11 +79,6 @@ class NewsScreen : CrunchyActivity() {
             }
     }
 
-    /**
-     * Expects a module helper if one is available for the current scope, otherwise return null
-     */
-    override fun featureModuleHelper() = moduleHelper
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.news_reader_menu, menu)
         return super.onCreateOptionsMenu(menu)

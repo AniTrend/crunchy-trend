@@ -30,7 +30,7 @@ import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import org.koin.android.ext.android.inject
 
-abstract class CrunchyActivity : SupportActivity(), IFeatureContract {
+abstract class CrunchyActivity : SupportActivity() {
 
     protected val configurationUtil by inject<ConfigurationUtil>()
 

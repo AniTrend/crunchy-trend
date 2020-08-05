@@ -16,8 +16,13 @@
 
 package co.anitrend.support.crunchyroll.core.ui.fragment.list
 
+import androidx.lifecycle.Observer
+import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.ui.fragment.list.SupportFragmentList
-import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
-import co.anitrend.support.crunchyroll.core.ui.contract.IFeatureContract
 
-abstract class CrunchyFragmentList<M> : SupportFragmentList<M>(), IFeatureContract
+abstract class CrunchyFragmentList<M> : SupportFragmentList<M>() {
+
+    override val onRefreshObserver = Observer<NetworkState> {
+        // do nothing
+    }
+}

@@ -43,11 +43,6 @@ class AuthenticationScreen : CrunchyActivity() {
         setupKoinFragmentFactory(lifecycleScope)
     }
 
-    /**
-     * Expects a module helper if one is available for the current scope, otherwise return null
-     */
-    override fun featureModuleHelper() = moduleHelper
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)

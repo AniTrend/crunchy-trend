@@ -133,11 +133,6 @@ class SeriesContentScreen : CrunchyFragment() {
     }
 
     /**
-     * Expects a module helper if one is available for the current scope, otherwise return null
-     */
-    override fun featureModuleHelper(): Nothing? = null
-
-    /**
      * Called to have the fragment instantiate its user interface view. This is optional, and
      * non-graphical fragments can return null. This will be called between
      * [onCreate] & [onActivityCreated].

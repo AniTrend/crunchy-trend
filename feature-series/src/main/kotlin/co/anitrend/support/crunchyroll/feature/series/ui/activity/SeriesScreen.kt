@@ -17,15 +17,16 @@
 package co.anitrend.support.crunchyroll.feature.series.ui.activity
 
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
 import co.anitrend.support.crunchyroll.core.extensions.commit
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import co.anitrend.support.crunchyroll.feature.series.R
-import co.anitrend.support.crunchyroll.feature.series.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.series.ui.fragment.SeriesContentScreen
 import kotlinx.android.synthetic.main.series_activity.*
+import kotlinx.coroutines.launch
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
-import org.koin.androidx.scope.lifecycleScope
+import org.koin.androidx.scope.lifecycleScope as koinScope
 
 class SeriesScreen : CrunchyActivity() {
 
@@ -34,14 +35,13 @@ class SeriesScreen : CrunchyActivity() {
      */
     override fun configureActivity() {
         super.configureActivity()
-        setupKoinFragmentFactory(lifecycleScope)
+        setupKoinFragmentFactory(koinScope)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.series_activity)
         setSupportActionBar(bottomAppBar)
-        onUpdateUserInterface()
     }
 
     /**
@@ -53,13 +53,8 @@ class SeriesScreen : CrunchyActivity() {
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-
+        lifecycleScope.launch { onUpdateUserInterface() }
     }
-
-    /**
-     * Expects a module helper if one is available for the current scope, otherwise return null
-     */
-    override fun featureModuleHelper() = moduleHelper
 
     private fun onUpdateUserInterface() {
         val target = FragmentItem(

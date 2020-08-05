@@ -18,7 +18,6 @@ package co.anitrend.support.crunchyroll.feature.listing.ui.adapter
 
 import android.content.res.Resources
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import co.anitrend.arch.core.model.IStateLayoutConfig
@@ -27,11 +26,9 @@ import co.anitrend.arch.recycler.adapter.SupportPagedListAdapter
 import co.anitrend.arch.recycler.model.contract.IRecyclerItem
 import co.anitrend.arch.theme.animator.ScaleAnimator
 import co.anitrend.arch.theme.animator.contract.ISupportAnimator
-import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
-import co.anitrend.support.crunchyroll.feature.feed.databinding.AdapterMediaFeedBinding
+import co.anitrend.support.crunchyroll.feature.listing.databinding.AdapterMediaFeedBinding
 import co.anitrend.support.crunchyroll.feature.listing.controller.model.EpisodeFeedItem
-import coil.request.RequestDisposable
 
 class RssMediaAdapter(
     override val resources: Resources,

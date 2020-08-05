@@ -20,4 +20,4 @@ import co.anitrend.arch.ui.fragment.SupportFragment
 import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.core.ui.contract.IFeatureContract
 
-abstract class CrunchyFragment : SupportFragment(), IFeatureContract
+abstract class CrunchyFragment : SupportFragment()

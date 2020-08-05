@@ -54,14 +54,9 @@ class SplashScreen : CrunchyActivity() {
         }
     }
 
-    /**
-     * Expects a module helper if one is available for the current scope, otherwise return null
-     */
-    override fun featureModuleHelper(): Nothing? = null
-
     private fun onUpdateUserInterface() {
         launch {
-            delay(300)
+            delay(500)
             if (isStateAtLeast(Lifecycle.State.RESUMED)) {
                 if (!presenter.settings.isNewInstallation)
                     NavigationTargets.Main(applicationContext)

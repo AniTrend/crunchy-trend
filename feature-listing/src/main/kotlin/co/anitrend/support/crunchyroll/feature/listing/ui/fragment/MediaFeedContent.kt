@@ -34,9 +34,8 @@ import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
-import co.anitrend.support.crunchyroll.feature.feed.R
-import co.anitrend.support.crunchyroll.feature.feed.databinding.DialogMediaBinding
-import co.anitrend.support.crunchyroll.feature.listing.koin.moduleHelper
+import co.anitrend.support.crunchyroll.feature.listing.databinding.DialogMediaBinding
+import co.anitrend.support.crunchyroll.feature.listing.R
 import co.anitrend.support.crunchyroll.feature.listing.ui.adapter.RssMediaAdapter
 import co.anitrend.support.crunchyroll.feature.listing.viewmodel.MediaListingViewModel
 import com.afollestad.materialdialogs.LayoutMode
@@ -151,9 +150,4 @@ class MediaFeedContent(
      * Proxy for a view model state if one exists
      */
     override fun viewModelState() = viewModel.state
-
-    /**
-     * Expects a module helper if one is available for the current scope, otherwise return null
-     */
-    override fun featureModuleHelper() = moduleHelper
 }

@@ -21,18 +21,22 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentOnAttachListener
+import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.extension.ext.getCompatColor
 import co.anitrend.support.crunchyroll.core.extensions.commit
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import co.anitrend.support.crunchyroll.feature.player.R
-import co.anitrend.support.crunchyroll.feature.player.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.player.ui.fragment.MediaStreamContent
 import com.devbrackets.android.exomedia.listener.VideoControlsVisibilityListener
+import kotlinx.coroutines.launch
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
-import org.koin.androidx.scope.lifecycleScope
+import org.koin.androidx.scope.lifecycleScope as koinScope
 
-class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener {
+class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener,
+    FragmentOnAttachListener {
 
     internal var fullScreenListener: MediaStreamContent.FullScreenListener? = null
 
@@ -60,7 +64,7 @@ class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener {
      */
     override fun configureActivity() {
         super.configureActivity()
-        setupKoinFragmentFactory(lifecycleScope)
+        setupKoinFragmentFactory(koinScope)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             with (window) {
                 clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
@@ -78,32 +82,16 @@ class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener {
     }
 
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        onUpdateUserInterface()
+        lifecycleScope.launch { onUpdateUserInterface() }
     }
-
-    /**
-     * Called when a fragment is attached to the activity.
-     *
-     * This is called after the attached fragment's `onAttach` and before
-     * the attached fragment's `onCreate` if the fragment has not yet had a previous
-     * call to `onCreate`.
-     */
-    override fun onAttachFragment(fragment: Fragment) {
-        super.onAttachFragment(fragment)
-        if (fragment is MediaStreamContent)
-            fullScreenListener = fragment.FullScreenListener()
-    }
-
-    /**
-     * Expects a module helper if one is available for the current scope, otherwise return null
-     */
-    override fun featureModuleHelper() = moduleHelper
 
     private fun onUpdateUserInterface() {
         val target = FragmentItem(
             parameter = intent.extras,
             fragment = MediaStreamContent::class.java
         )
+
+        supportFragmentManager.addFragmentOnAttachListener(this)
 
         currentFragmentTag = supportFragmentManager.commit(R.id.contentFrame, target) {
             //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -113,8 +101,9 @@ class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener {
     }
 
     public override fun onDestroy() {
-        super.onDestroy()
+        supportFragmentManager.removeFragmentOnAttachListener(this)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+        super.onDestroy()
     }
 
     private fun goFullscreen() {
@@ -151,5 +140,20 @@ class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener {
 
     override fun onControlsHidden() {
         goFullscreen()
+    }
+
+    /**
+     * Called after the fragment has been attached to its host. This is called
+     * immediately after [Fragment.onAttach] and before
+     * [Fragment.onAttach] has been called on any child fragments.
+     *
+     * @param fragmentManager FragmentManager the fragment is now attached to. This will
+     * be the same FragmentManager that is returned by
+     * [Fragment.getParentFragmentManager].
+     * @param fragment Fragment that just received a callback to [Fragment.onAttach]
+     */
+    override fun onAttachFragment(fragmentManager: FragmentManager, fragment: Fragment) {
+        if (fragment is MediaStreamContent)
+            fullScreenListener = fragment.FullScreenListener()
     }
 }

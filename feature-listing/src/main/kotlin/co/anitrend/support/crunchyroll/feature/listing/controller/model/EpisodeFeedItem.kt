@@ -20,7 +20,6 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
 import co.anitrend.arch.recycler.common.ClickableItem
@@ -29,11 +28,10 @@ import co.anitrend.arch.recycler.holder.SupportViewHolder
 import co.anitrend.arch.recycler.model.RecyclerItem
 import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
-import co.anitrend.support.crunchyroll.feature.feed.R
-import co.anitrend.support.crunchyroll.feature.feed.databinding.AdapterMediaFeedBinding
+import co.anitrend.support.crunchyroll.feature.listing.databinding.AdapterMediaFeedBinding
+import co.anitrend.support.crunchyroll.feature.listing.R
 import coil.request.RequestDisposable
 import kotlinx.android.synthetic.main.adapter_media_feed.view.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 
 data class EpisodeFeedItem(
