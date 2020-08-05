@@ -31,7 +31,7 @@ import kotlinx.android.parcel.Parcelize
 object NavigationTargets {
 
     object Main : INavigationRouter, INavigationTarget {
-        override val packageName = "ui.activity"
+        override val packageName = "ui"
         override val className = "MainScreen"
 
         override val navRouterIntent = forIntent()

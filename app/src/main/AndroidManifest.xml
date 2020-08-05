@@ -33,7 +33,7 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
 
-        <activity android:name=".ui.activity.MainScreen"/>
+        <activity android:name=".ui.MainScreen"/>
 
         <provider
                 android:authorities="${applicationId}.provider"
@@ -44,7 +44,6 @@
                     android:name="android.support.FILE_PROVIDER_PATHS"
                     android:resource="@xml/support_file_provider_paths"/>
         </provider>
-
 
         <provider
                 android:name="androidx.startup.InitializationProvider"

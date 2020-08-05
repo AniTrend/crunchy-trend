@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2020 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.ui.activity
+package co.anitrend.support.crunchyroll.ui
 
 import android.os.Bundle
 import android.view.Menu
@@ -88,11 +88,6 @@ class MainScreen : CrunchyActivity(), NavigationView.OnNavigationItemSelectedLis
         }
         updateUserInterface()
     }
-
-    /**
-     * Expects a module helper if one is available for the current scope, otherwise return null
-     */
-    override fun featureModuleHelper(): Nothing? = null
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putInt(keyNavigationSelected, selectedItem)
