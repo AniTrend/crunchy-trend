@@ -26,6 +26,7 @@ import androidx.fragment.app.FragmentOnAttachListener
 import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.extension.ext.getCompatColor
 import co.anitrend.support.crunchyroll.core.extensions.commit
+import co.anitrend.support.crunchyroll.core.extensions.koinScope
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import co.anitrend.support.crunchyroll.feature.player.R
@@ -33,7 +34,6 @@ import co.anitrend.support.crunchyroll.feature.player.ui.fragment.MediaStreamCon
 import com.devbrackets.android.exomedia.listener.VideoControlsVisibilityListener
 import kotlinx.coroutines.launch
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
-import org.koin.androidx.scope.lifecycleScope as koinScope
 
 class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener,
     FragmentOnAttachListener {

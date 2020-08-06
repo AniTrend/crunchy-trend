@@ -19,6 +19,7 @@ package co.anitrend.support.crunchyroll.feature.series.ui.activity
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import co.anitrend.support.crunchyroll.core.extensions.commit
+import co.anitrend.support.crunchyroll.core.extensions.koinScope
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import co.anitrend.support.crunchyroll.feature.series.R
@@ -26,7 +27,6 @@ import co.anitrend.support.crunchyroll.feature.series.ui.fragment.SeriesContentS
 import kotlinx.android.synthetic.main.series_activity.*
 import kotlinx.coroutines.launch
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
-import org.koin.androidx.scope.lifecycleScope as koinScope
 
 class SeriesScreen : CrunchyActivity() {
 
