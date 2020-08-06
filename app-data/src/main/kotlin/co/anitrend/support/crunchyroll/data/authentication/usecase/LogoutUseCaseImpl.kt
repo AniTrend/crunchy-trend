@@ -16,8 +16,8 @@
 
 package co.anitrend.support.crunchyroll.data.authentication.usecase
 
-import co.anitrend.arch.data.model.UserInterfaceState
 import co.anitrend.arch.data.repository.contract.ISupportRepository
+import co.anitrend.arch.data.state.DataState
 import co.anitrend.support.crunchyroll.data.authentication.repository.AuthenticationRepository
 import co.anitrend.support.crunchyroll.domain.authentication.interactors.LogoutUseCase
 
@@ -34,4 +34,4 @@ internal class LogoutUseCaseImpl(
     }
 }
 
-typealias LogoutUseCaseType = LogoutUseCase<UserInterfaceState<Boolean>>
+typealias LogoutUseCaseType = LogoutUseCase<DataState<Boolean>>

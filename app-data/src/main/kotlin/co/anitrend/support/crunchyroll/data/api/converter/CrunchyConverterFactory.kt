@@ -18,7 +18,7 @@
 
 package co.anitrend.support.crunchyroll.data.api.converter
 
-import co.anitrend.arch.extension.ext.LAZY_MODE_SYNCHRONIZED
+import co.anitrend.arch.extension.ext.SYNCHRONIZED
 import co.anitrend.support.crunchyroll.data.arch.JSON
 import co.anitrend.support.crunchyroll.data.arch.XML
 import com.google.gson.GsonBuilder
@@ -57,7 +57,7 @@ internal class CrunchyConverterFactory private constructor(): Converter.Factory(
     }
 
     companion object {
-        internal val GSON by lazy(LAZY_MODE_SYNCHRONIZED) {
+        internal val GSON by lazy(SYNCHRONIZED) {
             GsonBuilder()
                 .serializeNulls()
                 .setLenient()

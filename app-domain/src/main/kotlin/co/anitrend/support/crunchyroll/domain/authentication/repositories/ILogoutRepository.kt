@@ -16,9 +16,9 @@
 
 package co.anitrend.support.crunchyroll.domain.authentication.repositories
 
-import co.anitrend.arch.domain.common.IUserInterfaceState
+import co.anitrend.arch.domain.state.UiState
 
-interface ILogoutRepository<R : IUserInterfaceState<*>> {
+interface ILogoutRepository<R : UiState<*>> {
 
     /**
      * Un-authenticates a user

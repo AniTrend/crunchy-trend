@@ -16,9 +16,18 @@
 
 package co.anitrend.support.crunchyroll.data.session.usecase
 
+import co.anitrend.arch.data.repository.contract.ISupportRepository
 import co.anitrend.support.crunchyroll.domain.session.interactors.CoreSessionUseCase
 import co.anitrend.support.crunchyroll.domain.session.repositories.ISessionRepository
 
 internal class CoreSessionUseCaseImpl(
     repository: ISessionRepository
-) : CoreSessionUseCase(repository)
+) : CoreSessionUseCase(repository) {
+    /**
+     * Informs underlying repositories or related components running background operations to stop
+     */
+    override fun onCleared() {
+        repository as ISupportRepository
+        repository.onCleared()
+    }
+}

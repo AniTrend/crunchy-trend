@@ -18,26 +18,27 @@ package co.anitrend.support.crunchyroll.feature.player.viewmodel.model
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.asLiveData
 import co.anitrend.arch.core.model.ISupportViewModelState
-import co.anitrend.arch.data.model.UserInterfaceState
+import co.anitrend.arch.data.state.DataState
 import co.anitrend.support.crunchyroll.data.stream.usecase.MediaStreamUseCaseType
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 
 data class MediaStreamModelState(
     private val useCase: MediaStreamUseCaseType
-) : ISupportViewModelState<List<MediaStream>?> {
+) : ISupportViewModelState<MediaStream> {
 
-    private val useCaseResult = MutableLiveData<UserInterfaceState<List<MediaStream>?>>()
+    private val useCaseResult = MutableLiveData<DataState<MediaStream>>()
 
     override val model =
         Transformations.switchMap(useCaseResult) { it.model }
 
     override val networkState =
-        Transformations.switchMap(useCaseResult) { it.networkState }
+        Transformations.switchMap(useCaseResult) { it.networkState.asLiveData() }
 
     override val refreshState =
-        Transformations.switchMap(useCaseResult) { it.refreshState }
+        Transformations.switchMap(useCaseResult) { it.refreshState.asLiveData() }
 
     operator fun invoke(parameter: CrunchyMediaStreamQuery) {
         val result = useCase(parameter)
@@ -47,7 +48,7 @@ data class MediaStreamModelState(
     /**
      * Triggers use case to perform a retry operation
      */
-    override fun retry() {
+    override suspend fun retry() {
         val uiModel = useCaseResult.value
         uiModel?.retry?.invoke()
     }
@@ -55,7 +56,7 @@ data class MediaStreamModelState(
     /**
      * Triggers use case to perform refresh operation
      */
-    override fun refresh() {
+    override suspend fun refresh() {
         val uiModel = useCaseResult.value
         uiModel?.refresh?.invoke()
     }

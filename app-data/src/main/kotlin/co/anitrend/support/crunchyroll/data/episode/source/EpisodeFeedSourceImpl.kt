@@ -16,12 +16,10 @@
 
 package co.anitrend.support.crunchyroll.data.episode.source
 
-import androidx.lifecycle.LiveData
-import androidx.paging.PagedList
-import androidx.paging.PagingRequestHelper
+import androidx.lifecycle.liveData
 import androidx.paging.toLiveData
-import co.anitrend.arch.data.source.contract.ISourceObservable
-import co.anitrend.arch.data.util.SupportDataKeyStore
+import co.anitrend.arch.data.request.callback.RequestCallback
+import co.anitrend.arch.data.util.PAGING_CONFIGURATION
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
@@ -33,8 +31,9 @@ import co.anitrend.support.crunchyroll.data.episode.datasource.remote.CrunchyEpi
 import co.anitrend.support.crunchyroll.data.episode.mapper.EpisodeFeedResponseMapper
 import co.anitrend.support.crunchyroll.data.episode.source.contract.EpisodeFeedSource
 import co.anitrend.support.crunchyroll.data.episode.transformer.EpisodeFeedTransformer
-import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 
 internal class EpisodeFeedSourceImpl(
     private val mapper: EpisodeFeedResponseMapper,
@@ -45,30 +44,22 @@ internal class EpisodeFeedSourceImpl(
     supportDispatchers: SupportDispatchers
 ) : EpisodeFeedSource(supportDispatchers) {
 
-    override val episodeListingsObservable =
-        object : ISourceObservable<Nothing?, PagedList<CrunchyEpisodeFeed>> {
-            /**
-             * Returns the appropriate observable which we will monitor for updates,
-             * common implementation may include but not limited to returning
-             * data source live data for a database
-             *
-             * @param parameter to use when executing
-             */
-            override fun invoke(parameter: Nothing?): LiveData<PagedList<CrunchyEpisodeFeed>> {
-                val localSource = dao.findByAllFactory()
+    override val observable = liveData {
+        val localSource = dao.findByAllFactory()
 
-                val result = localSource.map {
-                    EpisodeFeedTransformer.transform(it)
-                }
-
-                return result.toLiveData(
-                    config = SupportDataKeyStore.PAGING_CONFIGURATION,
-                    boundaryCallback = this@EpisodeFeedSourceImpl
-                )
-            }
+        val result = localSource.map {
+            EpisodeFeedTransformer.transform(it)
         }
 
-    override suspend fun getMediaListingsCatalogue(callback: PagingRequestHelper.Request.Callback) {
+        emitSource(
+            result.toLiveData(
+                config = PAGING_CONFIGURATION,
+                boundaryCallback = this@EpisodeFeedSourceImpl
+            )
+        )
+    }
+
+    override suspend fun getMediaListingsCatalogue(callback: RequestCallback) {
         val deferred = async {
             endpoint.getLatestMediaFeed(query.language)
         }
@@ -87,9 +78,11 @@ internal class EpisodeFeedSourceImpl(
     /**
      * Clears data sources (databases, preferences, e.t.c)
      */
-    override suspend fun clearDataSource() {
+    override suspend fun clearDataSource(context: CoroutineDispatcher) {
         CrunchyClearDataHelper(settings, supportConnectivity) {
-            dao.clearTable()
+            withContext(context) {
+                dao.clearTable()
+            }
         }
     }
 }

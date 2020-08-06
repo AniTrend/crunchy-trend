@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.arch.helper
 
-import androidx.paging.PagingRequestHelper
+import co.anitrend.arch.data.request.contract.IRequestHelper
 import co.anitrend.arch.extension.util.pagination.SupportPagingHelper
 import timber.log.Timber
 
@@ -48,12 +48,12 @@ internal object CrunchyPagingConfigHelper {
      * @param action what need to be run to return the number of available records
      */
     suspend inline operator fun invoke(
-        requestType: PagingRequestHelper.RequestType,
+        requestType: IRequestHelper.RequestType,
         pagingHelper: SupportPagingHelper,
         crossinline action: suspend () -> Int
     ) {
         when (requestType) {
-            PagingRequestHelper.RequestType.AFTER -> {
+            IRequestHelper.RequestType.AFTER -> {
                 Timber.tag(moduleTag).v(
                     "Triggered request: $requestType on paging helper configuration"
                 )

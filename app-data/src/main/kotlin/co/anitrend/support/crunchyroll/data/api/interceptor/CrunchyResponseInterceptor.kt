@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.api.interceptor
 
-import co.anitrend.arch.extension.ext.LAZY_MODE_SYNCHRONIZED
+import co.anitrend.arch.extension.ext.SYNCHRONIZED
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
@@ -41,7 +41,7 @@ internal class CrunchyResponseInterceptor(
     private val dispatchers: SupportDispatchers
 ) : Interceptor {
 
-    private val responseHelper by lazy(LAZY_MODE_SYNCHRONIZED) {
+    private val responseHelper by lazy(SYNCHRONIZED) {
         ResponseHelper(
             CrunchyConverterFactory.GSON
         )

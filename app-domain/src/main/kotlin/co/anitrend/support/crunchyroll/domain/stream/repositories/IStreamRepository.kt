@@ -16,10 +16,10 @@
 
 package co.anitrend.support.crunchyroll.domain.stream.repositories
 
-import co.anitrend.arch.domain.common.IUserInterfaceState
+import co.anitrend.arch.domain.state.UiState
 import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 
-interface IStreamRepository<R : IUserInterfaceState<*>> {
+interface IStreamRepository<R : UiState<*>> {
 
     fun getStream(query: CrunchyMediaStreamQuery) : R
 }

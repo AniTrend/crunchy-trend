@@ -16,12 +16,13 @@
 
 package co.anitrend.support.crunchyroll.data.series.source.detail.contract
 
-import androidx.lifecycle.LiveData
-import co.anitrend.arch.data.source.contract.ISourceObservable
+import co.anitrend.arch.data.request.callback.RequestCallback
+import co.anitrend.arch.data.request.contract.IRequestHelper
 import co.anitrend.arch.data.source.core.SupportCoreDataSource
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesDetailQuery
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 internal abstract class SeriesDetailSource(
@@ -31,15 +32,19 @@ internal abstract class SeriesDetailSource(
     protected lateinit var query: CrunchySeriesDetailQuery
         private set
 
-    abstract val detailObservable:
-            ISourceObservable<Nothing?, CrunchySeries?>
+    protected abstract val observable: Flow<CrunchySeries?>
 
-    protected abstract suspend fun browseSeries()
+    protected abstract suspend fun browseSeries(callback: RequestCallback)
 
-    internal operator fun invoke(detailQuery: CrunchySeriesDetailQuery): LiveData<CrunchySeries?> {
+    internal operator fun invoke(detailQuery: CrunchySeriesDetailQuery): Flow<CrunchySeries?> {
         query = detailQuery
-        retry = { launch { browseSeries() } }
-        launch { browseSeries() }
-        return detailObservable(null)
+        launch {
+            requestHelper.runIfNotRunning(
+                IRequestHelper.RequestType.INITIAL
+            ) { callback ->
+                browseSeries(callback)
+            }
+        }
+        return observable
     }
 }

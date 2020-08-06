@@ -17,8 +17,8 @@
 package co.anitrend.support.crunchyroll.data.media.usecase
 
 import androidx.paging.PagedList
-import co.anitrend.arch.data.model.UserInterfaceState
 import co.anitrend.arch.data.repository.contract.ISupportRepository
+import co.anitrend.arch.data.state.DataState
 import co.anitrend.support.crunchyroll.data.media.repository.MediaRepository
 import co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia
 import co.anitrend.support.crunchyroll.domain.media.interactors.MediaUseCase
@@ -36,4 +36,4 @@ internal class MediaUseCaseImpl(
     }
 }
 
-typealias MediaUseCaseType = MediaUseCase<UserInterfaceState<PagedList<CrunchyMedia>>>
+typealias MediaUseCaseType = MediaUseCase<DataState<PagedList<CrunchyMedia>>>

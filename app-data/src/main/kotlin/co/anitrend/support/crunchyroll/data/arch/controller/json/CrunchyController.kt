@@ -16,11 +16,9 @@
 
 package co.anitrend.support.crunchyroll.data.arch.controller.json
 
-import androidx.lifecycle.MutableLiveData
-import androidx.paging.PagingRequestHelper
-import co.anitrend.arch.data.common.ISupportPagingResponse
 import co.anitrend.arch.data.common.ISupportResponse
-import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.arch.data.request.callback.RequestCallback
+import co.anitrend.arch.data.request.error.RequestError
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.arch.extension.ext.capitalizeWords
 import co.anitrend.support.crunchyroll.data.arch.controller.strategy.contract.ControllerStrategy
@@ -30,66 +28,38 @@ import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.withContext
 import retrofit2.Response
-import timber.log.Timber
 
 internal class CrunchyController<S, D> private constructor(
     private val responseMapper: CrunchyMapper<S, D>,
     private val strategy: ControllerStrategy<D>,
     private val dispatchers: SupportDispatchers
-) : ISupportResponse<Deferred<Response<CrunchyContainer<S>>>, D>,
-    ISupportPagingResponse<Deferred<Response<CrunchyContainer<S>>>> {
-
-    /**
-     * Response handler for coroutine contexts which need to observe [NetworkState]
-     *
-     * @param resource awaiting execution
-     * @param networkState for the deferred result
-     *
-     * @return resource fetched if present
-     */
-    override suspend fun invoke(
-        resource: Deferred<Response<CrunchyContainer<S>>>,
-        networkState: MutableLiveData<NetworkState>
-    ): D? {
-        return strategy({
-            val response = resource.fetchBodyWithRetry(dispatchers.io)
-            if (!response.error) {
-                response.data?.let {
-                    val mapped = responseMapper.onResponseMapFrom(it)
-                    withContext(dispatchers.io) {
-                        responseMapper.onResponseDatabaseInsert(mapped)
-                    }
-                    mapped
-                }
-            } else
-                throw Throwable(message = response.message, cause = Throwable(
-                    response.code.name.capitalizeWords()
-                ))
-        }, networkState)
-    }
+) : ISupportResponse<Deferred<Response<CrunchyContainer<S>>>, D> {
 
     /**
      * Response handler for coroutine contexts, mainly for paging
      *
      * @param resource awaiting execution
-     * @param pagingRequestHelper optional paging request callback
+     * @param requestCallback request callback
      */
     override suspend fun invoke(
         resource: Deferred<Response<CrunchyContainer<S>>>,
-        pagingRequestHelper: PagingRequestHelper.Request.Callback
-    ) {
-        strategy({
-            val response = resource.fetchBodyWithRetry(dispatchers.io)
-            if (!response.error) {
-                response.data?.apply {
-                    val mapped = responseMapper.onResponseMapFrom(this)
-                    withContext(dispatchers.io) {
-                        responseMapper.onResponseDatabaseInsert(mapped)
-                    }
+        requestCallback: RequestCallback
+    ) = strategy(requestCallback) {
+        val response = resource.fetchBodyWithRetry(dispatchers.io)
+        if (!response.error) {
+            response.data?.let {
+                val mapped = responseMapper.onResponseMapFrom(it)
+                withContext(dispatchers.io) {
+                    responseMapper.onResponseDatabaseInsert(mapped)
                 }
-            } else
-                throw Throwable("${response.message}, ${response.code}")
-        }, pagingRequestHelper)
+                mapped
+            }
+        } else
+            throw RequestError(
+                response.code.name.capitalizeWords(),
+                response.message,
+                null
+            )
     }
 
 

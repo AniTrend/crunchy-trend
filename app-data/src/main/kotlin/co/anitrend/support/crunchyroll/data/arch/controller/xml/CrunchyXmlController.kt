@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.arch.controller.xml
 
-import androidx.paging.PagingRequestHelper
+import co.anitrend.arch.data.request.callback.RequestCallback
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.support.crunchyroll.data.arch.controller.strategy.contract.ControllerStrategy
 import co.anitrend.support.crunchyroll.data.arch.extension.fetchBodyWithRetry
@@ -36,7 +36,7 @@ internal class CrunchyXmlController<S: IRssCopyright, D> private constructor(
     private val dispatchers: SupportDispatchers
 ) {
 
-    private suspend fun handleChannel(response: ICrunchyContainer<ICrunchyRssChannel<S>>) {
+    private suspend fun handleChannel(response: ICrunchyContainer<ICrunchyRssChannel<S>>) =
         if (response.channel != null) {
             val mapped = responseMapper.onResponseMapFrom(
                 response.channel as ICrunchyRssChannel<S>
@@ -44,42 +44,42 @@ internal class CrunchyXmlController<S: IRssCopyright, D> private constructor(
             withContext(dispatchers.io) {
                 responseMapper.onResponseDatabaseInsert(mapped)
             }
+            null
         } else
             throw Throwable("Unexpected error occurred, channel was null")
-    }
 
     /**
      * Response handler for coroutine contexts, mainly for paging
      *
      * @param resource awaiting execution
-     * @param pagingRequestHelper optional paging request callback
+     * @param callback optional paging request callback
      */
     suspend fun news(
         resource: Deferred<Response<CrunchyRssNewsContainer>>,
-        pagingRequestHelper: PagingRequestHelper.Request.Callback
+        callback: RequestCallback
     ) {
-        strategy({
+        strategy(callback) {
             val response = resource.fetchBodyWithRetry(dispatchers.io)
             @Suppress("UNCHECKED_CAST")
             handleChannel(response as ICrunchyContainer<ICrunchyRssChannel<S>>)
-        }, pagingRequestHelper)
+        }
     }
 
     /**
      * Response handler for coroutine contexts, mainly for paging
      *
      * @param resource awaiting execution
-     * @param pagingRequestHelper optional paging request callback
+     * @param callback optional paging request callback
      */
     suspend fun episode(
         resource: Deferred<Response<CrunchyRssEpisodeContainer>>,
-        pagingRequestHelper: PagingRequestHelper.Request.Callback
+        callback: RequestCallback
     ) {
-        strategy({
+        strategy(callback) {
             val response = resource.fetchBodyWithRetry(dispatchers.io)
             @Suppress("UNCHECKED_CAST")
             handleChannel(response as ICrunchyContainer<ICrunchyRssChannel<S>>)
-        }, pagingRequestHelper)
+        }
     }
 
     companion object {

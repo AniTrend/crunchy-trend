@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.feature.series.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import co.anitrend.support.crunchyroll.data.series.usecase.SeriesDetailUseCaseType
 import co.anitrend.support.crunchyroll.feature.series.viewmodel.model.SeriesDetailModelState
 

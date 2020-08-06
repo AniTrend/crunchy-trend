@@ -16,10 +16,10 @@
 
 package co.anitrend.support.crunchyroll.domain.series.repositories
 
-import co.anitrend.arch.domain.common.IUserInterfaceState
+import co.anitrend.arch.domain.state.UiState
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesBrowseQuery
 
-interface ISeriesBrowseRepository<R: IUserInterfaceState<*>> {
+interface ISeriesBrowseRepository<R: UiState<*>> {
 
     fun browseSeries(browseQuery: CrunchySeriesBrowseQuery): R
 }

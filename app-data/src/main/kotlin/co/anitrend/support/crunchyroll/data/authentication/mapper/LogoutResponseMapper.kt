@@ -27,7 +27,7 @@ internal class LogoutResponseMapper : CrunchyMapper<Any?, Any?>() {
      * @param source the incoming data source type
      * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
      */
-    override suspend fun onResponseMapFrom(source: Any?): Nothing? = null
+    override suspend fun onResponseMapFrom(source: Any?): Any? = source
 
     /**
      * Inserts the given object into the implemented room database,

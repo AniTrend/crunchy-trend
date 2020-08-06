@@ -29,11 +29,11 @@ import co.anitrend.support.crunchyroll.core.helper.StorageHelper
 import co.anitrend.support.crunchyroll.core.helper.StorageHelper.toHumanReadableByteValue
 import co.anitrend.support.crunchyroll.feature.settings.R
 
-internal class FloatSeekBarPreference(
+internal class FloatSeekBarPreference @JvmOverloads constructor(
     context: Context,
-    attrs: AttributeSet?,
-    defStyleAttr: Int,
-    defStyleRes: Int
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = R.attr.seekBarPreferenceStyle,
+    defStyleRes: Int = 0
 ) : Preference(context, attrs, defStyleAttr, defStyleRes), SeekBar.OnSeekBarChangeListener {
 
     var value: Float
@@ -59,21 +59,6 @@ internal class FloatSeekBarPreference(
 
     private var defaultValue = 0F
     private var newValue = 0F
-
-    constructor(
-        context: Context,
-        attrs: AttributeSet?,
-        defStyleAttr: Int
-    ) : this(context, attrs, defStyleAttr, 0)
-
-    constructor(
-        context: Context,
-        attrs: AttributeSet?
-    ) : this(context, attrs, R.attr.seekBarPreferenceStyle)
-
-    constructor(
-        context: Context
-    ) : this(context, null)
 
     init {
         widgetLayoutResource = R.layout.preference_float_seek_bar_layout

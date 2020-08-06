@@ -18,11 +18,8 @@ package co.anitrend.support.crunchyroll.data.collection.source.contract
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
-import androidx.paging.PagingRequestHelper
-import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.support.crunchyroll.data.arch.common.CrunchyPagedSource
-import co.anitrend.support.crunchyroll.data.arch.database.dao.ISourceDao
 import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
 import co.anitrend.support.crunchyroll.domain.collection.models.CrunchyCollectionQuery
 
@@ -33,22 +30,10 @@ internal abstract class CollectionSource(
     protected lateinit var query: CrunchyCollectionQuery
         private set
 
-    protected abstract val collectionObservable:
-            ISourceObservable<Nothing?, PagedList<CrunchyCollection>>
-
-    protected abstract suspend fun getCollectionsForSeries(
-        callback: PagingRequestHelper.Request.Callback,
-        requestType: PagingRequestHelper.RequestType,
-        model: CrunchyCollection?
-    )
+    protected abstract val observable: LiveData<PagedList<CrunchyCollection>>
 
     internal operator fun invoke(param: CrunchyCollectionQuery): LiveData<PagedList<CrunchyCollection>> {
         query = param
-        executionTarget = { callback: PagingRequestHelper.Request.Callback,
-                            requestType: PagingRequestHelper.RequestType,
-                            model: CrunchyCollection? ->
-            getCollectionsForSeries(callback, requestType, model)
-        }
-        return collectionObservable(null)
+        return observable
     }
 }

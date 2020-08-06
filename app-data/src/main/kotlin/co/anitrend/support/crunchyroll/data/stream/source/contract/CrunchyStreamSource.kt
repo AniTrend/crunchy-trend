@@ -16,12 +16,17 @@
 
 package co.anitrend.support.crunchyroll.data.stream.source.contract
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import co.anitrend.arch.data.request.callback.RequestCallback
+import co.anitrend.arch.data.request.contract.IRequestHelper
 import co.anitrend.arch.data.source.core.SupportCoreDataSource
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 internal abstract class CrunchyStreamSource(
@@ -29,23 +34,22 @@ internal abstract class CrunchyStreamSource(
 ) : SupportCoreDataSource(supportDispatchers) {
 
     protected lateinit var query: CrunchyMediaStreamQuery
-        private set
 
-    protected val observable = MutableLiveData<List<MediaStream>?>()
+    protected abstract val observable: Flow<MediaStream>
 
-    protected abstract suspend fun getMediaStream()
+    protected abstract suspend fun getMediaStream(
+        query: CrunchyMediaStreamQuery,
+        callback: RequestCallback
+    )
 
-    operator fun invoke(mediaStreamQuery: CrunchyMediaStreamQuery): LiveData<List<MediaStream>?> {
+    operator fun invoke(mediaStreamQuery: CrunchyMediaStreamQuery): Flow<MediaStream> {
         query = mediaStreamQuery
-        retry = { launch { getMediaStream() } }
-        launch { getMediaStream() }
-        return observable
-    }
+        launch {
+            requestHelper.runIfNotRunning(
+                IRequestHelper.RequestType.INITIAL
+            ) { getMediaStream(mediaStreamQuery, it) }
+        }
 
-    /**
-     * Clears data sources (databases, preferences, e.t.c)
-     */
-    override suspend fun clearDataSource() {
-        observable.value = null
+        return observable
     }
 }

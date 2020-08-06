@@ -16,19 +16,24 @@
 
 package co.anitrend.support.crunchyroll.data.authentication.source.contract
 
-import androidx.lifecycle.liveData
-import co.anitrend.arch.data.source.coroutine.SupportCoroutineDataSource
+import co.anitrend.arch.data.request.callback.RequestCallback
+import co.anitrend.arch.data.request.contract.IRequestHelper
+import co.anitrend.arch.data.source.core.SupportCoreDataSource
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import kotlinx.coroutines.flow.flow
 
 internal abstract class LogoutSource(
     supportDispatchers: SupportDispatchers
-) : SupportCoroutineDataSource(supportDispatchers) {
+) : SupportCoreDataSource(supportDispatchers) {
 
-    protected abstract suspend fun logoutUser(): Boolean
+    protected abstract suspend fun logoutUser(callback: RequestCallback): Boolean
 
-    operator fun invoke() = liveData(context = coroutineContext) {
-        retry = { logoutUser() }
-        val result = logoutUser()
-        emit(result)
+    operator fun invoke() = flow {
+        requestHelper.runIfNotRunning(
+            IRequestHelper.RequestType.INITIAL
+        ) {
+            val result = logoutUser(it)
+            emit(result)
+        }
     }
 }

@@ -23,6 +23,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import co.anitrend.support.crunchyroll.data.arch.database.dao.IDao
 import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 internal interface CrunchySeriesDao : IDao<CrunchySeriesEntity> {
@@ -78,6 +79,15 @@ internal interface CrunchySeriesDao : IDao<CrunchySeriesEntity> {
     fun findBySeriesIdX(
         seriesId: Long
     ): LiveData<CrunchySeriesEntity?>
+
+    @Query("""
+        select *
+        from CrunchySeriesEntity 
+        where id = :seriesId
+    """)
+    fun findBySeriesIdFlow(
+        seriesId: Long
+    ): Flow<CrunchySeriesEntity?>
 
 
     @Query("""

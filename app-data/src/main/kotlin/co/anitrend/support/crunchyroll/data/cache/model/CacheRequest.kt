@@ -24,6 +24,7 @@ enum class CacheRequest(val alias: String) {
     MEDIA("media"),
     NEWS("news"),
     SERIES("series"),
+    STREAM("stream"),
     TRACKER("tracker"),
     USER("user")
 }

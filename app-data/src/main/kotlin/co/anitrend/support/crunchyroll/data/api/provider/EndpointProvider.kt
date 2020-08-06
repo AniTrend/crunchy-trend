@@ -52,12 +52,7 @@ internal object EndpointProvider {
                     Adding request and response interceptors for request: ${endpointType.name}
                     """.trimIndent()
                 )
-                val dispatcher = Dispatcher().apply {
-                    // Setting the dispatcher to only run one request at a time
-                    maxRequests = 1
-                }
                 builder
-                    .dispatcher(dispatcher)
                     .addInterceptor(
                         CrunchyRequestInterceptor(
                             authentication = scope.get(),

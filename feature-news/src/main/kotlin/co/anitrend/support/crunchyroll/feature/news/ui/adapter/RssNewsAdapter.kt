@@ -25,7 +25,7 @@ import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
 import co.anitrend.arch.recycler.adapter.SupportPagedListAdapter
 import co.anitrend.arch.recycler.model.contract.IRecyclerItem
 import co.anitrend.arch.theme.animator.ScaleAnimator
-import co.anitrend.arch.theme.animator.contract.ISupportAnimator
+import co.anitrend.arch.theme.animator.contract.AbstractAnimator
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import co.anitrend.support.crunchyroll.feature.news.controller.model.NewsItem
 import io.noties.markwon.Markwon
@@ -34,7 +34,7 @@ class RssNewsAdapter(
     markwon: Markwon,
     override val resources: Resources,
     override val stateConfiguration: IStateLayoutConfig,
-    override val customSupportAnimator: ISupportAnimator? = ScaleAnimator(),
+    override val customSupportAnimator: AbstractAnimator? = ScaleAnimator(),
     override val mapper: (CrunchyNews?) -> IRecyclerItem = { NewsItem(it, markwon) }
 ) : SupportPagedListAdapter<CrunchyNews>(NewsItem.DIFFER) {
 

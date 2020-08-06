@@ -17,8 +17,8 @@
 package co.anitrend.support.crunchyroll.data.arch.common
 
 import androidx.paging.PagedList
-import androidx.paging.PagingRequestHelper.Request
-import androidx.paging.PagingRequestHelper.RequestType
+import co.anitrend.arch.data.request.callback.RequestCallback
+import co.anitrend.arch.data.request.contract.IRequestHelper
 import co.anitrend.arch.data.source.paging.SupportPagingDataSource
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import kotlinx.coroutines.launch
@@ -30,25 +30,23 @@ internal abstract class CrunchyPagedSource<T>(
     supportDispatchers: SupportDispatchers
 ) : SupportPagingDataSource<T>(supportDispatchers) {
 
-    @Volatile
-    protected lateinit var executionTarget: suspend (
-        callback: Request.Callback,
-        requestType: RequestType,
-        model: T?
-    ) -> Unit
+    abstract suspend operator fun invoke(
+        callback: RequestCallback,
+        requestType: IRequestHelper.RequestType,
+        model: T? = null
+    )
 
     /**
      * Called when zero items are returned from an initial load of the PagedList's data source.
      */
     override fun onZeroItemsLoaded() {
-        pagingRequestHelper.runIfNotRunning(
-            RequestType.INITIAL
-        ) { pagingRequestCallback ->
-            launch {
-                executionTarget(
+        launch {
+            requestHelper.runIfNotRunning(
+                IRequestHelper.RequestType.INITIAL
+            ) { pagingRequestCallback ->
+                invoke(
                     pagingRequestCallback,
-                    RequestType.INITIAL,
-                    null
+                    IRequestHelper.RequestType.INITIAL
                 )
             }
         }
@@ -63,14 +61,14 @@ internal abstract class CrunchyPagedSource<T>(
      * @param itemAtEnd The first item of PagedList
      */
     override fun onItemAtEndLoaded(itemAtEnd: T) {
-        pagingRequestHelper.runIfNotRunning(
-            RequestType.AFTER
-        ) { pagingRequestCallback ->
-            launch {
+        launch {
+            requestHelper.runIfNotRunning(
+                IRequestHelper.RequestType.AFTER
+            ) { pagingRequestCallback ->
                 supportPagingHelper.onPageNext()
-                executionTarget(
+                invoke(
                     pagingRequestCallback,
-                    RequestType.AFTER,
+                    IRequestHelper.RequestType.AFTER,
                     itemAtEnd
                 )
             }

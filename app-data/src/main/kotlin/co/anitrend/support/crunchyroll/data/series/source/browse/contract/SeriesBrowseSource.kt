@@ -18,8 +18,6 @@ package co.anitrend.support.crunchyroll.data.series.source.browse.contract
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
-import androidx.paging.PagingRequestHelper
-import co.anitrend.arch.data.source.contract.ISourceObservable
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.support.crunchyroll.data.arch.common.CrunchyPagedSource
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
@@ -32,14 +30,7 @@ internal abstract class SeriesBrowseSource(
     protected lateinit var query: CrunchySeriesBrowseQuery
         private set
 
-    abstract val browseObservable:
-            ISourceObservable<Nothing?, PagedList<CrunchySeries>>
-
-    protected abstract suspend fun browseSeries(
-        callback: PagingRequestHelper.Request.Callback,
-        requestType: PagingRequestHelper.RequestType,
-        model: CrunchySeries?
-    )
+    protected abstract val observable: LiveData<PagedList<CrunchySeries>>
 
     internal operator fun invoke(browseQuery: CrunchySeriesBrowseQuery): LiveData<PagedList<CrunchySeries>> {
         runCatching {
@@ -48,14 +39,7 @@ internal abstract class SeriesBrowseSource(
             if (query.filter != browseQuery.filter)
                 supportPagingHelper.onPageRefresh()
         }
-
         query = browseQuery
-        executionTarget = {
-                callback: PagingRequestHelper.Request.Callback,
-                requestType: PagingRequestHelper.RequestType,
-                model: CrunchySeries? ->
-            browseSeries(callback, requestType, model)
-        }
-        return browseObservable(null)
+        return observable
     }
 }

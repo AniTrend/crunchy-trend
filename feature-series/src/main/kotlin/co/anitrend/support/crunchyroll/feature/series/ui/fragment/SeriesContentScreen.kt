@@ -22,7 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.*
 import co.anitrend.arch.domain.entities.NetworkState
-import co.anitrend.arch.extension.ext.LAZY_MODE_UNSAFE
+import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.extension.ext.argument
 import co.anitrend.arch.extension.ext.attachComponent
 import co.anitrend.arch.extension.ext.detachComponent
@@ -55,7 +55,7 @@ class SeriesContentScreen : CrunchyFragment() {
 
     private lateinit var binding: SeriesContentBinding
 
-    private val seriesGenreAdapter by lazy(LAZY_MODE_UNSAFE) {
+    private val seriesGenreAdapter by lazy(UNSAFE) {
         SeriesGenreAdapter(
             resources = resources,
             stateConfiguration = StateLayoutConfig()
@@ -72,6 +72,7 @@ class SeriesContentScreen : CrunchyFragment() {
                 if (it != null) {
                     binding.supportStateLayout.networkMutableStateFlow.value = NetworkState.Success
                     seriesGenreAdapter.submitList(it.genres)
+                    presenter.setUp(it, binding)
                 }
             }
         )
@@ -162,7 +163,6 @@ class SeriesContentScreen : CrunchyFragment() {
     ): View? {
         binding = SeriesContentBinding.inflate(inflater, container, false)
         binding.supportStateLayout.stateConfigFlow.value = get()
-        binding.lifecycleOwner = this
         return binding.root
     }
 
@@ -178,9 +178,6 @@ class SeriesContentScreen : CrunchyFragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.viewModel = viewModel
-        binding.presenter = presenter
-
         binding.seriesInfo.seriesSeasons.setOnClickListener {
             payload?.seriesId?.also { seriesId ->
                 val collectionPayload = NavigationTargets.Collection.Payload(

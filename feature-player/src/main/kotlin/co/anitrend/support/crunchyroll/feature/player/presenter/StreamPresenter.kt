@@ -21,7 +21,6 @@ import co.anitrend.support.crunchyroll.navigation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
-import co.anitrend.support.crunchyroll.domain.stream.enums.CrunchyStreamQuality
 import co.anitrend.support.crunchyroll.feature.player.model.stream.MediaStreamItem
 import co.anitrend.support.crunchyroll.feature.player.model.stream.MediaStreamWithExtras
 
@@ -30,24 +29,18 @@ class StreamPresenter(
     settings: CrunchySettings
 ) : CrunchyCorePresenter(context, settings) {
 
-    fun getAdaptiveStreamIndex(model: List<MediaStreamItem>)= model.indexOfFirst {
-        it.mediaStreamQuality == CrunchyStreamQuality.adaptive
-    }
-
-    fun mapToStreamItems(
-        mediaStreams: List<MediaStream>,
+    fun toStreamItem(
+        stream: MediaStream,
         payload: NavigationTargets.MediaPlayer.Payload?
-    ): List<MediaStreamItem> {
-        return mediaStreams.map {
-            MediaStreamItem.transform(
-                MediaStreamWithExtras(
-                    mediaTitle = payload?.episodeTitle,
-                    mediaSubTitle = payload?.collectionName,
-                    mediaArtWorkThumbnail = payload?.collectionThumbnail,
-                    mediaThumbnail = payload?.episodeThumbnail,
-                    mediaStream = it
-                )
+    ): MediaStreamItem {
+        return MediaStreamItem.transform(
+            MediaStreamWithExtras(
+                mediaTitle = payload?.episodeTitle,
+                mediaSubTitle = payload?.collectionName,
+                mediaArtWorkThumbnail = payload?.collectionThumbnail,
+                mediaThumbnail = payload?.episodeThumbnail,
+                mediaStream = stream
             )
-        }
+        )
     }
 }

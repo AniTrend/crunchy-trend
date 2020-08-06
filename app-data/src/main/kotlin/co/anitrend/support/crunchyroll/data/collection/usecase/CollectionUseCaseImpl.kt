@@ -17,12 +17,11 @@
 package co.anitrend.support.crunchyroll.data.collection.usecase
 
 import androidx.paging.PagedList
-import co.anitrend.arch.data.model.UserInterfaceState
 import co.anitrend.arch.data.repository.contract.ISupportRepository
+import co.anitrend.arch.data.state.DataState
 import co.anitrend.support.crunchyroll.data.collection.repository.CollectionRepository
 import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
 import co.anitrend.support.crunchyroll.domain.collection.interactors.CollectionUseCase
-import co.anitrend.support.crunchyroll.domain.collection.repositories.ICollectionRepository
 
 internal class CollectionUseCaseImpl(
     repository: CollectionRepository
@@ -37,4 +36,4 @@ internal class CollectionUseCaseImpl(
     }
 }
 
-typealias CollectionUseCaseType = CollectionUseCase<UserInterfaceState<PagedList<CrunchyCollection>>>
+typealias CollectionUseCaseType = CollectionUseCase<DataState<PagedList<CrunchyCollection>>>

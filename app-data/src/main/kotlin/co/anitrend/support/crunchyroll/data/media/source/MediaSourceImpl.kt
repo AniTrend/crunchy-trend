@@ -17,11 +17,12 @@
 package co.anitrend.support.crunchyroll.data.media.source
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import androidx.paging.PagedList
-import androidx.paging.PagingRequestHelper
 import androidx.paging.toLiveData
-import co.anitrend.arch.data.source.contract.ISourceObservable
-import co.anitrend.arch.data.util.SupportDataKeyStore
+import co.anitrend.arch.data.request.callback.RequestCallback
+import co.anitrend.arch.data.request.contract.IRequestHelper
+import co.anitrend.arch.data.util.PAGING_CONFIGURATION
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
@@ -35,7 +36,9 @@ import co.anitrend.support.crunchyroll.data.media.mapper.MediaResponseMapper
 import co.anitrend.support.crunchyroll.data.media.source.contract.MediaSource
 import co.anitrend.support.crunchyroll.data.media.transformer.MediaTransformer
 import co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 
 internal class MediaSourceImpl(
     private val mapper: MediaResponseMapper,
@@ -46,9 +49,25 @@ internal class MediaSourceImpl(
     supportDispatchers: SupportDispatchers
 ) : MediaSource(supportDispatchers) {
 
-    override suspend fun getMediaForCollection(
-        callback: PagingRequestHelper.Request.Callback,
-        requestType: PagingRequestHelper.RequestType,
+    override val observable = liveData {
+        val localSource =
+            mediaDao.findByCollectionIdFactory(query.collectionId)
+
+        val result = localSource.map {
+            MediaTransformer.transform(it)
+        }
+
+        emitSource(
+            result.toLiveData(
+                config = PAGING_CONFIGURATION,
+                boundaryCallback = this@MediaSourceImpl
+            )
+        )
+    }
+
+    override suspend fun invoke(
+        callback: RequestCallback,
+        requestType: IRequestHelper.RequestType,
         model: CrunchyMedia?
     ) {
         CrunchyPagingConfigHelper(requestType, supportPagingHelper) {
@@ -74,38 +93,14 @@ internal class MediaSourceImpl(
         controller(deferred, callback)
     }
 
-    override val mediaObservable =
-        object : ISourceObservable<Nothing?, PagedList<CrunchyMedia>> {
-
-            /**
-             * Returns the appropriate observable which we will monitor for updates,
-             * common implementation may include but not limited to returning
-             * data source live data for a database
-             *
-             * @param parameter to use when executing
-             */
-            override fun invoke(parameter: Nothing?): LiveData<PagedList<CrunchyMedia>> {
-
-                val localSource =
-                    mediaDao.findByCollectionIdFactory(query.collectionId)
-
-                val result = localSource.map {
-                    MediaTransformer.transform(it)
-                }
-
-                return result.toLiveData(
-                    config = SupportDataKeyStore.PAGING_CONFIGURATION,
-                    boundaryCallback = this@MediaSourceImpl
-                )
-            }
-        }
-
     /**
      * Clears data sources (databases, preferences, e.t.c)
      */
-    override suspend fun clearDataSource() {
+    override suspend fun clearDataSource(context: CoroutineDispatcher) {
         CrunchyClearDataHelper(settings, supportConnectivity) {
-            mediaDao.clearTableByCollectionId(query.collectionId)
+            withContext(context) {
+                mediaDao.clearTableByCollectionId(query.collectionId)
+            }
         }
     }
 }

@@ -16,8 +16,8 @@
 
 package co.anitrend.support.crunchyroll.data.catalog.usecase
 
-import co.anitrend.arch.data.model.UserInterfaceState
 import co.anitrend.arch.data.repository.contract.ISupportRepository
+import co.anitrend.arch.data.state.DataState
 import co.anitrend.support.crunchyroll.data.catalog.repository.CatalogRepository
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 import co.anitrend.support.crunchyroll.domain.catalog.interactors.CatalogUseCase
@@ -35,4 +35,4 @@ internal class CatalogUseCaseImpl(
     }
 }
 
-typealias CatalogUseCaseType = CatalogUseCase<UserInterfaceState<List<CrunchyCatalogWithSeries>>>
+typealias CatalogUseCaseType = CatalogUseCase<DataState<List<CrunchyCatalogWithSeries>>>

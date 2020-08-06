@@ -16,12 +16,10 @@
 
 package co.anitrend.support.crunchyroll.data.catalog.source
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
-import co.anitrend.arch.data.source.contract.ISourceObservable
+import co.anitrend.arch.data.request.callback.RequestCallback
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
-import co.anitrend.arch.extension.util.SupportExtKeyStore
+import co.anitrend.arch.extension.util.DEFAULT_PAGE_SIZE
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.arch.database.settings.IRefreshBehaviourSettings
 import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyModelField
@@ -33,10 +31,12 @@ import co.anitrend.support.crunchyroll.data.catalog.helper.CatalogCacheHelper
 import co.anitrend.support.crunchyroll.data.catalog.mapper.CatalogResponseMapper
 import co.anitrend.support.crunchyroll.data.catalog.source.contract.CatalogSource
 import co.anitrend.support.crunchyroll.data.catalog.transformer.CrunchyCatalogTransformer
-import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalogFilter
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
 import timber.log.Timber
 
@@ -50,10 +50,20 @@ internal class CatalogSourceImpl(
     supportDispatchers: SupportDispatchers
 ) : CatalogSource(supportDispatchers), KoinComponent {
 
-    // Random fake id for catalog
+    // Static id for catalog id, for persistent
     private val requestId: Long = 100
 
-    override suspend fun getCatalog() {
+    override val observable = flow {
+        val catalogFlow = catalogDao.findAllFlow()
+
+        emitAll(
+            catalogFlow.mapNotNull {
+                CrunchyCatalogTransformer.transform(it)
+            }
+        )
+    }
+
+    override suspend fun getCatalog(callback: RequestCallback) {
         if (cache.shouldUpdateCatalog(requestId, catalogDao.count())) {
             val requests = CrunchySeriesCatalogFilter.values().map {
                 CrunchyBatchQuery(
@@ -62,7 +72,7 @@ internal class CatalogSourceImpl(
                     params = mapOf(
                         "media_type" to "anime",
                         "filter" to it.attribute,
-                        "limit" to SupportExtKeyStore.pagingLimit,
+                        "limit" to DEFAULT_PAGE_SIZE,
                         "offset" to "0",
                         "fields" to CrunchyModelField.seriesFields
                     )
@@ -70,7 +80,7 @@ internal class CatalogSourceImpl(
             }
 
             val results = batchSource
-                .getBatchOfSeries(requests, networkState).orEmpty()
+                .getBatchOfSeries(requests, callback).orEmpty()
 
             mapper.onResponseMapFrom(results)
 
@@ -82,32 +92,15 @@ internal class CatalogSourceImpl(
             Timber.tag(moduleTag).v("Skipping request due to expiry time not satisfied $requestId")
     }
 
-    override val observable =
-        object :ISourceObservable<Nothing?, List<CrunchyCatalogWithSeries>> {
-            /**
-             * Returns the appropriate observable which we will monitor for updates,
-             * common implementation may include but not limited to returning
-             * data source live data for a database
-             *
-             * @param parameter to use when executing
-             */
-            override fun invoke(parameter: Nothing?): LiveData<List<CrunchyCatalogWithSeries>> {
-                val catalogFlow = catalogDao.findAllFlow()
-
-                @Suppress("EXPERIMENTAL_API_USAGE")
-                return catalogFlow.mapNotNull {
-                    CrunchyCatalogTransformer.transform(it)
-                }.flowOn(supportDispatchers.io).asLiveData()
-            }
-        }
-
     /**
      * Clears data sources (databases, preferences, e.t.c)
      */
-    override suspend fun clearDataSource() {
+    override suspend fun clearDataSource(context: CoroutineDispatcher) {
         CrunchyClearDataHelper(settings, supportConnectivity) {
-            cache.invalidateLastRequest(requestId)
-            catalogDao.clearTable()
+            withContext(context) {
+                cache.invalidateLastRequest(requestId)
+                catalogDao.clearTable()
+            }
         }
     }
 }

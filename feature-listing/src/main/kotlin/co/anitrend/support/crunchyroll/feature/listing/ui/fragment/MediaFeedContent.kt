@@ -20,7 +20,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import co.anitrend.arch.extension.ext.LAZY_MODE_UNSAFE
+import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.extension.ext.gone
 import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
@@ -58,7 +58,7 @@ class MediaFeedContent(
 
     override val stateConfig: StateLayoutConfig by inject()
 
-    override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
+    override val supportViewAdapter by lazy(UNSAFE) {
         RssMediaAdapter(
             resources = resources,
             stateConfiguration = stateConfig

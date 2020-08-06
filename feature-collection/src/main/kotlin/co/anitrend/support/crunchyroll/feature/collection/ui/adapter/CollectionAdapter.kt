@@ -25,14 +25,14 @@ import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
 import co.anitrend.arch.recycler.adapter.SupportPagedListAdapter
 import co.anitrend.arch.recycler.model.contract.IRecyclerItem
 import co.anitrend.arch.theme.animator.ScaleAnimator
-import co.anitrend.arch.theme.animator.contract.ISupportAnimator
+import co.anitrend.arch.theme.animator.contract.AbstractAnimator
 import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
 import co.anitrend.support.crunchyroll.feature.collection.controller.model.CollectionItem
 
 class CollectionAdapter(
     override val resources: Resources,
     override val stateConfiguration: IStateLayoutConfig,
-    override val customSupportAnimator: ISupportAnimator? = ScaleAnimator(),
+    override val customSupportAnimator: AbstractAnimator? = ScaleAnimator(),
     override val mapper: (CrunchyCollection?) -> IRecyclerItem = { CollectionItem(it) }
 ) : SupportPagedListAdapter<CrunchyCollection>(CollectionItem.DIFFER) {
 

@@ -14,157 +14,135 @@
   ~    See the License for the specific language governing permissions and
   ~    limitations under the License.
   -->
-
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools">
-
-    <data>
-        <import type="co.anitrend.support.crunchyroll.feature.series.presenter.SeriesDetailPresenter" />
-        <import type="co.anitrend.support.crunchyroll.feature.series.viewmodel.SeriesDetailViewModel" />
-
-        <variable
-                name="presenter"
-                type="SeriesDetailPresenter" />
-        <variable
-                name="viewModel"
-                type="SeriesDetailViewModel" />
-    </data>
-
-        <androidx.core.widget.NestedScrollView
+<androidx.core.widget.NestedScrollView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-            <co.anitrend.arch.ui.view.widget.SupportStateLayout
-                    android:id="@+id/supportStateLayout"
+    <co.anitrend.arch.ui.view.widget.SupportStateLayout
+                android:id="@+id/supportStateLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <co.anitrend.arch.ui.view.image.SupportImageView
+                        android:id="@+id/seriesBanner"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:scaleType="centerCrop"
+                        app:aspectRatio="@fraction/aspect_ratio_wide"
+                        tools:src="@sample/banner" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="horizontal"
+                        android:layout_marginTop="-30dp">
 
                     <co.anitrend.arch.ui.view.image.SupportImageView
-                            android:id="@+id/seriesBanner"
-                            android:layout_width="match_parent"
+                            android:id="@+id/seriesPoster"
+                            android:layout_width="@dimen/series_image_xs"
                             android:layout_height="0dp"
                             android:scaleType="centerCrop"
-                            app:imageUrl="@{viewModel.state.model.landscapeImage}"
-                            app:aspectRatio="@fraction/aspect_ratio_wide"
-                            tools:src="@sample/banner" />
+                            app:aspectRatio="1.5"
+                            tools:src="@sample/poster" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                            android:layout_width="match_parent"
+                            android:layout_weight="2"
+                            android:layout_marginTop="@dimen/xl_margin"
+                            android:layout_marginStart="@dimen/xl_margin"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="-30dp">
+                            android:orientation="vertical">
 
-                        <co.anitrend.arch.ui.view.image.SupportImageView
-                                android:id="@+id/seriesPoster"
-                                android:layout_width="@dimen/series_image_xs"
-                                android:layout_height="0dp"
-                                android:scaleType="centerCrop"
-                                app:aspectRatio="1.5"
-                                app:imageUrl="@{viewModel.state.model.portraitImage}"
-                                tools:src="@sample/poster" />
-
-                        <androidx.appcompat.widget.LinearLayoutCompat
-                                android:layout_weight="2"
+                        <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/seriesTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:maxLines="2"
+                                android:ellipsize="end"
                                 android:layout_marginTop="@dimen/xl_margin"
-                                android:layout_marginStart="@dimen/xl_margin"
+                                android:text="@{viewModel.state.model.name}"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                                tools:text="@sample/series_detail.json/name" />
+
+                        <Space
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/xl_margin" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/seriesPublisher"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:orientation="vertical">
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                                tools:text="@sample/series_detail.json/publisher_name"
+                                />
 
-                            <com.google.android.material.textview.MaterialTextView
-                                    android:id="@+id/seriesTitle"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:maxLines="2"
-                                    android:ellipsize="end"
-                                    android:layout_marginTop="@dimen/xl_margin"
-                                    android:text="@{viewModel.state.model.name}"
-                                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                                    tools:text="@sample/series_detail.json/name" />
+                        <Space
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/xl_margin" />
 
-                            <Space
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="@dimen/xl_margin" />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-                                    android:text="@{presenter.publisherYear(viewModel.state.model)}"
-                                    tools:text="@sample/series_detail.json/publisher_name"
-                                    />
-
-                            <Space
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="@dimen/xl_margin" />
-
-                            <androidx.appcompat.widget.AppCompatRatingBar
-                                    android:id="@+id/seriesRating"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:theme="@style/AppTheme.RatingBarStyle"
-                                    android:layout_gravity="center_horizontal"
-                                    android:rating="@{presenter.seriesRating(viewModel.state.model)}"
-                                    tools:rating="3.5"
-                                    />
-
-                        </androidx.appcompat.widget.LinearLayoutCompat>
-
-                        <androidx.appcompat.widget.AppCompatToggleButton
-                                android:id="@+id/addToListAction"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_marginTop="32dp"
-                                android:layout_marginEnd="@dimen/xl_margin"
-                                android:layout_marginStart="@dimen/xl_margin"
-                                android:background="@drawable/toggle_bookmark"
-                                android:text="@null"
-                                android:textOff="@null"
-                                android:textOn="@null"
-                                android:checked="@{viewModel.state.model.queued}"/>
+                        <androidx.appcompat.widget.AppCompatRatingBar
+                                android:id="@+id/seriesRating"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:theme="@style/AppTheme.RatingBarStyle"
+                                android:layout_gravity="center_horizontal"
+                                tools:rating="3.5"
+                                />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/seriesDescription"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/xl_margin"
-                            android:padding="@dimen/md_margin"
-                            android:text="@{viewModel.state.model.description}"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-                            tools:text="@sample/series_detail.json/description" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/xl_margin"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                            android:text="@string/label_genres" />
-
-                    <co.anitrend.arch.recycler.SupportRecyclerView
-                            android:id="@+id/seriesGenres"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clipToPadding="false"
+                    <androidx.appcompat.widget.AppCompatToggleButton
+                            android:id="@+id/seriesAddToListAction"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginTop="32dp"
                             android:layout_marginEnd="@dimen/xl_margin"
                             android:layout_marginStart="@dimen/xl_margin"
-                            tools:listitem="@layout/adapter_genre"
-                            tools:itemCount="3" />
-
-                    <include layout="@layout/series_info_section"
-                            android:id="@+id/seriesInfo"
-                            app:viewModel="@{viewModel}"
-                            app:presenter="@{presenter}"/>
+                            android:background="@drawable/toggle_bookmark"
+                            android:text="@null"
+                            android:textOff="@null"
+                            android:textOn="@null"/>
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
-            </co.anitrend.arch.ui.view.widget.SupportStateLayout>
 
-        </androidx.core.widget.NestedScrollView>
-</layout>
+                <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/seriesDescription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/xl_margin"
+                        android:padding="@dimen/md_margin"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                        tools:text="@sample/series_detail.json/description" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/xl_margin"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                        android:text="@string/label_genres" />
+
+                <co.anitrend.arch.recycler.SupportRecyclerView
+                        android:id="@+id/seriesGenres"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:layout_marginEnd="@dimen/xl_margin"
+                        android:layout_marginStart="@dimen/xl_margin"
+                        tools:listitem="@layout/adapter_genre"
+                        tools:itemCount="3" />
+
+                <include layout="@layout/series_info_section"
+                        android:id="@+id/seriesInfo"/>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </co.anitrend.arch.ui.view.widget.SupportStateLayout>
+
+</androidx.core.widget.NestedScrollView>

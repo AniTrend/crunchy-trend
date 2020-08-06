@@ -17,7 +17,6 @@
 package co.anitrend.support.crunchyroll.data.session.source.contract
 
 import co.anitrend.arch.data.source.core.SupportCoreDataSource
-import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
 
@@ -27,11 +26,6 @@ internal abstract class SessionSource(
 
     /**
      * Handles the requesting data from a the network source and returns
-     * [NetworkState] to the caller after execution
      */
-    open operator fun invoke(): Session? {
-        networkState.postValue(NetworkState.Loading)
-        retry = { invoke() }
-        return null
-    }
+    abstract operator fun invoke(): Session?
 }

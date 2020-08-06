@@ -16,12 +16,10 @@
 
 package co.anitrend.support.crunchyroll.data.news.source
 
-import androidx.lifecycle.LiveData
-import androidx.paging.PagedList
-import androidx.paging.PagingRequestHelper
+import androidx.lifecycle.liveData
 import androidx.paging.toLiveData
-import co.anitrend.arch.data.source.contract.ISourceObservable
-import co.anitrend.arch.data.util.SupportDataKeyStore
+import co.anitrend.arch.data.request.callback.RequestCallback
+import co.anitrend.arch.data.util.PAGING_CONFIGURATION
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
@@ -33,10 +31,9 @@ import co.anitrend.support.crunchyroll.data.news.datasource.remote.CrunchyNewsFe
 import co.anitrend.support.crunchyroll.data.news.mapper.NewsResponseMapper
 import co.anitrend.support.crunchyroll.data.news.source.contract.NewsSource
 import co.anitrend.support.crunchyroll.data.news.transformer.NewsTransformer
-import co.anitrend.support.crunchyroll.domain.common.RssQuery
-import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 internal class NewsSourceImpl(
     private val mapper: NewsResponseMapper,
@@ -47,30 +44,22 @@ internal class NewsSourceImpl(
     supportDispatchers: SupportDispatchers
 ) : NewsSource(supportDispatchers) {
 
-    override val newsObservable =
-        object : ISourceObservable<Nothing?, PagedList<CrunchyNews>> {
-            /**
-             * Returns the appropriate observable which we will monitor for updates,
-             * common implementation may include but not limited to returning
-             * data source live data for a database
-             *
-             * @param parameter to use when executing
-             */
-            override fun invoke(parameter: Nothing?): LiveData<PagedList<CrunchyNews>> {
-                val localSource = dao.findByAllFactory()
+    override val observable = liveData {
+        val localSource = dao.findByAllFactory()
 
-                val result = localSource.map {
-                    NewsTransformer.transform(it)
-                }
-
-                return result.toLiveData(
-                    config = SupportDataKeyStore.PAGING_CONFIGURATION,
-                    boundaryCallback = this@NewsSourceImpl
-                )
-            }
+        val result = localSource.map {
+            NewsTransformer.transform(it)
         }
 
-    override suspend fun getNewsCatalogue(callback: PagingRequestHelper.Request.Callback) {
+        emitSource(
+            result.toLiveData(
+                config = PAGING_CONFIGURATION,
+                boundaryCallback = this@NewsSourceImpl
+            )
+        )
+    }
+
+    override suspend fun getNewsCatalogue(callback: RequestCallback) {
         val deferred = async {
             endpoint.getMediaNews(query.language)
         }
@@ -89,9 +78,11 @@ internal class NewsSourceImpl(
     /**
      * Clears data sources (databases, preferences, e.t.c)
      */
-    override suspend fun clearDataSource() {
+    override suspend fun clearDataSource(context: CoroutineDispatcher) {
         CrunchyClearDataHelper(settings, supportConnectivity) {
-            dao.clearTable()
+            withContext(context) {
+                dao.clearTable()
+            }
         }
     }
 }

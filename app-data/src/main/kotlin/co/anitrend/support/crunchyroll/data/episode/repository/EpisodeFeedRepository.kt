@@ -17,9 +17,9 @@
 package co.anitrend.support.crunchyroll.data.episode.repository
 
 import androidx.paging.PagedList
-import co.anitrend.arch.data.model.UserInterfaceState
-import co.anitrend.arch.data.model.UserInterfaceState.Companion.create
 import co.anitrend.arch.data.repository.SupportRepository
+import co.anitrend.arch.data.state.DataState
+import co.anitrend.arch.data.state.DataState.Companion.create
 import co.anitrend.support.crunchyroll.data.episode.source.contract.EpisodeFeedSource
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
@@ -28,7 +28,7 @@ import co.anitrend.support.crunchyroll.domain.episode.repositories.IEpisodeFeedR
 internal class EpisodeFeedRepository(
     private val source: EpisodeFeedSource
 ) : SupportRepository(source),
-    IEpisodeFeedRepository<UserInterfaceState<PagedList<CrunchyEpisodeFeed>>> {
+    IEpisodeFeedRepository<DataState<PagedList<CrunchyEpisodeFeed>>> {
 
     override fun getMediaListings(query: RssQuery) =
         source.create(

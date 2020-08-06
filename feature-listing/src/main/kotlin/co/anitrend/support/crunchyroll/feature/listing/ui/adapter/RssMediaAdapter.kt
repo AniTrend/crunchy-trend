@@ -25,15 +25,14 @@ import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
 import co.anitrend.arch.recycler.adapter.SupportPagedListAdapter
 import co.anitrend.arch.recycler.model.contract.IRecyclerItem
 import co.anitrend.arch.theme.animator.ScaleAnimator
-import co.anitrend.arch.theme.animator.contract.ISupportAnimator
+import co.anitrend.arch.theme.animator.contract.AbstractAnimator
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
-import co.anitrend.support.crunchyroll.feature.listing.databinding.AdapterMediaFeedBinding
 import co.anitrend.support.crunchyroll.feature.listing.controller.model.EpisodeFeedItem
 
 class RssMediaAdapter(
     override val resources: Resources,
     override val stateConfiguration: IStateLayoutConfig,
-    override val customSupportAnimator: ISupportAnimator? = ScaleAnimator(),
+    override val customSupportAnimator: AbstractAnimator? = ScaleAnimator(),
     override val mapper: (CrunchyEpisodeFeed?) -> IRecyclerItem = { EpisodeFeedItem(it) }
 ) : SupportPagedListAdapter<CrunchyEpisodeFeed>(EpisodeFeedItem.DIFFER) {
 

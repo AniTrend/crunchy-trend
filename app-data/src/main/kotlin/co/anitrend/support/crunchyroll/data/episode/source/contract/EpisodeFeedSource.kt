@@ -18,8 +18,8 @@ package co.anitrend.support.crunchyroll.data.episode.source.contract
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
-import androidx.paging.PagingRequestHelper
-import co.anitrend.arch.data.source.contract.ISourceObservable
+import co.anitrend.arch.data.request.callback.RequestCallback
+import co.anitrend.arch.data.request.contract.IRequestHelper
 import co.anitrend.arch.data.source.paging.SupportPagingDataSource
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
@@ -33,30 +33,31 @@ internal abstract class EpisodeFeedSource(
     protected lateinit var query: RssQuery
         private set
 
-    protected abstract val episodeListingsObservable:
-            ISourceObservable<Nothing?, PagedList<CrunchyEpisodeFeed>>
+    protected abstract val observable: LiveData<PagedList<CrunchyEpisodeFeed>>
 
     protected abstract suspend fun getMediaListingsCatalogue(
-        callback: PagingRequestHelper.Request.Callback
+        callback: RequestCallback
     )
 
     operator fun invoke(rssQuery: RssQuery): LiveData<PagedList<CrunchyEpisodeFeed>> {
         query = rssQuery
-        return episodeListingsObservable(null)
+        return observable
     }
 
     /**
      * Called when zero items are returned from an initial load of the PagedList's data source.
      */
     override fun onZeroItemsLoaded() {
-        pagingRequestHelper.runIfNotRunning(
-            PagingRequestHelper.RequestType.INITIAL
-        ) {
-            if (supportPagingHelper.isFirstPage()) {
-                launch { getMediaListingsCatalogue(it) }
-                supportPagingHelper.onPageNext()
+        launch {
+            requestHelper.runIfNotRunning(
+                IRequestHelper.RequestType.INITIAL
+            ) {
+                if (supportPagingHelper.isFirstPage()) {
+                    getMediaListingsCatalogue(it)
+                    supportPagingHelper.onPageNext()
+                }
+                else it.recordSuccess()
             }
-            else it.recordSuccess()
         }
     }
 
@@ -70,14 +71,15 @@ internal abstract class EpisodeFeedSource(
      * @param itemAtFront The first item of PagedList
      */
     override fun onItemAtFrontLoaded(itemAtFront: CrunchyEpisodeFeed) {
-        pagingRequestHelper.runIfNotRunning(
-            PagingRequestHelper.RequestType.BEFORE
-        ) {
-            if (supportPagingHelper.isFirstPage()) {
-                launch { getMediaListingsCatalogue(it) }
-                supportPagingHelper.onPageNext()
+        launch {
+            requestHelper.runIfNotRunning(
+                IRequestHelper.RequestType.BEFORE
+            ) {
+                if (supportPagingHelper.isFirstPage()) {
+                    getMediaListingsCatalogue(it)
+                    supportPagingHelper.onPageNext()
+                } else it.recordSuccess()
             }
-            else it.recordSuccess()
         }
     }
 }

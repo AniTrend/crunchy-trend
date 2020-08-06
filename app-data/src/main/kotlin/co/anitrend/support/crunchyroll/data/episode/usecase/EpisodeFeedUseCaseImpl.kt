@@ -17,7 +17,8 @@
 package co.anitrend.support.crunchyroll.data.episode.usecase
 
 import androidx.paging.PagedList
-import co.anitrend.arch.data.model.UserInterfaceState
+import co.anitrend.arch.data.repository.contract.ISupportRepository
+import co.anitrend.arch.data.state.DataState
 import co.anitrend.support.crunchyroll.data.episode.repository.EpisodeFeedRepository
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 import co.anitrend.support.crunchyroll.domain.episode.interactors.EpisodeFeedUseCase
@@ -30,8 +31,9 @@ internal class EpisodeFeedUseCaseImpl(
      * Informs underlying repositories or related components running background operations to stop
      */
     override fun onCleared() {
-        (repository as EpisodeFeedRepository).onCleared()
+        repository as ISupportRepository
+        repository.onCleared()
     }
 }
 
-typealias EpisodeFeedUseCaseType = EpisodeFeedUseCase<UserInterfaceState<PagedList<CrunchyEpisodeFeed>>>
+typealias EpisodeFeedUseCaseType = EpisodeFeedUseCase<DataState<PagedList<CrunchyEpisodeFeed>>>

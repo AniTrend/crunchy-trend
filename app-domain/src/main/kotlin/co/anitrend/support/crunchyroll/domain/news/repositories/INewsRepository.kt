@@ -16,10 +16,10 @@
 
 package co.anitrend.support.crunchyroll.domain.news.repositories
 
-import co.anitrend.arch.domain.common.IUserInterfaceState
+import co.anitrend.arch.domain.state.UiState
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 
-interface INewsRepository<R: IUserInterfaceState<*>> {
+interface INewsRepository<R: UiState<*>> {
 
     fun getNewsListings(query: RssQuery): R
 }

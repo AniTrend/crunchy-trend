@@ -16,21 +16,21 @@
 
 package co.anitrend.support.crunchyroll.domain.collection.interactors
 
-import co.anitrend.arch.domain.common.IUserInterfaceState
-import co.anitrend.arch.domain.usecases.ISupportUseCase
+import co.anitrend.arch.domain.common.IUseCase
+import co.anitrend.arch.domain.state.UiState
 import co.anitrend.support.crunchyroll.domain.collection.models.CrunchyCollectionQuery
 import co.anitrend.support.crunchyroll.domain.collection.repositories.ICollectionRepository
 
-abstract class CollectionUseCase<R: IUserInterfaceState<*>>(
+abstract class CollectionUseCase<R: UiState<*>>(
     protected val repository: ICollectionRepository<R>
-) : ISupportUseCase<CrunchyCollectionQuery, R> {
+) : IUseCase {
 
     /**
      * Solves a given use case in the implementation target
      *
      * @param param input for solving a given use case
      */
-    override fun invoke(param: CrunchyCollectionQuery): R {
+    operator fun invoke(param: CrunchyCollectionQuery): R {
         return repository.getCollection(param)
     }
 }

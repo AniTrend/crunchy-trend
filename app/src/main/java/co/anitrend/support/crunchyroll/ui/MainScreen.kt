@@ -23,7 +23,7 @@ import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import co.anitrend.arch.extension.ext.LAZY_MODE_UNSAFE
+import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.extension.ext.extra
 import co.anitrend.arch.ui.activity.SupportActivity
 import co.anitrend.arch.ui.fragment.SupportFragment
@@ -46,7 +46,7 @@ import timber.log.Timber
 
 class MainScreen : CrunchyActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    private val bottomDrawerBehavior by lazy(LAZY_MODE_UNSAFE) {
+    private val bottomDrawerBehavior by lazy(UNSAFE) {
         BottomSheetBehavior.from(bottomNavigationDrawer)
     }
 
@@ -108,7 +108,12 @@ class MainScreen : CrunchyActivity(), NavigationView.OnNavigationItemSelectedLis
                 bottomDrawerBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                 return
             }
-            else -> super.onBackPressed()
+            else -> {
+                if (currentFragmentInterceptsActionUp())
+                    return
+                /** fixes leak discussed [here](https://issuetracker.google.com/issues/139738913) */
+                finishAfterTransition()
+            }
         }
     }
 

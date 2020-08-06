@@ -16,10 +16,13 @@
 
 package co.anitrend.support.crunchyroll.domain.session.interactors
 
+import co.anitrend.arch.domain.common.IUseCase
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
 import co.anitrend.support.crunchyroll.domain.session.repositories.ISessionRepository
 
-abstract class CoreSessionUseCase(protected val repository: ISessionRepository) {
+abstract class CoreSessionUseCase(
+    protected val repository: ISessionRepository
+) : IUseCase {
     operator fun invoke(): Session? {
         return repository.getCoreSession()
     }

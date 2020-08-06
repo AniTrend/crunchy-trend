@@ -18,8 +18,8 @@ package co.anitrend.support.crunchyroll.data.series.source.search.contract
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
-import androidx.paging.PagingRequestHelper
-import co.anitrend.arch.data.source.contract.ISourceObservable
+import co.anitrend.arch.data.request.callback.RequestCallback
+import co.anitrend.arch.data.request.contract.IRequestHelper
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.support.crunchyroll.data.arch.common.CrunchyPagedSource
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
@@ -32,31 +32,19 @@ internal abstract class SeriesSearchSource(
     protected lateinit var query: CrunchySeriesSearchQuery
         private set
 
-    abstract val searchObservable:
-            ISourceObservable<Nothing?, PagedList<CrunchySeries>>
+    protected abstract fun observable(
+        searchQuery: CrunchySeriesSearchQuery
+    ): LiveData<PagedList<CrunchySeries>>
 
-
-    protected abstract suspend fun searchForSeries(
-        callback: PagingRequestHelper.Request.Callback,
-        requestType: PagingRequestHelper.RequestType,
-        model: CrunchySeries?
-    )
-
-
-    internal operator fun invoke(searchQuery: CrunchySeriesSearchQuery): LiveData<PagedList<CrunchySeries>> {
+    internal operator fun invoke(
+        searchQuery: CrunchySeriesSearchQuery
+    ): LiveData<PagedList<CrunchySeries>> {
         runCatching {
             // reset paging if our search query has changed
             if (query.searchTerm != searchQuery.searchTerm)
                 supportPagingHelper.onPageRefresh()
         }
-
         query = searchQuery
-        executionTarget = {
-                callback: PagingRequestHelper.Request.Callback,
-                requestType: PagingRequestHelper.RequestType,
-                model: CrunchySeries? ->
-            searchForSeries(callback, requestType, model)
-        }
-        return searchObservable(null)
+        return observable(searchQuery)
     }
 }

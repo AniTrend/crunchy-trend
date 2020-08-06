@@ -16,27 +16,30 @@
 
 package co.anitrend.support.crunchyroll.data.catalog.source.contract
 
-import androidx.lifecycle.LiveData
-import co.anitrend.arch.data.source.contract.ISourceObservable
+import co.anitrend.arch.data.request.callback.RequestCallback
+import co.anitrend.arch.data.request.contract.IRequestHelper
 import co.anitrend.arch.data.source.core.SupportCoreDataSource
-import co.anitrend.arch.data.source.coroutine.SupportCoroutineDataSource
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
-import co.anitrend.support.crunchyroll.domain.catalog.models.CrunchyCatalogQuery
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 internal abstract class CatalogSource(
     supportDispatchers: SupportDispatchers
-) : SupportCoroutineDataSource(supportDispatchers) {
+) : SupportCoreDataSource(supportDispatchers) {
 
-    protected abstract val observable:
-            ISourceObservable<Nothing?, List<CrunchyCatalogWithSeries>>
+    protected abstract val observable: Flow<List<CrunchyCatalogWithSeries>>
 
-    protected abstract suspend fun getCatalog()
+    protected abstract suspend fun getCatalog(callback: RequestCallback)
 
-    operator fun invoke(): LiveData<List<CrunchyCatalogWithSeries>> {
-        retry = { getCatalog() }
-        launch { getCatalog() }
-        return observable(null)
+    operator fun invoke(): Flow<List<CrunchyCatalogWithSeries>> {
+        launch {
+            requestHelper.runIfNotRunning(
+                IRequestHelper.RequestType.INITIAL
+            ) {
+                getCatalog(it)
+            }
+        }
+        return observable
     }
 }

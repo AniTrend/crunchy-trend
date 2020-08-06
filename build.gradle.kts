@@ -1,5 +1,9 @@
 import java.net.URI
 
+plugins {
+    id("com.github.ben-manes.versions") version "0.29.0"
+}
+
 buildscript {
     repositories {
         google()
@@ -33,3 +37,13 @@ tasks {
 }
 
 plugins.apply("koin")
+
+tasks.named(
+    "dependencyUpdates",
+    com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask::class.java
+).configure {
+    checkForGradleUpdate = false
+    outputFormatter = "json"
+    outputDir = "build/dependencyUpdates"
+    reportfileName = "report"
+}

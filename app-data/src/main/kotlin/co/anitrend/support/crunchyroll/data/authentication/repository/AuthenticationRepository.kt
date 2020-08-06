@@ -16,9 +16,10 @@
 
 package co.anitrend.support.crunchyroll.data.authentication.repository
 
-import co.anitrend.arch.data.model.UserInterfaceState
-import co.anitrend.arch.data.model.UserInterfaceState.Companion.create
+import androidx.lifecycle.asLiveData
 import co.anitrend.arch.data.repository.SupportRepository
+import co.anitrend.arch.data.state.DataState
+import co.anitrend.arch.data.state.DataState.Companion.create
 import co.anitrend.support.crunchyroll.data.authentication.source.contract.LoginSource
 import co.anitrend.support.crunchyroll.data.authentication.source.contract.LogoutSource
 import co.anitrend.support.crunchyroll.domain.authentication.models.CrunchyLoginQuery
@@ -30,12 +31,12 @@ internal class AuthenticationRepository(
     private val loginSource: LoginSource,
     private val logoutSource: LogoutSource
 ) : SupportRepository(loginSource),
-    ILoginRepository<UserInterfaceState<CrunchyUser?>>,
-    ILogoutRepository<UserInterfaceState<Boolean>> {
+    ILoginRepository<DataState<CrunchyUser?>>,
+    ILogoutRepository<DataState<Boolean>> {
 
     override fun loggedInUser() =
         loginSource.create(
-            model = loginSource.loggedInUser()
+            model = loginSource.loggedInUser().asLiveData()
         )
 
     /**
@@ -51,7 +52,7 @@ internal class AuthenticationRepository(
      */
     override fun logoutUser() =
         logoutSource.create(
-            model = logoutSource()
+            model = logoutSource().asLiveData()
         )
 
     /**

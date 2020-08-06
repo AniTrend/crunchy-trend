@@ -25,7 +25,7 @@ import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
 import co.anitrend.arch.recycler.adapter.SupportListAdapter
 import co.anitrend.arch.recycler.model.contract.IRecyclerItem
 import co.anitrend.arch.theme.animator.ScaleAnimator
-import co.anitrend.arch.theme.animator.contract.ISupportAnimator
+import co.anitrend.arch.theme.animator.contract.AbstractAnimator
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.shared.series.controller.model.SeriesGridItem
 import co.anitrend.support.crunchyroll.shared.series.controller.model.SeriesItem
@@ -33,7 +33,7 @@ import co.anitrend.support.crunchyroll.shared.series.controller.model.SeriesItem
 class SeriesGridViewAdapter(
 override val resources: Resources,
 override val stateConfiguration: IStateLayoutConfig,
-override val customSupportAnimator: ISupportAnimator? = ScaleAnimator(),
+override val customSupportAnimator: AbstractAnimator? = ScaleAnimator(),
 override val mapper: (CrunchySeries?) -> IRecyclerItem = { SeriesGridItem(it) }
 ) : SupportListAdapter<CrunchySeries>(SeriesItem.DIFFER) {
 

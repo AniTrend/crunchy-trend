@@ -16,21 +16,21 @@
 
 package co.anitrend.support.crunchyroll.domain.series.interactors
 
-import co.anitrend.arch.domain.common.IUserInterfaceState
-import co.anitrend.arch.domain.usecases.ISupportUseCase
+import co.anitrend.arch.domain.common.IUseCase
+import co.anitrend.arch.domain.state.UiState
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesSearchQuery
 import co.anitrend.support.crunchyroll.domain.series.repositories.ISeriesSearchRepository
 
-abstract class SeriesSearchUseCase<R: IUserInterfaceState<*>>(
+abstract class SeriesSearchUseCase<R: UiState<*>>(
     protected val repository: ISeriesSearchRepository<R>
-) : ISupportUseCase<CrunchySeriesSearchQuery, R> {
+) : IUseCase {
 
     /**
      * Solves a given use case in the implementation target
      *
      * @param param input for solving a given use case
      */
-    override fun invoke(param: CrunchySeriesSearchQuery): R {
+    operator fun invoke(param: CrunchySeriesSearchQuery): R {
         return repository.searchForSeries(param)
     }
 }

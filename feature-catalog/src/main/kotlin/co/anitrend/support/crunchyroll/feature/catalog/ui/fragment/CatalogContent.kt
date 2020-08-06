@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.feature.catalog.ui.fragment
 
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import co.anitrend.arch.extension.ext.LAZY_MODE_UNSAFE
+import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.ui.fragment.list.CrunchyFragmentList
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
@@ -33,7 +33,7 @@ class CatalogContent(
     override val defaultSpanSize: Int = R.integer.single_list_size
 ) : CrunchyFragmentList<CrunchyCatalogWithSeries>() {
 
-    override val supportViewAdapter by lazy(LAZY_MODE_UNSAFE) {
+    override val supportViewAdapter by lazy(UNSAFE) {
             CatalogAdapter(
                 scope = lifecycleScope,
                 resources = resources,

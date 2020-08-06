@@ -26,7 +26,7 @@ import android.os.Environment
 import android.view.Window
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
-import co.anitrend.arch.extension.ext.LAZY_MODE_UNSAFE
+import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.extension.ext.extra
 import co.anitrend.arch.extension.ext.systemServiceOf
 import co.anitrend.support.crunchyroll.core.common.DEFAULT_ANIMATION_DURATION
@@ -46,12 +46,12 @@ class ImageViewerScreen : CrunchyActivity() {
     private val payload: NavigationTargets.ImageViewer.Payload?
             by extra(NavigationTargets.ImageViewer.PAYLOAD)
 
-    private val binding by lazy(LAZY_MODE_UNSAFE) {
+    private val binding by lazy(UNSAFE) {
         ImageViewScreenBinding.inflate(layoutInflater)
     }
 
     private val subSamplingTarget
-            by lazy(LAZY_MODE_UNSAFE) {
+            by lazy(UNSAFE) {
                 object : CustomViewTarget<SubsamplingScaleImageView, File>(
                     binding.subSamplingImageView
                 ) {

@@ -17,31 +17,36 @@
 package co.anitrend.support.crunchyroll.data.authentication.source.contract
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import co.anitrend.arch.data.source.coroutine.SupportCoroutineDataSource
+import co.anitrend.arch.data.request.callback.RequestCallback
+import co.anitrend.arch.data.request.contract.IRequestHelper
+import co.anitrend.arch.data.source.core.SupportCoreDataSource
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.support.crunchyroll.domain.authentication.models.CrunchyLoginQuery
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 internal abstract class LoginSource(
     supportDispatchers: SupportDispatchers
-) : SupportCoroutineDataSource(supportDispatchers) {
+) : SupportCoreDataSource(supportDispatchers) {
 
     protected lateinit var query: CrunchyLoginQuery
         private set
 
     protected abstract val observable: LiveData<CrunchyUser?>
 
-    protected abstract suspend fun loginUser()
-    abstract fun loggedInUser(): LiveData<CrunchyUser?>
+    protected abstract suspend fun loginUser(callback: RequestCallback)
+    abstract fun loggedInUser(): Flow<CrunchyUser?>
 
-    operator fun invoke(param: CrunchyLoginQuery) =
-        liveData(coroutineContext) {
-            query = param
-            retry = { loginUser() }
-            loginUser()
-            emitSource(
-                observable
-            )
+    operator fun invoke(param: CrunchyLoginQuery): LiveData<CrunchyUser?> {
+        query = param
+        launch(coroutineContext) {
+            requestHelper.runIfNotRunning(
+                IRequestHelper.RequestType.INITIAL
+            ) {
+                loginUser(it)
+            }
         }
+        return observable
+    }
 }
