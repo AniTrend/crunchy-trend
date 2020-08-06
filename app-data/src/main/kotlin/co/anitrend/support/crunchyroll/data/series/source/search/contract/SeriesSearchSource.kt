@@ -32,15 +32,19 @@ internal abstract class SeriesSearchSource(
     protected lateinit var query: CrunchySeriesSearchQuery
         private set
 
-    protected abstract val observable: LiveData<PagedList<CrunchySeries>>
+    protected abstract fun observable(
+        searchQuery: CrunchySeriesSearchQuery
+    ): LiveData<PagedList<CrunchySeries>>
 
-    internal operator fun invoke(searchQuery: CrunchySeriesSearchQuery): LiveData<PagedList<CrunchySeries>> {
+    internal operator fun invoke(
+        searchQuery: CrunchySeriesSearchQuery
+    ): LiveData<PagedList<CrunchySeries>> {
         runCatching {
             // reset paging if our search query has changed
             if (query.searchTerm != searchQuery.searchTerm)
                 supportPagingHelper.onPageRefresh()
         }
         query = searchQuery
-        return observable
+        return observable(searchQuery)
     }
 }

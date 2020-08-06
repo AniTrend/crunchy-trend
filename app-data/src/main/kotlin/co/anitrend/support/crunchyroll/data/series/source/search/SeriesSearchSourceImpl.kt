@@ -16,7 +16,9 @@
 
 package co.anitrend.support.crunchyroll.data.series.source.search
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import androidx.paging.PagedList
 import androidx.paging.toLiveData
 import co.anitrend.arch.data.request.callback.RequestCallback
 import co.anitrend.arch.data.request.contract.IRequestHelper
@@ -34,6 +36,7 @@ import co.anitrend.support.crunchyroll.data.series.datasource.remote.CrunchySeri
 import co.anitrend.support.crunchyroll.data.series.mapper.SeriesResponseMapper
 import co.anitrend.support.crunchyroll.data.series.source.search.contract.SeriesSearchSource
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
+import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesSearchQuery
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -47,12 +50,12 @@ internal class SeriesSearchSourceImpl(
     supportDispatchers: SupportDispatchers
 ) : SeriesSearchSource(supportDispatchers) {
 
-    override val observable = liveData {
+    override fun observable(
+        searchQuery: CrunchySeriesSearchQuery
+    ) = liveData {
         // Going to use wild cards here since fts isn't matching well with api results
         val localSource =
-            seriesDao.findBySeriesNameWildCardFactory("%${query.searchTerm}%")
-        /*val localSource =
-                    seriesDao.findBySeriesNameFactory(query.searchTerm)*/
+            seriesDao.findBySeriesNameWildCardFactory("%${searchQuery.searchTerm}%")
 
         val result = localSource.map {
             SeriesEntityConverter.convertFrom(it)
