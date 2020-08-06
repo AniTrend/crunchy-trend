@@ -27,6 +27,7 @@ import co.anitrend.support.crunchyroll.data.news.datasource.local.CrunchyRssNews
 import co.anitrend.support.crunchyroll.data.series.datasource.local.CrunchySeriesDao
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionDao
+import co.anitrend.support.crunchyroll.data.stream.datasource.local.CrunchyStreamDao
 
 internal interface ICrunchyDatabase {
 
@@ -46,4 +47,6 @@ internal interface ICrunchyDatabase {
 
     fun crunchyCatalogDao(): CrunchyCatalogDao
     fun crunchyCacheDao(): CacheDao
+
+    fun crunchyStreamDao(): CrunchyStreamDao
 }

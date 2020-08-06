@@ -45,6 +45,37 @@ internal val MIGRATION_1_2 = object : Migration(1, 2) {
     }
 }
 
+internal val MIGRATION_2_3 = object : Migration(2, 3) {
+    /**
+     * Should run the necessary migrations.
+     *
+     * This class cannot access any generated Dao in this method.
+     *
+     * This method is already called inside a transaction and that transaction might actually be a
+     * composite transaction of all necessary `Migration`s.
+     *
+     * @param database The database instance
+     */
+    override fun migrate(database: SupportSQLiteDatabase) {
+        with(database) {
+            val tableName = "CrunchyStreamEntity"
+            execSQL("""
+                CREATE TABLE IF NOT EXISTS `${tableName}` (
+                `mediaId` INTEGER NOT NULL, 
+                `playHead` INTEGER NOT NULL, 
+                `subtitleLanguage` TEXT NOT NULL, 
+                `audioLanguage` TEXT NOT NULL, 
+                `format` TEXT NOT NULL, 
+                `quality` TEXT NOT NULL, 
+                `expires` INTEGER NOT NULL, 
+                `url` TEXT NOT NULL, 
+                PRIMARY KEY(`url`)
+                )
+            """.trimIndent())
+        }
+    }
+}
+
 internal val migrations = arrayOf(
-    MIGRATION_1_2
+    MIGRATION_1_2, MIGRATION_2_3
 )

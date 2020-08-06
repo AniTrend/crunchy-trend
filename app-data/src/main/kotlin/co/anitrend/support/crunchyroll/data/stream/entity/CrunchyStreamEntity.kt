@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2020 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,13 +14,26 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.stream.model
+package co.anitrend.support.crunchyroll.data.stream.entity
 
-import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
 import co.anitrend.support.crunchyroll.domain.stream.enums.CrunchyStreamQuality
 
-internal data class CrunchyStreamModel(
+@Entity(
+    indices = [
+        Index("mediaId", unique = true)
+    ]
+)
+internal data class CrunchyStreamEntity(
+    val mediaId: Long,
+    val playHead: Int,
+    val subtitleLanguage: String,
+    val audioLanguage: String,
+    val format: String,
     val quality: CrunchyStreamQuality,
-    val expires: ISO8601Date,
+    val expires: Long,
+    @PrimaryKey
     val url: String
 )

@@ -28,7 +28,7 @@ import co.anitrend.support.crunchyroll.domain.stream.repositories.IStreamReposit
 internal class CrunchyStreamRepository(
     private val source: CrunchyStreamSource
 ) : SupportRepository(source),
-    IStreamRepository<DataState<List<MediaStream>?>> {
+    IStreamRepository<DataState<MediaStream>> {
 
     override fun getStream(query: CrunchyMediaStreamQuery) =
         source.create(

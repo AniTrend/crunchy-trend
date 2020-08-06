@@ -22,6 +22,7 @@ import co.anitrend.support.crunchyroll.data.arch.database.extension.toEnum
 import co.anitrend.support.crunchyroll.data.cache.model.CacheRequest
 import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalogFilter
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchyMediaType
+import co.anitrend.support.crunchyroll.domain.stream.enums.CrunchyStreamQuality
 import co.anitrend.support.crunchyroll.domain.user.enums.CrunchyAccessType
 
 internal class CrunchyEnumsTypeConverter {
@@ -31,6 +32,9 @@ internal class CrunchyEnumsTypeConverter {
 
     @TypeConverter fun fromMediaType(value: CrunchyMediaType?) = value?.fromEnum()
     @TypeConverter fun toMediaType(value: String?) = value?.toEnum<CrunchyMediaType>()
+
+    @TypeConverter fun fromStreamQuality(value: CrunchyStreamQuality?) = value?.fromEnum()
+    @TypeConverter fun toStreamQuality(value: String?) = value?.toEnum<CrunchyStreamQuality>()
 
     @TypeConverter fun fromCatalogFilter(value: CrunchySeriesCatalogFilter?) = value?.fromEnum()
     @TypeConverter fun toCatalogFilter(value: String?) = value?.toEnum<CrunchySeriesCatalogFilter>()

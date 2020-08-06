@@ -37,6 +37,7 @@ import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesEntity
 import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesFtsEntity
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionCoreEntity
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
+import co.anitrend.support.crunchyroll.data.stream.entity.CrunchyStreamEntity
 
 @Database(
     entities = [
@@ -51,7 +52,8 @@ import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
         CrunchyCatalogEntity::class,
         NewsEntity::class,
         EpisodeFeedEntity::class,
-        CacheLogEntity::class
+        CacheLogEntity::class,
+        CrunchyStreamEntity::class
     ],
     version = CrunchyDatabase.DATABASE_SCHEMA_VERSION
 )
@@ -64,7 +66,7 @@ import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
 internal abstract class CrunchyDatabase: RoomDatabase(), ICrunchyDatabase {
 
     companion object {
-        const val DATABASE_SCHEMA_VERSION = 2
+        const val DATABASE_SCHEMA_VERSION = 3
         fun newInstance(context: Context): CrunchyDatabase {
             return Room.databaseBuilder(
                 context,
