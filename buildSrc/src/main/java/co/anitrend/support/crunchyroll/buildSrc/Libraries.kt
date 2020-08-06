@@ -256,7 +256,7 @@ object Libraries {
         }
 
         object Material {
-            private const val version = "0.1.3"
+            private const val version = "3b58731979"
             const val multiSearch = "com.github.anitrend:material-multi-search:${version}"
         }
 

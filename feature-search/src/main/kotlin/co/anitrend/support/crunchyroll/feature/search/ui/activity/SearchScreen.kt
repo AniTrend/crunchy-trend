@@ -17,74 +17,24 @@
 package co.anitrend.support.crunchyroll.feature.search.ui.activity
 
 import android.os.Bundle
-import co.anitrend.multisearch.model.MultiSearchChangeListener
+import androidx.lifecycle.lifecycleScope
+import co.anitrend.multisearch.model.Search
 import co.anitrend.support.crunchyroll.core.extensions.commit
+import co.anitrend.support.crunchyroll.core.extensions.koinScope
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesSearchQuery
 import co.anitrend.support.crunchyroll.feature.search.R
-import co.anitrend.support.crunchyroll.feature.search.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.search.ui.fragment.SearchContentScreen
 import co.anitrend.support.crunchyroll.feature.search.viewmodel.SeriesSearchViewModel
 import kotlinx.android.synthetic.main.search_activity.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
-import org.koin.androidx.scope.lifecycleScope
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchScreen : CrunchyActivity() {
-
-    private val multiSearchViewListener =
-        object : MultiSearchChangeListener {
-
-            /**
-             * Called when a search item has been selected, or when an item has been removed
-             * and a new selection is made
-             *
-             * @param index character index that has been changed
-             * @param charSequence stream of characters including changes
-             */
-            override fun onItemSelected(index: Int, charSequence: CharSequence) {
-                viewModel.searchQueryLiveData.postValue(
-                    CrunchySeriesSearchQuery(
-                        searchTerm = charSequence.toString()
-                    )
-                )
-            }
-
-            /**
-             * Called when an IME action of done is triggered
-             *
-             * @param index character index that has been changed
-             * @param charSequence stream of characters including changes
-             */
-            override fun onSearchComplete(index: Int, charSequence: CharSequence) {
-
-            }
-
-            /**
-             * Called when a search item has been removed
-             *
-             * @param index
-             */
-            override fun onSearchItemRemoved(index: Int) {
-
-            }
-
-            /**
-             * Called when text has been changed
-             *
-             * @param index character index that has been changed
-             * @param charSequence stream of characters including changes
-             */
-            override fun onTextChanged(index: Int, charSequence: CharSequence) {
-                if (charSequence.isNotBlank())
-                    viewModel.searchQueryLiveData.postValue(
-                        CrunchySeriesSearchQuery(
-                            searchTerm = charSequence.toString()
-                        )
-                    )
-            }
-        }
 
     private val viewModel by viewModel<SeriesSearchViewModel>()
 
@@ -93,7 +43,7 @@ class SearchScreen : CrunchyActivity() {
      */
     override fun configureActivity() {
         super.configureActivity()
-        setupKoinFragmentFactory(lifecycleScope)
+        setupKoinFragmentFactory(koinScope)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,7 +61,29 @@ class SearchScreen : CrunchyActivity() {
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        multiSearch.setSearchViewListener(multiSearchViewListener)
+        lifecycleScope.launchWhenResumed {
+            multiSearch.searchChangeFlow()
+                .filterNotNull()
+                .onEach { search ->
+                    when (search) {
+                        is Search.TextChanged -> {
+                            if (search.charSequence.isNotBlank())
+                                viewModel.searchQueryLiveData.postValue(
+                                    CrunchySeriesSearchQuery(
+                                        searchTerm = search.charSequence.toString()
+                                    )
+                                )
+                        }
+                        is Search.Selected -> {
+                            viewModel.searchQueryLiveData.postValue(
+                                CrunchySeriesSearchQuery(
+                                    searchTerm = search.text.toString()
+                                )
+                            )
+                        }
+                    }
+                }.collect()
+        }
         onUpdateUserInterface()
     }
 
