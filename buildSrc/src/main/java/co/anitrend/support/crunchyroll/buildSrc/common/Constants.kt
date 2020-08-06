@@ -66,5 +66,5 @@ fun Project.isFeatureModule() = name.startsWith(featureModulePattern)
 fun Project.isCoreFeatureModule() = androidModules.contains(name)
 fun Project.isCommonFeatureModule() = name.startsWith(commonModulePattern)
 
-fun Project.hasDataBindingSupport() = name == app || name == auth || name == series
+fun Project.hasDataBindingSupport() = name == app || name == auth
 fun Project.hasCoroutineSupport() = name != navigation || name != domain

@@ -54,7 +54,6 @@ private fun DefaultConfig.applyAdditionalConfiguration(project: Project) {
 
 
     if (!project.isBaseModule()) {
-
         println("Applying vector drawables configuration for module -> ${project.path}")
         vectorDrawables.useSupportLibrary = true
     }
