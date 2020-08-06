@@ -23,34 +23,33 @@ import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 
 internal abstract class CrunchyStreamSource(
     supportDispatchers: SupportDispatchers
 ) : SupportCoreDataSource(supportDispatchers) {
 
-    protected val observable: MutableStateFlow<List<MediaStream>?> = MutableStateFlow(null)
+    protected lateinit var query: CrunchyMediaStreamQuery
+
+    protected abstract val observable: Flow<MediaStream>
 
     protected abstract suspend fun getMediaStream(
         query: CrunchyMediaStreamQuery,
         callback: RequestCallback
     )
 
-    operator fun invoke(mediaStreamQuery: CrunchyMediaStreamQuery) =
-        flow {
+    operator fun invoke(mediaStreamQuery: CrunchyMediaStreamQuery): Flow<MediaStream> {
+        query = mediaStreamQuery
+        launch {
             requestHelper.runIfNotRunning(
                 IRequestHelper.RequestType.INITIAL
             ) { getMediaStream(mediaStreamQuery, it) }
-
-            emitAll(observable)
         }
 
-    /**
-     * Clears data sources (databases, preferences, e.t.c)
-     */
-    override suspend fun clearDataSource(context: CoroutineDispatcher) {
-        observable.value = null
+        return observable
     }
 }

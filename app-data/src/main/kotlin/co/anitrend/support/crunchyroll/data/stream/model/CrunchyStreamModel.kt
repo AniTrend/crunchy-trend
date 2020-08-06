@@ -16,10 +16,11 @@
 
 package co.anitrend.support.crunchyroll.data.stream.model
 
+import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
 import co.anitrend.support.crunchyroll.domain.stream.enums.CrunchyStreamQuality
 
 internal data class CrunchyStreamModel(
     val quality: CrunchyStreamQuality,
-    val expires: String,
+    val expires: ISO8601Date,
     val url: String
 )

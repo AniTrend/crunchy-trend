@@ -27,7 +27,7 @@ internal data class StreamCacheHelper(
 ) : CacheLogStore(CacheRequest.STREAM, dao) {
 
     suspend fun shouldRefreshStream(
-        seriesId: Long,
-        expiresAfter: Instant = instantInPast(minutes = 25)
-    ): Boolean = isRequestBefore(seriesId, expiresAfter)
+        mediaId: Long,
+        expiresAfter: Instant = instantInPast(hours = 2)
+    ): Boolean = isRequestBefore(mediaId, expiresAfter)
 }

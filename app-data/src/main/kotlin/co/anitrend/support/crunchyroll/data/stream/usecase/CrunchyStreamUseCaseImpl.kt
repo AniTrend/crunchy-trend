@@ -35,4 +35,4 @@ internal class CrunchyStreamUseCaseImpl(
     }
 }
 
-typealias MediaStreamUseCaseType = MediaStreamUseCase<DataState<List<MediaStream>?>>
+typealias MediaStreamUseCaseType = MediaStreamUseCase<DataState<MediaStream>>

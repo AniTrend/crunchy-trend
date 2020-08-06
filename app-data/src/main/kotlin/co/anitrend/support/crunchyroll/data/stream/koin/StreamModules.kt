@@ -19,6 +19,9 @@ package co.anitrend.support.crunchyroll.data.stream.koin
 
 import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
 import co.anitrend.support.crunchyroll.data.arch.extension.api
+import co.anitrend.support.crunchyroll.data.arch.extension.db
+import co.anitrend.support.crunchyroll.data.series.helper.SeriesCacheHelper
+import co.anitrend.support.crunchyroll.data.stream.helper.StreamCacheHelper
 import co.anitrend.support.crunchyroll.data.stream.mapper.CrunchyStreamResponseMapper
 import co.anitrend.support.crunchyroll.data.stream.repository.CrunchyStreamRepository
 import co.anitrend.support.crunchyroll.data.stream.source.CrunchyStreamSourceImpl
@@ -31,17 +34,22 @@ import org.koin.dsl.module
 private val dataSourceModule = module {
     factory {
         CrunchyStreamSourceImpl(
+            streamDao = db().crunchyStreamDao(),
             endpoint = api(EndpointType.JSON),
             mapper = get(),
             supportDispatchers = get(),
-            supportConnectivity = get()
+            supportConnectivity = get(),
+            settings = get(),
+            cache = get()
         )
     } bind CrunchyStreamSource::class
 }
 
 private val mapperModule = module {
     factory {
-        CrunchyStreamResponseMapper()
+        CrunchyStreamResponseMapper(
+            dao = db().crunchyStreamDao()
+        )
     }
 }
 
@@ -61,6 +69,14 @@ private val useCaseModule = module {
     }
 }
 
+private val cacheModule = module {
+    factory {
+        StreamCacheHelper(
+            dao = db().crunchyCacheDao()
+        )
+    }
+}
+
 val streamModules = listOf(
-    dataSourceModule, mapperModule, repositoryModule, useCaseModule
+    dataSourceModule, mapperModule, repositoryModule, useCaseModule, cacheModule
 )
