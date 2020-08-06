@@ -20,6 +20,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import androidx.annotation.IdRes
 import androidx.fragment.app.*
+import androidx.lifecycle.LifecycleOwner
 import co.anitrend.support.crunchyroll.core.CrunchyApplication
 import co.anitrend.support.crunchyroll.core.common.DEFAULT_ANIMATION_DURATION
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
@@ -29,6 +30,8 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
+import org.koin.androidx.scope.lifecycleScope as kScope
+import org.koin.core.scope.Scope
 import timber.log.Timber
 import kotlin.Result
 
@@ -121,3 +124,9 @@ fun <T> Result<T>.stackTrace(tag: String): T? {
     }
     return value
 }
+
+/**
+ * Get current Koin scope, bound to current lifecycle
+ */
+val LifecycleOwner.koinScope: Scope
+    get() = kScope
