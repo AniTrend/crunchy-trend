@@ -202,7 +202,7 @@ class MediaStreamContent(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        launch { onUpdateUserInterface() }
+        lifecycleScope.launch { onUpdateUserInterface() }
     }
 
     private fun onUpdateUserInterface() {
@@ -231,34 +231,12 @@ class MediaStreamContent(
         }
     }
 
-    private fun prepareResults(mediaStreams: List<MediaStream>?) {
-        if (!mediaStreams.isNullOrEmpty()) {
-            val streams = presenter.mapToStreamItems(
-                mediaStreams,
-                payload
-            )
+    private fun prepareResults(stream: MediaStream) {
+        val mediaStreamItem = presenter.toStreamItem(stream, payload)
 
-            val playIndex = presenter.getAdaptiveStreamIndex(streams)
-            val mediaItem = streams[playIndex]
-            val playHead = mediaItem.mediaPlayHead
-
-            //playlistManager.setParameters(streams, playIndex)
-            playlistManager.apply {
-                id = mediaItem.id
-                setParameters(
-                    listOf(mediaItem), 0
-                )
-                play(
-                    playHead.toLong(),
-                    false
-                )
-            }
-        } else
-            supportStateLayout.networkMutableStateFlow.value =
-                NetworkState.Error(
-                    heading = "No streams available ${Emote.Eyes}",
-                    message = "Content may be unavailable in your country, please check with original source"
-                )
+        playlistManager.id = mediaStreamItem.id
+        playlistManager.setParameters(listOf(mediaStreamItem), 0)
+        playlistManager.play(mediaStreamItem.mediaPlayHead.toLong(),false)
     }
 
     private fun onFetchDataInitialize() {

@@ -27,9 +27,9 @@ import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQu
 
 data class MediaStreamModelState(
     private val useCase: MediaStreamUseCaseType
-) : ISupportViewModelState<List<MediaStream>?> {
+) : ISupportViewModelState<MediaStream> {
 
-    private val useCaseResult = MutableLiveData<DataState<List<MediaStream>?>>()
+    private val useCaseResult = MutableLiveData<DataState<MediaStream>>()
 
     override val model =
         Transformations.switchMap(useCaseResult) { it.model }
