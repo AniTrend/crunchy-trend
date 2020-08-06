@@ -116,13 +116,10 @@ inline fun FragmentManager.commit(
 }
 
 fun <T> Result<T>.stackTrace(tag: String): T? {
-    val value = getOrNull()
-    if (isFailure) {
-        val throwable = value as Throwable?
-        if (throwable != null)
-            Timber.tag(tag).v(throwable)
+    onFailure { throwable ->
+        Timber.tag(tag).v(throwable)
     }
-    return value
+    return getOrNull()
 }
 
 /**
