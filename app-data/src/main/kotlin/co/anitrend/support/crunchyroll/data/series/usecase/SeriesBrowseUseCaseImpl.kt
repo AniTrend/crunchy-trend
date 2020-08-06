@@ -17,8 +17,8 @@
 package co.anitrend.support.crunchyroll.data.series.usecase
 
 import androidx.paging.PagedList
-import co.anitrend.arch.data.model.UserInterfaceState
 import co.anitrend.arch.data.repository.contract.ISupportRepository
+import co.anitrend.arch.data.state.DataState
 import co.anitrend.support.crunchyroll.data.series.repository.browse.SeriesBrowseRepository
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.interactors.SeriesBrowseUseCase
@@ -36,4 +36,4 @@ internal class SeriesBrowseUseCaseImpl(
     }
 }
 
-typealias SeriesBrowseUseCaseType = SeriesBrowseUseCase<UserInterfaceState<PagedList<CrunchySeries>>>
+typealias SeriesBrowseUseCaseType = SeriesBrowseUseCase<DataState<PagedList<CrunchySeries>>>

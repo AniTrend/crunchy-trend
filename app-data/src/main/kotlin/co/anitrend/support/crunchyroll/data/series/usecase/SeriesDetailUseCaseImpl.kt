@@ -16,8 +16,8 @@
 
 package co.anitrend.support.crunchyroll.data.series.usecase
 
-import co.anitrend.arch.data.model.UserInterfaceState
 import co.anitrend.arch.data.repository.contract.ISupportRepository
+import co.anitrend.arch.data.state.DataState
 import co.anitrend.support.crunchyroll.data.series.repository.detail.SeriesDetailRepository
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.interactors.SeriesDetailUseCase
@@ -35,4 +35,4 @@ internal class SeriesDetailUseCaseImpl(
     }
 }
 
-typealias SeriesDetailUseCaseType = SeriesDetailUseCase<UserInterfaceState<CrunchySeries?>>
+typealias SeriesDetailUseCaseType = SeriesDetailUseCase<DataState<CrunchySeries?>>

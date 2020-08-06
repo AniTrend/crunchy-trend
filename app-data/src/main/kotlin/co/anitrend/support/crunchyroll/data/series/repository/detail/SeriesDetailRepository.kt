@@ -16,9 +16,10 @@
 
 package co.anitrend.support.crunchyroll.data.series.repository.detail
 
-import co.anitrend.arch.data.model.UserInterfaceState
-import co.anitrend.arch.data.model.UserInterfaceState.Companion.create
+import androidx.lifecycle.asLiveData
 import co.anitrend.arch.data.repository.SupportRepository
+import co.anitrend.arch.data.state.DataState
+import co.anitrend.arch.data.state.DataState.Companion.create
 import co.anitrend.support.crunchyroll.data.series.source.detail.contract.SeriesDetailSource
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesDetailQuery
@@ -26,12 +27,12 @@ import co.anitrend.support.crunchyroll.domain.series.repositories.ISeriesDetailR
 
 internal class SeriesDetailRepository(
     private val source: SeriesDetailSource
-) : SupportRepository(source), ISeriesDetailRepository<UserInterfaceState<CrunchySeries?>> {
+) : SupportRepository(source), ISeriesDetailRepository<DataState<CrunchySeries?>> {
 
     override fun getSeries(
         seriesDetailQuery: CrunchySeriesDetailQuery
     ) =
         source.create(
-            model = source(seriesDetailQuery)
+            model = source(seriesDetailQuery).asLiveData()
         )
 }

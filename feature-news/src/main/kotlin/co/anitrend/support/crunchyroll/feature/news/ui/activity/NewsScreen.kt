@@ -24,7 +24,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
-import co.anitrend.arch.extension.ext.LAZY_MODE_UNSAFE
+import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.extension.ext.extra
 import co.anitrend.support.crunchyroll.core.extensions.stackTrace
 import co.anitrend.support.crunchyroll.navigation.NavigationTargets
@@ -42,7 +42,7 @@ import org.koin.android.ext.android.inject
 
 class NewsScreen : CrunchyActivity() {
 
-    private val binding by lazy(LAZY_MODE_UNSAFE) {
+    private val binding by lazy(UNSAFE) {
         NewsScreenBinding.inflate(layoutInflater)
     }
 

@@ -16,20 +16,29 @@
 
 package co.anitrend.support.crunchyroll.data.batch.source.contract
 
-import androidx.lifecycle.MutableLiveData
-import co.anitrend.arch.data.source.coroutine.SupportCoroutineDataSource
-import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.arch.data.request.callback.RequestCallback
+import co.anitrend.arch.data.source.core.SupportCoreDataSource
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.support.crunchyroll.data.batch.entity.CrunchyBatchEntity
 import co.anitrend.support.crunchyroll.data.batch.usecase.model.CrunchyBatchQuery
 import co.anitrend.support.crunchyroll.data.series.model.CrunchySeriesModel
+import kotlinx.coroutines.CoroutineDispatcher
 
 internal abstract class BatchSource(
     supportDispatchers: SupportDispatchers
-) : SupportCoroutineDataSource(supportDispatchers) {
+) : SupportCoreDataSource(supportDispatchers) {
 
     abstract suspend fun getBatchOfSeries(
         queries: List<CrunchyBatchQuery>,
-        networkState: MutableLiveData<NetworkState>
+        callback: RequestCallback
     ): List<CrunchyBatchEntity<CrunchySeriesModel>>?
+
+    /**
+     * Clears data sources (databases, preferences, e.t.c)
+     *
+     * @param context Dispatcher context to run in
+     */
+    override suspend fun clearDataSource(context: CoroutineDispatcher) {
+        // not applicable
+    }
 }

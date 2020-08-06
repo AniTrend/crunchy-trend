@@ -48,7 +48,7 @@ private val coreModule = module {
                     override fun configureVisitor(builder: MarkwonVisitor.Builder) {
                         builder.on(
                             Paragraph::class.java
-                        ) { visitor, paragraph ->
+                        ) { visitor, _ ->
                             Timber.i("visitor for paragraph: $visitor")
                         }
                     }

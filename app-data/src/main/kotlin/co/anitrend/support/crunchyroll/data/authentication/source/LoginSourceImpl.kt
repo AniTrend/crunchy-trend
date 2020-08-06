@@ -16,9 +16,8 @@
 
 package co.anitrend.support.crunchyroll.data.authentication.source
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.liveData
+import co.anitrend.arch.data.request.callback.RequestCallback
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
@@ -30,9 +29,12 @@ import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticat
 import co.anitrend.support.crunchyroll.data.authentication.source.contract.LoginSource
 import co.anitrend.support.crunchyroll.data.authentication.transformer.CrunchyUserTransformer
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 internal class LoginSourceImpl(
@@ -57,7 +59,7 @@ internal class LoginSourceImpl(
             }
         }
 
-    override suspend fun loginUser() {
+    override suspend fun loginUser(callback: RequestCallback) {
         val deferred = async {
             endpoint.loginUser(
                 account = query.account,
@@ -73,22 +75,23 @@ internal class LoginSourceImpl(
                 )
             )
 
-        val response = controller(deferred, networkState)
+        val response = controller(deferred, callback)
         Timber.tag(moduleTag).i("Logged in userId: ${response?.userId}")
     }
 
-    override fun loggedInUser(): LiveData<CrunchyUser?> {
+    override fun loggedInUser(): Flow<CrunchyUser?> {
         val userId = settings.authenticatedUserId
-        val userFlow = dao.findByUserIdX(userId).map {
+        return dao.findByUserIdX(userId).map {
             CrunchyUserTransformer.transform(it)
         }
-        return userFlow.asLiveData(context = coroutineContext)
     }
 
     /**
      * Clears data sources (databases, preferences, e.t.c)
      */
-    override suspend fun clearDataSource() {
-        dao.clearTable()
+    override suspend fun clearDataSource(context: CoroutineDispatcher) {
+        withContext(context) {
+            dao.clearTable()
+        }
     }
 }

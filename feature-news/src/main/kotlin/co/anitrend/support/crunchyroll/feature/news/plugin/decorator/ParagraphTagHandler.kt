@@ -44,7 +44,7 @@ internal class ParagraphTagHandler private constructor(): TagHandler() {
         val spans = ArrayList<Any>(2)
         val attributes = tag.attributes()
         val style = attributes["style"]
-        val styleClass = attributes["class"]
+        @Suppress("UNUSED_VARIABLE") val styleClass = attributes["class"]
 
         if (tag.isBlock)
             visitChildren(visitor, renderer, tag.asBlock)

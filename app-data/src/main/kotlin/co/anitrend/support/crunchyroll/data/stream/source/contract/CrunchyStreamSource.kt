@@ -16,36 +16,41 @@
 
 package co.anitrend.support.crunchyroll.data.stream.source.contract
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import co.anitrend.arch.data.request.callback.RequestCallback
+import co.anitrend.arch.data.request.contract.IRequestHelper
 import co.anitrend.arch.data.source.core.SupportCoreDataSource
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 
 internal abstract class CrunchyStreamSource(
     supportDispatchers: SupportDispatchers
 ) : SupportCoreDataSource(supportDispatchers) {
 
-    protected lateinit var query: CrunchyMediaStreamQuery
-        private set
+    protected val observable: MutableStateFlow<List<MediaStream>?> = MutableStateFlow(null)
 
-    protected val observable = MutableLiveData<List<MediaStream>?>()
+    protected abstract suspend fun getMediaStream(
+        query: CrunchyMediaStreamQuery,
+        callback: RequestCallback
+    )
 
-    protected abstract suspend fun getMediaStream()
+    operator fun invoke(mediaStreamQuery: CrunchyMediaStreamQuery) =
+        flow {
+            requestHelper.runIfNotRunning(
+                IRequestHelper.RequestType.INITIAL
+            ) { getMediaStream(mediaStreamQuery, it) }
 
-    operator fun invoke(mediaStreamQuery: CrunchyMediaStreamQuery): LiveData<List<MediaStream>?> {
-        query = mediaStreamQuery
-        retry = { launch { getMediaStream() } }
-        launch { getMediaStream() }
-        return observable
-    }
+            emitAll(observable)
+        }
 
     /**
      * Clears data sources (databases, preferences, e.t.c)
      */
-    override suspend fun clearDataSource() {
+    override suspend fun clearDataSource(context: CoroutineDispatcher) {
         observable.value = null
     }
 }

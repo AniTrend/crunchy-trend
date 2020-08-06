@@ -25,7 +25,7 @@ import co.anitrend.arch.core.model.IStateLayoutConfig
 import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
 import co.anitrend.arch.recycler.adapter.SupportListAdapter
 import co.anitrend.arch.recycler.model.contract.IRecyclerItem
-import co.anitrend.arch.theme.animator.contract.ISupportAnimator
+import co.anitrend.arch.theme.animator.contract.AbstractAnimator
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 import co.anitrend.support.crunchyroll.feature.catalog.controller.model.CatalogItem
 
@@ -33,7 +33,7 @@ class CatalogAdapter(
     scope: LifecycleCoroutineScope,
     override val resources: Resources,
     override val stateConfiguration: IStateLayoutConfig,
-    override val customSupportAnimator: ISupportAnimator? = null,
+    override val customSupportAnimator: AbstractAnimator? = null,
     override val mapper: (CrunchyCatalogWithSeries?) -> IRecyclerItem = { CatalogItem(it, scope) }
 ) : SupportListAdapter<CrunchyCatalogWithSeries>(CatalogItem.DIFFER) {
 

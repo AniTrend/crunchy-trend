@@ -16,6 +16,8 @@
 
 package co.anitrend.support.crunchyroll.data.session.source
 
+import co.anitrend.arch.data.request.callback.RequestCallback
+import co.anitrend.arch.data.request.contract.IRequestHelper
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
@@ -32,10 +34,7 @@ import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionCoreMode
 import co.anitrend.support.crunchyroll.data.session.source.contract.SessionSource
 import co.anitrend.support.crunchyroll.data.session.transformer.CoreSessionTransformer
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import retrofit2.Response
 import timber.log.Timber
 
@@ -50,7 +49,8 @@ internal class CoreSessionSourceImpl(
 ) : SessionSource(supportDispatchers) {
 
     private suspend fun requestCoreSession(
-        deferred: Deferred<Response<CrunchyContainer<CrunchySessionCoreModel>>>
+        deferred: Deferred<Response<CrunchyContainer<CrunchySessionCoreModel>>>,
+        callback: RequestCallback
     ): CrunchySessionCoreEntity? {
         val controller =
             mapper.controller(
@@ -60,19 +60,19 @@ internal class CoreSessionSourceImpl(
                 )
             )
 
-        return controller(deferred, networkState)
+        return controller(deferred, callback)
     }
 
-    private suspend fun createNewCoreSession(): CrunchySessionCoreEntity? {
+    private suspend fun createNewCoreSession(callback: RequestCallback): CrunchySessionCoreEntity? {
         val invalidSession = withContext(dispatchers.io) {
             val sessionId = settings.sessionId
             dao.findBySessionId(sessionId)
         }
 
         val session = requestCoreSession(
-            async { proxyEndpoint.startCoreSession() }
+            async { proxyEndpoint.startCoreSession() }, callback
         ) ?: requestCoreSession(
-            async { endpoint.startCoreSessionJson() }
+            async { endpoint.startCoreSessionJson() }, callback
         )
 
         withContext(dispatchers.io) {
@@ -99,20 +99,24 @@ internal class CoreSessionSourceImpl(
      * In this context the super.invoke() method will allow a retry action to be set
      */
     override fun invoke(): Session? {
-        super.invoke()
-        networkState.postValue(NetworkState.Loading)
-
-        val session = runBlocking {
-            createNewCoreSession()
+        var entity: CrunchySessionCoreEntity? = null
+        runBlocking {
+            requestHelper.runIfNotRunning(
+                IRequestHelper.RequestType.INITIAL
+            ) { callback ->
+                entity = createNewCoreSession(callback)
+            }
         }
 
-        return CoreSessionTransformer.transform(session)
+        return CoreSessionTransformer.transform(entity)
     }
 
     /**
      * Clears data sources (databases, preferences, e.t.c)
      */
-    override suspend fun clearDataSource() {
-        dao.clearTable()
+    override suspend fun clearDataSource(context: CoroutineDispatcher) {
+        withContext(context) {
+            dao.clearTable()
+        }
     }
 }

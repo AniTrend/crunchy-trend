@@ -54,25 +54,33 @@ class AnalyticsLogger(/*
     override fun logCurrentScreen(context: FragmentActivity, tag : String) {
         runCatching {
             //analytics.setCurrentScreen(context, tag, null)
-        }.exceptionOrNull()?.printStackTrace()
+        }.onFailure {
+            it.printStackTrace()
+        }
     }
 
     override fun logCurrentState(tag: String, bundle: Bundle?) {
         runCatching {
             //bundle?.also { analytics.logEvent(tag, it) }
-        }.exceptionOrNull()?.printStackTrace()
+        }.onFailure {
+            it.printStackTrace()
+        }
     }
 
     override fun logException(throwable: Throwable) {
         runCatching {
             //crashlytics.recordException(throwable)
-        }.exceptionOrNull()?.printStackTrace()
+        }.onFailure {
+            it.printStackTrace()
+        }
     }
 
     override fun log(priority: Int, tag: String?, message: String) {
         runCatching {
             //crashlytics.log(message)
-        }.exceptionOrNull()?.printStackTrace()
+        }.onFailure {
+            it.printStackTrace()
+        }
     }
 
     override fun clearCrashAnalyticsSession() {
@@ -80,14 +88,18 @@ class AnalyticsLogger(/*
             //analytics.resetAnalyticsData()
             //analytics.setUserId(String.empty())
             //crashlytics.setUserId(String.empty())
-        }.exceptionOrNull()?.printStackTrace()
+        }.onFailure {
+            it.printStackTrace()
+        }
     }
 
     override fun setCrashAnalyticIdentifier(identifier: String) {
         runCatching {
             //analytics.setUserId(identifier)
             //crashlytics.setUserId(identifier)
-        }.exceptionOrNull()?.printStackTrace()
+        }.onFailure {
+            it.printStackTrace()
+        }
     }
 
     companion object {

@@ -16,10 +16,10 @@
 
 package co.anitrend.support.crunchyroll.domain.episode.repositories
 
-import co.anitrend.arch.domain.common.IUserInterfaceState
+import co.anitrend.arch.domain.state.UiState
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 
-interface IEpisodeFeedRepository<R: IUserInterfaceState<*>> {
+interface IEpisodeFeedRepository<R: UiState<*>> {
 
     fun getMediaListings(query: RssQuery): R
 }

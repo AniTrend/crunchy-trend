@@ -16,12 +16,11 @@
 
 package co.anitrend.support.crunchyroll.data.collection.source
 
-import androidx.lifecycle.LiveData
-import androidx.paging.PagedList
-import androidx.paging.PagingRequestHelper
+import androidx.lifecycle.liveData
 import androidx.paging.toLiveData
-import co.anitrend.arch.data.source.contract.ISourceObservable
-import co.anitrend.arch.data.util.SupportDataKeyStore
+import co.anitrend.arch.data.request.callback.RequestCallback
+import co.anitrend.arch.data.request.contract.IRequestHelper
+import co.anitrend.arch.data.util.PAGING_CONFIGURATION
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
@@ -35,8 +34,9 @@ import co.anitrend.support.crunchyroll.data.collection.mapper.CollectionResponse
 import co.anitrend.support.crunchyroll.data.collection.source.contract.CollectionSource
 import co.anitrend.support.crunchyroll.data.collection.transformer.CollectionTransformer
 import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
-import co.anitrend.support.crunchyroll.domain.collection.models.CrunchyCollectionQuery
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 
 internal class CollectionSourceImpl(
     private val mapper: CollectionResponseMapper,
@@ -47,33 +47,25 @@ internal class CollectionSourceImpl(
     supportDispatchers: SupportDispatchers
 ) : CollectionSource(supportDispatchers) {
 
-    override val collectionObservable =
-        object : ISourceObservable<Nothing?, PagedList<CrunchyCollection>> {
-            /**
-             * Returns the appropriate observable which we will monitor for updates,
-             * common implementation may include but not limited to returning
-             * data source live data for a database
-             *
-             * @param parameter to use when executing
-             */
-            override fun invoke(parameter: Nothing?): LiveData<PagedList<CrunchyCollection>> {
-                val localSource =
-                    collectionDao.findBySeriesIdFactory(query.seriesId)
+    override val observable = liveData {
+        val localSource =
+            collectionDao.findBySeriesIdFactory(query.seriesId)
 
-                val result = localSource.map {
-                    CollectionTransformer.transform(it)
-                }
-
-                return result.toLiveData(
-                    config = SupportDataKeyStore.PAGING_CONFIGURATION,
-                    boundaryCallback = this@CollectionSourceImpl
-                )
-            }
+        val result = localSource.map {
+            CollectionTransformer.transform(it)
         }
 
-    override suspend fun getCollectionsForSeries(
-        callback: PagingRequestHelper.Request.Callback,
-        requestType: PagingRequestHelper.RequestType,
+        emitSource(
+            result.toLiveData(
+                config = PAGING_CONFIGURATION,
+                boundaryCallback = this@CollectionSourceImpl
+            )
+        )
+    }
+
+    override suspend fun invoke(
+        callback: RequestCallback,
+        requestType: IRequestHelper.RequestType,
         model: CrunchyCollection?
     ) {
         CrunchyPagingConfigHelper(requestType, supportPagingHelper) {
@@ -102,10 +94,12 @@ internal class CollectionSourceImpl(
     /**
      * Clears data sources (databases, preferences, e.t.c)
      */
-    override suspend fun clearDataSource() {
+    override suspend fun clearDataSource(context: CoroutineDispatcher) {
         CrunchyClearDataHelper(settings, supportConnectivity) {
-            val seriesId = query.seriesId
-            collectionDao.clearTableById(seriesId)
+            withContext(context) {
+                val seriesId = query.seriesId
+                collectionDao.clearTableById(seriesId)
+            }
         }
     }
 }

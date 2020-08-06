@@ -26,7 +26,7 @@ import org.koin.dsl.module
 
 private val analyticsModule = module {
     factory<ISupportAnalytics> {
-        val privacySettings = get<IPrivacySettings>()
+        //val privacySettings = get<IPrivacySettings>()
 
         //val analytics = FirebaseAnalytics.getInstance(androidContext())
         //analytics.setAnalyticsCollectionEnabled(privacySettings.isAnalyticsEnabled)

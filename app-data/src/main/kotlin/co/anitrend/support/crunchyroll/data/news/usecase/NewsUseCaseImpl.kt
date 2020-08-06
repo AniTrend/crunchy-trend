@@ -17,8 +17,8 @@
 package co.anitrend.support.crunchyroll.data.news.usecase
 
 import androidx.paging.PagedList
-import co.anitrend.arch.data.model.UserInterfaceState
 import co.anitrend.arch.data.repository.contract.ISupportRepository
+import co.anitrend.arch.data.state.DataState
 import co.anitrend.support.crunchyroll.data.news.repository.NewsRepository
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import co.anitrend.support.crunchyroll.domain.news.interactors.NewsUseCase
@@ -36,4 +36,4 @@ internal class NewsUseCaseImpl(
     }
 }
 
-typealias NewsUseCaseType = NewsUseCase<UserInterfaceState<PagedList<CrunchyNews>>>
+typealias NewsUseCaseType = NewsUseCase<DataState<PagedList<CrunchyNews>>>

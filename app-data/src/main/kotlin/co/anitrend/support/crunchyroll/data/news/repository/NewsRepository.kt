@@ -17,9 +17,9 @@
 package co.anitrend.support.crunchyroll.data.news.repository
 
 import androidx.paging.PagedList
-import co.anitrend.arch.data.model.UserInterfaceState
-import co.anitrend.arch.data.model.UserInterfaceState.Companion.create
 import co.anitrend.arch.data.repository.SupportRepository
+import co.anitrend.arch.data.state.DataState
+import co.anitrend.arch.data.state.DataState.Companion.create
 import co.anitrend.support.crunchyroll.data.news.source.contract.NewsSource
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
@@ -28,7 +28,7 @@ import co.anitrend.support.crunchyroll.domain.news.repositories.INewsRepository
 internal class NewsRepository(
     private val source: NewsSource
 ) : SupportRepository(source),
-    INewsRepository<UserInterfaceState<PagedList<CrunchyNews>>> {
+    INewsRepository<DataState<PagedList<CrunchyNews>>> {
 
     override fun getNewsListings(query: RssQuery) =
         source.create(

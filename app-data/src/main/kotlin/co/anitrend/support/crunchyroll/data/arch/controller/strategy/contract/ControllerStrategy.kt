@@ -16,9 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.arch.controller.strategy.contract
 
-import androidx.lifecycle.MutableLiveData
-import androidx.paging.PagingRequestHelper
-import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.arch.data.request.callback.RequestCallback
 
 internal abstract class ControllerStrategy<D> {
 
@@ -27,22 +25,11 @@ internal abstract class ControllerStrategy<D> {
     /**
      * Execute a paging task under an implementation strategy
      *
+     * @param requestCallback event emitter
      * @param block what will be executed
-     * @param pagingRequestHelper paging event emitter
      */
     internal abstract suspend operator fun invoke(
-        block: suspend () -> Unit,
-        pagingRequestHelper: PagingRequestHelper.Request.Callback
-    )
-
-    /**
-     * Execute a task under an implementation strategy
-     *
-     * @param block what will be executed
-     * @param networkState network state event emitter
-     */
-    internal abstract suspend operator fun invoke(
-        block: suspend () -> D?,
-        networkState: MutableLiveData<NetworkState>
+        requestCallback: RequestCallback,
+        block: suspend () -> D?
     ): D?
 }

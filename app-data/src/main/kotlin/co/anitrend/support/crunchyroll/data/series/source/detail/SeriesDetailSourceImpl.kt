@@ -16,9 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.series.source.detail
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
-import co.anitrend.arch.data.source.contract.ISourceObservable
+import co.anitrend.arch.data.request.callback.RequestCallback
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
@@ -31,8 +29,10 @@ import co.anitrend.support.crunchyroll.data.series.datasource.remote.CrunchySeri
 import co.anitrend.support.crunchyroll.data.series.helper.SeriesCacheHelper
 import co.anitrend.support.crunchyroll.data.series.mapper.SeriesDetailResponseMapper
 import co.anitrend.support.crunchyroll.data.series.source.detail.contract.SeriesDetailSource
-import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
 
 internal class SeriesDetailSourceImpl(
     private val mapper: SeriesDetailResponseMapper,
@@ -44,27 +44,15 @@ internal class SeriesDetailSourceImpl(
     supportDispatchers: SupportDispatchers
 ) : SeriesDetailSource(supportDispatchers) {
 
-    override val detailObservable =
-        object : ISourceObservable<Nothing?, CrunchySeries?> {
-            /**
-             * Returns the appropriate observable which we will monitor for updates,
-             * common implementation may include but not limited to returning
-             * data source live data for a database
-             *
-             * @param parameter to use when executing
-             */
-            override fun invoke(parameter: Nothing?): LiveData<CrunchySeries?> {
-                val localSource = seriesDao.findBySeriesIdX(query.seriesId)
-
-                return Transformations.map(localSource) {
-                    it?.let { s->
-                        SeriesEntityConverter.convertFrom(s)
-                    }
-                }
-            }
+    override val observable = flow {
+        val localSource = seriesDao.findBySeriesIdFlow(query.seriesId)
+        val result = localSource.filterNotNull().map {
+            SeriesEntityConverter.convertFrom(it)
         }
+        emitAll(result)
+    }
 
-    override suspend fun browseSeries() {
+    override suspend fun browseSeries(callback: RequestCallback) {
         if (cache.shouldRefreshSeries(query.seriesId)) {
             val differed = async {
                 endpoint.getSeriesInfo(
@@ -80,7 +68,7 @@ internal class SeriesDetailSourceImpl(
                     )
                 )
 
-            val result = controller.invoke(differed, networkState)
+            val result = controller.invoke(differed, callback)
             if (result != null)
                 cache.updateLastRequest(result.id)
         }
@@ -89,11 +77,13 @@ internal class SeriesDetailSourceImpl(
     /**
      * Clears data sources (databases, preferences, e.t.c)
      */
-    override suspend fun clearDataSource() {
+    override suspend fun clearDataSource(context: CoroutineDispatcher) {
         CrunchyClearDataHelper(settings, supportConnectivity) {
-            val seriesId = query.seriesId
-            seriesDao.clearTableById(seriesId)
-            cache.invalidateLastRequest(seriesId)
+            withContext(context) {
+                val seriesId = query.seriesId
+                seriesDao.clearTableById(seriesId)
+                cache.invalidateLastRequest(seriesId)
+            }
         }
     }
 }

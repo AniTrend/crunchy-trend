@@ -18,11 +18,12 @@ package co.anitrend.support.crunchyroll.data.series.source.browse
 
 import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import androidx.paging.PagedList
-import androidx.paging.PagingRequestHelper
 import androidx.paging.toLiveData
-import co.anitrend.arch.data.source.contract.ISourceObservable
-import co.anitrend.arch.data.util.SupportDataKeyStore
+import co.anitrend.arch.data.request.callback.RequestCallback
+import co.anitrend.arch.data.request.contract.IRequestHelper
+import co.anitrend.arch.data.util.PAGING_CONFIGURATION
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.arch.extension.ext.empty
 import co.anitrend.arch.extension.network.SupportConnectivity
@@ -38,7 +39,9 @@ import co.anitrend.support.crunchyroll.data.series.mapper.SeriesResponseMapper
 import co.anitrend.support.crunchyroll.data.series.source.browse.contract.SeriesBrowseSource
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 
 internal class SeriesBrowseSourceImpl(
     private val mapper: SeriesResponseMapper,
@@ -49,39 +52,31 @@ internal class SeriesBrowseSourceImpl(
     supportDispatchers: SupportDispatchers
 ) : SeriesBrowseSource(supportDispatchers) {
 
-    override val browseObservable =
-        object : ISourceObservable<Nothing?, PagedList<CrunchySeries>> {
-            /**
-             * Returns the appropriate observable which we will monitor for updates,
-             * common implementation may include but not limited to returning
-             * data source live data for a database
-             *
-             * @param parameter to use when executing
-             */
-            override fun invoke(parameter: Nothing?): LiveData<PagedList<CrunchySeries>> {
-                val localSource = when (query.filter) {
-                    CrunchySeriesBrowseFilter.ALPHA ->
-                        seriesDao.findAllFactory()
-                    CrunchySeriesBrowseFilter.PREFIX -> {
-                        val prefix = buildQueryForDatabase()
-                        seriesDao.findAllStartingWithFactory(prefix)
-                    }
-                    CrunchySeriesBrowseFilter.TAG -> {
-                        val genre = buildQueryForDatabase()
-                        seriesDao.findAllContainingGenreFactory(genre)
-                    }
-                }
-
-                val result = localSource.map {
-                    SeriesEntityConverter.convertFrom(it)
-                }
-
-                return result.toLiveData(
-                    config = SupportDataKeyStore.PAGING_CONFIGURATION,
-                    boundaryCallback = this@SeriesBrowseSourceImpl
-                )
+    override val observable = liveData {
+        val localSource = when (query.filter) {
+            CrunchySeriesBrowseFilter.ALPHA ->
+                seriesDao.findAllFactory()
+            CrunchySeriesBrowseFilter.PREFIX -> {
+                val prefix = buildQueryForDatabase()
+                seriesDao.findAllStartingWithFactory(prefix)
+            }
+            CrunchySeriesBrowseFilter.TAG -> {
+                val genre = buildQueryForDatabase()
+                seriesDao.findAllContainingGenreFactory(genre)
             }
         }
+
+        val result = localSource.map {
+            SeriesEntityConverter.convertFrom(it)
+        }
+
+        emitSource(
+            result.toLiveData(
+                config = PAGING_CONFIGURATION,
+                boundaryCallback = this@SeriesBrowseSourceImpl
+            )
+        )
+    }
 
     @SuppressLint("DefaultLocale")
     private fun buildQueryForDatabase(): String {
@@ -93,7 +88,7 @@ internal class SeriesBrowseSourceImpl(
     }
 
     private suspend fun buildFilterForRequest(
-        requestType: PagingRequestHelper.RequestType
+        requestType: IRequestHelper.RequestType
     ): String {
         return when (query.filter) {
             CrunchySeriesBrowseFilter.ALPHA -> {
@@ -119,9 +114,9 @@ internal class SeriesBrowseSourceImpl(
         }
     }
 
-    override suspend fun browseSeries(
-        callback: PagingRequestHelper.Request.Callback,
-        requestType: PagingRequestHelper.RequestType,
+    override suspend fun invoke(
+        callback: RequestCallback,
+        requestType: IRequestHelper.RequestType,
         model: CrunchySeries?
     ) {
         val filter = buildFilterForRequest(requestType)
@@ -148,18 +143,20 @@ internal class SeriesBrowseSourceImpl(
     /**
      * Clears data sources (databases, preferences, e.t.c)
      */
-    override suspend fun clearDataSource() {
+    override suspend fun clearDataSource(context: CoroutineDispatcher) {
         CrunchyClearDataHelper(settings, supportConnectivity) {
-            when (query.filter) {
-                CrunchySeriesBrowseFilter.ALPHA ->
-                    seriesDao.clearTable()
-                CrunchySeriesBrowseFilter.PREFIX -> {
-                    val prefix = buildQueryForDatabase()
-                    seriesDao.clearTableByPrefix(prefix)
-                }
-                CrunchySeriesBrowseFilter.TAG -> {
-                    val genre = buildQueryForDatabase()
-                    seriesDao.clearTableByGenre(genre)
+            withContext(context) {
+                when (query.filter) {
+                    CrunchySeriesBrowseFilter.ALPHA ->
+                        seriesDao.clearTable()
+                    CrunchySeriesBrowseFilter.PREFIX -> {
+                        val prefix = buildQueryForDatabase()
+                        seriesDao.clearTableByPrefix(prefix)
+                    }
+                    CrunchySeriesBrowseFilter.TAG -> {
+                        val genre = buildQueryForDatabase()
+                        seriesDao.clearTableByGenre(genre)
+                    }
                 }
             }
         }

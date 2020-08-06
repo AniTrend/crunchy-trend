@@ -16,8 +16,8 @@
 
 package co.anitrend.support.crunchyroll.data.stream.usecase
 
-import co.anitrend.arch.data.model.UserInterfaceState
 import co.anitrend.arch.data.repository.contract.ISupportRepository
+import co.anitrend.arch.data.state.DataState
 import co.anitrend.support.crunchyroll.data.stream.repository.CrunchyStreamRepository
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.domain.stream.interactors.MediaStreamUseCase
@@ -35,4 +35,4 @@ internal class CrunchyStreamUseCaseImpl(
     }
 }
 
-typealias MediaStreamUseCaseType = MediaStreamUseCase<UserInterfaceState<List<MediaStream>?>>
+typealias MediaStreamUseCaseType = MediaStreamUseCase<DataState<List<MediaStream>?>>

@@ -18,8 +18,8 @@ package co.anitrend.support.crunchyroll.data.news.source.contract
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
-import androidx.paging.PagingRequestHelper
-import co.anitrend.arch.data.source.contract.ISourceObservable
+import co.anitrend.arch.data.request.callback.RequestCallback
+import co.anitrend.arch.data.request.contract.IRequestHelper
 import co.anitrend.arch.data.source.paging.SupportPagingDataSource
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
@@ -33,29 +33,31 @@ internal abstract class NewsSource(
     protected lateinit var query: RssQuery
         private set
 
-    protected abstract val newsObservable: ISourceObservable<Nothing?, PagedList<CrunchyNews>>
+    protected abstract val observable: LiveData<PagedList<CrunchyNews>>
 
     protected abstract suspend fun getNewsCatalogue(
-        callback: PagingRequestHelper.Request.Callback
+        callback: RequestCallback
     )
 
     operator fun invoke(rssQuery: RssQuery): LiveData<PagedList<CrunchyNews>> {
         query = rssQuery
-        return newsObservable(null)
+        return observable
     }
 
     /**
      * Called when zero items are returned from an initial load of the PagedList's data source.
      */
     override fun onZeroItemsLoaded() {
-        pagingRequestHelper.runIfNotRunning(
-            PagingRequestHelper.RequestType.INITIAL
-        ) {
-            if (supportPagingHelper.isFirstPage()) {
-                launch{ getNewsCatalogue(it) }
-                supportPagingHelper.onPageNext()
+        launch {
+            requestHelper.runIfNotRunning(
+                IRequestHelper.RequestType.INITIAL
+            ) {
+                if (supportPagingHelper.isFirstPage()) {
+                    getNewsCatalogue(it)
+                    supportPagingHelper.onPageNext()
+                }
+                else it.recordSuccess()
             }
-            else it.recordSuccess()
         }
     }
 
@@ -63,19 +65,22 @@ internal abstract class NewsSource(
      * Called when the item at the front of the PagedList has been loaded, and access has
      * occurred within [Config.prefetchDistance] of it.
      *
+     *
      * No more data will be prepended to the PagedList before this item.
      *
      * @param itemAtFront The first item of PagedList
      */
     override fun onItemAtFrontLoaded(itemAtFront: CrunchyNews) {
-        pagingRequestHelper.runIfNotRunning(
-            PagingRequestHelper.RequestType.BEFORE
-        ) {
-            if (supportPagingHelper.isFirstPage()) {
-                launch { getNewsCatalogue(it) }
-                supportPagingHelper.onPageNext()
+        launch {
+            requestHelper.runIfNotRunning(
+                IRequestHelper.RequestType.BEFORE
+            ) {
+                if (supportPagingHelper.isFirstPage()) {
+                    getNewsCatalogue(it)
+                    supportPagingHelper.onPageNext()
+                }
+                else it.recordSuccess()
             }
-            else it.recordSuccess()
         }
     }
 }

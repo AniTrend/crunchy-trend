@@ -16,6 +16,9 @@
 
 package co.anitrend.support.crunchyroll.data.session.source
 
+import co.anitrend.arch.data.request.callback.RequestCallback
+import co.anitrend.arch.data.request.contract.IRequestHelper
+import co.anitrend.arch.data.request.error.RequestError
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
@@ -32,6 +35,7 @@ import co.anitrend.support.crunchyroll.data.session.source.contract.SessionSourc
 import co.anitrend.support.crunchyroll.data.session.transformer.SessionTransformer
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
 import co.anitrend.support.crunchyroll.domain.session.models.CrunchyNormalSessionQuery
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -48,7 +52,9 @@ internal class NormalSessionSourceImpl(
     supportDispatchers: SupportDispatchers
 ) : SessionSource(supportDispatchers) {
 
-    private suspend fun buildQuery(): CrunchyNormalSessionQuery? {
+    private suspend fun buildQuery(
+        callback: RequestCallback
+    ): CrunchyNormalSessionQuery? {
         val coreSession = coreSessionDao.findBySessionId(
             settings.sessionId
         )
@@ -67,10 +73,12 @@ internal class NormalSessionSourceImpl(
         Timber.tag(moduleTag).e(
             "All sessions seem to be invalid, proceeding requests may fail"
         )
-        networkState.postValue(
-            NetworkState.Error(
-                heading = "Missing session credentials",
-                message = "Operation failed due to an error in the application code"
+
+        callback.recordFailure(
+            RequestError(
+                "Missing session credentials",
+                "Operation failed due to an error in the application code",
+                null
             )
         )
 
@@ -78,7 +86,8 @@ internal class NormalSessionSourceImpl(
     }
 
     private suspend fun createNewNormalSession(
-        query: CrunchyNormalSessionQuery
+        query: CrunchyNormalSessionQuery,
+        callback: RequestCallback
     ): CrunchySessionEntity? {
         val invalidSession = withContext(dispatchers.io) {
             val sessionId = settings.sessionId
@@ -101,7 +110,7 @@ internal class NormalSessionSourceImpl(
                 )
             )
 
-        val session = controller(deferred, networkState)
+        val session = controller(deferred, callback)
 
         withContext(dispatchers.io) {
             if (session != null) {
@@ -125,25 +134,28 @@ internal class NormalSessionSourceImpl(
      * [NetworkState] to the caller after execution
      */
     override fun invoke(): Session? {
-        super.invoke()
-        networkState.postValue(NetworkState.Loading)
         return runBlocking {
-            val normalSessionQuery =
-                withContext(dispatchers.io) {
-                    buildQuery()
+            var entity: CrunchySessionEntity? = null
+            requestHelper.runIfNotRunning(IRequestHelper.RequestType.INITIAL) { callback ->
+                val normalSessionQuery =
+                    withContext(dispatchers.io) {
+                        buildQuery(callback)
+                    }
+                entity = normalSessionQuery?.let { sessionQuery ->
+                    createNewNormalSession(sessionQuery, callback)
                 }
-
-            normalSessionQuery?.let {
-                val session = createNewNormalSession(it)
-                SessionTransformer.transform(session)
             }
+
+            SessionTransformer.transform(entity)
         }
     }
 
     /**
      * Clears data sources (databases, preferences, e.t.c)
      */
-    override suspend fun clearDataSource() {
-        dao.clearTable()
+    override suspend fun clearDataSource(context: CoroutineDispatcher) {
+        withContext(context) {
+            dao.clearTable()
+        }
     }
 }

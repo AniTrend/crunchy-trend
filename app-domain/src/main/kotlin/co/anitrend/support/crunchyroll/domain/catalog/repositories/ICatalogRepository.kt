@@ -16,10 +16,9 @@
 
 package co.anitrend.support.crunchyroll.domain.catalog.repositories
 
-import co.anitrend.arch.domain.common.IUserInterfaceState
-import co.anitrend.support.crunchyroll.domain.catalog.models.CrunchyCatalogQuery
+import co.anitrend.arch.domain.state.UiState
 
-interface ICatalogRepository<R: IUserInterfaceState<*>> {
+interface ICatalogRepository<R: UiState<*>> {
 
     fun catalogSeries(): R
 }

@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.collection.datasource.remote
 
-import co.anitrend.arch.extension.util.SupportExtKeyStore
+import co.anitrend.arch.extension.util.DEFAULT_PAGE_SIZE
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.arch.JSON
 import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyModelField
@@ -34,6 +34,6 @@ internal interface CrunchyCollectionEndpoint {
         @Query("series_id") seriesId: Long,
         @Query("offset") offset: Int,
         @Query("fields") fields: String = CrunchyModelField.collectionFields,
-        @Query("limit") limit: Int = SupportExtKeyStore.pagingLimit
+        @Query("limit") limit: Int = DEFAULT_PAGE_SIZE
     ) : Response<CrunchyContainer<List<CrunchyCollectionModel>>>
 }

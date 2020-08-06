@@ -16,10 +16,10 @@
 
 package co.anitrend.support.crunchyroll.domain.media.repositories
 
-import co.anitrend.arch.domain.common.IUserInterfaceState
+import co.anitrend.arch.domain.state.UiState
 import co.anitrend.support.crunchyroll.domain.media.models.CrunchyMediaQuery
 
-interface IMediaRepository<R: IUserInterfaceState<*>> {
+interface IMediaRepository<R: UiState<*>> {
 
     fun getMediaForCollection(mediaQuery: CrunchyMediaQuery): R
 }

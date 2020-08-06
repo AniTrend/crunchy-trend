@@ -16,21 +16,21 @@
 
 package co.anitrend.support.crunchyroll.domain.news.interactors
 
-import co.anitrend.arch.domain.common.IUserInterfaceState
-import co.anitrend.arch.domain.usecases.ISupportUseCase
+import co.anitrend.arch.domain.common.IUseCase
+import co.anitrend.arch.domain.state.UiState
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.news.repositories.INewsRepository
 
-abstract class NewsUseCase<R: IUserInterfaceState<*>>(
+abstract class NewsUseCase<R: UiState<*>>(
     protected val repository: INewsRepository<R>
-) : ISupportUseCase<RssQuery, R> {
+) : IUseCase {
 
     /**
      * Solves a given use case in the implementation target
      *
      * @param param input for solving a given use case
      */
-    override fun invoke(param: RssQuery): R {
+    operator fun invoke(param: RssQuery): R {
         return repository.getNewsListings(param)
     }
 }

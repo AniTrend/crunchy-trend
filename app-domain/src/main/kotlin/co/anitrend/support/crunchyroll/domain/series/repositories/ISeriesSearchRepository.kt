@@ -16,10 +16,10 @@
 
 package co.anitrend.support.crunchyroll.domain.series.repositories
 
-import co.anitrend.arch.domain.common.IUserInterfaceState
+import co.anitrend.arch.domain.state.UiState
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesSearchQuery
 
-interface ISeriesSearchRepository<R: IUserInterfaceState<*>> {
+interface ISeriesSearchRepository<R: UiState<*>> {
 
     fun searchForSeries(searchQuery: CrunchySeriesSearchQuery): R
 }

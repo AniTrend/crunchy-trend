@@ -18,9 +18,10 @@ package co.anitrend.support.crunchyroll.feature.news.viewmodel.model
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.asLiveData
 import androidx.paging.PagedList
 import co.anitrend.arch.core.model.ISupportViewModelState
-import co.anitrend.arch.data.model.UserInterfaceState
+import co.anitrend.arch.data.state.DataState
 import co.anitrend.support.crunchyroll.data.news.usecase.NewsUseCaseType
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
@@ -29,16 +30,16 @@ data class NewsModelState(
     private val useCase: NewsUseCaseType
 ) : ISupportViewModelState<PagedList<CrunchyNews>> {
 
-    private val useCaseResult = MutableLiveData<UserInterfaceState<PagedList<CrunchyNews>>>()
+    private val useCaseResult = MutableLiveData<DataState<PagedList<CrunchyNews>>>()
 
     override val model =
         Transformations.switchMap(useCaseResult) { it.model }
 
     override val networkState =
-        Transformations.switchMap(useCaseResult) { it.networkState }
+        Transformations.switchMap(useCaseResult) { it.networkState.asLiveData() }
 
     override val refreshState =
-        Transformations.switchMap(useCaseResult) { it.refreshState }
+        Transformations.switchMap(useCaseResult) { it.refreshState.asLiveData() }
 
     operator fun invoke(parameter: RssQuery) {
         val result = useCase(parameter)
@@ -48,7 +49,7 @@ data class NewsModelState(
     /**
      * Triggers use case to perform a retry operation
      */
-    override fun retry() {
+    override suspend fun retry() {
         val uiModel = useCaseResult.value
         uiModel?.retry?.invoke()
     }
@@ -56,7 +57,7 @@ data class NewsModelState(
     /**
      * Triggers use case to perform refresh operation
      */
-    override fun refresh() {
+    override suspend fun refresh() {
         val uiModel = useCaseResult.value
         uiModel?.refresh?.invoke()
     }

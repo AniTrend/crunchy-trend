@@ -18,18 +18,20 @@ package co.anitrend.support.crunchyroll.feature.series.viewmodel.model
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.asLiveData
 import co.anitrend.arch.core.model.ISupportViewModelState
-import co.anitrend.arch.data.model.UserInterfaceState
+import co.anitrend.arch.data.state.DataState
 import co.anitrend.support.crunchyroll.data.series.usecase.SeriesDetailUseCaseType
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesDetailQuery
 import co.anitrend.support.crunchyroll.feature.series.model.SeriesModel
+import kotlinx.coroutines.CoroutineScope
 
 data class SeriesDetailModelState(
     private val useCase: SeriesDetailUseCaseType
 ) : ISupportViewModelState<SeriesModel?> {
 
-    private val useCaseResult = MutableLiveData<UserInterfaceState<CrunchySeries?>>()
+    private val useCaseResult = MutableLiveData<DataState<CrunchySeries?>>()
 
     override val model =
         Transformations.switchMap(useCaseResult) {
@@ -41,10 +43,10 @@ data class SeriesDetailModelState(
         }
 
     override val networkState =
-        Transformations.switchMap(useCaseResult) { it.networkState }
+        Transformations.switchMap(useCaseResult) { it.networkState.asLiveData() }
 
     override val refreshState =
-        Transformations.switchMap(useCaseResult) { it.refreshState }
+        Transformations.switchMap(useCaseResult) { it.refreshState.asLiveData() }
 
     operator fun invoke(parameter: CrunchySeriesDetailQuery) {
         val result = useCase(parameter)
@@ -54,7 +56,7 @@ data class SeriesDetailModelState(
     /**
      * Triggers use case to perform a retry operation
      */
-    override fun retry() {
+    override suspend fun retry() {
         val uiModel = useCaseResult.value
         uiModel?.retry?.invoke()
     }
@@ -62,7 +64,7 @@ data class SeriesDetailModelState(
     /**
      * Triggers use case to perform refresh operation
      */
-    override fun refresh() {
+    override suspend fun refresh() {
         val uiModel = useCaseResult.value
         uiModel?.refresh?.invoke()
     }

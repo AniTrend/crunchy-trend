@@ -63,7 +63,7 @@ class MediaStreamContent(
     private val presenter: StreamPresenter
 ) : CrunchyFragment() {
 
-    private val qualityButton by lazy(LAZY_MODE_UNSAFE) {
+    private val qualityButton by lazy(UNSAFE) {
         AppCompatImageButton(context).apply {
             setBackgroundResource(android.R.color.transparent)
             setImageResource(R.drawable.ic_hd_white_24dp)
@@ -78,7 +78,7 @@ class MediaStreamContent(
             setOnClickListener { showVideoTracksMenu() }
         }
     }
-    private val audioButton by lazy(LAZY_MODE_UNSAFE) {
+    private val audioButton by lazy(UNSAFE) {
         AppCompatImageButton(context).apply {
             setBackgroundResource(android.R.color.transparent)
             setImageResource(R.drawable.ic_audiotrack_white_24dp)
@@ -94,7 +94,7 @@ class MediaStreamContent(
             gone()
         }
     }
-    private val captionButton by lazy(LAZY_MODE_UNSAFE) {
+    private val captionButton by lazy(UNSAFE) {
         AppCompatImageButton(context).apply {
             setBackgroundResource(android.R.color.transparent)
             setImageResource(R.drawable.ic_closed_caption_white_24dp)
@@ -111,7 +111,7 @@ class MediaStreamContent(
         }
     }
 
-    private val mediaPlugin by lazy(LAZY_MODE_UNSAFE) {
+    private val mediaPlugin by lazy(UNSAFE) {
         MediaPluginImpl(
             lifecycleScope,
             exoMediaVideoView,

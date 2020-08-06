@@ -19,44 +19,39 @@ package co.anitrend.support.crunchyroll.feature.catalog.viewmodel.model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.asLiveData
 import co.anitrend.arch.core.model.ISupportViewModelState
-import co.anitrend.arch.data.model.UserInterfaceState
+import co.anitrend.arch.data.state.DataState
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.support.crunchyroll.data.catalog.usecase.CatalogUseCaseType
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
-import co.anitrend.support.crunchyroll.domain.catalog.models.CrunchyCatalogQuery
 
 data class CatalogModelState(
     private val useCase: CatalogUseCaseType
 ) : ISupportViewModelState<List<CrunchyCatalogWithSeries>> {
 
-    private val useCaseResult = MutableLiveData<UserInterfaceState<List<CrunchyCatalogWithSeries>>>()
+    private val useCaseResult = MutableLiveData<DataState<List<CrunchyCatalogWithSeries>>>()
 
     override val model =
         Transformations.switchMap(useCaseResult) { it.model }
 
     override val networkState: LiveData<NetworkState>? =
-        Transformations.switchMap(useCaseResult) { it.networkState }
+        Transformations.switchMap(useCaseResult) { it.networkState.asLiveData() }
 
     override val refreshState: LiveData<NetworkState>? =
-        Transformations.switchMap(useCaseResult) { it.refreshState }
-
-    fun requestIfModelIsNotInitialized() {
-        if (model.value == null)
-            invoke()
-    }
+        Transformations.switchMap(useCaseResult) { it.refreshState.asLiveData() }
 
     operator fun invoke() {
-        val result = useCase(null)
+        val result = useCase()
         useCaseResult.postValue(result)
     }
 
-    override fun retry() {
+    override suspend fun retry() {
         val uiModel = useCaseResult.value
         uiModel?.retry?.invoke()
     }
 
-    override fun refresh() {
+    override suspend fun refresh() {
         val uiModel = useCaseResult.value
         uiModel?.refresh?.invoke()
     }

@@ -17,9 +17,9 @@
 package co.anitrend.support.crunchyroll.data.series.repository.search
 
 import androidx.paging.PagedList
-import co.anitrend.arch.data.model.UserInterfaceState
-import co.anitrend.arch.data.model.UserInterfaceState.Companion.create
 import co.anitrend.arch.data.repository.SupportRepository
+import co.anitrend.arch.data.state.DataState
+import co.anitrend.arch.data.state.DataState.Companion.create
 import co.anitrend.support.crunchyroll.data.series.source.search.contract.SeriesSearchSource
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesSearchQuery
@@ -28,7 +28,7 @@ import co.anitrend.support.crunchyroll.domain.series.repositories.ISeriesSearchR
 internal class SeriesSearchRepository(
     private val source: SeriesSearchSource
 ) : SupportRepository(source),
-    ISeriesSearchRepository<UserInterfaceState<PagedList<CrunchySeries>>> {
+    ISeriesSearchRepository<DataState<PagedList<CrunchySeries>>> {
 
     override fun searchForSeries(
         searchQuery: CrunchySeriesSearchQuery

@@ -16,21 +16,21 @@
 
 package co.anitrend.support.crunchyroll.domain.authentication.interactors
 
-import co.anitrend.arch.domain.common.IUserInterfaceState
-import co.anitrend.arch.domain.usecases.ISupportUseCase
+import co.anitrend.arch.domain.common.IUseCase
+import co.anitrend.arch.domain.state.UiState
 import co.anitrend.support.crunchyroll.domain.authentication.models.CrunchyLoginQuery
 import co.anitrend.support.crunchyroll.domain.authentication.repositories.ILoginRepository
 
-abstract class LoginUseCase<R : IUserInterfaceState<*>>(
+abstract class LoginUseCase<R : UiState<*>>(
     protected val repository: ILoginRepository<R>
-) : ISupportUseCase<CrunchyLoginQuery, R> {
+) : IUseCase {
 
     /**
      * Solves a given use case in the implementation target
      *
      * @param param input for solving a given use case
      */
-    override fun invoke(param: CrunchyLoginQuery): R {
+    operator fun invoke(param: CrunchyLoginQuery): R {
         return repository.loginUser(param)
     }
 

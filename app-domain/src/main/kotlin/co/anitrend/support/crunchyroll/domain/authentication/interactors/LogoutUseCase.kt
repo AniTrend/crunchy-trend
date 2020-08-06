@@ -17,11 +17,10 @@
 package co.anitrend.support.crunchyroll.domain.authentication.interactors
 
 import co.anitrend.arch.domain.common.IUseCase
-import co.anitrend.arch.domain.common.IUserInterfaceState
-import co.anitrend.arch.domain.usecases.ISupportUseCase
+import co.anitrend.arch.domain.state.UiState
 import co.anitrend.support.crunchyroll.domain.authentication.repositories.ILogoutRepository
 
-abstract class LogoutUseCase<R : IUserInterfaceState<*>>(
+abstract class LogoutUseCase<R : UiState<*>>(
     protected val repository: ILogoutRepository<R>
 ) : IUseCase {
 

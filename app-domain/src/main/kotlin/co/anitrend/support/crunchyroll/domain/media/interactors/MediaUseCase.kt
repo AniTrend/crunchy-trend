@@ -16,21 +16,21 @@
 
 package co.anitrend.support.crunchyroll.domain.media.interactors
 
-import co.anitrend.arch.domain.common.IUserInterfaceState
-import co.anitrend.arch.domain.usecases.ISupportUseCase
+import co.anitrend.arch.domain.common.IUseCase
+import co.anitrend.arch.domain.state.UiState
 import co.anitrend.support.crunchyroll.domain.media.models.CrunchyMediaQuery
 import co.anitrend.support.crunchyroll.domain.media.repositories.IMediaRepository
 
-abstract class MediaUseCase<R: IUserInterfaceState<*>>(
+abstract class MediaUseCase<R: UiState<*>>(
     protected val repository: IMediaRepository<R>
-) : ISupportUseCase<CrunchyMediaQuery, R> {
+) : IUseCase {
 
     /**
      * Solves a given use case in the implementation target
      *
      * @param param input for solving a given use case
      */
-    override fun invoke(param: CrunchyMediaQuery): R {
+    operator fun invoke(param: CrunchyMediaQuery): R {
         return repository.getMediaForCollection(param)
     }
 }

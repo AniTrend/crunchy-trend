@@ -16,21 +16,18 @@
 
 package co.anitrend.support.crunchyroll.domain.catalog.interactors
 
-import co.anitrend.arch.domain.common.IUserInterfaceState
-import co.anitrend.arch.domain.usecases.ISupportUseCase
-import co.anitrend.support.crunchyroll.domain.catalog.models.CrunchyCatalogQuery
+import co.anitrend.arch.domain.common.IUseCase
+import co.anitrend.arch.domain.state.UiState
 import co.anitrend.support.crunchyroll.domain.catalog.repositories.ICatalogRepository
 
-abstract class CatalogUseCase<R: IUserInterfaceState<*>>(
+abstract class CatalogUseCase<R: UiState<*>>(
     protected val repository: ICatalogRepository<R>
-) : ISupportUseCase<Nothing?, R> {
+) : IUseCase {
 
     /**
      * Solves a given use case in the implementation target
-     *
-     * @param param input for solving a given use case
      */
-    override fun invoke(param: Nothing?): R {
+    operator fun invoke(): R {
         return repository.catalogSeries()
     }
 }

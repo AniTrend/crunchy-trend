@@ -17,9 +17,9 @@
 package co.anitrend.support.crunchyroll.data.collection.repository
 
 import androidx.paging.PagedList
-import co.anitrend.arch.data.model.UserInterfaceState
-import co.anitrend.arch.data.model.UserInterfaceState.Companion.create
 import co.anitrend.arch.data.repository.SupportRepository
+import co.anitrend.arch.data.state.DataState
+import co.anitrend.arch.data.state.DataState.Companion.create
 import co.anitrend.support.crunchyroll.data.collection.source.contract.CollectionSource
 import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
 import co.anitrend.support.crunchyroll.domain.collection.models.CrunchyCollectionQuery
@@ -28,7 +28,7 @@ import co.anitrend.support.crunchyroll.domain.collection.repositories.ICollectio
 internal class CollectionRepository(
     private val source: CollectionSource
 ) : SupportRepository(source),
-    ICollectionRepository<UserInterfaceState<PagedList<CrunchyCollection>>> {
+    ICollectionRepository<DataState<PagedList<CrunchyCollection>>> {
 
     override fun getCollection(
         seriesQuery: CrunchyCollectionQuery

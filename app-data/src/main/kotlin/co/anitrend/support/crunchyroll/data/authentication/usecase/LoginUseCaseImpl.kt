@@ -16,8 +16,8 @@
 
 package co.anitrend.support.crunchyroll.data.authentication.usecase
 
-import co.anitrend.arch.data.model.UserInterfaceState
 import co.anitrend.arch.data.repository.contract.ISupportRepository
+import co.anitrend.arch.data.state.DataState
 import co.anitrend.support.crunchyroll.data.authentication.repository.AuthenticationRepository
 import co.anitrend.support.crunchyroll.domain.authentication.interactors.LoginUseCase
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
@@ -35,4 +35,4 @@ internal class LoginUseCaseImpl(
     }
 }
 
-typealias LoginUseCaseType = LoginUseCase<UserInterfaceState<CrunchyUser?>>
+typealias LoginUseCaseType = LoginUseCase<DataState<CrunchyUser?>>

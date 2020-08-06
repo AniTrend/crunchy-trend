@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.util.extension
 
-import co.anitrend.arch.extension.ext.LAZY_MODE_PUBLICATION
+import co.anitrend.arch.extension.ext.PUBLICATION
 import co.anitrend.arch.extension.util.contract.ISupportDateHelper
 import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
 import co.anitrend.support.crunchyroll.data.arch.RCF822Date
@@ -28,7 +28,7 @@ import timber.log.Timber
 
 internal val koin = object : KoinComponent {}
 
-val supportDateHelper by lazy(LAZY_MODE_PUBLICATION) {
+val supportDateHelper by lazy(PUBLICATION) {
     koin.get<ISupportDateHelper>()
 }
 
