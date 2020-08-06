@@ -108,7 +108,12 @@ class MainScreen : CrunchyActivity(), NavigationView.OnNavigationItemSelectedLis
                 bottomDrawerBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                 return
             }
-            else -> super.onBackPressed()
+            else -> {
+                if (currentFragmentInterceptsActionUp())
+                    return
+                /** fixes leak discussed [here](https://issuetracker.google.com/issues/139738913) */
+                finishAfterTransition()
+            }
         }
     }
 
