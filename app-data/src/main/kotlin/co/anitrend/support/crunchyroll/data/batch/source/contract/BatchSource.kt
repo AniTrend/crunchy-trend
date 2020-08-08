@@ -23,15 +23,16 @@ import co.anitrend.support.crunchyroll.data.batch.entity.CrunchyBatchEntity
 import co.anitrend.support.crunchyroll.data.batch.usecase.model.CrunchyBatchQuery
 import co.anitrend.support.crunchyroll.data.series.model.CrunchySeriesModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
 
 internal abstract class BatchSource(
     supportDispatchers: SupportDispatchers
 ) : SupportCoreDataSource(supportDispatchers) {
 
-    abstract suspend fun getBatchOfSeries(
+    abstract fun getBatchOfSeries(
         queries: List<CrunchyBatchQuery>,
         callback: RequestCallback
-    ): List<CrunchyBatchEntity<CrunchySeriesModel>>?
+    ): Flow<List<CrunchyBatchEntity<CrunchySeriesModel>>?>
 
     /**
      * Clears data sources (databases, preferences, e.t.c)

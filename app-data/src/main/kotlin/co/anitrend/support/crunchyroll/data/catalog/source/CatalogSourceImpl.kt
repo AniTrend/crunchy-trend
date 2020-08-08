@@ -33,9 +33,7 @@ import co.anitrend.support.crunchyroll.data.catalog.source.contract.CatalogSourc
 import co.anitrend.support.crunchyroll.data.catalog.transformer.CrunchyCatalogTransformer
 import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalogFilter
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
 import timber.log.Timber
@@ -79,15 +77,18 @@ internal class CatalogSourceImpl(
                 )
             }
 
-            val results = batchSource
-                .getBatchOfSeries(requests, callback).orEmpty()
+            batchSource.getBatchOfSeries(requests, callback)
+                .filterNotNull()
+                .onEach { results ->
+                    mapper.onResponseMapFrom(results)
 
-            mapper.onResponseMapFrom(results)
-
-            if (results.isNotEmpty()) {
-                cache.updateLastRequest(requestId)
-                Timber.tag(moduleTag).v("Saving request: $requestId to cache log, upon success")
-            }
+                    if (results.isNotEmpty()) {
+                        cache.updateLastRequest(requestId)
+                        Timber.tag(moduleTag)
+                            .v("Saving request: $requestId to cache log, upon success")
+                    }
+                }
+                .collect()
         } else
             Timber.tag(moduleTag).v("Skipping request due to expiry time not satisfied $requestId")
     }
