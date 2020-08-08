@@ -22,6 +22,7 @@ import co.anitrend.arch.data.request.error.RequestError
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.support.crunchyroll.data.arch.controller.strategy.contract.ControllerStrategy
 import timber.log.Timber
+import java.net.UnknownHostException
 
 /**
  * Does not run any connectivity check before prior to execution, this is useful for sources
@@ -45,12 +46,19 @@ internal class OfflineControllerPolicy<D> private constructor() : ControllerStra
         result
     }.onFailure { e->
         Timber.tag(moduleTag).e(e)
-        if (e is RequestError)
-            requestCallback.recordFailure(e)
-        else
-            requestCallback.recordFailure(
+        when (e) {
+            is RequestError -> requestCallback.recordFailure(e)
+            is UnknownHostException -> requestCallback.recordFailure(
+                RequestError(
+                    "Unable to connect to host" ,
+                    "Cannot connect to hostname, please check your internet connection",
+                    e.cause
+                )
+            )
+            else -> requestCallback.recordFailure(
                 RequestError("Unexpected error" , e.message, e.cause)
             )
+        }
     }.getOrNull()
 
     companion object {
