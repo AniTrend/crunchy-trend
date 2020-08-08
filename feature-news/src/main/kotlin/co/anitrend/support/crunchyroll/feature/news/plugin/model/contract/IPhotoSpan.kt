@@ -26,16 +26,34 @@ internal interface IPhotoSpan : ISpanConfiguration {
 
     fun addPropertiesToImage(source: String, imageSize: ImageSize)
 
-    fun generateImageSize(width: Float?, height: Float?): ImageSize {
+    private fun findSizeInStyle(descriptor: String, styles: String?, value: Float?): Float? {
+        if (value != null) return value
+        val sizeStyle = styles?.split(';')
+            ?.firstOrNull { it.contains(descriptor) }
+        return runCatching {
+            val size = sizeStyle?.run {
+                val delimiterPosition = sizeStyle.indexOf(':').plus(1)
+                val endPosition = sizeStyle.indexOf(SizeMeasurementUnit.PIXEL.attr).minus(1)
+                val newValue = sizeStyle.subSequence(IntRange(delimiterPosition, endPosition))
+                newValue.toString().toFloat()
+            }
+            size
+        }.getOrNull()
+    }
+
+    fun generateImageSize(styles: String?, width: Float?, height: Float?): ImageSize {
+        val autoMeasureHeight = findSizeInStyle(HEIGHT_ATTR, styles, height)
+        val autoMeasureWidth = findSizeInStyle(WIDTH_ATTR, styles, width)
+
         // magnify the images, alternatively we could adjust
         // the magnification based on device dimens
-        val heightDimension = height?.let {
+        val heightDimension = autoMeasureHeight?.let {
             ImageSize.Dimension(
                 it * magnificationScale,
                 sizeMeasurementUnit.attr
             )
         }
-        val widthDimension = width?.let {
+        val widthDimension = autoMeasureWidth?.let {
             ImageSize.Dimension(
                 it * magnificationScale,
                 sizeMeasurementUnit.attr
@@ -51,5 +69,6 @@ internal interface IPhotoSpan : ISpanConfiguration {
         internal const val SRC_ATTR = "src"
         internal const val HEIGHT_ATTR = "height"
         internal const val WIDTH_ATTR = "width"
+        internal const val STYLE_ATTR = "style"
     }
 }
