@@ -35,8 +35,9 @@ internal fun ImageSpanConfiguration.onImage(): ArrayList<Any?>? {
     val attributes = tag.attributes()
 
     val destination = attributes[IPhotoSpan.SRC_ATTR]
+    val styles = attributes[IPhotoSpan.STYLE_ATTR]
     val imageSize = generateImageSize(
-        null, attributes[IPhotoSpan.HEIGHT_ATTR]?.toFloat()
+        styles, null, attributes[IPhotoSpan.HEIGHT_ATTR]?.toFloat()
     )
 
     if (destination == null)
@@ -72,6 +73,7 @@ internal fun YouTubeSpanConfiguration.onFrame(): ArrayList<Any?>? {
     val attributes = tag.attributes()
 
     val source = attributes[IPhotoSpan.SRC_ATTR]
+    val styles = attributes[IPhotoSpan.STYLE_ATTR]
     if (source?.contains(YouTubeSpanConfiguration.LOOKUP_KEY) == true) {
         val imageSpanFactory = configuration
             .spansFactory()
@@ -82,7 +84,7 @@ internal fun YouTubeSpanConfiguration.onFrame(): ArrayList<Any?>? {
             .get(Link::class.java)
 
         val imageSize = generateImageSize(
-            null, attributes[IPhotoSpan.HEIGHT_ATTR]?.toFloat()
+            styles, null, attributes[IPhotoSpan.HEIGHT_ATTR]?.toFloat()
         )
 
         addPropertiesToImage(source, imageSize)
