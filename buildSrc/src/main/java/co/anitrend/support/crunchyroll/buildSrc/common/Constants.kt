@@ -39,6 +39,8 @@ internal const val settings = "feature-settings"
 internal const val search = "feature-search"
 internal const val news = "feature-news"
 
+internal const val uiImageViewer = "ui-image-viewer"
+
 internal val baseModules = listOf(app, core, data, domain, navigation)
 
 internal val androidModules = listOf(
@@ -46,7 +48,8 @@ internal val androidModules = listOf(
 )
 
 internal val featureModules = listOf(
-    catalog, collection, discover, listing, media, player, series, settings, search, news
+    catalog, collection, discover, listing, media, player,
+    series, settings, search, news, uiImageViewer
 )
 
 private const val coreFeatureModulePattern = "android-"
