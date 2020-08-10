@@ -13,6 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+import co.anitrend.support.crunchyroll.buildSrc.Libraries
 
 plugins {
     id("co.anitrend.crunchyroll.plugin")
@@ -20,4 +21,9 @@ plugins {
 
 dependencies {
     implementation(project(":app-domain"))
+
+    implementation(Libraries.Koin.core)
+    implementation(Libraries.Koin.extension)
+    implementation(Libraries.Koin.AndroidX.fragment)
+    testImplementation(Libraries.Koin.test)
 }
