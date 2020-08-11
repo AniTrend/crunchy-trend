@@ -46,10 +46,7 @@ class NewsScreen : CrunchyActivity() {
         NewsScreenBinding.inflate(layoutInflater)
     }
 
-    private val payload
-            by extra<News.Payload>(
-                News.extraKey
-            )
+    private val payload by extra<News.Payload>(News.extraKey)
 
     private val presenter by inject<NewsPresenter>()
 
@@ -71,7 +68,7 @@ class NewsScreen : CrunchyActivity() {
         binding.floatingShortcutButton
             .setOnClickListener {
                 val shareCompat = payload?.let {
-                    presenter.createShareContent(it, get(), this)
+                    presenter.createShareContent(it, this)
                 }?.createChooserIntent()
                 runCatching {
                     startActivity(shareCompat)
@@ -88,11 +85,8 @@ class NewsScreen : CrunchyActivity() {
         return when (item.itemId) {
              R.id.action_open_in_browser -> {
                  runCatching {
-                     val url = payload?.let {
-                         presenter.buildNewsUrl(it, get())
-                     }
                      val intent = Intent(Intent.ACTION_VIEW)
-                     intent.data = url?.toUri()
+                     intent.data = payload?.guid?.toUri()
                      startActivity(intent)
                  }.stackTrace(moduleTag)
                  true

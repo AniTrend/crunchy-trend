@@ -52,7 +52,7 @@ object News : NavigationRouter() {
 
     @Parcelize
     data class Payload(
-        val id: Long,
+        val guid: String,
         val title: String,
         val subTitle: String,
         val description: String?,

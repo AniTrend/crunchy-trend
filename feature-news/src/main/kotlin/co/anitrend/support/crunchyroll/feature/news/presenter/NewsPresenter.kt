@@ -24,27 +24,22 @@ import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentActivity
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
-import co.anitrend.arch.extension.util.contract.ISupportDateHelper
 import co.anitrend.support.crunchyroll.core.extensions.stackTrace
-import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
 import co.anitrend.support.crunchyroll.feature.news.model.Poster
 import co.anitrend.support.crunchyroll.feature.news.ui.activity.NewsScreen
+import co.anitrend.support.crunchyroll.navigation.ImageViewer
+import co.anitrend.support.crunchyroll.navigation.News
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import timber.log.Timber
-import java.util.*
-import kotlin.collections.ArrayList
 
 class NewsPresenter(
     context: Context,
     settings: CrunchySettings,
     private val dispatchers: SupportDispatchers
 ) : CrunchyCorePresenter(context, settings) {
-
-    // TODO: Remove invalid characters from url
-    private val regex = Regex("[,`:#!'\"]")
 
     private val posters = ArrayList<Poster>()
 
@@ -81,40 +76,13 @@ class NewsPresenter(
         }
     }
 
-    fun buildNewsUrl(
-        payload: News.Payload,
-        dateHelper: ISupportDateHelper
-    ): String {
-        val payloadContent = StringBuilder(120)
-
-        val url = "https://www.crunchyroll.com/en-gb/anime-feature"
-        payloadContent.append(url, '/')
-
-        val date = dateHelper.convertFromUnixTimeStamp(
-            unixTimeStamp = payload.publishDate ?: 0,
-            outputDatePattern = "yyyy/MM/dd"
-        )
-        payloadContent.append(date, '/')
-
-        val slug = payload.title.toLowerCase(
-            Locale.getDefault()
-        ).replace(regex, "")
-            .replace(' ', '-')
-        payloadContent.append(slug)
-
-        return payloadContent.toString()
-    }
-
     fun createShareContent(
         payload: News.Payload,
-        dateHelper: ISupportDateHelper,
         newsScreen: NewsScreen
     ): ShareCompat.IntentBuilder {
-        val url = buildNewsUrl(payload, dateHelper)
-
         val payloadContent = StringBuilder(payload.description!!)
             .append("\n\n")
-            .append(url)
+            .append(payload.guid)
 
         return ShareCompat.IntentBuilder
             .from(newsScreen)

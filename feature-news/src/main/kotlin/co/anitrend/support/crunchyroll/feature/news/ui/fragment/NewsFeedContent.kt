@@ -86,15 +86,15 @@ class NewsFeedContent(
                     val model = it.data
                     if (model != null) {
                         val payload = News.Payload(
-                            model.id,
+                            model.guid,
                             model.title,
                             model.subTitle,
                             model.description,
                             model.content,
                             model.publishedOn
-                        ).toBundle(News.extraKey)
+                        )
 
-                        it.view.context.startNewActivity<NewsScreen>(payload)
+                        News(it.view.context, payload)
                     }
                 }
         }
