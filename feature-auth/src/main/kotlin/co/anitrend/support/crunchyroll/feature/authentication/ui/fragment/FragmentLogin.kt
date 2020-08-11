@@ -26,7 +26,7 @@ import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
-import co.anitrend.support.crunchyroll.navigation.NavigationTargets
+import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.core.ui.fragment.CrunchyFragment
 import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLoginBinding
 import co.anitrend.support.crunchyroll.feature.authentication.presenter.AuthPresenter
@@ -102,7 +102,7 @@ class FragmentLogin(
             onFetchDataInitialize()
         }
         binding.loginAnonymousControls.skipLoginButton.setOnClickListener {
-            NavigationTargets.Main(context)
+            Main(context)
             activity?.closeScreen()
         }
         binding.supportStateLayout.stateConfigFlow.value = get()
@@ -119,7 +119,7 @@ class FragmentLogin(
     }
 
     private fun onUpdateUserInterface() {
-        NavigationTargets.Main(context)
+        Main(context)
         activity?.closeScreen()
     }
 

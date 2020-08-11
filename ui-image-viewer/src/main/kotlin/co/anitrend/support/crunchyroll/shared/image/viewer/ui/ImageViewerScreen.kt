@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.shared.image.viewer
+package co.anitrend.support.crunchyroll.shared.image.viewer.ui
 
 import android.Manifest
 import android.app.DownloadManager
@@ -30,7 +30,7 @@ import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.extension.ext.extra
 import co.anitrend.arch.extension.ext.systemServiceOf
 import co.anitrend.support.crunchyroll.core.common.DEFAULT_ANIMATION_DURATION
-import co.anitrend.support.crunchyroll.navigation.NavigationTargets
+import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.shared.image.viewer.databinding.ImageViewScreenBinding
 import com.bumptech.glide.Glide
@@ -43,8 +43,8 @@ import java.io.File
 
 class ImageViewerScreen : CrunchyActivity() {
 
-    private val payload: NavigationTargets.ImageViewer.Payload?
-            by extra(NavigationTargets.ImageViewer.PAYLOAD)
+    private val payload: ImageViewer.Payload?
+            by extra(ImageViewer.extraKey)
 
     private val binding by lazy(UNSAFE) {
         ImageViewScreenBinding.inflate(layoutInflater)

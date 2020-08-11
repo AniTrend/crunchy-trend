@@ -18,6 +18,7 @@ package co.anitrend.support.crunchyroll.domain.news.entities
 
 data class CrunchyNews(
     val id: Long,
+    val guid: String,
     val title: String,
     val image: String?,
     val author: String,

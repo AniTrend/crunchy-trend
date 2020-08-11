@@ -51,10 +51,10 @@ class DynamicFeatureModuleHelper(
      */
     override fun onDestroy() {
         super.onDestroy()
-        /*Timber.tag(moduleTag).v(
+        Timber.tag(moduleTag).v(
             "Unloading ${modules.size} feature modules"
         )
-        unloadModules()*/
+        unloadModules()
     }
 
     companion object {

@@ -32,7 +32,7 @@ import co.anitrend.arch.recycler.model.RecyclerItem
 import co.anitrend.arch.ui.extension.setUpWith
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
-import co.anitrend.support.crunchyroll.navigation.NavigationTargets
+import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.feature.catalog.R
@@ -78,11 +78,11 @@ data class CatalogItem(
                 .collect {
                     val data = it.data
 
-                    val payload = NavigationTargets.Series.Payload(
+                    val payload = Series.Payload(
                         seriesId = data?.seriesId ?: 0
                     )
 
-                    NavigationTargets.Series(it.view.context, payload)
+                    Series(it.view.context, payload)
                 }
         }
     }

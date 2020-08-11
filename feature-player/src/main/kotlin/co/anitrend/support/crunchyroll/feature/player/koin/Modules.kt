@@ -19,6 +19,7 @@ package co.anitrend.support.crunchyroll.feature.player.koin
 import co.anitrend.support.crunchyroll.core.helper.StorageHelper
 import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.core.model.UserAgent
+import co.anitrend.support.crunchyroll.feature.player.FeatureProvider
 import co.anitrend.support.crunchyroll.feature.player.R
 import co.anitrend.support.crunchyroll.feature.player.component.SourceFactoryProvider
 import co.anitrend.support.crunchyroll.feature.player.plugin.PlaylistManagerPluginImpl
@@ -26,6 +27,7 @@ import co.anitrend.support.crunchyroll.feature.player.presenter.StreamPresenter
 import co.anitrend.support.crunchyroll.feature.player.ui.activity.MediaPlayerScreen
 import co.anitrend.support.crunchyroll.feature.player.ui.fragment.MediaStreamContent
 import co.anitrend.support.crunchyroll.feature.player.viewmodel.MediaStreamViewModel
+import co.anitrend.support.crunchyroll.navigation.MediaPlayer
 import com.google.android.exoplayer2.database.ExoDatabaseProvider
 import com.google.android.exoplayer2.offline.DownloadManager
 import com.google.android.exoplayer2.ui.DownloadNotificationHelper
@@ -37,7 +39,6 @@ import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 
 private val coreModule = module {
@@ -125,13 +126,20 @@ private val viewModelModule = module {
     }
 }
 
+private val featureModule = module {
+    factory<MediaPlayer.Provider> {
+        FeatureProvider()
+    }
+}
+
 val moduleHelper by lazy {
     DynamicFeatureModuleHelper(
         listOf(
             coreModule,
             fragmentModule,
             presenterModule,
-            viewModelModule
+            viewModelModule,
+            featureModule
         )
     )
 }

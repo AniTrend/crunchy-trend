@@ -17,7 +17,7 @@
 package co.anitrend.support.crunchyroll.feature.player.presenter
 
 import android.content.Context
-import co.anitrend.support.crunchyroll.navigation.NavigationTargets
+import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
@@ -31,7 +31,7 @@ class StreamPresenter(
 
     fun toStreamItem(
         stream: MediaStream,
-        payload: NavigationTargets.MediaPlayer.Payload?
+        payload: MediaPlayer.Payload?
     ): MediaStreamItem {
         return MediaStreamItem.transform(
             MediaStreamWithExtras(

@@ -1,4 +1,4 @@
-package co.anitrend.support.crunchyroll.core.initializer
+package co.anitrend.support.crunchyroll.core.initializer.contract
 
 import androidx.startup.Initializer
 

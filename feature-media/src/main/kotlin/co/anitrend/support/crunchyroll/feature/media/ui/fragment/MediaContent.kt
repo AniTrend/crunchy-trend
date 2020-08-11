@@ -29,7 +29,7 @@ import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.extensions.createDialog
 import co.anitrend.support.crunchyroll.core.model.Emote
-import co.anitrend.support.crunchyroll.navigation.NavigationTargets
+import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.core.ui.fragment.list.CrunchyFragmentList
 import co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia
 import co.anitrend.support.crunchyroll.domain.media.models.CrunchyMediaQuery
@@ -54,8 +54,8 @@ class MediaContent(
 ) : CrunchyFragmentList<CrunchyMedia>() {
 
     private val payload
-            by argument<NavigationTargets.Media.Payload>(
-                NavigationTargets.Media.PAYLOAD
+            by argument<Media.Payload>(
+                Media.extraKey
             )
 
     private val viewModel by viewModel<MediaViewModel>()
@@ -108,14 +108,14 @@ class MediaContent(
                                 binding.dialogMediaDescription.text = media.description
                                 binding.dialogMediaImage.setImageUrl(media.screenshotImage)
                                 binding.dialogMediaImageContainer.setOnClickListener {
-                                    val mediaPlayerPayload = NavigationTargets.MediaPlayer.Payload(
+                                    val mediaPlayerPayload = MediaPlayer.Payload(
                                         mediaId = media.mediaId,
                                         collectionName = payload?.collectionName,
                                         collectionThumbnail = payload?.collectionThumbnail,
                                         episodeTitle = "Episode ${media.episodeNumber}: ${media.name}",
                                         episodeThumbnail = media.screenshotImage
                                     )
-                                    NavigationTargets.MediaPlayer(
+                                    MediaPlayer(
                                         binding.root.context, mediaPlayerPayload
                                     )
                                 }

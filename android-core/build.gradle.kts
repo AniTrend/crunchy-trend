@@ -27,4 +27,6 @@ dependencies {
     implementation(Libraries.AndroidX.Paging.runtime)
     implementation(Libraries.AndroidX.Paging.runtimeKtx)
     implementation(Libraries.AndroidX.ContraintLayout.constraintLayout)
+
+    implementation(Libraries.treessence)
 }

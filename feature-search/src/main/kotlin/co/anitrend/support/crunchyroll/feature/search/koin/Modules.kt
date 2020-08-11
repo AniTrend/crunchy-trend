@@ -17,10 +17,12 @@
 package co.anitrend.support.crunchyroll.feature.search.koin
 
 import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
+import co.anitrend.support.crunchyroll.feature.search.FeatureProvider
 import co.anitrend.support.crunchyroll.feature.search.presenter.SeriesPresenter
 import co.anitrend.support.crunchyroll.feature.search.ui.activity.SearchScreen
 import co.anitrend.support.crunchyroll.feature.search.ui.fragment.SearchContentScreen
 import co.anitrend.support.crunchyroll.feature.search.viewmodel.SeriesSearchViewModel
+import co.anitrend.support.crunchyroll.navigation.Search
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -51,8 +53,14 @@ private val viewModelModule = module {
     }
 }
 
+private val featureModule = module {
+    factory<Search.Provider> {
+        FeatureProvider()
+    }
+}
+
 val moduleHelper by lazy {
     DynamicFeatureModuleHelper(
-        listOf(fragmentModule, presenterModule, viewModelModule)
+        listOf(fragmentModule, presenterModule, viewModelModule, featureModule)
     )
 }

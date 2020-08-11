@@ -17,11 +17,13 @@
 package co.anitrend.support.crunchyroll.feature.news.koin
 
 import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
+import co.anitrend.support.crunchyroll.feature.news.FeatureProvider
 import co.anitrend.support.crunchyroll.feature.news.plugin.CrunchyTagPlugin
 import co.anitrend.support.crunchyroll.feature.news.plugin.store.CrunchyGlideStore
 import co.anitrend.support.crunchyroll.feature.news.presenter.NewsPresenter
 import co.anitrend.support.crunchyroll.feature.news.ui.fragment.NewsFeedContent
 import co.anitrend.support.crunchyroll.feature.news.viewmodel.NewsViewModel
+import co.anitrend.support.crunchyroll.navigation.News
 import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
 import io.noties.markwon.MarkwonVisitor
@@ -88,8 +90,14 @@ private val viewModelModule = module {
     }
 }
 
+private val featureModule = module {
+    factory<News.Provider> {
+        FeatureProvider()
+    }
+}
+
 val moduleHelper by lazy {
     DynamicFeatureModuleHelper(
-        listOf(coreModule, fragmentModule, presenterModule, viewModelModule)
+        listOf(coreModule, fragmentModule, presenterModule, viewModelModule, featureModule)
     )
 }

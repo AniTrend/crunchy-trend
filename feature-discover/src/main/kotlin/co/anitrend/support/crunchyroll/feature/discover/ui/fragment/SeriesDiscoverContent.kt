@@ -24,7 +24,7 @@ import co.anitrend.arch.extension.ext.argument
 import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
-import co.anitrend.support.crunchyroll.navigation.NavigationTargets
+import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.core.ui.fragment.list.CrunchyFragmentList
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
@@ -44,8 +44,8 @@ class SeriesDiscoverContent(
     override val defaultSpanSize: Int = R.integer.single_list_size
 ) : CrunchyFragmentList<CrunchySeries>() {
 
-    private val payload: NavigationTargets.Discover.Payload?
-            by argument(NavigationTargets.Discover.PAYLOAD)
+    private val payload: Discover.Payload?
+            by argument(Discover.extraKey)
 
     private val viewModel by viewModel<SeriesDiscoverViewModel>()
 
@@ -85,11 +85,11 @@ class SeriesDiscoverContent(
                     val data = it.data
                     val view = it.view
 
-                    val payload = NavigationTargets.Series.Payload(
+                    val payload = Series.Payload(
                         seriesId = data?.seriesId ?: 0
                     )
 
-                    NavigationTargets.Series(view.context, payload)
+                    Series(view.context, payload)
                 }
         }
     }

@@ -17,11 +17,10 @@
 package co.anitrend.support.crunchyroll.koin
 
 import co.anitrend.arch.core.analytic.contract.ISupportAnalytics
+import co.anitrend.support.crunchyroll.FeatureProvider
 import co.anitrend.support.crunchyroll.analytics.AnalyticsLogger
-import co.anitrend.support.crunchyroll.core.koin.coreModules
-import co.anitrend.support.crunchyroll.core.settings.common.privacy.IPrivacySettings
-import co.anitrend.support.crunchyroll.data.arch.di.crunchDataModules
-import org.koin.android.ext.koin.androidContext
+import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
+import co.anitrend.support.crunchyroll.navigation.Main
 import org.koin.dsl.module
 
 private val analyticsModule = module {
@@ -40,5 +39,11 @@ private val analyticsModule = module {
     }
 }
 
+private val featureModule = module {
+    factory<Main.Provider> {
+        FeatureProvider()
+    }
+}
 
-val appModules = listOf(analyticsModule) + coreModules + crunchDataModules
+
+val appModules = DynamicFeatureModuleHelper(listOf(analyticsModule, featureModule))

@@ -21,7 +21,6 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.extension.ext.extra
@@ -31,10 +30,10 @@ import co.anitrend.support.crunchyroll.R
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.extensions.commit
-import co.anitrend.support.crunchyroll.navigation.NavigationTargets
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
+import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.navigation.extensions.forFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.navigation.NavigationView
@@ -125,15 +124,15 @@ class MainScreen : CrunchyActivity(), NavigationView.OnNavigationItemSelectedLis
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_search -> {
-                NavigationTargets.Search(applicationContext)
+                Search(applicationContext)
                 return true
             }
             R.id.action_settings -> {
-                NavigationTargets.Settings(applicationContext)
+                Settings(applicationContext)
                 return true
             }
             R.id.action_login -> {
-                NavigationTargets.Authentication(applicationContext)
+                Authentication(applicationContext)
                 if (!presenter.settings.isAuthenticated)
                     closeScreen()
                 return true
@@ -154,44 +153,19 @@ class MainScreen : CrunchyActivity(), NavigationView.OnNavigationItemSelectedLis
         val fragmentItem = when (menu) {
             R.id.nav_series_catalog -> {
                 selectedTitle = R.string.nav_series_catalog
-                NavigationTargets
-                    .Catalog.forFragment<Fragment>()
-                    ?.let {
-                        FragmentItem(
-                            fragment = it
-                        )
-                }
-
+                FragmentItem(Catalog.forFragment())
             }
             R.id.nav_series_discover -> {
                 selectedTitle = R.string.nav_discover
-                NavigationTargets
-                    .Discover.forFragment<Fragment>()
-                    ?.let {
-                        FragmentItem(
-                            fragment = it
-                        )
-                    }
+                FragmentItem(Discover.forFragment())
             }
             R.id.nav_show_latest -> {
                 selectedTitle = R.string.nav_shows
-                NavigationTargets
-                    .Listing.forFragment<Fragment>()
-                    ?.let {
-                        FragmentItem(
-                            fragment = it
-                        )
-                    }
+                FragmentItem(Listing.forFragment())
             }
             R.id.nav_show_news -> {
                 selectedTitle = R.string.nav_show_news
-                NavigationTargets
-                    .News.forFragment<Fragment>()
-                    ?.let {
-                        FragmentItem(
-                            fragment = it
-                        )
-                    }
+                FragmentItem(News.forFragment())
             }
             else -> null
         }

@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2020 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,22 +14,19 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.navigation.contract
+package co.anitrend.support.crunchyroll.feature.discover
 
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
+import co.anitrend.support.crunchyroll.feature.discover.ui.activity.SeriesDiscoverScreen
+import co.anitrend.support.crunchyroll.feature.discover.ui.fragment.SeriesDiscoverContent
+import co.anitrend.support.crunchyroll.navigation.Discover
+import co.anitrend.support.crunchyroll.navigation.contract.INavigationProvider
 
-interface INavigationRouter {
-    val navRouterIntent: Intent?
+internal class FeatureProvider : Discover.Provider {
+    override fun activity(context: Context?) =
+        Intent(context, SeriesDiscoverScreen::class.java)
 
-    /**
-     * Starts the target [navRouterIntent] for the implementation
-     */
-    operator fun invoke(context: Context?, options: Bundle? = null) {
-        runCatching {
-            navRouterIntent?.action = Intent.ACTION_VIEW
-            context?.startActivity(navRouterIntent, options)
-        }.exceptionOrNull()?.printStackTrace()
-    }
+    override fun fragment() =
+        SeriesDiscoverContent::class.java
 }

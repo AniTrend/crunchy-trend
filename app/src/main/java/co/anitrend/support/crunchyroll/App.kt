@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll
 
 import androidx.startup.AppInitializer
 import co.anitrend.support.crunchyroll.core.CrunchyApplication
-import co.anitrend.support.crunchyroll.initializer.KoinInitializer
+import co.anitrend.support.crunchyroll.initializer.ApplicationInitializer
 import org.koin.core.context.stopKoin
 import timber.log.Timber
 
@@ -39,7 +39,7 @@ class App : CrunchyApplication() {
      */
     override fun initializeKoin() {
         AppInitializer.getInstance(this)
-            .initializeComponent(KoinInitializer::class.java)
+            .initializeComponent(ApplicationInitializer::class.java)
     }
 
     /** [Koin](https://insert-koin.io/docs/2.0/getting-started/)

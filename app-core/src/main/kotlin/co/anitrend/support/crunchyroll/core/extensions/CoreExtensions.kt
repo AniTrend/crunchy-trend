@@ -93,7 +93,7 @@ inline fun FragmentManager.commit(
     fragmentItem: FragmentItem<*>?,
     action: FragmentTransaction.() -> Unit
 ) : String? {
-    return if (fragmentItem != null) {
+    return if (fragmentItem?.fragment != null) {
         val fragmentTag = fragmentItem.tag()
         val backStack = findFragmentByTag(fragmentTag)
 

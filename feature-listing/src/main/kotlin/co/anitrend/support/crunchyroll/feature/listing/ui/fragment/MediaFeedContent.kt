@@ -28,7 +28,7 @@ import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.extensions.createDialog
 import co.anitrend.support.crunchyroll.core.model.Emote
-import co.anitrend.support.crunchyroll.navigation.NavigationTargets
+import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.core.ui.fragment.list.CrunchyFragmentList
 import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
@@ -108,14 +108,14 @@ class MediaFeedContent(
                                 )*/
                                 binding.dialogMediaImage.setImageUrl(episodeFeed.episodeThumbnail)
                                 binding.dialogMediaImageContainer.setOnClickListener { _ ->
-                                    val mediaPlayerPayload = NavigationTargets.MediaPlayer.Payload(
+                                    val mediaPlayerPayload = MediaPlayer.Payload(
                                         mediaId = episodeFeed.id,
                                         collectionName = episodeFeed.title,
                                         collectionThumbnail = null,
                                         episodeTitle = "Episode ${episodeFeed.episodeNumber}: ${episodeFeed.episodeTitle}",
                                         episodeThumbnail = episodeFeed.episodeThumbnail
                                     )
-                                    NavigationTargets.MediaPlayer(
+                                    MediaPlayer(
                                         binding.root.context, mediaPlayerPayload
                                     )
                                 }

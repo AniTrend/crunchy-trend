@@ -27,4 +27,6 @@ dependencies {
     implementation(Libraries.MaterialDialogs.bottomsheets)
 
     implementation(Libraries.Square.OkHttp.logging)
+
+    implementation(Libraries.treessence)
 }
