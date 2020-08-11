@@ -26,8 +26,6 @@ dependencies {
     implementation(Libraries.Google.Firebase.Analytics.analyticsKtx)
     implementation(Libraries.Google.Firebase.Crashlytics.crashlytics)
 
-    implementation(Libraries.treessence)
-
     // debugImplementation because LeakCanary should only run in debug builds.
     debugImplementation(Libraries.Square.LeakCanary.leakCanary)
     debugImplementation(Libraries.debugDb)

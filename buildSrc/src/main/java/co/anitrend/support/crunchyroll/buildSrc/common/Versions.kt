@@ -22,8 +22,8 @@ object Versions {
     const val targetSdk = 29
     const val minSdk = 21
 
-    const val versionCode = 225
-    const val versionName = "0.6.2-alpha05"
+    const val versionCode = 1060206
+    const val versionName = "0.6.2-alpha06"
 
     const val mockk = "1.10.0"
     const val junit = "4.13"

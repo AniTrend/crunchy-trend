@@ -27,7 +27,7 @@ import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.model.Emote
-import co.anitrend.support.crunchyroll.navigation.NavigationTargets
+import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.core.ui.fragment.list.CrunchyFragmentList
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.feature.search.R
@@ -106,15 +106,11 @@ class SearchContentScreen(
                     val data = it.data
                     val view = it.view
 
-                    val payload = NavigationTargets.Series.Payload(
+                    val payload = Series.Payload(
                         seriesId = data?.seriesId ?: 0
                     )
 
-                    val options = ActivityOptions.makeSceneTransitionAnimation(
-                        activity, view, payload.seriesId.toString()
-                    ).toBundle()
-
-                    NavigationTargets.Series(view.context, payload, options)
+                    Series(view.context, payload)
                 }
         }
     }

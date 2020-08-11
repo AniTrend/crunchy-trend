@@ -21,7 +21,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.extension.ext.isStateAtLeast
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
-import co.anitrend.support.crunchyroll.navigation.NavigationTargets
+import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.splash.R
@@ -59,13 +59,13 @@ class SplashScreen : CrunchyActivity() {
             delay(500)
             if (isStateAtLeast(Lifecycle.State.RESUMED)) {
                 if (!presenter.settings.isNewInstallation)
-                    NavigationTargets.Main(applicationContext)
+                    Main(applicationContext)
                 else {
                     if (presenter.settings.isAuthenticated)
-                        NavigationTargets.Main(applicationContext)
+                        Main(applicationContext)
                     else {
                         presenter.settings.isNewInstallation = false
-                        NavigationTargets.Authentication(applicationContext)
+                        Authentication(applicationContext)
                     }
                 }
                 closeScreen()

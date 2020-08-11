@@ -17,7 +17,7 @@
 package co.anitrend.support.crunchyroll.feature.discover.initializer
 
 import android.content.Context
-import co.anitrend.support.crunchyroll.core.initializer.AbstractFeatureInitializer
+import co.anitrend.support.crunchyroll.core.initializer.contract.AbstractFeatureInitializer
 import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper.Companion.loadModules
 import co.anitrend.support.crunchyroll.feature.discover.koin.moduleHelper
 import kotlinx.coroutines.launch

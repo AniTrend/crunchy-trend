@@ -29,7 +29,9 @@ import co.anitrend.arch.extension.ext.detachComponent
 import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
-import co.anitrend.support.crunchyroll.navigation.NavigationTargets
+import co.anitrend.support.crunchyroll.navigation.Season
+import co.anitrend.support.crunchyroll.navigation.Series
+import co.anitrend.support.crunchyroll.navigation.Discover
 import co.anitrend.support.crunchyroll.core.ui.fragment.CrunchyFragment
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesDetailQuery
@@ -49,8 +51,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class SeriesContentScreen : CrunchyFragment() {
 
     private val payload
-            by argument<NavigationTargets.Series.Payload>(
-                NavigationTargets.Series.PAYLOAD
+            by argument<Series.Payload>(
+                Series.extraKey
             )
 
     private lateinit var binding: SeriesContentBinding
@@ -114,12 +116,12 @@ class SeriesContentScreen : CrunchyFragment() {
                 .collect {
                     val genre = it.data
                     if (!genre.isNullOrEmpty()) {
-                        val payload = NavigationTargets.Discover.Payload(
+                        val payload = Discover.Payload(
                             browseFilter = CrunchySeriesBrowseFilter.TAG,
                             filterOption = genre
                         )
 
-                        NavigationTargets.DiscoverScreen(context, payload)
+                        Discover(context, payload)
                     }
                 }
         }
@@ -180,10 +182,10 @@ class SeriesContentScreen : CrunchyFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.seriesInfo.seriesSeasons.setOnClickListener {
             payload?.seriesId?.also { seriesId ->
-                val collectionPayload = NavigationTargets.Collection.Payload(
+                val collectionPayload = Season.Payload(
                     seriesId = seriesId
                 )
-                NavigationTargets.Collection(
+                Season(
                     it.context, collectionPayload
                 )
             }

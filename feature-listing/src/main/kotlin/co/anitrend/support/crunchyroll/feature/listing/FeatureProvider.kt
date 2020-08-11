@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2020 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,9 +14,13 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.navigation.contract
+package co.anitrend.support.crunchyroll.feature.listing
 
-interface INavigationTarget {
-    val packageName: String
-    val className: String
+import co.anitrend.support.crunchyroll.feature.listing.ui.fragment.MediaFeedContent
+import co.anitrend.support.crunchyroll.navigation.Listing
+import co.anitrend.support.crunchyroll.navigation.contract.INavigationProvider
+
+internal class FeatureProvider : Listing.Provider {
+    override fun fragment() =
+        MediaFeedContent::class.java
 }

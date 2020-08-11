@@ -32,7 +32,7 @@
                 android:authorities="${applicationId}.androidx-startup"
                 android:exported="false"
                 tools:node="merge">
-            <meta-data  android:name="co.anitrend.support.crunchyroll.feature.series.initializer.FeatureInitializer"
+            <meta-data  android:name="co.anitrend.support.crunchyroll.feature.splash.initializer.FeatureInitializer"
                     android:value="androidx.startup" />
         </provider>
     </application>

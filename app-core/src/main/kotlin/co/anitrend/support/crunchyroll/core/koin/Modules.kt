@@ -32,6 +32,7 @@ import co.anitrend.support.crunchyroll.core.util.config.ConfigurationUtil
 import co.anitrend.support.crunchyroll.core.util.locale.LocaleUtil
 import co.anitrend.support.crunchyroll.core.util.locale.SessionLocaleProviderHelper
 import co.anitrend.support.crunchyroll.core.util.theme.ThemeUtil
+import co.anitrend.support.crunchyroll.data.arch.di.crunchDataModules
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.data.util.CrunchyDateUtil
 import coil.ImageLoader
@@ -138,4 +139,4 @@ private val presenterModule = module {
     }
 }
 
-val coreModules = listOf(coreModule, configurationModule, presenterModule)
+val coreModules = listOf(coreModule, configurationModule, presenterModule) + crunchDataModules

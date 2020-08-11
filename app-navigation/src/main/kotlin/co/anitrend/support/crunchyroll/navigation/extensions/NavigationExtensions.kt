@@ -19,7 +19,7 @@ package co.anitrend.support.crunchyroll.navigation.extensions
 import android.content.Intent
 import androidx.collection.LruCache
 import androidx.fragment.app.Fragment
-import co.anitrend.support.crunchyroll.navigation.contract.INavigationTarget
+import co.anitrend.support.crunchyroll.navigation.contract.NavigationRouter
 import timber.log.Timber
 
 internal const val APPLICATION_PACKAGE_NAME = "co.anitrend.support.crunchyroll"
@@ -80,19 +80,6 @@ internal fun <T : Fragment> String.loadFragmentOrNull(): T? =
     }
 
 /**
- * Builds a an intent path for the target
- */
-fun INavigationTarget.forIntent() =
-    "$APPLICATION_PACKAGE_NAME.$packageName.$className".loadIntentOrNull()
-
-/**
- * Creates a fragment instance from intent
- */
-fun INavigationTarget.forFragment() =
-    forIntent()?.component?.className?.loadFragmentOrNull<Fragment>()
-
-/**
  * Build fragment class from intent
  */
-fun <T: Fragment> INavigationTarget.forFragment() =
-    forIntent()?.component?.className?.loadClassOrNull<T>()
+fun NavigationRouter.forFragment() = provider.fragment()

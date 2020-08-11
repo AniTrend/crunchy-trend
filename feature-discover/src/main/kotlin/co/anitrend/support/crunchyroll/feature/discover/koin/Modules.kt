@@ -17,10 +17,12 @@
 package co.anitrend.support.crunchyroll.feature.discover.koin
 
 import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
+import co.anitrend.support.crunchyroll.feature.discover.FeatureProvider
 import co.anitrend.support.crunchyroll.feature.discover.presenter.SeriesPresenter
 import co.anitrend.support.crunchyroll.feature.discover.ui.activity.SeriesDiscoverScreen
 import co.anitrend.support.crunchyroll.feature.discover.ui.fragment.SeriesDiscoverContent
 import co.anitrend.support.crunchyroll.feature.discover.viewmodel.SeriesDiscoverViewModel
+import co.anitrend.support.crunchyroll.navigation.Discover
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -51,8 +53,14 @@ private val viewModelModule = module {
     }
 }
 
+private val featureModule = module {
+    factory<Discover.Provider> {
+        FeatureProvider()
+    }
+}
+
 val moduleHelper by lazy {
     DynamicFeatureModuleHelper(
-        listOf(fragmentModule, presenterModule, viewModelModule)
+        listOf(fragmentModule, presenterModule, viewModelModule, featureModule)
     )
 }

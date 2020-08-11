@@ -17,16 +17,17 @@
 package co.anitrend.support.crunchyroll.feature.authentication.koin
 
 import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
+import co.anitrend.support.crunchyroll.feature.authentication.FeatureProvider
 import co.anitrend.support.crunchyroll.feature.authentication.presenter.AuthPresenter
 import co.anitrend.support.crunchyroll.feature.authentication.ui.activity.AuthenticationScreen
 import co.anitrend.support.crunchyroll.feature.authentication.ui.fragment.FragmentLogin
 import co.anitrend.support.crunchyroll.feature.authentication.ui.fragment.FragmentLogout
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login.LoginViewModel
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.logout.LogoutViewModel
+import co.anitrend.support.crunchyroll.navigation.Authentication
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 
 private val fragmentModule = module {
@@ -66,8 +67,14 @@ private val viewModelModule = module {
     }
 }
 
+private val featureModule = module {
+    factory<Authentication.Provider> {
+        FeatureProvider()
+    }
+}
+
 val moduleHelper by lazy {
     DynamicFeatureModuleHelper(
-        listOf(fragmentModule, presenterModule, viewModelModule)
+        listOf(fragmentModule, presenterModule, viewModelModule, featureModule)
     )
 }

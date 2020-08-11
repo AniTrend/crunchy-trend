@@ -25,7 +25,7 @@ import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.extensions.toBundle
-import co.anitrend.support.crunchyroll.navigation.NavigationTargets
+import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.core.ui.fragment.list.CrunchyFragmentList
 import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
@@ -85,14 +85,14 @@ class NewsFeedContent(
                 .collect {
                     val model = it.data
                     if (model != null) {
-                        val payload = NavigationTargets.News.Payload(
+                        val payload = News.Payload(
                             model.id,
                             model.title,
                             model.subTitle,
                             model.description,
                             model.content,
                             model.publishedOn
-                        ).toBundle(NavigationTargets.News.PAYLOAD)
+                        ).toBundle(News.extraKey)
 
                         it.view.context.startNewActivity<NewsScreen>(payload)
                     }

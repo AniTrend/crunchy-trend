@@ -27,7 +27,7 @@ import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.extension.ext.extra
 import co.anitrend.support.crunchyroll.core.extensions.stackTrace
-import co.anitrend.support.crunchyroll.navigation.NavigationTargets
+import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.news.R
 import co.anitrend.support.crunchyroll.feature.news.databinding.NewsScreenBinding
@@ -47,8 +47,8 @@ class NewsScreen : CrunchyActivity() {
     }
 
     private val payload
-            by extra<NavigationTargets.News.Payload>(
-                NavigationTargets.News.PAYLOAD
+            by extra<News.Payload>(
+                News.extraKey
             )
 
     private val presenter by inject<NewsPresenter>()

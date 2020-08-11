@@ -27,7 +27,8 @@ import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.model.Emote
-import co.anitrend.support.crunchyroll.navigation.NavigationTargets
+import co.anitrend.support.crunchyroll.navigation.Season
+import co.anitrend.support.crunchyroll.navigation.Media
 import co.anitrend.support.crunchyroll.core.ui.fragment.list.CrunchyFragmentList
 import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
 import co.anitrend.support.crunchyroll.domain.collection.models.CrunchyCollectionQuery
@@ -45,8 +46,8 @@ class CollectionContentScreen(
 ) : CrunchyFragmentList<CrunchyCollection>() {
 
     private val payload
-            by argument<NavigationTargets.Collection.Payload>(
-                NavigationTargets.Collection.PAYLOAD
+            by argument<Season.Payload>(
+                Season.extraKey
             )
 
     override val supportViewAdapter by lazy(UNSAFE) {
@@ -83,12 +84,12 @@ class CollectionContentScreen(
                 .filterIsInstance<DefaultClickableItem<CrunchyCollection>>()
                 .collect {
                     val data = it.data
-                    val payload = NavigationTargets.Media.Payload(
+                    val payload = Media.Payload(
                         collectionThumbnail = data?.portraitImage,
                         collectionName = data?.name ?: String.empty(),
                         collectionId = data?.collectionId ?: 0
                     )
-                    NavigationTargets.Media.invoke(it.view.context, payload)
+                    Media.invoke(it.view.context, payload)
                 }
         }
     }

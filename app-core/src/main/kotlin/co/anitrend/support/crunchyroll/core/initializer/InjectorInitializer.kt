@@ -14,13 +14,13 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.initializer
+package co.anitrend.support.crunchyroll.core.initializer
 
 import android.content.Context
 import androidx.startup.Initializer
-import co.anitrend.support.crunchyroll.BuildConfig
-import co.anitrend.support.crunchyroll.core.initializer.AbstractInitializer
-import co.anitrend.support.crunchyroll.koin.appModules
+import co.anitrend.support.crunchyroll.core.BuildConfig
+import co.anitrend.support.crunchyroll.core.initializer.contract.AbstractInitializer
+import co.anitrend.support.crunchyroll.core.koin.coreModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.fragment.koin.fragmentFactory
 import org.koin.core.context.startKoin
@@ -30,7 +30,7 @@ import org.koin.core.logger.Logger
 import org.koin.core.logger.MESSAGE
 import timber.log.Timber
 
-class KoinInitializer : AbstractInitializer<Unit>() {
+class InjectorInitializer : AbstractInitializer<Unit>() {
 
     /**
      * Initializes and a component given the application [Context]
@@ -43,7 +43,7 @@ class KoinInitializer : AbstractInitializer<Unit>() {
             fragmentFactory()
             androidContext(context)
             logger(KoinLogger(logLevel))
-            modules(appModules)
+            modules(coreModules)
         }
     }
 

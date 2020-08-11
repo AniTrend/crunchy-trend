@@ -17,10 +17,11 @@
 package co.anitrend.support.crunchyroll.feature.settings.koin
 
 import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
+import co.anitrend.support.crunchyroll.feature.settings.FeatureProvider
 import co.anitrend.support.crunchyroll.feature.settings.ui.activity.SettingsScreen
 import co.anitrend.support.crunchyroll.feature.settings.ui.fragment.SettingsFragment
+import co.anitrend.support.crunchyroll.navigation.Settings
 import org.koin.androidx.fragment.dsl.fragment
-import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 
 private val fragmentModule = module {
@@ -39,8 +40,14 @@ private val viewModelModule = module {
 
 }
 
+private val featureModule = module {
+    factory<Settings.Provider> {
+        FeatureProvider()
+    }
+}
+
 val moduleHelper by lazy {
     DynamicFeatureModuleHelper(
-        listOf(fragmentModule)
+        listOf(fragmentModule, featureModule)
     )
 }

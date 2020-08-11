@@ -29,7 +29,7 @@ import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.extensions.createDialog
 import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.model.UserAgent
-import co.anitrend.support.crunchyroll.navigation.NavigationTargets
+import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.core.ui.fragment.CrunchyFragment
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
@@ -122,8 +122,8 @@ class MediaStreamContent(
     }
 
     private val payload
-            by argument<NavigationTargets.MediaPlayer.Payload>(
-                NavigationTargets.MediaPlayer.PAYLOAD
+            by argument<MediaPlayer.Payload>(
+                MediaPlayer.extraKey
             )
 
     private var controlsVisibilityListener: VideoControlsVisibilityListener? = null

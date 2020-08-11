@@ -26,7 +26,7 @@ import androidx.fragment.app.FragmentActivity
 import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.arch.extension.util.contract.ISupportDateHelper
 import co.anitrend.support.crunchyroll.core.extensions.stackTrace
-import co.anitrend.support.crunchyroll.navigation.NavigationTargets
+import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
 import co.anitrend.support.crunchyroll.feature.news.model.Poster
@@ -49,7 +49,7 @@ class NewsPresenter(
     private val posters = ArrayList<Poster>()
 
     suspend fun createCustomHtml(
-        payload: NavigationTargets.News.Payload?
+        payload: News.Payload?
     ): String {
         return withContext(dispatchers.computation) {
             val template = """
@@ -82,7 +82,7 @@ class NewsPresenter(
     }
 
     fun buildNewsUrl(
-        payload: NavigationTargets.News.Payload,
+        payload: News.Payload,
         dateHelper: ISupportDateHelper
     ): String {
         val payloadContent = StringBuilder(120)
@@ -106,7 +106,7 @@ class NewsPresenter(
     }
 
     fun createShareContent(
-        payload: NavigationTargets.News.Payload,
+        payload: News.Payload,
         dateHelper: ISupportDateHelper,
         newsScreen: NewsScreen
     ): ShareCompat.IntentBuilder {
@@ -126,8 +126,8 @@ class NewsPresenter(
     fun handleViewIntent(view: View, url: String, context: FragmentActivity) {
         if (url.startsWith("https://img1.ak.crunchyroll")) {
             ViewCompat.setTransitionName(view, url)
-            val payload = NavigationTargets.ImageViewer.Payload(url)
-            NavigationTargets.ImageViewer(context, payload)
+            val payload = ImageViewer.Payload(url)
+            ImageViewer(context, payload)
         } else {
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = url.toUri()

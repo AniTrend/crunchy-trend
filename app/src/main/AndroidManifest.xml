@@ -50,15 +50,10 @@
                 android:authorities="${applicationId}.androidx-startup"
                 android:exported="false"
                 tools:node="merge">
-            <meta-data  android:name="co.anitrend.support.crunchyroll.initializer.KoinInitializer"
+            <meta-data  android:name="co.anitrend.support.crunchyroll.initializer.ApplicationInitializer"
                     android:value="androidx.startup" />
             <meta-data  android:name="co.anitrend.support.crunchyroll.initializer.WorkerInitializer"
                     android:value="androidx.startup" />
-            <meta-data  android:name="co.anitrend.support.crunchyroll.initializer.TimberInitializer"
-                    android:value="androidx.startup" />
-            <!-- Disable automatic startup for emojify -->
-            <meta-data android:name="io.wax911.emojify.initializer.EmojiInitializer"
-                    tools:node="remove" />
         </provider>
 
         <!--

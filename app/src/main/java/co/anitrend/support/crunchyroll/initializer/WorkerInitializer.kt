@@ -6,7 +6,7 @@ import androidx.startup.Initializer
 import androidx.work.Configuration
 import androidx.work.WorkManager
 import co.anitrend.support.crunchyroll.BuildConfig
-import co.anitrend.support.crunchyroll.core.initializer.AbstractInitializer
+import co.anitrend.support.crunchyroll.core.initializer.contract.AbstractInitializer
 
 class WorkerInitializer : AbstractInitializer<WorkManager>() {
 
@@ -36,5 +36,5 @@ class WorkerInitializer : AbstractInitializer<WorkManager>() {
      * then `A` gets initialized before `B`.
      */
     override fun dependencies() =
-        listOf(KoinInitializer::class.java)
+        listOf(ApplicationInitializer::class.java)
 }

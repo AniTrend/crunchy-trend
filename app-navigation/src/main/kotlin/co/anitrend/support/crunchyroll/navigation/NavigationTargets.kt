@@ -16,287 +16,142 @@
 
 package co.anitrend.support.crunchyroll.navigation
 
-import android.content.Context
-import android.os.Bundle
 import android.os.Parcelable
-import co.anitrend.support.crunchyroll.navigation.NavigationTargets.MediaPlayer.navRouterIntent
-import co.anitrend.support.crunchyroll.navigation.contract.INavigationRouter
-import co.anitrend.support.crunchyroll.navigation.contract.INavigationTarget
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
-import co.anitrend.support.crunchyroll.navigation.extensions.APPLICATION_PACKAGE_NAME
-import co.anitrend.support.crunchyroll.navigation.extensions.forIntent
-import co.anitrend.support.crunchyroll.navigation.extensions.loadClassOrNull
+import co.anitrend.support.crunchyroll.navigation.contract.INavigationProvider
+import co.anitrend.support.crunchyroll.navigation.contract.NavigationRouter
 import kotlinx.android.parcel.Parcelize
+import org.koin.core.inject
 
-object NavigationTargets {
+object Main : NavigationRouter() {
+    override val provider by inject<Provider>()
 
-    object Main : INavigationRouter, INavigationTarget {
-        override val packageName = "ui"
-        override val className = "MainScreen"
+    interface Provider : INavigationProvider
+}
 
-        override val navRouterIntent = forIntent()
+object Splash : NavigationRouter() {
+    override val provider by inject<Provider>()
 
-        fun <T> koinInitializer(): Class<out T>? {
-            val classPath = "$APPLICATION_PACKAGE_NAME.initializer.KoinInitializer"
-            return classPath.loadClassOrNull()
-        }
-    }
+    interface Provider : INavigationProvider
+}
 
-    object Splash : INavigationRouter, INavigationTarget {
-        override val packageName = "feature.ui.activity"
-        override val className = "SplashScreen"
+object Settings : NavigationRouter() {
+    override val provider by inject<Provider>()
 
-        override val navRouterIntent = forIntent()
-    }
+    interface Provider : INavigationProvider
+}
 
-    object Settings : INavigationRouter, INavigationTarget {
-        override val packageName = "feature.settings.ui.activity"
-        override val className = "SettingsScreen"
+object Authentication : NavigationRouter() {
+    override val provider by inject<Provider>()
 
-        override val navRouterIntent = forIntent()
-    }
+    interface Provider : INavigationProvider
+}
 
-    object Authentication : INavigationRouter, INavigationTarget {
-        override val packageName = "feature.authentication.ui.activity"
-        override val className = "AuthenticationScreen"
+object News : NavigationRouter() {
+    override val provider by inject<Provider>()
 
-        override val navRouterIntent = forIntent()
-    }
+    @Parcelize
+    data class Payload(
+        val id: Long,
+        val title: String,
+        val subTitle: String,
+        val description: String?,
+        val content: String,
+        val publishDate: Long?
+    ) : Parcelable
 
-    object News : INavigationRouter, INavigationTarget {
-        override val packageName = "feature.news.ui.fragment"
-        override val className = "NewsFeedContent"
+    interface Provider : INavigationProvider
+}
 
-        override val navRouterIntent = forIntent()
+object Listing : NavigationRouter() {
+    override val provider by inject<Provider>()
 
-        const val PAYLOAD = "NewsFeedContent:Payload"
+    interface Provider : INavigationProvider
+}
 
-        /**
-         * Starts the target [navRouterIntent] for the implementation
-         */
-        operator fun invoke(
-            context: Context?,
-            payload: Payload,
-            options: Bundle? = null
-        ) {
-            navRouterIntent?.putExtra(
-                PAYLOAD, payload)
-            super.invoke(context, options)
-        }
+object Media : NavigationRouter() {
 
-        @Parcelize
-        data class Payload(
-            val id: Long,
-            val title: String,
-            val subTitle: String,
-            val description: String?,
-            val content: String,
-            val publishDate: Long?
-        ) : Parcelable
-    }
+    override val provider by inject<Provider>()
 
-    object Listing : INavigationRouter, INavigationTarget {
-        override val packageName = "feature.listing.ui.fragment"
-        override val className = "MediaFeedContent"
+    @Parcelize
+    data class Payload(
+        val collectionThumbnail: String?,
+        val collectionName: String,
+        val collectionId: Long
+    ) : Parcelable
 
-        override val navRouterIntent = forIntent()
-    }
+    interface Provider : INavigationProvider
+}
 
-    object Media : INavigationRouter, INavigationTarget {
-        override val packageName = "feature.media.ui.activity"
-        override val className = "MediaScreen"
+object MediaPlayer : NavigationRouter() {
 
-        override val navRouterIntent = forIntent()
+    override val provider by inject<Provider>()
 
-        const val PAYLOAD = "MediaContent:Payload"
+    @Parcelize
+    data class Payload(
+        val mediaId: Long,
+        val collectionName: String?,
+        val collectionThumbnail: String?,
+        val episodeTitle: String?,
+        val episodeThumbnail: String?
+    ) : Parcelable
 
-        /**
-         * Starts the target [navRouterIntent] for the implementation
-         */
-        operator fun invoke(
-            context: Context?,
-            payload: Payload,
-            options: Bundle? = null
-        ) {
-            navRouterIntent?.putExtra(
-                PAYLOAD, payload)
-            super.invoke(context, options)
-        }
+    interface Provider : INavigationProvider
+}
 
-        @Parcelize
-        data class Payload(
-            val collectionThumbnail: String?,
-            val collectionName: String,
-            val collectionId: Long
-        ) : Parcelable
-    }
+object Search : NavigationRouter() {
+    override val provider by inject<Provider>()
 
-    object MediaPlayer : INavigationRouter, INavigationTarget {
-        override val packageName = "feature.player.ui.activity"
-        override val className = "MediaPlayerScreen"
+    interface Provider : INavigationProvider
+}
 
-        override val navRouterIntent = forIntent()
+object Discover : NavigationRouter() {
+    override val provider by inject<Provider>()
 
-        const val PAYLOAD = "MediaStreamContent:Payload"
+    @Parcelize
+    data class Payload(
+        val browseFilter: CrunchySeriesBrowseFilter,
+        val filterOption: String = ""
+    ) : Parcelable
 
-        /**
-         * Starts the target [navRouterIntent] for the implementation
-         */
-        operator fun invoke(
-            context: Context?,
-            payload: Payload,
-            options: Bundle? = null
-        ) {
-            navRouterIntent?.putExtra(PAYLOAD, payload)
-            super.invoke(context, options)
-        }
+    interface Provider : INavigationProvider
+}
 
-        @Parcelize
-        data class Payload(
-            val mediaId: Long,
-            val collectionName: String?,
-            val collectionThumbnail: String?,
-            val episodeTitle: String?,
-            val episodeThumbnail: String?
-        ) : Parcelable
-    }
+object Catalog : NavigationRouter() {
+    override val provider by inject<Provider>()
 
-    object Search : INavigationRouter, INavigationTarget {
-        override val packageName = "feature.search.ui.activity"
-        override val className = "SearchScreen"
+    interface Provider : INavigationProvider
+}
 
-        override val navRouterIntent = forIntent()
-    }
+object Series : NavigationRouter() {
+    override val provider by inject<Provider>()
 
-    object DiscoverScreen : INavigationRouter, INavigationTarget {
-        override val packageName = "feature.discover.ui.activity"
-        override val className = "SeriesDiscoverScreen"
+    @Parcelize
+    data class Payload(
+        val seriesId: Long
+    ) : Parcelable
 
-        override val navRouterIntent = forIntent()
+    interface Provider : INavigationProvider
+}
 
-        /**
-         * Starts the target [navRouterIntent] for the implementation
-         */
-        operator fun invoke(
-            context: Context?,
-            payload: Discover.Payload,
-            options: Bundle? = null
-        ) {
-            navRouterIntent?.putExtra(
-                Discover.PAYLOAD, payload)
-            super.invoke(context, options)
-        }
-    }
+object Season : NavigationRouter() {
+    override val provider by inject<Provider>()
 
-    object Discover : INavigationRouter, INavigationTarget {
-        override val packageName = "feature.discover.ui.fragment"
-        override val className = "SeriesDiscoverContent"
+    @Parcelize
+    data class Payload(
+        val seriesId: Long
+    ) : Parcelable
 
-        override val navRouterIntent = forIntent()
+    interface Provider : INavigationProvider
+}
 
-        const val PAYLOAD = "SeriesDiscoverContent:Payload"
+object ImageViewer : NavigationRouter() {
+    override val provider by inject<Provider>()
 
-        /**
-         * Starts the target [navRouterIntent] for the implementation
-         */
-        operator fun invoke(context: Context?, payload: Payload, options: Bundle? = null) {
-            navRouterIntent?.putExtra(
-                PAYLOAD, payload)
-            super.invoke(context, options)
-        }
+    @Parcelize
+    data class Payload(
+        val imageSrc: String
+    ) : Parcelable
 
-        @Parcelize
-        data class Payload(
-            val browseFilter: CrunchySeriesBrowseFilter,
-            val filterOption: String = ""
-        ) : Parcelable
-    }
-
-    object Catalog : INavigationRouter, INavigationTarget {
-        override val packageName = "feature.catalog.ui.fragment"
-        override val className = "CatalogContent"
-
-        override val navRouterIntent = forIntent()
-    }
-
-    object Series : INavigationRouter, INavigationTarget {
-        override val packageName = "feature.series.ui.activity"
-        override val className = "SeriesScreen"
-
-        override val navRouterIntent = forIntent()
-
-        const val PAYLOAD = "SeriesScreen:Payload"
-
-        /**
-         * Starts the target [navRouterIntent] for the implementation
-         */
-        operator fun invoke(
-            context: Context?,
-            payload: Payload,
-            options: Bundle? = null
-        ) {
-            navRouterIntent?.putExtra(
-                PAYLOAD, payload)
-            super.invoke(context, options)
-        }
-
-        @Parcelize
-        data class Payload(
-            val seriesId: Long
-        ) : Parcelable
-    }
-
-    object Collection : INavigationRouter, INavigationTarget {
-        override val packageName = "feature.collection.ui.activity"
-        override val className = "CollectionScreen"
-
-        override val navRouterIntent = forIntent()
-
-        const val PAYLOAD = "CollectionScreen:Payload"
-
-        /**
-         * Starts the target [navRouterIntent] for the implementation
-         */
-        operator fun invoke(
-            context: Context?,
-            payload: Payload,
-            options: Bundle? = null
-        ) {
-            navRouterIntent?.putExtra(
-                PAYLOAD, payload)
-            super.invoke(context, options)
-        }
-
-        @Parcelize
-        data class Payload(
-            val seriesId: Long
-        ) : Parcelable
-    }
-
-    object ImageViewer : INavigationRouter, INavigationTarget {
-        override val packageName = "shared.image.viewer"
-        override val className = "ImageViewerScreen"
-
-        override val navRouterIntent = forIntent()
-
-        const val PAYLOAD = "ImageViewerScreen:Payload"
-
-        /**
-         * Starts the target [navRouterIntent] for the implementation
-         */
-        operator fun invoke(
-            context: Context?,
-            payload: Payload,
-            options: Bundle? = null
-        ) {
-            navRouterIntent?.putExtra(
-                PAYLOAD, payload)
-            super.invoke(context, options)
-        }
-
-        @Parcelize
-        data class Payload(
-            val imageSrc: String
-        ) : Parcelable
-    }
+    interface Provider : INavigationProvider
 }
