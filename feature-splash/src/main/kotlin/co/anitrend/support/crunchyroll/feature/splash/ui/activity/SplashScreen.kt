@@ -26,7 +26,6 @@ import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.splash.R
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class SplashScreen : CrunchyActivity() {
@@ -47,29 +46,23 @@ class SplashScreen : CrunchyActivity() {
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        launch {
-            lifecycleScope.launchWhenResumed {
-                onUpdateUserInterface()
-            }
+        lifecycleScope.launchWhenResumed {
+            onUpdateUserInterface()
         }
     }
 
-    private fun onUpdateUserInterface() {
-        launch {
-            delay(500)
-            if (isStateAtLeast(Lifecycle.State.RESUMED)) {
-                if (!presenter.settings.isNewInstallation)
-                    Main(applicationContext)
-                else {
-                    if (presenter.settings.isAuthenticated)
-                        Main(applicationContext)
-                    else {
-                        presenter.settings.isNewInstallation = false
-                        Authentication(applicationContext)
-                    }
-                }
-                closeScreen()
+    private suspend fun onUpdateUserInterface() {
+        delay(500)
+        if (!presenter.settings.isNewInstallation)
+            Main(applicationContext)
+        else {
+            if (presenter.settings.isAuthenticated)
+                Main(applicationContext)
+            else {
+                presenter.settings.isNewInstallation = false
+                Authentication(applicationContext)
             }
         }
+        closeScreen()
     }
 }
