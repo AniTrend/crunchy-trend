@@ -16,28 +16,10 @@
 
 package co.anitrend.support.crunchyroll.data.util
 
-import android.content.Context
 import co.anitrend.arch.extension.util.contract.ISupportDateHelper
-import com.jakewharton.threetenabp.AndroidThreeTen
 import org.threeten.bp.format.DateTimeFormatter
 
-class CrunchyDateUtil(
-    context: Context
-) : ISupportDateHelper {
-
-    init {
-        initializeThreeTenBackPort(context)
-    }
-
-    /** [Three Ten Android Backport](https://github.com/JakeWharton/ThreeTenABP)
-     * Should handle initialization of ThreeTenABP if you are overriding the interface
-     * and wish to make use of the default methods
-     *
-     * @param context application context
-     */
-    override fun initializeThreeTenBackPort(context: Context) {
-        AndroidThreeTen.init(context)
-    }
+class CrunchyDateUtil : ISupportDateHelper {
 
     companion object {
         internal const val ISO8601_PATTERN = "yyyy-MM-dd'T'HH:mm:ssXXX"

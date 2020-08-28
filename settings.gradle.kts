@@ -1,3 +1,4 @@
+rootProject.name = "crunchy-trend"
 include (
         ":app",
         ":feature-auth",

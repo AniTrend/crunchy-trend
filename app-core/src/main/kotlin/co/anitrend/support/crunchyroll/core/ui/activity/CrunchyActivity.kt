@@ -18,21 +18,59 @@ package co.anitrend.support.crunchyroll.core.ui.activity
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Bundle
 import android.view.Window
 import androidx.core.app.ActivityCompat
+import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.ui.activity.SupportActivity
 import co.anitrend.support.crunchyroll.core.R
 import co.anitrend.support.crunchyroll.core.extensions.createDialog
-import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
-import co.anitrend.support.crunchyroll.core.ui.contract.IFeatureContract
 import co.anitrend.support.crunchyroll.core.util.config.ConfigurationUtil
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
+import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
+import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.KoinScopeComponent
+import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeID
 
-abstract class CrunchyActivity : SupportActivity() {
+abstract class CrunchyActivity : SupportActivity(), KoinScopeComponent {
 
     protected val configurationUtil by inject<ConfigurationUtil>()
+
+    private val scopeID: ScopeID by lazy(UNSAFE) { getScopeId() }
+    override val koin by lazy(UNSAFE) { getKoin() }
+    override val scope by lazy(UNSAFE) {
+        koin.createScope(scopeID, getScopeName(), this)
+    }
+
+    /**
+     * inject lazily
+     * @param qualifier - bean qualifier / optional
+     * @param scope
+     * @param parameters - injection parameters
+     */
+    inline fun <reified T : Any> inject(
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
+    ) = lazy(LazyThreadSafetyMode.NONE) { get<T>(qualifier, parameters) }
+
+    /**
+     * get given dependency
+     * @param name - bean name
+     * @param scope
+     * @param parameters - injection parameters
+     */
+    inline fun <reified T : Any> get(
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
+    ): T = runCatching {
+        scope.get<T>(qualifier, parameters)
+    }.getOrElse {
+        koin.get(qualifier, parameters)
+    }
 
     /**
      * Can be used to configure custom theme styling as desired
@@ -40,6 +78,21 @@ abstract class CrunchyActivity : SupportActivity() {
     override fun configureActivity() {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
         configurationUtil.onCreate(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        runCatching {
+            getKoin()._logger.debug("Open activity scope: $scope")
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        runCatching {
+            getKoin()._logger.debug("Close activity scope: $scope")
+            scope.close()
+        }
     }
 
     /**

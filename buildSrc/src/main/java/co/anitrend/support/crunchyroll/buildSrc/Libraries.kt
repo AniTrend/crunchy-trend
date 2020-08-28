@@ -235,7 +235,7 @@ object Libraries {
     object AniTrend {
 
         object Arch {
-			private const val version = "51d6961c2e"
+			private const val version = "0770fc6ace"
             const val ui = "com.github.anitrend.support-arch:support-ui:${version}"
             const val ext = "com.github.anitrend.support-arch:support-ext:${version}"
             const val core = "com.github.anitrend.support-arch:support-core:${version}"
@@ -368,7 +368,7 @@ object Libraries {
         }
 
         object Kotlin {
-            private const val version = "1.3.72"
+            private const val version = "1.4.0"
             const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
             const val reflect = "org.jetbrains.kotlin:kotlin-reflect:$version"
 
@@ -387,7 +387,7 @@ object Libraries {
 
         object KotlinX {
             object Coroutines {
-                private const val version = "1.3.8"
+                private const val version = "1.3.9"
                 const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
                 const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
                 const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
@@ -401,7 +401,7 @@ object Libraries {
     }
 
     object Koin {
-        private const val version = "2.1.6"
+        private const val version = "2.2.0-alpha-1"
         const val core = "org.koin:koin-core:$version"
         const val extension = "org.koin:koin-core-ext:$version"
         const val test = "org.koin:koin-test:$version"
@@ -418,7 +418,7 @@ object Libraries {
     }
 
     object Markwon {
-        private const val version = "4.5.0"
+        private const val version = "4.5.1"
         const val core = "io.noties.markwon:core:$version"
         const val html = "io.noties.markwon:html:$version"
         const val image = "io.noties.markwon:image:$version"

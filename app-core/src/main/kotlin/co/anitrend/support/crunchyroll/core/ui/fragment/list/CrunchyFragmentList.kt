@@ -16,13 +16,72 @@
 
 package co.anitrend.support.crunchyroll.core.ui.fragment.list
 
+import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.Observer
 import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.ui.fragment.list.SupportFragmentList
+import org.koin.android.ext.android.getKoin
+import org.koin.androidx.scope.ScopeActivity
+import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.KoinScopeComponent
+import org.koin.core.scope.Scope
+import org.koin.core.scope.ScopeID
 
-abstract class CrunchyFragmentList<M> : SupportFragmentList<M>() {
+abstract class CrunchyFragmentList<M> : SupportFragmentList<M>(), KoinScopeComponent {
+
+    private val scopeID: ScopeID by lazy(UNSAFE) { getScopeId() }
+    override val koin by lazy(UNSAFE) { getKoin() }
+    override val scope: Scope by lazy(UNSAFE) {
+        koin.createScope(scopeID, getScopeName(), this)
+    }
+
+    val scopeActivity : ScopeActivity? by lazy(UNSAFE) {
+        activity as? ScopeActivity
+    }
 
     override val onRefreshObserver = Observer<NetworkState> {
         // do nothing
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        runCatching {
+            koin._logger.debug("Open fragment scope: $scope")
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        runCatching {
+            koin._logger.debug("Close fragment scope: $scope")
+            scope.close()
+        }
+    }
+
+    /**
+     * inject lazily
+     * @param qualifier - bean qualifier / optional
+     * @param parameters - injection parameters
+     */
+    inline fun <reified T : Any> inject(
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
+    ) = lazy(UNSAFE) { get<T>(qualifier, parameters) }
+
+    /**
+     * get given dependency
+     * @param name - bean name
+     * @param parameters - injection parameters
+     */
+    inline fun <reified T : Any> get(
+        qualifier: Qualifier? = null,
+        noinline parameters: ParametersDefinition? = null
+    ): T = runCatching {
+        scope.get<T>(qualifier, parameters)
+    }.getOrElse {
+        koin.get(qualifier, parameters)
     }
 }

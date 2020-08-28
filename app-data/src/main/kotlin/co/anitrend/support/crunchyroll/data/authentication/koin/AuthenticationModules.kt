@@ -38,7 +38,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 private val coreModule = module {
-    single {
+    factory {
         CrunchyAuthenticationHelper(
             connectivityHelper = get(),
             settings = get(),

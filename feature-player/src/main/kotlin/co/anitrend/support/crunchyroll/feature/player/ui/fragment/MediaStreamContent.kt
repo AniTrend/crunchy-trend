@@ -64,7 +64,7 @@ class MediaStreamContent(
 ) : CrunchyFragment() {
 
     private val qualityButton by lazy(UNSAFE) {
-        AppCompatImageButton(context).apply {
+        AppCompatImageButton(requireContext()).apply {
             setBackgroundResource(android.R.color.transparent)
             setImageResource(R.drawable.ic_hd_white_24dp)
             val pixelSize = resources.getDimensionPixelSize(R.dimen.xl_margin)
@@ -79,7 +79,7 @@ class MediaStreamContent(
         }
     }
     private val audioButton by lazy(UNSAFE) {
-        AppCompatImageButton(context).apply {
+        AppCompatImageButton(requireContext()).apply {
             setBackgroundResource(android.R.color.transparent)
             setImageResource(R.drawable.ic_audiotrack_white_24dp)
             val pixelSize = resources.getDimensionPixelSize(R.dimen.xl_margin)
@@ -95,7 +95,7 @@ class MediaStreamContent(
         }
     }
     private val captionButton by lazy(UNSAFE) {
-        AppCompatImageButton(context).apply {
+        AppCompatImageButton(requireContext()).apply {
             setBackgroundResource(android.R.color.transparent)
             setImageResource(R.drawable.ic_closed_caption_white_24dp)
             val pixelSize = resources.getDimensionPixelSize(R.dimen.xl_margin)

@@ -30,11 +30,10 @@ import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWit
 import co.anitrend.support.crunchyroll.feature.catalog.controller.model.CatalogItem
 
 class CatalogAdapter(
-    scope: LifecycleCoroutineScope,
     override val resources: Resources,
     override val stateConfiguration: IStateLayoutConfig,
     override val customSupportAnimator: AbstractAnimator? = null,
-    override val mapper: (CrunchyCatalogWithSeries?) -> IRecyclerItem = { CatalogItem(it, scope) }
+    override val mapper: (CrunchyCatalogWithSeries?) -> IRecyclerItem = { CatalogItem(it) }
 ) : SupportListAdapter<CrunchyCatalogWithSeries>(CatalogItem.DIFFER) {
 
     /**

@@ -21,6 +21,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import co.anitrend.arch.extension.ext.gone
@@ -40,24 +41,17 @@ import co.anitrend.support.crunchyroll.feature.catalog.databinding.AdapterCatalo
 import co.anitrend.support.crunchyroll.shared.series.adapter.SeriesGridViewAdapter
 import kotlinx.android.synthetic.main.adapter_catalog.view.*
 import kotlinx.android.synthetic.main.item_carousel.view.*
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.launch
 
 data class CatalogItem(
-    val entity: CrunchyCatalogWithSeries?,
-    private val scope: LifecycleCoroutineScope
-) : RecyclerItem(entity?.qualifier?.ordinal?.toLong()) {
+    val entity: CrunchyCatalogWithSeries?
+) : RecyclerItem(entity?.qualifier?.ordinal?.toLong()), CoroutineScope by MainScope() {
 
-    //private var catalogSeriesRecycler: SupportRecyclerView? = null
-    private var job: Job? = null
-
-        private fun setUpCatalogItems(
-        view: View
-    ) {
+    private fun setUpCatalogItems(view: View) {
         val catalogSeriesAdapter = SeriesGridViewAdapter(
             view.resources,
             stateConfiguration = StateLayoutConfig(
@@ -65,6 +59,11 @@ data class CatalogItem(
             )
         )
         val catalogSeriesRecycler = view.carouselRecycler
+        val animator = object : DefaultItemAnimator() {
+            override fun getSupportsChangeAnimations() = false
+        }
+        animator.supportsChangeAnimations = false
+        catalogSeriesRecycler.itemAnimator = animator
         catalogSeriesRecycler?.setUpWith(
             supportAdapter = catalogSeriesAdapter,
             recyclerLayoutManager = LinearLayoutManager(
@@ -72,7 +71,7 @@ data class CatalogItem(
             )
         )
         catalogSeriesAdapter.submitList(entity?.series as List)
-        job = scope.launch {
+        launch(Dispatchers.Default) {
             catalogSeriesAdapter.clickableStateFlow.debounce(DEBOUNCE_DURATION)
                 .filterIsInstance<DefaultClickableItem<CrunchySeries>>()
                 .collect {
@@ -121,8 +120,7 @@ data class CatalogItem(
         view.catalogActionSeeAll.setOnClickListener(null)
         //catalogSeriesRecycler?.adapter = null
         //catalogSeriesRecycler = null
-        job?.cancel()
-        job = null
+        cancel()
     }
 
     /**

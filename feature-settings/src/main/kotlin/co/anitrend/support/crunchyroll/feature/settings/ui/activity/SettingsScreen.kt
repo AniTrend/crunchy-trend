@@ -21,14 +21,13 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import co.anitrend.support.crunchyroll.core.extensions.commit
+import co.anitrend.support.crunchyroll.core.extensions.koinScope
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import co.anitrend.support.crunchyroll.feature.settings.R
-import co.anitrend.support.crunchyroll.feature.settings.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.settings.ui.fragment.SettingsFragment
 import kotlinx.android.synthetic.main.settings_activity.*
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
-import org.koin.androidx.scope.lifecycleScope
 
 class SettingsScreen : CrunchyActivity() {
 
@@ -37,7 +36,7 @@ class SettingsScreen : CrunchyActivity() {
      */
     override fun configureActivity() {
         super.configureActivity()
-        setupKoinFragmentFactory(lifecycleScope)
+        setupKoinFragmentFactory(koinScope)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -89,7 +89,6 @@ internal class CrunchyResponseInterceptor(
         }
     }
 
-
     /**
      * Returns a request that includes a credential to satisfy an authentication challenge in
      * [response]. Returns null if the challenge cannot be satisfied.

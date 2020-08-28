@@ -45,9 +45,7 @@ import org.koin.dsl.module
 
 private val coreModule = module {
     single<ISupportDateHelper> {
-        CrunchyDateUtil(
-            context = androidContext()
-        )
+        CrunchyDateUtil()
     }
     single {
         StateLayoutConfig(

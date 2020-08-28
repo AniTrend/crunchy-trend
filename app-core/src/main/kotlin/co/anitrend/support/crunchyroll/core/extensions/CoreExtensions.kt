@@ -30,6 +30,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
+import org.koin.core.scope.KoinScopeComponent
 import org.koin.androidx.scope.lifecycleScope as kScope
 import org.koin.core.scope.Scope
 import timber.log.Timber
@@ -125,5 +126,5 @@ fun <T> Result<T>.stackTrace(tag: String): T? {
 /**
  * Get current Koin scope, bound to current lifecycle
  */
-val LifecycleOwner.koinScope: Scope
-    get() = kScope
+val KoinScopeComponent.koinScope: Scope
+    get() = scope

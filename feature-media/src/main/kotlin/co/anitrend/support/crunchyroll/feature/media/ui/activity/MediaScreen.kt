@@ -19,14 +19,13 @@ package co.anitrend.support.crunchyroll.feature.media.ui.activity
 import android.os.Bundle
 import androidx.fragment.app.FragmentTransaction
 import co.anitrend.support.crunchyroll.core.extensions.commit
+import co.anitrend.support.crunchyroll.core.extensions.koinScope
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import co.anitrend.support.crunchyroll.feature.media.R
-import co.anitrend.support.crunchyroll.feature.media.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.media.ui.fragment.MediaContent
 import kotlinx.android.synthetic.main.media_screen.*
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
-import org.koin.androidx.scope.lifecycleScope
 
 class MediaScreen : CrunchyActivity() {
 
@@ -35,7 +34,7 @@ class MediaScreen : CrunchyActivity() {
      */
     override fun configureActivity() {
         super.configureActivity()
-        setupKoinFragmentFactory(lifecycleScope)
+        setupKoinFragmentFactory(koinScope)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

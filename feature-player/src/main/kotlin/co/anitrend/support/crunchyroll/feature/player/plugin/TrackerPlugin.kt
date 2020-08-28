@@ -20,6 +20,7 @@ import android.content.Context
 import android.net.Uri
 import co.anitrend.support.crunchyroll.feature.player.service.MediaDownloadService
 import com.google.android.exoplayer2.offline.*
+import com.google.android.exoplayer2.offline.DownloadHelper.getDefaultTrackSelectorParameters
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.CopyOnWriteArraySet
@@ -32,8 +33,7 @@ class TrackerPlugin(
     private val listeners = CopyOnWriteArraySet<Listener>()
     private val downloads = HashMap<Uri, Download>()
     private val downloadIndex = downloadManager.downloadIndex
-    private val trackSelectorParameters =
-        DownloadHelper.DEFAULT_TRACK_SELECTOR_PARAMETERS;
+    private val trackSelectorParameters = getDefaultTrackSelectorParameters(context)
 
     init {
         downloadManager.addListener(

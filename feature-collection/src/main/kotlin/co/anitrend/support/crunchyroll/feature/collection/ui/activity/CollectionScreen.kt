@@ -18,14 +18,13 @@ package co.anitrend.support.crunchyroll.feature.collection.ui.activity
 
 import android.os.Bundle
 import co.anitrend.support.crunchyroll.core.extensions.commit
+import co.anitrend.support.crunchyroll.core.extensions.koinScope
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import co.anitrend.support.crunchyroll.feature.collection.R
-import co.anitrend.support.crunchyroll.feature.collection.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.collection.ui.fragment.CollectionContentScreen
 import kotlinx.android.synthetic.main.collection_activity.*
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
-import org.koin.androidx.scope.lifecycleScope
 
 class CollectionScreen : CrunchyActivity() {
 
@@ -34,7 +33,7 @@ class CollectionScreen : CrunchyActivity() {
      */
     override fun configureActivity() {
         super.configureActivity()
-        setupKoinFragmentFactory(lifecycleScope)
+        setupKoinFragmentFactory(koinScope)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
