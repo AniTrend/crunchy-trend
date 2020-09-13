@@ -17,9 +17,8 @@
 package co.anitrend.support.crunchyroll.core.android.extensions
 
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.lifecycle.LifecycleOwner
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
-import coil.api.load
+import coil.load
 import coil.request.CachePolicy
 import coil.size.Scale
 import coil.transform.GrayscaleTransformation

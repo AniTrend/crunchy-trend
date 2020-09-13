@@ -28,16 +28,15 @@ import co.anitrend.arch.recycler.model.RecyclerItem
 import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.shared.series.databinding.AdapterSeriesGridBinding
-import coil.request.RequestDisposable
+import coil.request.Disposable
 import kotlinx.android.synthetic.main.adapter_series_grid.view.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 
 data class SeriesGridItem(
     val entity: CrunchySeries?
 ) : RecyclerItem(entity?.seriesId) {
 
-    private var disposable: RequestDisposable? = null
+    private var disposable: Disposable? = null
 
     /**
      * Called when the [view] needs to be setup, this could be to set click listeners,

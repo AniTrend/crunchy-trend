@@ -20,7 +20,6 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
 import co.anitrend.arch.recycler.common.ClickableItem
@@ -32,16 +31,15 @@ import co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia
 import co.anitrend.support.crunchyroll.feature.media.R
 import co.anitrend.support.crunchyroll.feature.media.databinding.AdapterMediaBinding
 import co.anitrend.support.crunchyroll.feature.media.presenter.MediaPresenter.Companion.mediaDisplayName
-import coil.request.RequestDisposable
+import coil.request.Disposable
 import kotlinx.android.synthetic.main.adapter_media.view.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 
 data class MediaItem(
     val entity: CrunchyMedia?
 ) : RecyclerItem(entity?.mediaId) {
 
-    private var disposable: RequestDisposable? = null
+    private var disposable: Disposable? = null
 
     /**
      * Called when the [view] needs to be setup, this could be to set click listeners,

@@ -31,7 +31,9 @@ import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import co.anitrend.support.crunchyroll.feature.news.R
 import co.anitrend.support.crunchyroll.feature.news.databinding.AdapterNewsFeedBinding
-import coil.request.RequestDisposable
+import coil.request.Disposable
+import com.perfomer.blitz.cancelTimeAgoUpdates
+import com.perfomer.blitz.setTimeAgo
 import io.noties.markwon.Markwon
 import kotlinx.android.synthetic.main.adapter_news_feed.view.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,7 +43,7 @@ class NewsItem(
     private val markwon: Markwon
 ) : RecyclerItem(entity?.id) {
 
-    private var disposable: RequestDisposable? = null
+    private var disposable: Disposable? = null
 
     /**
      * Called when the [view] needs to be setup, this could be to set click listeners,
@@ -63,7 +65,9 @@ class NewsItem(
         disposable = binding.newsImage.setImageUrl(entity?.image)
         binding.newsTitle.text = entity?.title
         binding.newsSubTitle.text = entity?.subTitle
-        binding.newsPublishedOn.longDate(entity?.publishedOn)
+        //binding.newsPublishedOn.longDate(entity?.publishedOn)
+        binding.newsPublishedOn.setTimeAgo(entity?.publishedOn ?: 0)
+
         markwon.setMarkdown(
             binding.newsDescription,
             entity?.description ?: "No description available"
@@ -83,9 +87,11 @@ class NewsItem(
      */
     override fun unbind(view: View) {
         view.container.setOnClickListener(null)
+        view.newsPublishedOn.cancelTimeAgoUpdates()
         disposable?.dispose()
         disposable = null
     }
+
     /**
      * Provides a preferred span size for the item
      *

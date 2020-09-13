@@ -32,5 +32,9 @@ dependencies {
     implementation(Libraries.Markwon.linkify)
     implementation(Libraries.Markwon.glide)
 
+    implementation(Libraries.Blitz.blitz)
+
+    androidTestImplementation(Libraries.CashApp.Copper.copper)
+
     implementation("me.saket:better-link-movement-method:$betterLinkMovement")
 }

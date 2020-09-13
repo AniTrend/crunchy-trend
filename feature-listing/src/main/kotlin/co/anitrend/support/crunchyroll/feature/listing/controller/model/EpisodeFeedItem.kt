@@ -30,7 +30,7 @@ import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 import co.anitrend.support.crunchyroll.feature.listing.databinding.AdapterMediaFeedBinding
 import co.anitrend.support.crunchyroll.feature.listing.R
-import coil.request.RequestDisposable
+import coil.request.Disposable
 import kotlinx.android.synthetic.main.adapter_media_feed.view.*
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -38,7 +38,7 @@ data class EpisodeFeedItem(
     val entity: CrunchyEpisodeFeed?
 ) : RecyclerItem(entity?.id) {
 
-    private var disposable: RequestDisposable? = null
+    private var disposable: Disposable? = null
 
     /**
      * Called when the [view] needs to be setup, this could be to set click listeners,

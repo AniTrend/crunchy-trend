@@ -67,10 +67,10 @@ class SearchScreen : CrunchyActivity() {
                 .onEach { search ->
                     when (search) {
                         is Search.TextChanged -> {
-                            if (search.charSequence.isNotBlank())
+                            if (search.text.isNotBlank())
                                 viewModel.searchQueryLiveData.postValue(
                                     CrunchySeriesSearchQuery(
-                                        searchTerm = search.charSequence.toString()
+                                        searchTerm = search.text.toString()
                                     )
                                 )
                         }

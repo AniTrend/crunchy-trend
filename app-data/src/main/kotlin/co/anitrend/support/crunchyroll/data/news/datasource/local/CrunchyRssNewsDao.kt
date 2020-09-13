@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.news.datasource.local
 
+import android.database.Cursor
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.room.Dao
@@ -35,6 +36,14 @@ internal interface CrunchyRssNewsDao : IDao<NewsEntity> {
         delete from NewsEntity
         """)
     override suspend fun clearTable()
+
+
+    @Query("""
+        select * 
+        from NewsEntity 
+        order by publishedOn desc
+        """)
+    fun findAllCursor(): Cursor
 
 
     @Query("""

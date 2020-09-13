@@ -36,10 +36,6 @@ abstract class CrunchyFragment : SupportFragment(), KoinScopeComponent {
         koin.createScope(scopeID, getScopeName(), this)
     }
 
-    val scopeActivity : ScopeActivity? by lazy(UNSAFE) {
-        activity as? ScopeActivity
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         runCatching {

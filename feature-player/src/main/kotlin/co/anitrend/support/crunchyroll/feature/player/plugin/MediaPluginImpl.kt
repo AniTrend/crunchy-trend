@@ -26,9 +26,8 @@ import co.anitrend.support.crunchyroll.feature.player.model.track.CaptionTrack
 import co.anitrend.support.crunchyroll.feature.player.model.track.VideoTrack
 import co.anitrend.support.crunchyroll.feature.player.plugin.contract.MediaPlugin
 import coil.Coil
-import coil.api.load
-import coil.request.LoadRequestBuilder
-import coil.request.RequestDisposable
+import coil.request.ImageRequest
+import coil.request.Disposable
 import com.devbrackets.android.exomedia.ExoMedia
 import com.devbrackets.android.exomedia.listener.VideoControlsVisibilityListener
 import com.devbrackets.android.exomedia.ui.widget.VideoControls
@@ -44,7 +43,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.IOException
-import java.util.ArrayList
+import java.util.*
 
 class MediaPluginImpl(
     private val coroutineScope: CoroutineScope,
@@ -56,7 +55,7 @@ class MediaPluginImpl(
 
     private val mediaSourceFactory =
         sourceFactoryProvider.provide(userAgent, bandwidthMeter)
-    private var disposable: RequestDisposable? = null
+    private var disposable: Disposable? = null
 
     override val isPlaying: Boolean
         get() = exoMediaVideoView.isPlaying
@@ -210,11 +209,11 @@ class MediaPluginImpl(
 
     private fun startPlaybackUsing(mediaStreamItem: MediaStreamItem) {
         checkIfOtherRequestIsOngoing()
-        val loadRequest = LoadRequestBuilder(exoMediaVideoView.context)
+        val loadRequest = ImageRequest.Builder(exoMediaVideoView.context)
             .data(mediaStreamItem.thumbnailUrl)
             .target{ exoMediaVideoView.setPreviewImage(it) }
             .build()
-        disposable = Coil.execute(loadRequest)
+        disposable = Coil.enqueue(loadRequest)
 
         if (!mediaStreamItem.downloaded)
             exoMediaVideoView.setVideoURI(

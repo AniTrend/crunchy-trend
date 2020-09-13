@@ -37,10 +37,20 @@ internal class DependencyStrategy(
     }
 
     private fun DependencyHandler.applyAndroidTestDependencies() {
+        add("androidTestImplementation", Libraries.AndroidX.Test.core)
         add("androidTestImplementation", Libraries.AndroidX.Test.coreKtx)
         add("androidTestImplementation", Libraries.AndroidX.Test.rules)
         add("androidTestImplementation", Libraries.AndroidX.Test.runner)
+        add("androidTestImplementation", Libraries.AndroidX.Test.Espresso.core)
+        add("androidTestImplementation", Libraries.AndroidX.Test.Espresso.contrib)
+        add("androidTestImplementation", Libraries.AndroidX.Test.Espresso.intents)
+        add("androidTestImplementation", Libraries.AndroidX.Test.Espresso.accessibility)
+        add("androidTestImplementation", Libraries.AndroidX.Test.Espresso.web)
+        add("androidTestImplementation", Libraries.AndroidX.Test.Espresso.idlingResource)
+        add("androidTestImplementation", Libraries.AndroidX.Test.Extension.junit)
         add("androidTestImplementation", Libraries.AndroidX.Test.Extension.junitKtx)
+        add("androidTestImplementation", Libraries.AndroidX.Test.Extension.truth)
+        add("androidTestImplementation", Libraries.Google.Test.truth)
     }
 
     private fun DependencyHandler.applyLifeCycleDependencies() {
@@ -54,6 +64,8 @@ internal class DependencyStrategy(
         add("implementation", Libraries.JetBrains.KotlinX.Coroutines.android)
         add("implementation", Libraries.JetBrains.KotlinX.Coroutines.core)
         add("testImplementation", Libraries.JetBrains.KotlinX.Coroutines.test)
+        add("androidTestImplementation", Libraries.CashApp.Turbine.turbine)
+        add("testImplementation", Libraries.CashApp.Turbine.turbine)
     }
 
     private fun DependencyHandler.applyKoinDependencies() {

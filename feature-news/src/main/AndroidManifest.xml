@@ -33,5 +33,10 @@
             <meta-data  android:name="co.anitrend.support.crunchyroll.feature.news.initializer.FeatureInitializer"
                     android:value="androidx.startup" />
         </provider>
+
+        <provider
+                android:authorities="co.anitrend.crunchy.provider.news"
+                android:name="co.anitrend.support.crunchyroll.data.news.provider.NewsContentProvider"
+                android:exported="true"/>
     </application>
 </manifest>

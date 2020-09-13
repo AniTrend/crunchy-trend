@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit
 
 internal object EpisodeFeedHelper {
 
-    fun highestQuality(thumbnails: List<EpisodeThumbnailModel>?) = thumbnails?.maxBy { it.width }
+    fun highestQuality(thumbnails: List<EpisodeThumbnailModel>?) = thumbnails?.maxByOrNull { it.width }
 
     fun durationFormatted(duration: Int?) : String {
         return duration?.let {
