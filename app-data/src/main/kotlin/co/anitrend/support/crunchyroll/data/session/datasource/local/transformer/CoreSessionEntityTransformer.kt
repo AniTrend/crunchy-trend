@@ -16,12 +16,12 @@
 
 package co.anitrend.support.crunchyroll.data.session.datasource.local.transformer
 
-import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
+import co.anitrend.arch.data.transformer.ISupportTransformer
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionCoreEntity
 import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionCoreModel
 
 internal object CoreSessionEntityTransformer :
-    ISupportMapperHelper<CrunchySessionCoreModel, CrunchySessionCoreEntity> {
+    ISupportTransformer<CrunchySessionCoreModel, CrunchySessionCoreEntity> {
 
     /**
      * Transforms the the [source] to the target type

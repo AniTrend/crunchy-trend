@@ -16,14 +16,14 @@
 
 package co.anitrend.support.crunchyroll.data.episode.datasource.local.transformer
 
-import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
+import co.anitrend.arch.data.transformer.ISupportTransformer
 import co.anitrend.support.crunchyroll.data.episode.entity.EpisodeFeedEntity
 import co.anitrend.support.crunchyroll.data.episode.helper.EpisodeFeedHelper
 import co.anitrend.support.crunchyroll.data.episode.model.CrunchyEpisodeModel
 import co.anitrend.support.crunchyroll.data.util.extension.rcf822ToUnixTime
 import java.util.*
 
-internal object EpisodeFeedEntityTransformer : ISupportMapperHelper<CrunchyEpisodeModel, EpisodeFeedEntity> {
+internal object EpisodeFeedEntityTransformer : ISupportTransformer<CrunchyEpisodeModel, EpisodeFeedEntity> {
 
     /**
      * Transforms the the [source] to the target type

@@ -21,7 +21,8 @@ plugins {
 }
 
 //val exoMedia = "dev~5.0-SNAPSHOT"
-val exoMedia = "5.0.1"
+val exoMedia = "6.0.0"
+// need to fix multiple publications with same id
 val playlist = "2.1.0"
 
 dependencies {

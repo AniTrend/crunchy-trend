@@ -50,10 +50,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SeriesContentScreen : CrunchyFragment() {
 
-    private val payload
-            by argument<Series.Payload>(
-                Series.extraKey
-            )
+    private val payload by argument<Series.Payload>(Series.extraKey)
 
     private lateinit var binding: SeriesContentBinding
 
@@ -162,7 +159,7 @@ class SeriesContentScreen : CrunchyFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = SeriesContentBinding.inflate(inflater, container, false)
         binding.supportStateLayout.stateConfigFlow.value = get()
         return binding.root

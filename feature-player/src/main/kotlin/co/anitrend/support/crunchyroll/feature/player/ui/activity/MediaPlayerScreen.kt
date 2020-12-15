@@ -25,15 +25,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentOnAttachListener
 import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.extension.ext.getCompatColor
-import co.anitrend.support.crunchyroll.core.extensions.commit
-import co.anitrend.support.crunchyroll.core.extensions.koinScope
+import co.anitrend.support.crunchyroll.core.ui.model.FragmentItem
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
-import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
+import co.anitrend.support.crunchyroll.core.ui.commit
 import co.anitrend.support.crunchyroll.feature.player.R
 import co.anitrend.support.crunchyroll.feature.player.ui.fragment.MediaStreamContent
 import com.devbrackets.android.exomedia.listener.VideoControlsVisibilityListener
 import kotlinx.coroutines.launch
-import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 
 class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener,
     FragmentOnAttachListener {
@@ -64,7 +62,6 @@ class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener,
      */
     override fun configureActivity() {
         super.configureActivity()
-        setupKoinFragmentFactory(koinScope)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             with (window) {
                 clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
@@ -86,16 +83,13 @@ class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener,
     }
 
     private fun onUpdateUserInterface() {
-        val target = FragmentItem(
-            parameter = intent.extras,
-            fragment = MediaStreamContent::class.java
-        )
 
         supportFragmentManager.addFragmentOnAttachListener(this)
 
-        currentFragmentTag = supportFragmentManager.commit(R.id.contentFrame, target) {
-            //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        }
+        currentFragmentTag = FragmentItem(
+            parameter = intent.extras,
+            fragment = MediaStreamContent::class.java
+        ).commit(R.id.contentFrame, this) {}
 
         initUiFlags()
     }

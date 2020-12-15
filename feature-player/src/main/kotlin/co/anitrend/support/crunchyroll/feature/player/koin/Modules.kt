@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.feature.player.koin
 
+import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.support.crunchyroll.core.helper.StorageHelper
 import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.core.model.UserAgent
@@ -35,6 +36,7 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
 import com.google.android.exoplayer2.upstream.cache.NoOpCacheEvictor
 import com.google.android.exoplayer2.upstream.cache.SimpleCache
+import kotlinx.coroutines.asExecutor
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.fragment.dsl.fragment
@@ -92,7 +94,8 @@ private val coreModule = module {
             androidContext(),
             get<ExoDatabaseProvider>(),
             downloadCache,
-            dataSourceFactory
+            dataSourceFactory,
+            get<SupportDispatchers>().io.asExecutor()
         )
     }
 }
@@ -103,7 +106,8 @@ private val fragmentModule = module {
             MediaStreamContent(
                 presenter = get(),
                 playlistManager = get(),
-                sourceFactoryProvider = get()
+                sourceFactoryProvider = get(),
+                userAgent = get()
             )
         }
     }

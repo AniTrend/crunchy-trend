@@ -22,8 +22,8 @@ import co.anitrend.support.crunchyroll.feature.player.plugin.PlaylistManagerPlug
 import com.devbrackets.android.playlistcore.components.playlisthandler.DefaultPlaylistHandler
 import com.devbrackets.android.playlistcore.components.playlisthandler.PlaylistHandler
 import com.devbrackets.android.playlistcore.service.BasePlaylistService
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import timber.log.Timber
 
 /**

@@ -16,11 +16,11 @@
 
 package co.anitrend.support.crunchyroll.data.episode.transformer
 
-import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
+import co.anitrend.arch.data.transformer.ISupportTransformer
 import co.anitrend.support.crunchyroll.data.episode.entity.EpisodeFeedEntity
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 
-internal object EpisodeFeedTransformer: ISupportMapperHelper<EpisodeFeedEntity, CrunchyEpisodeFeed> {
+internal object EpisodeFeedTransformer: ISupportTransformer<EpisodeFeedEntity, CrunchyEpisodeFeed> {
 
     /**
      * Transforms the the [source] to the target type

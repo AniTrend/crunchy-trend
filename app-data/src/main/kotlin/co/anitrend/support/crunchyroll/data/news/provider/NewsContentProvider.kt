@@ -23,9 +23,8 @@ import android.database.Cursor
 import android.net.Uri
 import co.anitrend.support.crunchyroll.data.arch.database.common.ICrunchyDatabase
 import co.anitrend.support.crunchyroll.data.news.datasource.local.CrunchyRssNewsDao
-import org.koin.core.KoinComponent
-import org.koin.core.get
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import timber.log.Timber
 
 class NewsContentProvider : ContentProvider(), KoinComponent {
@@ -130,10 +129,35 @@ class NewsContentProvider : ContentProvider(), KoinComponent {
         selectionArgs: Array<out String>?,
         sortOrder: String?
     ): Cursor? {
-        Timber.tag(TAG).i("Query on uri $uri")
+        Timber.tag(TAG).i("""
+            query(
+                uri: $uri,
+                projection: $projection,
+                selection: $selection,
+                selectionArgs: $selectionArgs,
+                sortOrder: $sortOrder
+            )
+        """.trimIndent())
         return when (uriMatcher.match(uri)) {
-            ID_NEWS_DATA_ITEMS -> {
+            Provider.Route.ALL.ordinal -> {
                 val cursor = newsDao.findAllCursor()
+                context?.let {
+                    cursor.setNotificationUri(it.contentResolver, uri)
+                    cursor
+                }
+            }
+            Provider.Route.LIST.ordinal -> {
+                val page = uri.getQueryParameter("page")?.toIntOrNull() ?: 1
+                val perPage = uri.getQueryParameter("perPage")?.toIntOrNull() ?: 15
+                val cursor = newsDao.findCursor(page, perPage)
+                context?.let {
+                    cursor.setNotificationUri(it.contentResolver, uri)
+                    cursor
+                }
+            }
+            Provider.Route.DETAIL.ordinal -> {
+                val guid = uri.getQueryParameter("guid").orEmpty()
+                val cursor = newsDao.findByIdCursor(guid)
                 context?.let {
                     cursor.setNotificationUri(it.contentResolver, uri)
                     cursor
@@ -164,7 +188,7 @@ class NewsContentProvider : ContentProvider(), KoinComponent {
      * @param uri the URI to query.
      * @return a MIME type string, or `null` if there is no type.
      */
-    override fun getType(uri: Uri) = "vnd.android.cursor.item/$AUTHORITY.$PATH_NAME"
+    override fun getType(uri: Uri) = "vnd.android.cursor.item/${Provider.AUTHORITY}.${Provider.PATH}"
 
     /**
      * Implement this to handle requests to insert a new row.
@@ -232,14 +256,21 @@ class NewsContentProvider : ContentProvider(), KoinComponent {
     companion object {
         private val TAG = NewsContentProvider::class.java.simpleName
 
-        private const val ID_NEWS_DATA = 1
-        private const val ID_NEWS_DATA_ITEMS = 2
-        private const val PATH_NAME = "feed"
-        private const val AUTHORITY = "co.anitrend.crunchy.provider.news"
+        private object Provider {
+            const val AUTHORITY: String = "co.anitrend.crunchy"
+            const val PATH: String = "provider/news"
+
+            enum class Route(val descriptor: String) {
+                ALL("$PATH/*"),
+                DETAIL("$PATH/#"),
+                LIST(PATH)
+            }
+        }
 
         private val uriMatcher = UriMatcher(UriMatcher.NO_MATCH).apply {
-            addURI(AUTHORITY, PATH_NAME, ID_NEWS_DATA)
-            addURI(AUTHORITY, "$PATH_NAME/*", ID_NEWS_DATA_ITEMS)
+            addURI(Provider.AUTHORITY, Provider.Route.ALL.descriptor, Provider.Route.ALL.ordinal)
+            addURI(Provider.AUTHORITY, Provider.Route.LIST.descriptor, Provider.Route.LIST.ordinal)
+            addURI(Provider.AUTHORITY, Provider.Route.DETAIL.descriptor, Provider.Route.DETAIL.ordinal)
         }
     }
 }

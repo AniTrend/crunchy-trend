@@ -16,24 +16,56 @@
 
 package co.anitrend.support.crunchyroll.feature.authentication.presenter
 
+import android.accounts.AbstractAccountAuthenticator
+import android.accounts.Account
+import android.accounts.AccountManager
 import android.content.Context
-import androidx.lifecycle.LiveData
+import android.os.Bundle
+import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.arch.extension.ext.capitalizeWords
+import co.anitrend.arch.extension.ext.empty
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
-import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
+import co.anitrend.support.crunchyroll.data.BuildConfig
+import co.anitrend.support.crunchyroll.data.authentication.contract.AccountType
+import co.anitrend.support.crunchyroll.data.authentication.contract.TokenType
 import co.anitrend.support.crunchyroll.domain.authentication.models.CrunchyLoginQuery
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLoginBinding
+import kotlinx.coroutines.flow.flow
 
 class AuthPresenter(
     context: Context,
     settings: CrunchySettings
 ) : CrunchyCorePresenter(context, settings) {
 
-    fun onLoginStateChange(crunchyUser: CrunchyUser?) {
-        settings.authenticatedUserId = crunchyUser?.userId ?: IAuthenticationSettings.INVALID_USER_ID
-        settings.hasAccessToPremium = !crunchyUser?.premium.isNullOrBlank()
-        settings.isAuthenticated = crunchyUser != null
+    fun onLoginStateChange(
+        crunchyUser: CrunchyUser,
+        accountManager: AccountManager,
+        isNewAccount: Boolean,
+        userPassword: String
+    ) {
+        settings.authenticatedUserId = crunchyUser.userId
+        settings.hasAccessToPremium = !crunchyUser.premium.isNullOrBlank()
+        settings.isAuthenticated = true
+        val account = Account(crunchyUser.username, AccountType.UNIVERSAL.id)
+        if (isNewAccount) {
+            accountManager.addAccountExplicitly(account, userPassword, Bundle.EMPTY)
+            accountManager.setAuthToken(account, TokenType.AUTHENTICATED.name, crunchyUser.token)
+        } else {
+            accountManager.setPassword(account, userPassword)
+            accountManager.setAuthToken(account, TokenType.AUTHENTICATED.name, crunchyUser.token)
+        }
+    }
+
+    fun onAnonymousRequest(
+        accountManager: AccountManager
+    ) = flow {
+        emit(NetworkState.Loading)
+        val account = Account(TokenType.ANONYMOUS.alias, AccountType.UNIVERSAL.id)
+        accountManager.addAccountExplicitly(account, BuildConfig.clientToken, Bundle.EMPTY)
+        accountManager.setAuthToken(account, TokenType.ANONYMOUS.name, String.empty())
+        emit(NetworkState.Success)
     }
 
     /**

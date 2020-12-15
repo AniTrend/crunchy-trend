@@ -20,10 +20,21 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"
+            android:maxSdkVersion="22" />
+
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
+
+    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
+
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application>
-        <activity android:name=".ui.activity.AuthenticationScreen"/>
+        <activity android:name=".ui.activity.AuthenticationScreen"
+                android:exported="true"/>
 
         <provider
                 android:name="androidx.startup.InitializationProvider"
@@ -33,5 +44,15 @@
             <meta-data  android:name="co.anitrend.support.crunchyroll.feature.authentication.initializer.FeatureInitializer"
                     android:value="androidx.startup" />
         </provider>
+
+        <service android:name=".authenticator.service.AuthenticatorService"
+                android:exported="false">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <meta-data
+                    android:name="android.accounts.AccountAuthenticator"
+                    android:resource="@xml/authenticator" />
+        </service>
     </application>
 </manifest>

@@ -50,6 +50,23 @@ internal interface CrunchyRssNewsDao : IDao<NewsEntity> {
         select * 
         from NewsEntity 
         order by publishedOn desc
+        limit :perPage offset :page
+        """)
+    fun findCursor(page: Int, perPage: Int): Cursor
+
+
+    @Query("""
+        select * 
+        from NewsEntity 
+        where guid = :guid
+        """)
+    fun findByIdCursor(guid: String): Cursor
+
+
+    @Query("""
+        select * 
+        from NewsEntity 
+        order by publishedOn desc
         """)
     suspend fun findAll(): List<NewsEntity>
 

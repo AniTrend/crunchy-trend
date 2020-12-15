@@ -16,12 +16,12 @@
 
 package co.anitrend.support.crunchyroll.data.batch.transformer
 
-import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
+import co.anitrend.arch.data.transformer.ISupportTransformer
 import co.anitrend.support.crunchyroll.data.batch.entity.CrunchyBatchEntity
 import co.anitrend.support.crunchyroll.data.batch.model.CrunchyBatchModel
 import co.anitrend.support.crunchyroll.data.series.model.CrunchySeriesModel
 
-internal class BatchTransformer : ISupportMapperHelper<List<CrunchyBatchModel>, List<CrunchyBatchEntity<CrunchySeriesModel>>> {
+internal class BatchTransformer : ISupportTransformer<List<CrunchyBatchModel>, List<CrunchyBatchEntity<CrunchySeriesModel>>> {
 
     /**
      * Transforms the the [source] to the target type

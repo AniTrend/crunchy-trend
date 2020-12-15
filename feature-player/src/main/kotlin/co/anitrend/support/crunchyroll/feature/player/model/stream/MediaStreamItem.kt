@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.feature.player.model.stream
 
-import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
+import co.anitrend.arch.data.transformer.ISupportTransformer
 import co.anitrend.support.crunchyroll.domain.stream.enums.CrunchyStreamQuality
 import com.devbrackets.android.playlistcore.api.PlaylistItem
 import com.devbrackets.android.playlistcore.manager.BasePlaylistManager
@@ -38,7 +38,7 @@ class MediaStreamItem(
     override val title: String?
 ) : PlaylistItem {
 
-    companion object : ISupportMapperHelper<MediaStreamWithExtras, MediaStreamItem> {
+    companion object : ISupportTransformer<MediaStreamWithExtras, MediaStreamItem> {
         /**
          * Transforms the the [source] to the target type
          */

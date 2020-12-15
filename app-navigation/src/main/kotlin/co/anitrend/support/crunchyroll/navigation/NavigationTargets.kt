@@ -21,7 +21,7 @@ import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFi
 import co.anitrend.support.crunchyroll.navigation.contract.INavigationProvider
 import co.anitrend.support.crunchyroll.navigation.contract.NavigationRouter
 import kotlinx.android.parcel.Parcelize
-import org.koin.core.inject
+import org.koin.core.component.inject
 
 object Main : NavigationRouter() {
     override val provider by inject<Provider>()
@@ -43,6 +43,11 @@ object Settings : NavigationRouter() {
 
 object Authentication : NavigationRouter() {
     override val provider by inject<Provider>()
+
+    const val ARG_ACCOUNT_TYPE = "ACCOUNT_TYPE"
+    const val ARG_AUTH_TYPE = "AUTH_TYPE"
+    const val ARG_ACCOUNT_NAME = "ACCOUNT_NAME"
+    const val ARG_IS_ADDING_NEW_ACCOUNT = "IS_ADDING_ACCOUNT"
 
     interface Provider : INavigationProvider
 }

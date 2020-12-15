@@ -35,7 +35,7 @@
         </provider>
 
         <provider
-                android:authorities="co.anitrend.crunchy.provider.news"
+                android:authorities="co.anitrend.crunchy"
                 android:name="co.anitrend.support.crunchyroll.data.news.provider.NewsContentProvider"
                 android:exported="true"/>
     </application>

@@ -28,7 +28,6 @@ import com.devbrackets.android.playlistcore.listener.MediaStatusListener
 import com.devbrackets.android.playlistcore.listener.PlaylistListener
 import com.google.android.exoplayer2.Format
 import com.google.android.exoplayer2.util.EventLogger
-import kotlinx.android.synthetic.main.fragment_media_player.*
 import timber.log.Timber
 
 abstract class MediaPlugin<T: PlaylistItem> : MediaPlayerApi<T>, PlaylistListener<T>,

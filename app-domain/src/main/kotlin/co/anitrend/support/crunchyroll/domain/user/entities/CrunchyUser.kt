@@ -23,5 +23,7 @@ data class CrunchyUser(
     val username: String,
     val email: String,
     val premium: String?,
-    val accessType: CrunchyAccessType?
+    val accessType: CrunchyAccessType?,
+    val token: String,
+    val expiresAt: Long
 )

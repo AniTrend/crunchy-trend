@@ -22,7 +22,6 @@ import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.TransferListener
 import com.google.android.exoplayer2.upstream.cache.Cache
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource
-import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -31,7 +30,7 @@ class SourceFactoryProvider(
     private val cache: Cache
 ) : ExoMedia.DataSourceFactoryProvider {
 
-    private var cacheFactory: CacheDataSourceFactory? = null
+    private var cacheFactory: CacheDataSource.Factory? = null
 
     private val moduleTag = SourceFactoryProvider::class.java.simpleName
 
@@ -49,11 +48,10 @@ class SourceFactoryProvider(
                 "Initializing cache factory backed by okhttp client. $userAgent"
             )
 
-            cacheFactory = CacheDataSourceFactory(
-                cache,
-                upstreamFactory,
-                CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
-            )
+            cacheFactory = CacheDataSource.Factory()
+                .setUpstreamDataSourceFactory(upstreamFactory)
+                .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
+                .setCache(cache)
         }
 
         return cacheFactory!!

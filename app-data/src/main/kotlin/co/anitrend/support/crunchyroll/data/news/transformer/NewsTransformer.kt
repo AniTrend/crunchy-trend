@@ -16,11 +16,11 @@
 
 package co.anitrend.support.crunchyroll.data.news.transformer
 
-import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
+import co.anitrend.arch.data.transformer.ISupportTransformer
 import co.anitrend.support.crunchyroll.data.news.entity.NewsEntity
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 
-internal object NewsTransformer : ISupportMapperHelper<NewsEntity, CrunchyNews> {
+internal object NewsTransformer : ISupportTransformer<NewsEntity, CrunchyNews> {
 
     /**
      * Transforms the the [source] to the target type

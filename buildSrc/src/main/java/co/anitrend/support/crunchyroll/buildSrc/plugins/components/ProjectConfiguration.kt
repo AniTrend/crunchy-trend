@@ -16,11 +16,8 @@
 
 package co.anitrend.support.crunchyroll.buildSrc.plugins.components
 
-import co.anitrend.support.crunchyroll.buildSrc.common.Versions
-import co.anitrend.support.crunchyroll.buildSrc.common.hasCoroutineSupport
-import co.anitrend.support.crunchyroll.buildSrc.common.isAppModule
-import co.anitrend.support.crunchyroll.buildSrc.common.hasDataBindingSupport
-import co.anitrend.support.crunchyroll.buildSrc.common.isBaseModule
+import co.anitrend.support.crunchyroll.buildSrc.common.*
+import co.anitrend.support.crunchyroll.buildSrc.common.isDomainModule
 import co.anitrend.support.crunchyroll.buildSrc.plugins.extensions.baseAppExtension
 import co.anitrend.support.crunchyroll.buildSrc.plugins.extensions.baseExtension
 import co.anitrend.support.crunchyroll.buildSrc.plugins.extensions.libraryExtension
@@ -117,20 +114,28 @@ internal fun Project.configureAndroid(): Unit = baseExtension().run {
     }
 
     tasks.withType(KotlinCompile::class.java) {
-        val compilerArgumentOptions = if (hasCoroutineSupport()) {
-            listOf(
-                "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-                "-Xopt-in=kotlinx.coroutines.FlowPreview",
-                "-Xopt-in=kotlinx.coroutines.FlowPreview",
-                "-Xuse-experimental=kotlin.Experimental",
-                "-Xopt-in=kotlin.Experimental"
-            )
-        } else {
-            listOf(
-                "-Xuse-experimental=kotlin.Experimental",
-                "-Xopt-in=kotlin.Experimental"
-            )
+        val compilerArgumentOptions = mutableListOf(
+            "-Xuse-experimental=kotlin.Experimental",
+            "-Xopt-in=kotlin.ExperimentalStdlibApi",
+            "-Xopt-in=kotlin.Experimental"
+        )
+
+        if (hasCoroutineSupport()) {
+            compilerArgumentOptions.add("-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")
+            compilerArgumentOptions.add("-Xopt-in=kotlinx.coroutines.FlowPreview")
+            if (!isBaseModule())
+                compilerArgumentOptions.add("-Xopt-in=coil.annotation.ExperimentalCoilApi")
+            if (isDataModule())
+                compilerArgumentOptions.add("-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi")
         }
+
+        if (!isDomainModule())
+            compilerArgumentOptions.apply {
+                add("-Xopt-in=org.koin.core.component.KoinExperimentalAPI")
+                add("-Xopt-in=org.koin.core.component.KoinApiExtension")
+                add("-Xopt-in=org.koin.core.KoinExperimentalAPI")
+            }
+
         kotlinOptions {
             allWarningsAsErrors = false
             // Filter out modules that won't be using coroutines

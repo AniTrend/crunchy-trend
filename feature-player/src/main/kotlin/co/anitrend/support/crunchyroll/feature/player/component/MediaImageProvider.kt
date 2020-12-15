@@ -28,8 +28,8 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.target.Target
 import com.devbrackets.android.playlistcore.components.image.ImageProvider
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class MediaImageProvider(
     private val context: Context,

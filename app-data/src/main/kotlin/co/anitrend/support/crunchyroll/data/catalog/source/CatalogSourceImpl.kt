@@ -35,7 +35,7 @@ import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalog
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
-import org.koin.core.KoinComponent
+import org.koin.core.component.KoinComponent
 import timber.log.Timber
 
 internal class CatalogSourceImpl(

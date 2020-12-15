@@ -21,9 +21,11 @@ import android.app.DownloadManager
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.view.Window
+import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import co.anitrend.arch.extension.ext.UNSAFE
@@ -50,51 +52,21 @@ class ImageViewerScreen : CrunchyActivity() {
         ImageViewScreenBinding.inflate(layoutInflater)
     }
 
-    private val subSamplingTarget
-            by lazy(UNSAFE) {
-                object : CustomViewTarget<SubsamplingScaleImageView, File>(
-                    binding.subSamplingImageView
-                ) {
-                    /**
-                     * A **mandatory** lifecycle callback that is called when a load fails.
-                     *
-                     *
-                     * Note - This may be called before [.onLoadStarted]
-                     * if the model object is null.
-                     *
-                     *
-                     * You **must** ensure that any current Drawable received in [.onResourceReady] is no longer used before redrawing the container (usually a View) or changing its
-                     * visibility.
-                     *
-                     * @param errorDrawable The error drawable to optionally show, or null.
-                     */
-                    override fun onLoadFailed(errorDrawable: Drawable?) {
+    private val subSamplingTarget by lazy {
+        object : CustomViewTarget<SubsamplingScaleImageView, File>(binding.subSamplingImageView) {
+            override fun onLoadFailed(errorDrawable: Drawable?) {
 
-                    }
-
-                    /**
-                     * A required callback invoked when the resource is no longer valid and must be freed.
-                     *
-                     *
-                     * You must ensure that any current Drawable received in [.onResourceReady] is no longer used before redrawing the container (usually a View) or changing its
-                     * visibility. **Not doing so will result in crashes in your app.**
-                     *
-                     * @param placeholder The placeholder drawable to optionally show, or null.
-                     */
-                    override fun onResourceCleared(placeholder: Drawable?) {
-
-                    }
-
-                    /**
-                     * The method that will be called when the resource load has finished.
-                     *
-                     * @param resource the loaded resource.
-                     */
-                    override fun onResourceReady(resource: File, transition: Transition<in File>?) {
-                        view.setImage(ImageSource.uri(Uri.fromFile(resource)))
-                    }
-                }
             }
+
+            override fun onResourceCleared(placeholder: Drawable?) {
+
+            }
+
+            override fun onResourceReady(resource: File, transition: Transition<in File>?) {
+                view.setImage(ImageSource.uri(Uri.fromFile(resource)))
+            }
+        }
+    }
 
     private fun loadImage(context: Context) {
         Glide.with(context)
@@ -108,10 +80,17 @@ class ImageViewerScreen : CrunchyActivity() {
     override fun configureActivity() {
         super.configureActivity()
         requestWindowFeature(Window.FEATURE_NO_TITLE)
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.insetsController?.hide(
+                WindowInsets.Type.statusBars() and WindowInsets.Type.navigationBars()
+            )
+        } else {
+            @Suppress("DEPRECATION")
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+            )
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -153,8 +132,7 @@ class ImageViewerScreen : CrunchyActivity() {
         request.setNotificationVisibility(
             DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
         )
-        val downloadManager =
-            systemServiceOf<DownloadManager>(Context.DOWNLOAD_SERVICE)
+        val downloadManager = systemServiceOf<DownloadManager>()
         downloadManager?.enqueue(request)
     }
 

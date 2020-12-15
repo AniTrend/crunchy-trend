@@ -27,8 +27,9 @@ import com.google.android.exoplayer2.scheduler.Scheduler
 import com.google.android.exoplayer2.ui.DownloadNotificationHelper
 import com.google.android.exoplayer2.util.NotificationUtil
 import com.google.android.exoplayer2.util.Util
-import org.koin.core.KoinComponent
-import org.koin.core.get
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import java.lang.Exception
 
 class MediaDownloadService : DownloadService(
     FOREGROUND_NOTIFICATION_ID_NONE,
@@ -72,6 +73,7 @@ class MediaDownloadService : DownloadService(
      */
     override fun getForegroundNotification(downloads: MutableList<Download>): Notification {
         return get<DownloadNotificationHelper>().buildProgressNotification(
+            applicationContext,
             android.R.drawable.stat_sys_download,
             null,
             null,
@@ -85,7 +87,7 @@ class MediaDownloadService : DownloadService(
      * memory when the requirements are met.
      */
     override fun getScheduler(): Scheduler? {
-        return WorkManagerScheduler(DOWNLOAD_WORK_MANAGER_ID)
+        return WorkManagerScheduler(applicationContext, DOWNLOAD_WORK_MANAGER_ID)
     }
 
 
@@ -107,11 +109,16 @@ class MediaDownloadService : DownloadService(
          * @param downloadManager The reporting instance.
          * @param download The state of the download.
          */
-        override fun onDownloadChanged(downloadManager: DownloadManager, download: Download) {
-            super.onDownloadChanged(downloadManager, download)
+        override fun onDownloadChanged(
+            downloadManager: DownloadManager,
+            download: Download,
+            finalException: Exception?
+        ) {
+            super.onDownloadChanged(downloadManager, download, finalException)
             val notification: Notification = when (download.state) {
                 Download.STATE_COMPLETED -> {
                     notificationHelper.buildDownloadCompletedNotification(
+                        context,
                         android.R.drawable.stat_sys_download_done,
                         null,
                         Util.fromUtf8Bytes(download.request.data)
@@ -119,6 +126,7 @@ class MediaDownloadService : DownloadService(
                 }
                 Download.STATE_FAILED -> {
                     notificationHelper.buildDownloadFailedNotification(
+                        context,
                         android.R.drawable.stat_sys_download_done,
                         null,
                         Util.fromUtf8Bytes(download.request.data)

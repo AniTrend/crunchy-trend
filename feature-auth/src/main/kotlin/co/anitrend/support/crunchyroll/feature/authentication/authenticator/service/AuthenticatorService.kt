@@ -14,17 +14,18 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.core.ui.fragment.model
+package co.anitrend.support.crunchyroll.feature.authentication.authenticator.service
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.content.Intent
+import android.os.IBinder
+import androidx.lifecycle.LifecycleService
+import co.anitrend.support.crunchyroll.feature.authentication.authenticator.component.AccountAuthenticator
 
-/**
- * Fragment loader helper
- */
-data class FragmentItem<T: Fragment>(
-    val fragment: Class<out T>? = null,
-    val parameter: Bundle? = null
-) {
-    fun tag() = fragment?.simpleName ?: "FragmentItem"
+class AuthenticatorService : LifecycleService() {
+
+    override fun onBind(intent: Intent): IBinder? {
+        val binder = super.onBind(intent)
+        val authenticator = AccountAuthenticator(this)
+        return authenticator.iBinder
+    }
 }

@@ -22,8 +22,8 @@ import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
 import co.anitrend.support.crunchyroll.data.arch.RCF822Date
 import co.anitrend.support.crunchyroll.data.util.CrunchyDateUtil.Companion.ISO8601_PATTERN
 import co.anitrend.support.crunchyroll.data.util.CrunchyDateUtil.Companion.RCF822_PATTERN
-import org.koin.core.KoinComponent
-import org.koin.core.get
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import timber.log.Timber
 
 internal val koin = object : KoinComponent {}

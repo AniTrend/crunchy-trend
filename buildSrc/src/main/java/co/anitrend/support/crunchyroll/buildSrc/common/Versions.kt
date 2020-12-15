@@ -18,21 +18,31 @@ package co.anitrend.support.crunchyroll.buildSrc.common
 
 object Versions {
 
-    const val compileSdk = 29
-    const val targetSdk = 29
+    private const val major = 0
+    private const val minor = 6
+    private const val patch = 2
+    private const val candidate = 10
+
+    const val compileSdk = 30
+    const val targetSdk = 30
     const val minSdk = 21
 
-    const val versionCode = 1060209
-    const val versionName = "0.6.2-alpha09"
+    const val versionCode = major.times(10_000) +
+            minor.times(1000) +
+            patch.times(100) +
+            candidate.times(10)
 
-    const val mockk = "1.10.0"
-    const val junit = "4.13"
+    const val versionName = "$major.$minor.$patch-alpha$candidate"
+
+    const val mockk = "1.10.2"
+    const val junit = "4.13.1"
 
     const val timber = "4.7.1"
-    const val threeTenBp = "1.2.4"
+    const val threeTenBp = "1.3.0"
 
     const val debugDB = "1.0.6"
     const val treesSence = "0.3.2"
 
     const val scalingImageView = "3.10.0"
+    const val serializationConverter = "0.8.0"
 }

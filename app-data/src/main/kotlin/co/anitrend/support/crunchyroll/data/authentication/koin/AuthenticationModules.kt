@@ -40,6 +40,7 @@ import org.koin.dsl.module
 private val coreModule = module {
     factory {
         CrunchyAuthenticationHelper(
+            accountManager = get(),
             connectivityHelper = get(),
             settings = get(),
             unblockSessionUseCase = get(),

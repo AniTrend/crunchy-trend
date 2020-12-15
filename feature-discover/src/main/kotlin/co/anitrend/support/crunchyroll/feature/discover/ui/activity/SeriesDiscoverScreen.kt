@@ -17,24 +17,14 @@
 package co.anitrend.support.crunchyroll.feature.discover.ui.activity
 
 import android.os.Bundle
-import co.anitrend.support.crunchyroll.core.extensions.commit
-import co.anitrend.support.crunchyroll.core.extensions.koinScope
+import co.anitrend.support.crunchyroll.core.ui.model.FragmentItem
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
-import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
+import co.anitrend.support.crunchyroll.core.ui.commit
 import co.anitrend.support.crunchyroll.feature.discover.R
 import co.anitrend.support.crunchyroll.feature.discover.ui.fragment.SeriesDiscoverContent
 import kotlinx.android.synthetic.main.discover_activity.*
-import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 
 class SeriesDiscoverScreen : CrunchyActivity() {
-
-    /**
-     * Can be used to configure custom theme styling as desired
-     */
-    override fun configureActivity() {
-        super.configureActivity()
-        setupKoinFragmentFactory(koinScope)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,13 +49,9 @@ class SeriesDiscoverScreen : CrunchyActivity() {
      * Check implementation for more details
      */
     private fun onUpdateUserInterface() {
-        val target = FragmentItem(
+        currentFragmentTag = FragmentItem(
             parameter = intent.extras,
             fragment = SeriesDiscoverContent::class.java
-        )
-
-        currentFragmentTag = supportFragmentManager.commit(R.id.discover_content, target) {
-            //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        }
+        ).commit(R.id.discover_content, this) {}
     }
 }

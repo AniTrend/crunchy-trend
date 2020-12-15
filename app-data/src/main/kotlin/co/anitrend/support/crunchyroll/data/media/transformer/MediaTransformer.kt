@@ -16,11 +16,11 @@
 
 package co.anitrend.support.crunchyroll.data.media.transformer
 
-import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
+import co.anitrend.arch.data.transformer.ISupportTransformer
 import co.anitrend.support.crunchyroll.data.media.entity.CrunchyMediaEntity
 import co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia
 
-internal object MediaTransformer : ISupportMapperHelper<CrunchyMediaEntity, CrunchyMedia> {
+internal object MediaTransformer : ISupportTransformer<CrunchyMediaEntity, CrunchyMedia> {
 
     /**
      * Transforms the the [source] to the target type

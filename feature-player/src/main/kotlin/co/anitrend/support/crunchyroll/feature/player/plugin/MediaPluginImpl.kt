@@ -35,6 +35,7 @@ import com.devbrackets.android.exomedia.ui.widget.VideoView
 import com.devbrackets.android.playlistcore.data.PlaybackState
 import com.devbrackets.android.playlistcore.manager.BasePlaylistManager
 import com.google.android.exoplayer2.Format
+import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.source.BaseMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
@@ -177,12 +178,10 @@ class MediaPluginImpl(
             override fun getRetryDelayMsFor(
                 dataType: Int,
                 loadDurationMs: Long,
-                exception: IOException?,
+                exception: IOException,
                 errorCount: Int
             ): Long {
-                exception?.also {
-                    Timber.tag(moduleTag).d(it)
-                }
+                Timber.tag(moduleTag).d(exception)
                 return 1500
             }
 
@@ -191,12 +190,10 @@ class MediaPluginImpl(
             override fun getBlacklistDurationMsFor(
                 dataType: Int,
                 loadDurationMs: Long,
-                exception: IOException?,
+                exception: IOException,
                 errorCount: Int
             ): Long {
-                exception?.also {
-                    Timber.tag(moduleTag).d(it)
-                }
+                Timber.tag(moduleTag).d(exception)
                 return 500
             }
         }
@@ -204,7 +201,11 @@ class MediaPluginImpl(
         return HlsMediaSource.Factory(mediaSourceFactory)
             .setLoadErrorHandlingPolicy(loadErrorHandlingPolicy)
             .setAllowChunklessPreparation(true)
-            .createMediaSource(Uri.parse(mediaUrl))
+            .createMediaSource(
+                MediaItem.fromUri(
+                    Uri.parse(mediaUrl)
+                )
+            )
     }
 
     private fun startPlaybackUsing(mediaStreamItem: MediaStreamItem) {

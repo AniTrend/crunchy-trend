@@ -16,13 +16,13 @@
 
 package co.anitrend.support.crunchyroll.data.authentication.datasource.local.transformer
 
-import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
+import co.anitrend.arch.data.transformer.ISupportTransformer
 import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEntity
 import co.anitrend.support.crunchyroll.data.authentication.model.CrunchyLoginModel
 import co.anitrend.support.crunchyroll.data.user.datasource.local.transformer.UserEntityTransformer
 import co.anitrend.support.crunchyroll.data.util.extension.iso8601ToUnixTime
 
-internal object LoginEntityTransformer : ISupportMapperHelper<CrunchyLoginModel, CrunchyLoginEntity> {
+internal object LoginEntityTransformer : ISupportTransformer<CrunchyLoginModel, CrunchyLoginEntity> {
 
     /**
      * Transforms the the [source] to the target type

@@ -31,6 +31,7 @@ import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.model.UserAgent
 import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.core.ui.fragment.CrunchyFragment
+import co.anitrend.support.crunchyroll.core.ui.get
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 import co.anitrend.support.crunchyroll.feature.player.R
@@ -53,14 +54,14 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MediaStreamContent(
     override var inflateLayout: Int = R.layout.fragment_media_player,
     private val sourceFactoryProvider: SourceFactoryProvider,
     private val playlistManager: PlaylistManagerPluginImpl,
-    private val presenter: StreamPresenter
+    private val presenter: StreamPresenter,
+    userAgent: UserAgent
 ) : CrunchyFragment() {
 
     private val qualityButton by lazy(UNSAFE) {
@@ -115,8 +116,8 @@ class MediaStreamContent(
         MediaPluginImpl(
             lifecycleScope,
             exoMediaVideoView,
-            get<UserAgent>().identifier,
-            DefaultBandwidthMeter.Builder(context).build(),
+            userAgent.identifier,
+            DefaultBandwidthMeter.Builder(requireContext()).build(),
             sourceFactoryProvider
         )
     }

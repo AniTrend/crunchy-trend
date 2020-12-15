@@ -26,13 +26,13 @@ import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.extension.ext.extra
 import co.anitrend.arch.ui.activity.SupportActivity
 import co.anitrend.arch.ui.fragment.SupportFragment
+import co.anitrend.support.crunchyroll.core.ui.model.FragmentItem
 import co.anitrend.support.crunchyroll.R
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
-import co.anitrend.support.crunchyroll.core.extensions.commit
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
-import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
+import co.anitrend.support.crunchyroll.core.ui.commit
 import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.navigation.extensions.forFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -174,9 +174,7 @@ class MainScreen : CrunchyActivity(), NavigationView.OnNavigationItemSelectedLis
         bottomDrawerBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
         delay(DEBOUNCE_DURATION)
-        currentFragmentTag = supportFragmentManager.commit(
-            R.id.contentFrame, fragmentItem
-        ) {}
+        currentFragmentTag = fragmentItem?.commit(R.id.contentFrame, this) {}
     }
 
     private fun onNavigateToTarget(@IdRes menu: Int) {

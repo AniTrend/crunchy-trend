@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.navigation.extensions
 
+import android.content.Context
 import android.content.Intent
 import androidx.collection.LruCache
 import androidx.fragment.app.Fragment
@@ -83,3 +84,4 @@ internal fun <T : Fragment> String.loadFragmentOrNull(): T? =
  * Build fragment class from intent
  */
 fun NavigationRouter.forFragment() = provider.fragment()
+fun NavigationRouter.forActivityIntent(context: Context) = provider.activity(context)

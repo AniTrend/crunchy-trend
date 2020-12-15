@@ -20,7 +20,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import org.koin.core.KoinComponent
+import org.koin.core.component.KoinComponent
 
 abstract class NavigationRouter : KoinComponent {
     private val moduleTag = javaClass.simpleName

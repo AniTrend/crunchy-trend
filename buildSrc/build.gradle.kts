@@ -9,8 +9,8 @@ repositories {
     mavenCentral()
 }
 
-val kotlinVersion = "1.4.0"
-val buildToolsVersion = "4.0.1"
+val kotlinVersion = "1.4.21"
+val buildToolsVersion = "4.1.1"
 
 dependencies {
     /* Depend on the android gradle plugin, since we want to access it in our plugin */

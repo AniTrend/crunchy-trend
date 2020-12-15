@@ -16,13 +16,13 @@
 
 package co.anitrend.support.crunchyroll.data.media.datasource.local.transformer
 
-import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
+import co.anitrend.arch.data.transformer.ISupportTransformer
 import co.anitrend.support.crunchyroll.data.media.entity.CrunchyMediaEntity
 import co.anitrend.support.crunchyroll.data.media.helper.CrunchyMediaHelper
 import co.anitrend.support.crunchyroll.data.media.model.CrunchyMediaModel
 import co.anitrend.support.crunchyroll.data.util.extension.iso8601ToUnixTime
 
-internal object CrunchyMediaEntityTransformer : ISupportMapperHelper<CrunchyMediaModel, CrunchyMediaEntity> {
+internal object CrunchyMediaEntityTransformer : ISupportTransformer<CrunchyMediaModel, CrunchyMediaEntity> {
 
     /**
      * Transforms the the [source] to the target type

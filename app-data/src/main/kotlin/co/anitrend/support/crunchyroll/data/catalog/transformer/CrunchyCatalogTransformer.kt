@@ -16,12 +16,12 @@
 
 package co.anitrend.support.crunchyroll.data.catalog.transformer
 
-import co.anitrend.arch.data.mapper.contract.ISupportMapperHelper
+import co.anitrend.arch.data.transformer.ISupportTransformer
 import co.anitrend.support.crunchyroll.data.catalog.entity.CrunchyCatalogWithSeriesEntity
 import co.anitrend.support.crunchyroll.data.series.converters.SeriesEntityConverter
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 
-internal object CrunchyCatalogTransformer : ISupportMapperHelper<List<CrunchyCatalogWithSeriesEntity>, List<CrunchyCatalogWithSeries>?> {
+internal object CrunchyCatalogTransformer : ISupportTransformer<List<CrunchyCatalogWithSeriesEntity>, List<CrunchyCatalogWithSeries>?> {
     /**
      * Transforms the the [source] to the target type
      */

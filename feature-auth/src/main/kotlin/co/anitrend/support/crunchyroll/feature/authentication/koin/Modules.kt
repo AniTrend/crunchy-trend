@@ -34,7 +34,9 @@ private val fragmentModule = module {
     scope<AuthenticationScreen> {
         fragment {
             FragmentLogin(
-                presenter = get()
+                presenter = get(),
+                accountManager = get(),
+                stateLayoutConfig = get()
             )
         }
     }

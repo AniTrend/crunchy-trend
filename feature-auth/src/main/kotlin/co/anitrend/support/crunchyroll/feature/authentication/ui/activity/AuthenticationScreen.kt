@@ -17,29 +17,19 @@
 package co.anitrend.support.crunchyroll.feature.authentication.ui.activity
 
 import android.os.Bundle
-import androidx.fragment.app.FragmentTransaction
-import co.anitrend.support.crunchyroll.core.extensions.commit
-import co.anitrend.support.crunchyroll.core.extensions.koinScope
+import co.anitrend.support.crunchyroll.core.ui.model.FragmentItem
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
-import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
-import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
+import co.anitrend.support.crunchyroll.core.ui.commit
+import co.anitrend.support.crunchyroll.core.ui.inject
 import co.anitrend.support.crunchyroll.feature.authentication.R
+import co.anitrend.support.crunchyroll.feature.authentication.authenticator.view.AuthenticatorScreen
 import co.anitrend.support.crunchyroll.feature.authentication.ui.fragment.FragmentLogin
 import co.anitrend.support.crunchyroll.feature.authentication.ui.fragment.FragmentLogout
 import kotlinx.android.synthetic.main.activity_auth.*
-import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 
-class AuthenticationScreen : CrunchyActivity() {
+class AuthenticationScreen : AuthenticatorScreen() {
 
     private val presenter by inject<CrunchyCorePresenter>()
-
-    /**
-     * Can be used to configure custom theme styling as desired
-     */
-    override fun configureActivity() {
-        super.configureActivity()
-        setupKoinFragmentFactory(koinScope)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,20 +59,18 @@ class AuthenticationScreen : CrunchyActivity() {
         val target = when (presenter.settings.isAuthenticated) {
             true -> {
                 FragmentItem(
-                    parameter = Bundle.EMPTY,
+                    parameter = intent.extras,
                     fragment = FragmentLogout::class.java
                 )
             }
             else -> {
                 FragmentItem(
-                    parameter = Bundle.EMPTY,
+                    parameter = intent.extras,
                     fragment = FragmentLogin::class.java
                 )
             }
         }
 
-        currentFragmentTag = supportFragmentManager.commit(R.id.contentFrame, target) {
-            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        }
+        currentFragmentTag = target.commit(R.id.contentFrame, this) {}
     }
 }

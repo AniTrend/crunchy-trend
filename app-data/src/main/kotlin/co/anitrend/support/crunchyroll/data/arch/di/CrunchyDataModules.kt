@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.arch.di
 
+import android.accounts.AccountManager
 import android.content.Context
 import android.net.ConnectivityManager
 import co.anitrend.arch.extension.network.SupportConnectivity
@@ -41,6 +42,7 @@ import com.chuckerteam.chucker.api.RetentionManager
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -55,14 +57,15 @@ private val dataModule = module {
     factory {
         CrunchyConverterFactory.create()
     }
+    single {
+        AccountManager.get(androidApplication())
+    }
 }
 
 private val networkModule = module {
     factory {
         SupportConnectivity(
-            androidContext().systemServiceOf<ConnectivityManager>(
-                Context.CONNECTIVITY_SERVICE
-            )
+            androidContext().systemServiceOf<ConnectivityManager>()
         )
     }
     factory { (interceptorLogLevel: HttpLoggingInterceptor.Level) ->

@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.authentication.helper
 
+import android.accounts.AccountManager
 import co.anitrend.arch.extension.ext.empty
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyRequestInterceptor
@@ -40,6 +41,7 @@ import okio.Buffer
 import timber.log.Timber
 
 internal class CrunchyAuthenticationHelper(
+    private val accountManager: AccountManager,
     private val connectivityHelper: SupportConnectivity,
     private val coreSessionUseCase: CoreSessionUseCase,
     private val normalSessionUseCase: NormalSessionUseCase,

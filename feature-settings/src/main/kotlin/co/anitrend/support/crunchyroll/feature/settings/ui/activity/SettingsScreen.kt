@@ -20,24 +20,14 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import co.anitrend.support.crunchyroll.core.extensions.commit
-import co.anitrend.support.crunchyroll.core.extensions.koinScope
+import co.anitrend.support.crunchyroll.core.ui.model.FragmentItem
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
-import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import co.anitrend.support.crunchyroll.feature.settings.R
 import co.anitrend.support.crunchyroll.feature.settings.ui.fragment.SettingsFragment
 import kotlinx.android.synthetic.main.settings_activity.*
-import org.koin.androidx.fragment.android.setupKoinFragmentFactory
+import co.anitrend.support.crunchyroll.core.ui.commit
 
 class SettingsScreen : CrunchyActivity() {
-
-    /**
-     * Can be used to configure custom theme styling as desired
-     */
-    override fun configureActivity() {
-        super.configureActivity()
-        setupKoinFragmentFactory(koinScope)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,10 +95,8 @@ class SettingsScreen : CrunchyActivity() {
     }
 
     private fun onUpdateUserInterface() {
-        val target = FragmentItem(
+        currentFragmentTag = FragmentItem(
             fragment = SettingsFragment::class.java
-        )
-
-        currentFragmentTag = supportFragmentManager.commit(R.id.settings_content, target) {}
+        ).commit(R.id.settings_content, this) {}
     }
 }

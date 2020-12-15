@@ -17,24 +17,14 @@
 package co.anitrend.support.crunchyroll.feature.collection.ui.activity
 
 import android.os.Bundle
-import co.anitrend.support.crunchyroll.core.extensions.commit
-import co.anitrend.support.crunchyroll.core.extensions.koinScope
+import co.anitrend.support.crunchyroll.core.ui.model.FragmentItem
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
-import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
+import co.anitrend.support.crunchyroll.core.ui.commit
 import co.anitrend.support.crunchyroll.feature.collection.R
 import co.anitrend.support.crunchyroll.feature.collection.ui.fragment.CollectionContentScreen
 import kotlinx.android.synthetic.main.collection_activity.*
-import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 
 class CollectionScreen : CrunchyActivity() {
-
-    /**
-     * Can be used to configure custom theme styling as desired
-     */
-    override fun configureActivity() {
-        super.configureActivity()
-        setupKoinFragmentFactory(koinScope)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,13 +51,9 @@ class CollectionScreen : CrunchyActivity() {
      * Check implementation for more details
      */
     private fun onUpdateUserInterface() {
-        val target = FragmentItem(
+        currentFragmentTag = FragmentItem(
             parameter = intent.extras,
             fragment = CollectionContentScreen::class.java
-        )
-
-        currentFragmentTag = supportFragmentManager.commit(R.id.collection_content, target) {
-            //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        }
+        ).commit(R.id.collection_content, this) {}
     }
 }

@@ -16,33 +16,46 @@
 
 package co.anitrend.support.crunchyroll.feature.authentication.ui.fragment
 
+import android.accounts.AccountManager
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.arch.extension.ext.argument
+import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
-import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.core.ui.fragment.CrunchyFragment
 import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLoginBinding
 import co.anitrend.support.crunchyroll.feature.authentication.presenter.AuthPresenter
+import co.anitrend.support.crunchyroll.feature.authentication.ui.activity.AuthenticationScreen
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login.LoginViewModel
+import co.anitrend.support.crunchyroll.navigation.Authentication
+import co.anitrend.support.crunchyroll.navigation.Main
 import kotlinx.android.synthetic.main.login_anonymous_controls.view.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterNotNull
-import org.koin.android.ext.android.get
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FragmentLogin(
-    private val presenter: AuthPresenter
+    private val presenter: AuthPresenter,
+    private val accountManager: AccountManager,
+    private val stateLayoutConfig: StateLayoutConfig
 ) : CrunchyFragment() {
 
     private lateinit var binding: FragmentLoginBinding
+
+    private val isNewAccount by argument(
+        Authentication.ARG_IS_ADDING_NEW_ACCOUNT,
+        false
+    )
 
     private val viewModel by viewModel<LoginViewModel>()
 
@@ -50,27 +63,24 @@ class FragmentLogin(
      * Invoke view model observer to watch for changes
      */
     override fun setUpViewModelObserver() {
-        viewModelState().model.observe(
-            viewLifecycleOwner,
-            Observer {
-                if (it != null) {
-                    presenter.onLoginStateChange(it)
-                    onUpdateUserInterface()
-                }
+        viewModelState().model.observe(viewLifecycleOwner) { user ->
+            // view model live data will initially return a null
+            if (user != null) {
+                presenter.onLoginStateChange(
+                    user,
+                    accountManager,
+                    requireNotNull(isNewAccount),
+                    binding.txtInputPassword.text.toString()
+                )
+                onUpdateUserInterface(activity?.intent)
             }
-        )
-        viewModelState().networkState.observe(
-            viewLifecycleOwner,
-            Observer {
-                binding.supportStateLayout.networkMutableStateFlow.value = it
-            }
-        )
-        viewModelState().refreshState.observe(
-            viewLifecycleOwner,
-            Observer {
-                binding.supportStateLayout.networkMutableStateFlow.value = it
-            }
-        )
+        }
+        viewModelState().networkState.observe(viewLifecycleOwner) {
+            binding.supportStateLayout.networkMutableStateFlow.value = it
+        }
+        viewModelState().refreshState.observe(viewLifecycleOwner) {
+            binding.supportStateLayout.networkMutableStateFlow.value = it
+        }
     }
 
     /**
@@ -102,10 +112,17 @@ class FragmentLogin(
             onFetchDataInitialize()
         }
         binding.loginAnonymousControls.skipLoginButton.setOnClickListener {
-            Main(context)
-            activity?.closeScreen()
+            lifecycleScope.launch {
+                presenter.onAnonymousRequest(accountManager).collect {
+                    binding.supportStateLayout.networkMutableStateFlow.value = it
+                    if (it == NetworkState.Success) {
+                        Main(context)
+                        activity?.closeScreen()
+                    }
+                }
+            }
         }
-        binding.supportStateLayout.stateConfigFlow.value = get()
+        binding.supportStateLayout.stateConfigFlow.value = stateLayoutConfig
         binding.supportStateLayout.networkMutableStateFlow.value = NetworkState.Success
 
         binding.txtInputEmail.doAfterTextChanged { text ->
@@ -118,8 +135,15 @@ class FragmentLogin(
         }
     }
 
-    private fun onUpdateUserInterface() {
-        Main(context)
+    private fun onUpdateUserInterface(intent: Intent?) {
+        val screen = activity as AuthenticationScreen?
+        if (intent == null) {
+            screen?.setResult(Activity.RESULT_CANCELED)
+        } else {
+            screen?.setAccountAuthenticatorResult(requireNotNull(intent.extras))
+            screen?.setResult(Activity.RESULT_OK, intent)
+            Main(context)
+        }
         activity?.closeScreen()
     }
 

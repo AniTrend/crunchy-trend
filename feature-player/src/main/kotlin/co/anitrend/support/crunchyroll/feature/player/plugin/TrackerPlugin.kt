@@ -18,10 +18,13 @@ package co.anitrend.support.crunchyroll.feature.player.plugin
 
 import android.content.Context
 import android.net.Uri
+import co.anitrend.support.crunchyroll.core.extensions.moduleTag
 import co.anitrend.support.crunchyroll.feature.player.service.MediaDownloadService
 import com.google.android.exoplayer2.offline.*
 import com.google.android.exoplayer2.offline.DownloadHelper.getDefaultTrackSelectorParameters
+import timber.log.Timber
 import java.io.IOException
+import java.lang.Exception
 import java.util.*
 import java.util.concurrent.CopyOnWriteArraySet
 
@@ -92,12 +95,13 @@ class TrackerPlugin(
         DownloadManager.Listener {
         override fun onDownloadChanged(
             downloadManager: DownloadManager,
-            download: Download
+            download: Download,
+            finalException: Exception?
         ) {
             downloads[download.request.uri] = download
-            for (listener in listeners) {
-                listener.onDownloadsChanged()
-            }
+            if (finalException != null)
+                Timber.tag(moduleTag).e(finalException)
+            listeners.forEach { it.onDownloadsChanged() }
         }
 
         override fun onDownloadRemoved(

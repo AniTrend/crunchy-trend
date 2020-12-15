@@ -20,21 +20,17 @@ import android.os.Bundle
 import android.os.Parcelable
 import androidx.annotation.IdRes
 import androidx.fragment.app.*
-import androidx.lifecycle.LifecycleOwner
 import co.anitrend.support.crunchyroll.core.CrunchyApplication
 import co.anitrend.support.crunchyroll.core.common.DEFAULT_ANIMATION_DURATION
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
-import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
 import com.afollestad.materialdialogs.DialogBehavior
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
 import org.koin.core.scope.KoinScopeComponent
-import org.koin.androidx.scope.lifecycleScope as kScope
 import org.koin.core.scope.Scope
 import timber.log.Timber
-import kotlin.Result
 
 const val separator = "\u2022"
 
@@ -81,50 +77,9 @@ fun Parcelable.toBundle(key: String) =
 
 const val moduleTag = "CoreExtensions"
 
-/**
- * Checks for existing fragment in [FragmentManager], if one exists that is used otherwise
- * a new instance is created.
- *
- * @return tag of the fragment
- *
- * @see androidx.fragment.app.commit
- */
-inline fun FragmentManager.commit(
-    @IdRes contentFrame: Int,
-    fragmentItem: FragmentItem<*>?,
-    action: FragmentTransaction.() -> Unit
-) : String? {
-    return if (fragmentItem?.fragment != null) {
-        val fragmentTag = fragmentItem.tag()
-        val backStack = findFragmentByTag(fragmentTag)
-
-        commit {
-            action()
-            backStack?.let {
-                replace(contentFrame, it, fragmentTag)
-            } ?: replace(
-                contentFrame,
-                fragmentItem.fragment,
-                fragmentItem.parameter,
-                fragmentTag
-            )
-        }
-        fragmentTag
-    } else {
-        Timber.tag(moduleTag).v("FragmentItem model is null")
-        null
-    }
-}
-
 fun <T> Result<T>.stackTrace(tag: String): T? {
     onFailure { throwable ->
         Timber.tag(tag).v(throwable)
     }
     return getOrNull()
 }
-
-/**
- * Get current Koin scope, bound to current lifecycle
- */
-val KoinScopeComponent.koinScope: Scope
-    get() = scope

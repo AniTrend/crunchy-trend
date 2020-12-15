@@ -18,25 +18,15 @@ package co.anitrend.support.crunchyroll.feature.series.ui.activity
 
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
-import co.anitrend.support.crunchyroll.core.extensions.commit
-import co.anitrend.support.crunchyroll.core.extensions.koinScope
+import co.anitrend.support.crunchyroll.core.ui.model.FragmentItem
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
-import co.anitrend.support.crunchyroll.core.ui.fragment.model.FragmentItem
+import co.anitrend.support.crunchyroll.core.ui.commit
 import co.anitrend.support.crunchyroll.feature.series.R
 import co.anitrend.support.crunchyroll.feature.series.ui.fragment.SeriesContentScreen
 import kotlinx.android.synthetic.main.series_activity.*
 import kotlinx.coroutines.launch
-import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 
 class SeriesScreen : CrunchyActivity() {
-
-    /**
-     * Can be used to configure custom theme styling as desired
-     */
-    override fun configureActivity() {
-        super.configureActivity()
-        setupKoinFragmentFactory(koinScope)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,13 +47,9 @@ class SeriesScreen : CrunchyActivity() {
     }
 
     private fun onUpdateUserInterface() {
-        val target = FragmentItem(
+        currentFragmentTag = FragmentItem(
             parameter = intent.extras,
             fragment = SeriesContentScreen::class.java
-        )
-
-        currentFragmentTag = supportFragmentManager.commit(series_content.id, target) {
-            //setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        }
+        ).commit(series_content.id, this) {}
     }
 }
