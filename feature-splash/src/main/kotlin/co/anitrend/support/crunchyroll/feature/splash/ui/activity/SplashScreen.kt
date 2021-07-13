@@ -17,24 +17,24 @@
 package co.anitrend.support.crunchyroll.feature.splash.ui.activity
 
 import android.os.Bundle
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import co.anitrend.arch.extension.ext.isStateAtLeast
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
-import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
-import co.anitrend.support.crunchyroll.feature.splash.R
+import co.anitrend.support.crunchyroll.feature.splash.databinding.ActivitySplashBinding
+import co.anitrend.support.crunchyroll.navigation.Authentication
+import co.anitrend.support.crunchyroll.navigation.Main
 import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 
-class SplashScreen : CrunchyActivity() {
+class SplashScreen : CrunchyActivity<ActivitySplashBinding>() {
 
     private val presenter by inject<CrunchyCorePresenter>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_splash)
+        binding = ActivitySplashBinding.inflate(layoutInflater)
+        setContentView(requireBinding().root)
     }
 
     /**
@@ -53,13 +53,13 @@ class SplashScreen : CrunchyActivity() {
 
     private suspend fun onUpdateUserInterface() {
         delay(500)
-        if (!presenter.settings.isNewInstallation)
+        if (!presenter.settings.isNewInstallation.value)
             Main(applicationContext)
         else {
-            if (presenter.settings.isAuthenticated)
+            if (presenter.settings.isAuthenticated.value)
                 Main(applicationContext)
             else {
-                presenter.settings.isNewInstallation = false
+                presenter.settings.isNewInstallation.value = false
                 Authentication(applicationContext)
             }
         }

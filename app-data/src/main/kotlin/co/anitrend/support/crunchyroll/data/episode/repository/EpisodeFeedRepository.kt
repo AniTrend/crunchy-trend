@@ -31,8 +31,7 @@ internal class EpisodeFeedRepository(
     IEpisodeFeedRepository<DataState<PagedList<CrunchyEpisodeFeed>>> {
 
     override fun getMediaListings(query: RssQuery) =
-        source.create(
-            model = source(query)
-        )
+        source create source.episodeFeed(query)
+
 
 }

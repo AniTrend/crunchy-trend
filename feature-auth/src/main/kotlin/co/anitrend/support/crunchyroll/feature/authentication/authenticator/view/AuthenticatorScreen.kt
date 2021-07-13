@@ -20,6 +20,7 @@ import android.accounts.AccountAuthenticatorActivity
 import android.accounts.AccountAuthenticatorResponse
 import android.accounts.AccountManager
 import android.os.Bundle
+import androidx.viewbinding.ViewBinding
 import co.anitrend.arch.extension.ext.extra
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 
@@ -37,7 +38,7 @@ import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
  * is never set or if it is set to null then error [AccountManager.ERROR_CODE_CANCELED]
  * will be called on the response.
  */
-abstract class AuthenticatorScreen : CrunchyActivity() {
+abstract class AuthenticatorScreen<V : ViewBinding> : CrunchyActivity<V>() {
 
     private val accountAuthenticatorResponse: AccountAuthenticatorResponse?
             by extra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE)

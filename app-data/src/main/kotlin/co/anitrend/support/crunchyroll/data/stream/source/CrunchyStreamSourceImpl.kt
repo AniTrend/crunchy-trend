@@ -17,50 +17,45 @@
 package co.anitrend.support.crunchyroll.data.stream.source
 
 import co.anitrend.arch.data.request.callback.RequestCallback
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.arch.extension.network.SupportConnectivity
-import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
 import co.anitrend.support.crunchyroll.data.arch.database.settings.IRefreshBehaviourSettings
 import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyModelField
-import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.arch.helper.CrunchyClearDataHelper
-import co.anitrend.support.crunchyroll.data.series.helper.SeriesCacheHelper
+import co.anitrend.support.crunchyroll.data.stream.StreamController
 import co.anitrend.support.crunchyroll.data.stream.converters.StreamEntityConverter
 import co.anitrend.support.crunchyroll.data.stream.datasource.local.CrunchyStreamDao
 import co.anitrend.support.crunchyroll.data.stream.datasource.remote.CrunchyStreamEndpoint
 import co.anitrend.support.crunchyroll.data.stream.helper.StreamCacheHelper
-import co.anitrend.support.crunchyroll.data.stream.mapper.CrunchyStreamResponseMapper
 import co.anitrend.support.crunchyroll.data.stream.source.contract.CrunchyStreamSource
-import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 internal class CrunchyStreamSourceImpl(
-    private val mapper: CrunchyStreamResponseMapper,
+    private val controller: StreamController,
     private val streamDao: CrunchyStreamDao,
     private val endpoint: CrunchyStreamEndpoint,
     private val supportConnectivity: SupportConnectivity,
     private val settings: IRefreshBehaviourSettings,
     private val cache: StreamCacheHelper,
-    supportDispatchers: SupportDispatchers
-) : CrunchyStreamSource(supportDispatchers) {
+    override val dispatcher: ISupportDispatcher
+) : CrunchyStreamSource() {
 
-    override val observable = flow {
-        val localSource = streamDao.findStreamByMediaIdFlow(query.mediaId)
-        val result = localSource.filterNotNull().map {
-            StreamEntityConverter.convertFrom(it)
-        }
-        emitAll(result)
-    }
+    override fun observable(query: CrunchyMediaStreamQuery) =
+        streamDao.findStreamByMediaIdFlow(query.mediaId)
+            .flowOn(dispatcher.io)
+            .filterNotNull()
+            .map { StreamEntityConverter.convertFrom(it) }
 
     override suspend fun getMediaStream(
         query: CrunchyMediaStreamQuery,
         callback: RequestCallback
     ) {
-        mapper.sourceMediaId = query.mediaId
         if (cache.shouldRefreshStream(query.mediaId)) {
             val deferred = async {
                 endpoint.getStreamInfo(
@@ -69,15 +64,10 @@ internal class CrunchyStreamSourceImpl(
                 )
             }
 
-            val controller =
-                mapper.controller(
-                    dispatchers,
-                    OnlineControllerPolicy.create(
-                        supportConnectivity
-                    )
-                )
-
-            val result = controller(deferred, callback)
+            val result = controller(deferred, callback) {
+                val data = it.data?.copy(mediaId = query.mediaId)
+                it.copy(data = data)
+            }
             if (result != null)
                 cache.updateLastRequest(result.mediaId)
         }

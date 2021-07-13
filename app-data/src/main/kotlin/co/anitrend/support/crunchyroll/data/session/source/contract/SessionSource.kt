@@ -17,15 +17,14 @@
 package co.anitrend.support.crunchyroll.data.session.source.contract
 
 import co.anitrend.arch.data.source.core.SupportCoreDataSource
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
+import kotlinx.coroutines.flow.Flow
 
-internal abstract class SessionSource(
-    supportDispatchers: SupportDispatchers
-) : SupportCoreDataSource(supportDispatchers) {
+internal abstract class SessionSource : SupportCoreDataSource() {
 
     /**
      * Handles the requesting data from a the network source and returns
      */
-    abstract operator fun invoke(): Session?
+    abstract operator fun invoke(): Flow<Session?>
 }

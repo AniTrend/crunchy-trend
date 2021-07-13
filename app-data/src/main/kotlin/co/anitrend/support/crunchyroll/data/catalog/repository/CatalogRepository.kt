@@ -16,13 +16,11 @@
 
 package co.anitrend.support.crunchyroll.data.catalog.repository
 
-import androidx.lifecycle.asLiveData
 import co.anitrend.arch.data.repository.SupportRepository
 import co.anitrend.arch.data.state.DataState
 import co.anitrend.arch.data.state.DataState.Companion.create
 import co.anitrend.support.crunchyroll.data.catalog.source.contract.CatalogSource
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
-import co.anitrend.support.crunchyroll.domain.catalog.models.CrunchyCatalogQuery
 import co.anitrend.support.crunchyroll.domain.catalog.repositories.ICatalogRepository
 
 internal class CatalogRepository(
@@ -31,7 +29,6 @@ internal class CatalogRepository(
     ICatalogRepository<DataState<List<CrunchyCatalogWithSeries>>> {
 
     override fun catalogSeries() =
-        source.create(
-            model = source().asLiveData()
-        )
+        source create source.catalogSeries()
+
 }

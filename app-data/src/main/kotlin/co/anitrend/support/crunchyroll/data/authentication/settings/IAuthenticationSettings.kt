@@ -16,12 +16,14 @@
 
 package co.anitrend.support.crunchyroll.data.authentication.settings
 
+import co.anitrend.arch.extension.settings.contract.AbstractSetting
+
 interface IAuthenticationSettings {
 
-    var hasAccessToPremium: Boolean
-    var sessionId: String?
-    var authenticatedUserId: Long
-    var isAuthenticated: Boolean
+    val hasAccessToPremium: AbstractSetting<Boolean>
+    val sessionId: AbstractSetting<String?>
+    val authenticatedUserId: AbstractSetting<Long>
+    val isAuthenticated: AbstractSetting<Boolean>
 
     companion object {
         const val INVALID_USER_ID: Long = -1

@@ -29,4 +29,5 @@ dependencies {
     implementation(Libraries.AndroidX.ConstraintLayout.constraintLayout)
 
     implementation(Libraries.treessence)
+    implementation(Libraries.AniTrend.Arch.recycler)
 }

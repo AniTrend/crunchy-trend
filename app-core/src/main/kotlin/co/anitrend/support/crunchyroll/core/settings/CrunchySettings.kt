@@ -7,7 +7,7 @@
  *
  *        http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
+ *    Unless required = applicable law or agreed to in writing, software
  *    distributed under the License is distributed on an "AS IS" BASIS,
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
@@ -17,11 +17,10 @@
 package co.anitrend.support.crunchyroll.core.settings
 
 import android.content.Context
-import co.anitrend.arch.extension.preference.*
-import co.anitrend.arch.extension.preference.contract.ISupportSettings
+import co.anitrend.arch.extension.preference.SupportPreference
+import co.anitrend.arch.extension.preference.contract.ISupportPreference
+import co.anitrend.arch.extension.settings.*
 import co.anitrend.support.crunchyroll.core.R
-import co.anitrend.support.crunchyroll.core.extensions.FloatPreference
-import co.anitrend.support.crunchyroll.core.extensions.NullableStringPreference
 import co.anitrend.support.crunchyroll.core.settings.common.IConfigurationSettings
 import co.anitrend.support.crunchyroll.core.settings.common.cache.ICacheSettings
 import co.anitrend.support.crunchyroll.core.settings.common.locale.ILocaleSettings
@@ -33,80 +32,92 @@ import co.anitrend.support.crunchyroll.data.arch.database.settings.IRefreshBehav
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings.Companion.INVALID_USER_ID
 
-class CrunchySettings(context: Context) : SupportSettings(context),
+class CrunchySettings(context: Context) : SupportPreference(context),
     IAuthenticationSettings, IConfigurationSettings, IPrivacySettings,
     ICacheSettings, IRefreshBehaviourSettings {
 
-    override var isNewInstallation by BooleanPreference(
+    override val isNewInstallation = BooleanSetting(
         key = R.string.settings_is_new_installation,
         default = true,
-        resources = context.resources
+        resources = context.resources,
+        preference = this
     )
 
-    override var versionCode by IntPreference(
+    override val versionCode = IntSetting(
         key = R.string.settings_version_code,
         default = 0,
-        resources = context.resources
+        resources = context.resources,
+        preference = this
     )
 
-    override var sessionId by NullableStringPreference(
+    override val sessionId = NullableStringSetting(
         key = R.string.settings_authentication_session_id,
         default = null,
-        resources = context.resources
+        resources = context.resources,
+        preference = this
     )
 
-    override var hasAccessToPremium by BooleanPreference(
+    override val hasAccessToPremium = BooleanSetting(
         key = R.string.settings_authentication_premium_access,
         default = false,
-        resources = context.resources
+        resources = context.resources,
+        preference = this
     )
 
-    override var authenticatedUserId by LongPreference(
+    override val authenticatedUserId = LongSetting(
         key = R.string.settings_authentication_id,
         default = INVALID_USER_ID,
-        resources = context.resources
+        resources = context.resources,
+        preference = this
     )
 
-    override var isAuthenticated by BooleanPreference(
+    override val isAuthenticated = BooleanSetting(
         key = R.string.settings_authentication_logged_in,
         default = false,
-        resources = context.resources
+        resources = context.resources,
+        preference = this
     )
 
-    override var locale by EnumPreference(
+    override val locale = EnumSetting(
         key = R.string.settings_configuration_locale,
         default = AniTrendLocale.AUTOMATIC,
-        resources = context.resources
+        resources = context.resources,
+        preference = this
     )
 
-    override var theme by EnumPreference(
+    override val theme = EnumSetting(
         key = R.string.settings_configuration_theme,
         default = AniTrendTheme.SYSTEM,
-        resources = context.resources
+        resources = context.resources,
+        preference = this
     )
 
-    override var isAnalyticsEnabled by BooleanPreference(
+    override val isAnalyticsEnabled = BooleanSetting(
         key = R.string.settings_privacy_usage_analytics,
         default = false,
-        resources = context.resources
+        resources = context.resources,
+        preference = this
     )
 
-    override var isCrashlyticsEnabled by BooleanPreference(
+    override val isCrashlyticsEnabled = BooleanSetting(
         key = R.string.settings_privacy_crash_analytics,
         default = true,
-        resources = context.resources
+        resources = context.resources,
+        preference = this
     )
 
-    override var usageRatio by FloatPreference(
+    override val usageRatio = FloatSetting(
         key = R.string.settings_cache_maximum_usage_ratio,
         default = ICacheSettings.MINIMUM_CACHE_LIMIT,
-        resources = context.resources
+        resources = context.resources,
+        preference = this
     )
 
-    override var clearDataOnSwipeRefresh by BooleanPreference(
+    override val clearDataOnSwipeRefresh = BooleanSetting(
         key = R.string.settings_refresh_behaviour,
         default = true,
-        resources = context.resources
+        resources = context.resources,
+        preference = this
     )
 
     companion object  {
@@ -115,7 +126,7 @@ class CrunchySettings(context: Context) : SupportSettings(context),
          * Binding types for [CrunchySettings]
          */
         internal val BINDINGS = arrayOf(
-            ISupportSettings::class, IConfigurationSettings::class,
+            ISupportPreference::class, IConfigurationSettings::class,
             ILocaleSettings::class, IThemeSettings::class,
             IAuthenticationSettings::class, IPrivacySettings::class,
             ICacheSettings::class, IRefreshBehaviourSettings::class

@@ -16,7 +16,10 @@
 
 package co.anitrend.support.crunchyroll.data.arch.database.dao
 
-import androidx.room.*
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Update
 
 internal interface IDao<T> : ISourceDao {
 

@@ -25,9 +25,7 @@ internal object SessionHelper {
         0x36, 0x37, 0x38, 0x39
     )
 
-    fun createDummyDeviceId(): String {
-        val start = 0
-        val length = 12
+    fun createDummyDeviceId(start: Int = 0, length: Int = 12): String {
         val end = whiteList.size - 1
         val builder = StringBuilder(length)
         repeat(length) {

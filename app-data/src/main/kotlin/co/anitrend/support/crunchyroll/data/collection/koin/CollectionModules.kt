@@ -19,6 +19,7 @@ package co.anitrend.support.crunchyroll.data.collection.koin
 import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
 import co.anitrend.support.crunchyroll.data.arch.extension.api
 import co.anitrend.support.crunchyroll.data.arch.extension.db
+import co.anitrend.support.crunchyroll.data.arch.extension.defaultController
 import co.anitrend.support.crunchyroll.data.collection.mapper.CollectionResponseMapper
 import co.anitrend.support.crunchyroll.data.collection.repository.CollectionRepository
 import co.anitrend.support.crunchyroll.data.collection.source.CollectionSourceImpl
@@ -31,10 +32,12 @@ import org.koin.dsl.module
 private val dataSourceModule = module {
     factory {
         CollectionSourceImpl(
-            mapper = get(),
+            controller = defaultController(
+                mapper = get<CollectionResponseMapper>()
+            ),
             collectionDao = db().crunchyCollectionDao(),
             collectionEndpoint = api(EndpointType.JSON),
-            supportDispatchers = get(),
+            dispatcher = get(),
             supportConnectivity = get(),
             settings = get()
         )

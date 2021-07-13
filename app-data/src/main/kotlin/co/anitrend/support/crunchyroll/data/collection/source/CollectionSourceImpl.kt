@@ -16,59 +16,56 @@
 
 package co.anitrend.support.crunchyroll.data.collection.source
 
-import androidx.lifecycle.liveData
-import androidx.paging.toLiveData
+import androidx.paging.PagedList
+import co.anitrend.arch.data.paging.FlowPagedListBuilder
 import co.anitrend.arch.data.request.callback.RequestCallback
-import co.anitrend.arch.data.request.contract.IRequestHelper
+import co.anitrend.arch.data.request.model.Request
 import co.anitrend.arch.data.util.PAGING_CONFIGURATION
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.arch.extension.network.SupportConnectivity
-import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
 import co.anitrend.support.crunchyroll.data.arch.database.settings.IRefreshBehaviourSettings
-import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.arch.helper.CrunchyClearDataHelper
 import co.anitrend.support.crunchyroll.data.arch.helper.CrunchyPagingConfigHelper
+import co.anitrend.support.crunchyroll.data.collection.CollectionController
 import co.anitrend.support.crunchyroll.data.collection.datasource.local.CrunchyCollectionDao
 import co.anitrend.support.crunchyroll.data.collection.datasource.remote.CrunchyCollectionEndpoint
-import co.anitrend.support.crunchyroll.data.collection.mapper.CollectionResponseMapper
 import co.anitrend.support.crunchyroll.data.collection.source.contract.CollectionSource
 import co.anitrend.support.crunchyroll.data.collection.transformer.CollectionTransformer
 import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
+import co.anitrend.support.crunchyroll.domain.collection.models.CrunchyCollectionQuery
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 internal class CollectionSourceImpl(
-    private val mapper: CollectionResponseMapper,
+    private val controller: CollectionController,
     private val collectionDao: CrunchyCollectionDao,
     private val collectionEndpoint: CrunchyCollectionEndpoint,
     private val supportConnectivity: SupportConnectivity,
     private val settings: IRefreshBehaviourSettings,
-    supportDispatchers: SupportDispatchers
-) : CollectionSource(supportDispatchers) {
+    override val dispatcher: ISupportDispatcher
+) : CollectionSource() {
 
-    override val observable = liveData {
-        val localSource =
-            collectionDao.findBySeriesIdFactory(query.seriesId)
+    override fun observable(query: CrunchyCollectionQuery): Flow<PagedList<CrunchyCollection>> {
+        val factory = collectionDao
+            .findBySeriesIdFactory(query.seriesId)
+            .map { CollectionTransformer.transform(it) }
 
-        val result = localSource.map {
-            CollectionTransformer.transform(it)
-        }
-
-        emitSource(
-            result.toLiveData(
-                config = PAGING_CONFIGURATION,
-                boundaryCallback = this@CollectionSourceImpl
-            )
-        )
+        return FlowPagedListBuilder(
+            dataSourceFactory = factory,
+            config = PAGING_CONFIGURATION,
+            initialLoadKey = null,
+            boundaryCallback = this
+        ).buildFlow()
     }
 
     override suspend fun invoke(
         callback: RequestCallback,
-        requestType: IRequestHelper.RequestType,
+        request: Request,
         model: CrunchyCollection?
     ) {
-        CrunchyPagingConfigHelper(requestType, supportPagingHelper) {
+        CrunchyPagingConfigHelper(request, supportPagingHelper) {
             collectionDao.countBySeriesId(query.seriesId)
         }
 
@@ -79,14 +76,6 @@ internal class CollectionSourceImpl(
                 seriesId = query.seriesId
             )
         }
-
-        val controller =
-            mapper.controller(
-                dispatchers,
-                OnlineControllerPolicy.create(
-                    supportConnectivity
-                )
-            )
 
         controller(deferred, callback)
     }

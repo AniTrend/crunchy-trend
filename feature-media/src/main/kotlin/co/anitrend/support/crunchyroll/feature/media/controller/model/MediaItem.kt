@@ -23,21 +23,19 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
 import co.anitrend.arch.recycler.common.ClickableItem
-import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.recycler.holder.SupportViewHolder
-import co.anitrend.arch.recycler.model.RecyclerItem
 import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
+import co.anitrend.support.crunchyroll.core.android.recycler.model.RecyclerItemBinding
 import co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia
 import co.anitrend.support.crunchyroll.feature.media.R
 import co.anitrend.support.crunchyroll.feature.media.databinding.AdapterMediaBinding
 import co.anitrend.support.crunchyroll.feature.media.presenter.MediaPresenter.Companion.mediaDisplayName
 import coil.request.Disposable
-import kotlinx.android.synthetic.main.adapter_media.view.*
 import kotlinx.coroutines.flow.MutableStateFlow
 
 data class MediaItem(
     val entity: CrunchyMedia?
-) : RecyclerItem(entity?.mediaId) {
+) : RecyclerItemBinding<AdapterMediaBinding>(entity?.mediaId ?: 0) {
 
     private var disposable: Disposable? = null
 
@@ -54,16 +52,16 @@ data class MediaItem(
         view: View,
         position: Int,
         payloads: List<Any>,
-        stateFlow: MutableStateFlow<ClickableItem?>,
+        stateFlow: MutableStateFlow<ClickableItem>,
         selectionMode: ISupportSelectionMode<Long>?
     ) {
-        val binding = AdapterMediaBinding.bind(view)
-        disposable = binding.mediaImage.setImageUrl(entity?.screenshotImage)
-        binding.mediaDescription.text = entity?.description
-        binding.mediaTitle.text = entity?.mediaDisplayName()
-        binding.container.setOnClickListener {
+        binding = AdapterMediaBinding.bind(view)
+        disposable = requireBinding().mediaImage.setImageUrl(entity?.screenshotImage)
+        requireBinding().mediaDescription.text = entity?.description
+        requireBinding().mediaTitle.text = entity?.mediaDisplayName()
+        requireBinding().container.setOnClickListener {
             stateFlow.value =
-                DefaultClickableItem(
+                ClickableItem.Data(
                     data = entity,
                     view = view
                 )
@@ -75,9 +73,10 @@ data class MediaItem(
      * to objects, stop any asynchronous work, e.t.c
      */
     override fun unbind(view: View) {
-        view.container.setOnClickListener(null)
+        binding?.container?.setOnClickListener(null)
         disposable?.dispose()
         disposable = null
+        super.unbind(view)
     }
     /**
      * Provides a preferred span size for the item
@@ -95,7 +94,7 @@ data class MediaItem(
             layoutInflater: LayoutInflater
         ) = AdapterMediaBinding.inflate(
         layoutInflater, viewGroup, false
-        ).let { SupportViewHolder(it.root) }
+        ).let { SupportViewHolder(it) }
 
         internal val DIFFER =
             object : DiffUtil.ItemCallback<CrunchyMedia>() {

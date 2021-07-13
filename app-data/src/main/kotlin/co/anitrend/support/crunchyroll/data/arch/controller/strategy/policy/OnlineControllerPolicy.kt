@@ -17,7 +17,7 @@
 package co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy
 
 import co.anitrend.arch.data.request.callback.RequestCallback
-import co.anitrend.arch.data.request.error.RequestError
+import co.anitrend.arch.domain.entities.RequestError
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.arch.controller.strategy.contract.ControllerStrategy
 import timber.log.Timber
@@ -25,48 +25,45 @@ import timber.log.Timber
 /**
  * Runs connectivity check before prior to execution
  */
-internal class OnlineControllerPolicy<D> private constructor(
+internal class OnlineStrategy<D> private constructor(
     private val connectivity: SupportConnectivity
 ) : ControllerStrategy<D>() {
 
     /**
-     * Execute a paging task under an implementation strategy
+     * Execute a task under an implementation strategy
      *
-     * @param requestCallback event emitter
+     * @param callback event emitter
      * @param block what will be executed
      */
     override suspend fun invoke(
-        requestCallback: RequestCallback,
+        callback: RequestCallback,
         block: suspend () -> D?
     ): D? {
-        if (!connectivity.isConnected) {
-            requestCallback.recordFailure(
-                RequestError(
-                    "No internet connection",
-                    "Please make sure your device has a working internet connection",
-                    null
+        runCatching {
+            if (connectivity.isConnected)
+                block()
+            else
+                throw RequestError(
+                    "No internet connectivity detected",
+                    "Please make sure that your device has an active internet connection"
                 )
-            )
-            return null
+        }.onSuccess { result ->
+            callback.recordSuccess()
+            return result
+        }.onFailure { exception ->
+            Timber.w(exception)
+            when (exception) {
+                is RequestError -> callback.recordFailure(exception)
+                else -> callback.recordFailure(exception.generateForError())
+            }
         }
 
-        return runCatching {
-            val result = block()
-            requestCallback.recordSuccess()
-            result
-        }.onFailure { e->
-            Timber.tag(moduleTag).e(e)
-            if (e is RequestError)
-                requestCallback.recordFailure(e)
-            else
-                requestCallback.recordFailure(
-                    RequestError("Unexpected error" , e.message, e.cause)
-                )
-        }.getOrNull()
+        return null
     }
 
     companion object {
-        fun <T> create(connectivity: SupportConnectivity) =
-            OnlineControllerPolicy<T>(connectivity)
+        internal fun <T> create(
+            connectivity: SupportConnectivity,
+        ) = OnlineStrategy<T>(connectivity)
     }
 }

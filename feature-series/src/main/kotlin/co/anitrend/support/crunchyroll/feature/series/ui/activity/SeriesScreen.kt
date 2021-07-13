@@ -18,20 +18,20 @@ package co.anitrend.support.crunchyroll.feature.series.ui.activity
 
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
-import co.anitrend.support.crunchyroll.core.ui.model.FragmentItem
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.commit
-import co.anitrend.support.crunchyroll.feature.series.R
+import co.anitrend.support.crunchyroll.core.ui.model.FragmentItem
+import co.anitrend.support.crunchyroll.feature.series.databinding.SeriesActivityBinding
 import co.anitrend.support.crunchyroll.feature.series.ui.fragment.SeriesContentScreen
-import kotlinx.android.synthetic.main.series_activity.*
 import kotlinx.coroutines.launch
 
-class SeriesScreen : CrunchyActivity() {
+class SeriesScreen : CrunchyActivity<SeriesActivityBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.series_activity)
-        setSupportActionBar(bottomAppBar)
+        binding = SeriesActivityBinding.inflate(layoutInflater)
+        setContentView(requireBinding().root)
+        setSupportActionBar(requireBinding().bottomAppBar)
     }
 
     /**
@@ -50,6 +50,6 @@ class SeriesScreen : CrunchyActivity() {
         currentFragmentTag = FragmentItem(
             parameter = intent.extras,
             fragment = SeriesContentScreen::class.java
-        ).commit(series_content.id, this) {}
+        ).commit(requireBinding().seriesContent, this) {}
     }
 }

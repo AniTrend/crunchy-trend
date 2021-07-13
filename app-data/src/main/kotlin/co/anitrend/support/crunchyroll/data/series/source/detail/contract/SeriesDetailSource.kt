@@ -17,34 +17,33 @@
 package co.anitrend.support.crunchyroll.data.series.source.detail.contract
 
 import co.anitrend.arch.data.request.callback.RequestCallback
-import co.anitrend.arch.data.request.contract.IRequestHelper
+import co.anitrend.arch.data.request.model.Request
 import co.anitrend.arch.data.source.core.SupportCoreDataSource
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesDetailQuery
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-internal abstract class SeriesDetailSource(
-    supportDispatchers: SupportDispatchers
-) : SupportCoreDataSource(supportDispatchers) {
+internal abstract class SeriesDetailSource : SupportCoreDataSource() {
 
     protected lateinit var query: CrunchySeriesDetailQuery
         private set
 
-    protected abstract val observable: Flow<CrunchySeries?>
+    protected abstract fun observable(query: CrunchySeriesDetailQuery): Flow<CrunchySeries?>
 
-    protected abstract suspend fun browseSeries(callback: RequestCallback)
+    protected abstract suspend fun browseSeries(query: CrunchySeriesDetailQuery, callback: RequestCallback)
 
-    internal operator fun invoke(detailQuery: CrunchySeriesDetailQuery): Flow<CrunchySeries?> {
-        query = detailQuery
+    internal operator fun invoke(query: CrunchySeriesDetailQuery): Flow<CrunchySeries?> {
+        this.query = query
         launch {
             requestHelper.runIfNotRunning(
-                IRequestHelper.RequestType.INITIAL
-            ) { callback ->
-                browseSeries(callback)
-            }
+                Request.Default(
+                    "series_details_initial",
+                    Request.Type.INITIAL
+                )
+            ) { browseSeries(this@SeriesDetailSource.query, it) }
         }
-        return observable
+        return observable(this.query)
     }
 }

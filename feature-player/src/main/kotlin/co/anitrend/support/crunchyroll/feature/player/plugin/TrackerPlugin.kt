@@ -18,7 +18,6 @@ package co.anitrend.support.crunchyroll.feature.player.plugin
 
 import android.content.Context
 import android.net.Uri
-import co.anitrend.support.crunchyroll.core.extensions.moduleTag
 import co.anitrend.support.crunchyroll.feature.player.service.MediaDownloadService
 import com.google.android.exoplayer2.offline.*
 import com.google.android.exoplayer2.offline.DownloadHelper.getDefaultTrackSelectorParameters
@@ -100,7 +99,7 @@ class TrackerPlugin(
         ) {
             downloads[download.request.uri] = download
             if (finalException != null)
-                Timber.tag(moduleTag).e(finalException)
+                Timber.e(finalException)
             listeners.forEach { it.onDownloadsChanged() }
         }
 

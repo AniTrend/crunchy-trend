@@ -35,8 +35,6 @@ class ConfigurationUtil(
     private val themeUtil: ThemeUtil
 ) : IConfigurationUtil {
 
-    override val moduleTag: String = this::class.java.simpleName
-
     // we might change this in future when we have more themes
     private var applicationTheme = AniTrendTheme.SYSTEM
     private var applicationLocale = AniTrendLocale.AUTOMATIC
@@ -46,9 +44,9 @@ class ConfigurationUtil(
      *
      * @param activity
      */
-    override fun onCreate(activity: CrunchyActivity) {
-        applicationTheme = settings.theme
-        applicationLocale = settings.locale
+    override fun onCreate(activity: CrunchyActivity<*>) {
+        applicationTheme = settings.theme.value
+        applicationLocale = settings.locale.value
         localeUtil.applyApplicationLocale(activity)
         themeUtil.applyApplicationTheme(activity)
     }
@@ -58,8 +56,8 @@ class ConfigurationUtil(
      *
      * @param activity
      */
-    override fun onResume(activity: CrunchyActivity) {
-        if (applicationTheme != settings.theme) {
+    override fun onResume(activity: CrunchyActivity<*>) {
+        if (applicationTheme != settings.theme.value) {
             val intent: Intent? = activity.intent
             with(activity) {
                 closeScreen()
@@ -71,7 +69,7 @@ class ConfigurationUtil(
     }
 
     companion object {
-        private operator fun CrunchyActivity.invoke() {
+        private operator fun CrunchyActivity<*>.invoke() {
             overridePendingTransition(
                 android.R.anim.fade_in,
                 android.R.anim.fade_out

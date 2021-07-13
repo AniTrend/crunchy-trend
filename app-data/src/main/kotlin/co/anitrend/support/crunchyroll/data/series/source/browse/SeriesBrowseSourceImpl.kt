@@ -17,43 +17,41 @@
 package co.anitrend.support.crunchyroll.data.series.source.browse
 
 import android.annotation.SuppressLint
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
 import androidx.paging.PagedList
-import androidx.paging.toLiveData
+import co.anitrend.arch.data.paging.FlowPagedListBuilder
 import co.anitrend.arch.data.request.callback.RequestCallback
-import co.anitrend.arch.data.request.contract.IRequestHelper
+import co.anitrend.arch.data.request.model.Request
 import co.anitrend.arch.data.util.PAGING_CONFIGURATION
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.arch.extension.ext.empty
 import co.anitrend.arch.extension.network.SupportConnectivity
-import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
 import co.anitrend.support.crunchyroll.data.arch.database.settings.IRefreshBehaviourSettings
-import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.arch.helper.CrunchyClearDataHelper
 import co.anitrend.support.crunchyroll.data.arch.helper.CrunchyPagingConfigHelper
+import co.anitrend.support.crunchyroll.data.series.SeriesController
 import co.anitrend.support.crunchyroll.data.series.converters.SeriesEntityConverter
 import co.anitrend.support.crunchyroll.data.series.datasource.local.CrunchySeriesDao
 import co.anitrend.support.crunchyroll.data.series.datasource.remote.CrunchySeriesEndpoint
-import co.anitrend.support.crunchyroll.data.series.mapper.SeriesResponseMapper
 import co.anitrend.support.crunchyroll.data.series.source.browse.contract.SeriesBrowseSource
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
+import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesBrowseQuery
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 internal class SeriesBrowseSourceImpl(
-    private val mapper: SeriesResponseMapper,
+    private val controller: SeriesController,
     private val seriesDao: CrunchySeriesDao,
     private val endpoint: CrunchySeriesEndpoint,
     private val supportConnectivity: SupportConnectivity,
     private val settings: IRefreshBehaviourSettings,
-    supportDispatchers: SupportDispatchers
-) : SeriesBrowseSource(supportDispatchers) {
+    override val dispatcher: ISupportDispatcher
+) : SeriesBrowseSource() {
 
-    override val observable = liveData {
-        val localSource = when (query.filter) {
+    override fun observable(query: CrunchySeriesBrowseQuery): Flow<PagedList<CrunchySeries>> {
+        val factory = when (query.filter) {
             CrunchySeriesBrowseFilter.ALPHA ->
                 seriesDao.findAllFactory()
             CrunchySeriesBrowseFilter.PREFIX -> {
@@ -64,18 +62,14 @@ internal class SeriesBrowseSourceImpl(
                 val genre = buildQueryForDatabase()
                 seriesDao.findAllContainingGenreFactory(genre)
             }
-        }
+        }.map { SeriesEntityConverter.convertFrom(it) }
 
-        val result = localSource.map {
-            SeriesEntityConverter.convertFrom(it)
-        }
-
-        emitSource(
-            result.toLiveData(
-                config = PAGING_CONFIGURATION,
-                boundaryCallback = this@SeriesBrowseSourceImpl
-            )
-        )
+        return FlowPagedListBuilder(
+            dataSourceFactory = factory,
+            config = PAGING_CONFIGURATION,
+            initialLoadKey = null,
+            boundaryCallback = this
+        ).buildFlow()
     }
 
     @SuppressLint("DefaultLocale")
@@ -87,26 +81,24 @@ internal class SeriesBrowseSourceImpl(
         return String.empty()
     }
 
-    private suspend fun buildFilterForRequest(
-        requestType: IRequestHelper.RequestType
-    ): String {
+    private suspend fun buildFilterForRequest(request: Request): String {
         return when (query.filter) {
             CrunchySeriesBrowseFilter.ALPHA -> {
-                CrunchyPagingConfigHelper(requestType, supportPagingHelper) {
+                CrunchyPagingConfigHelper(request, supportPagingHelper) {
                     seriesDao.count()
                 }
                 query.filter.attribute
             }
             CrunchySeriesBrowseFilter.PREFIX -> {
                 val prefix = "${query.filter.attribute}${query.option.toLowerCase()}"
-                CrunchyPagingConfigHelper(requestType, supportPagingHelper) {
+                CrunchyPagingConfigHelper(request, supportPagingHelper) {
                     seriesDao.countStartingWith(prefix)
                 }
                 prefix
             }
             CrunchySeriesBrowseFilter.TAG ->{
                 val genre = "${query.filter.attribute}${query.option.toLowerCase()}"
-                CrunchyPagingConfigHelper(requestType, supportPagingHelper) {
+                CrunchyPagingConfigHelper(request, supportPagingHelper) {
                     seriesDao.countContainingGenre(genre)
                 }
                 genre
@@ -116,10 +108,10 @@ internal class SeriesBrowseSourceImpl(
 
     override suspend fun invoke(
         callback: RequestCallback,
-        requestType: IRequestHelper.RequestType,
+        request: Request,
         model: CrunchySeries?
     ) {
-        val filter = buildFilterForRequest(requestType)
+        val filter = buildFilterForRequest(request)
 
         val deferred = async {
             endpoint.getSeriesList(
@@ -128,14 +120,6 @@ internal class SeriesBrowseSourceImpl(
                 filter = filter
             )
         }
-
-        val controller =
-            mapper.controller(
-                dispatchers,
-                OnlineControllerPolicy.create(
-                    supportConnectivity
-                )
-            )
 
         controller(deferred, callback)
     }

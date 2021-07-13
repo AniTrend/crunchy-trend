@@ -23,7 +23,7 @@ import androidx.core.app.ShareCompat
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentActivity
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.support.crunchyroll.core.extensions.stackTrace
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
@@ -38,7 +38,7 @@ import timber.log.Timber
 class NewsPresenter(
     context: Context,
     settings: CrunchySettings,
-    private val dispatchers: SupportDispatchers
+    private val dispatcher: ISupportDispatcher
 ) : CrunchyCorePresenter(context, settings) {
 
     private val posters = ArrayList<Poster>()
@@ -46,7 +46,7 @@ class NewsPresenter(
     suspend fun createCustomHtml(
         payload: News.Payload?
     ): String {
-        return withContext(dispatchers.computation) {
+        return withContext(dispatcher.computation) {
             val template = """
                 <p><h3>${payload?.title}</h3></p>
                 <h5>${payload?.subTitle}</h5>
@@ -58,18 +58,18 @@ class NewsPresenter(
 
                 val width = runCatching{
                     tag.attr("width")?.toShort()
-                }.stackTrace(moduleTag) ?: 0
+                }.stackTrace() ?: 0
 
                 val height = runCatching{
                     tag.attr("height")?.toShort()
-                }.stackTrace(moduleTag) ?: 0
+                }.stackTrace() ?: 0
 
                 if (height > 100) {
-                    Timber.tag(moduleTag).v("Image found -> $src | $width x $height")
+                    Timber.v("Image found -> $src | $width x $height")
                     posters.add(Poster(src, width, height))
                 }
                 else
-                    Timber.tag(moduleTag).v("Ignoring image -> $src | $width x $height")
+                    Timber.v("Ignoring image -> $src | $width x $height")
             }
             val html = document.html()
             html
@@ -84,8 +84,7 @@ class NewsPresenter(
             .append("\n\n")
             .append(payload.guid)
 
-        return ShareCompat.IntentBuilder
-            .from(newsScreen)
+        return ShareCompat.IntentBuilder(newsScreen)
             .setType("text/plain")
             .setSubject(payload.title)
             .setHtmlText(payloadContent.toString())

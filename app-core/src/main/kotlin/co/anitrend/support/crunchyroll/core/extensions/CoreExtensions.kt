@@ -18,7 +18,6 @@ package co.anitrend.support.crunchyroll.core.extensions
 
 import android.os.Bundle
 import android.os.Parcelable
-import androidx.annotation.IdRes
 import androidx.fragment.app.*
 import co.anitrend.support.crunchyroll.core.CrunchyApplication
 import co.anitrend.support.crunchyroll.core.common.DEFAULT_ANIMATION_DURATION
@@ -28,13 +27,11 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
-import org.koin.core.scope.KoinScopeComponent
-import org.koin.core.scope.Scope
 import timber.log.Timber
 
 const val separator = "\u2022"
 
-fun CrunchyActivity.recreateModules() {
+fun CrunchyActivity<*>.recreateModules() {
     val coreApplication = applicationContext as CrunchyApplication
     runCatching {
         coreApplication.restartDependencyInjection()
@@ -75,11 +72,9 @@ fun Parcelable.toBundle(key: String) =
         putParcelable(key, this@toBundle)
     }
 
-const val moduleTag = "CoreExtensions"
-
-fun <T> Result<T>.stackTrace(tag: String): T? {
+fun <T> Result<T>.stackTrace(): T? {
     onFailure { throwable ->
-        Timber.tag(tag).v(throwable)
+        Timber.v(throwable)
     }
     return getOrNull()
 }

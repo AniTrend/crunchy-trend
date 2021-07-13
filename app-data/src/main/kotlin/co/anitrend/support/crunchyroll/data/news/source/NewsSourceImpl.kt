@@ -16,47 +16,45 @@
 
 package co.anitrend.support.crunchyroll.data.news.source
 
-import androidx.lifecycle.liveData
-import androidx.paging.toLiveData
+import androidx.paging.PagedList
+import co.anitrend.arch.data.paging.FlowPagedListBuilder
 import co.anitrend.arch.data.request.callback.RequestCallback
 import co.anitrend.arch.data.util.PAGING_CONFIGURATION
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.arch.extension.network.SupportConnectivity
-import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
 import co.anitrend.support.crunchyroll.data.arch.database.settings.IRefreshBehaviourSettings
-import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.arch.helper.CrunchyClearDataHelper
+import co.anitrend.support.crunchyroll.data.news.NewPagedController
 import co.anitrend.support.crunchyroll.data.news.datasource.local.CrunchyRssNewsDao
 import co.anitrend.support.crunchyroll.data.news.datasource.remote.CrunchyNewsFeedEndpoint
-import co.anitrend.support.crunchyroll.data.news.mapper.NewsResponseMapper
 import co.anitrend.support.crunchyroll.data.news.source.contract.NewsSource
 import co.anitrend.support.crunchyroll.data.news.transformer.NewsTransformer
+import co.anitrend.support.crunchyroll.domain.common.RssQuery
+import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 internal class NewsSourceImpl(
-    private val mapper: NewsResponseMapper,
+    private val controller: NewPagedController,
     private val endpoint: CrunchyNewsFeedEndpoint,
     private val dao: CrunchyRssNewsDao,
     private val supportConnectivity: SupportConnectivity,
     private val settings: IRefreshBehaviourSettings,
-    supportDispatchers: SupportDispatchers
-) : NewsSource(supportDispatchers) {
+    override val dispatcher: ISupportDispatcher
+) : NewsSource() {
 
-    override val observable = liveData {
-        val localSource = dao.findByAllFactory()
+    override fun observable(query: RssQuery): Flow<PagedList<CrunchyNews>> {
+        val factory = dao.findByAllFactory()
+            .map { NewsTransformer.transform(it) }
 
-        val result = localSource.map {
-            NewsTransformer.transform(it)
-        }
-
-        emitSource(
-            result.toLiveData(
-                config = PAGING_CONFIGURATION,
-                boundaryCallback = this@NewsSourceImpl
-            )
-        )
+        return FlowPagedListBuilder(
+            dataSourceFactory = factory,
+            config = PAGING_CONFIGURATION,
+            initialLoadKey = null,
+            boundaryCallback = this
+        ).buildFlow()
     }
 
     override suspend fun getNewsCatalogue(callback: RequestCallback) {
@@ -64,15 +62,7 @@ internal class NewsSourceImpl(
             endpoint.getMediaNews(query.language)
         }
 
-        val controller =
-            mapper.controller(
-                dispatchers,
-                OnlineControllerPolicy.create(
-                    supportConnectivity
-                )
-            )
-
-        controller.news(deferred, callback)
+        controller(deferred, callback)
     }
 
     /**

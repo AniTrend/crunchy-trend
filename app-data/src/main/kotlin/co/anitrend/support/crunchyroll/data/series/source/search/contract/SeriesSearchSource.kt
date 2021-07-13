@@ -16,29 +16,25 @@
 
 package co.anitrend.support.crunchyroll.data.series.source.search.contract
 
-import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
-import co.anitrend.arch.data.request.callback.RequestCallback
-import co.anitrend.arch.data.request.contract.IRequestHelper
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.support.crunchyroll.data.arch.common.CrunchyPagedSource
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesSearchQuery
+import kotlinx.coroutines.flow.Flow
 
-internal abstract class SeriesSearchSource(
-    supportDispatchers: SupportDispatchers
-) : CrunchyPagedSource<CrunchySeries>(supportDispatchers) {
+internal abstract class SeriesSearchSource : CrunchyPagedSource<CrunchySeries>() {
 
     protected lateinit var query: CrunchySeriesSearchQuery
         private set
 
     protected abstract fun observable(
         searchQuery: CrunchySeriesSearchQuery
-    ): LiveData<PagedList<CrunchySeries>>
+    ): Flow<PagedList<CrunchySeries>>
 
     internal operator fun invoke(
         searchQuery: CrunchySeriesSearchQuery
-    ): LiveData<PagedList<CrunchySeries>> {
+    ): Flow<PagedList<CrunchySeries>> {
         runCatching {
             // reset paging if our search query has changed
             if (query.searchTerm != searchQuery.searchTerm)

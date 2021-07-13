@@ -41,20 +41,12 @@ internal class DependencyStrategy(
     }
 
     private fun DependencyHandler.applyAndroidTestDependencies() {
-        androidTest(Libraries.AndroidX.Test.core)
         androidTest(Libraries.AndroidX.Test.coreKtx)
         androidTest(Libraries.AndroidX.Test.rules)
         androidTest(Libraries.AndroidX.Test.runner)
         androidTest(Libraries.AndroidX.Test.Espresso.core)
-        androidTest(Libraries.AndroidX.Test.Espresso.contrib)
-        androidTest(Libraries.AndroidX.Test.Espresso.intents)
-        androidTest(Libraries.AndroidX.Test.Espresso.accessibility)
-        androidTest(Libraries.AndroidX.Test.Espresso.web)
-        androidTest(Libraries.AndroidX.Test.Espresso.idlingResource)
-        androidTest(Libraries.AndroidX.Test.Extension.junit)
         androidTest(Libraries.AndroidX.Test.Extension.junitKtx)
-        androidTest(Libraries.AndroidX.Test.Extension.truth)
-        androidTest(Libraries.Google.Test.truth)
+        androidTest(Libraries.mockk)
     }
 
     private fun DependencyHandler.applyLifeCycleDependencies() {

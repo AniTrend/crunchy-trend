@@ -17,19 +17,56 @@
 package co.anitrend.support.crunchyroll.data.arch.controller.strategy.contract
 
 import co.anitrend.arch.data.request.callback.RequestCallback
+import co.anitrend.arch.domain.entities.RequestError
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
+
 
 internal abstract class ControllerStrategy<D> {
 
-    protected val moduleTag = javaClass.simpleName
+    protected val moduleTag: String = javaClass.simpleName
 
     /**
-     * Execute a paging task under an implementation strategy
+     * Creates human readable exceptions from a given exception
+     */
+    protected fun Throwable.generateForError() = when (this) {
+        is UnknownHostException -> {
+            RequestError(
+                "Unable to resolve host",
+                "Please check your internet connection and try again",
+                cause
+            )
+        }
+        is SocketTimeoutException -> {
+            RequestError(
+                "Connection timed out",
+                "Please check your internet connection and try again",
+                cause
+            )
+        }
+        is HttpException -> {
+            RequestError(
+                "Server error occurred",
+                message,
+                cause
+            )
+        }
+        else -> RequestError(
+            "Unknown error occurred",
+            message,
+            cause
+        )
+    }
+
+    /**
+     * Execute a task under an implementation strategy
      *
-     * @param requestCallback event emitter
+     * @param callback event emitter
      * @param block what will be executed
      */
     internal abstract suspend operator fun invoke(
-        requestCallback: RequestCallback,
+        callback: RequestCallback,
         block: suspend () -> D?
     ): D?
 }

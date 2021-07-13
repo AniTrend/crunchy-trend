@@ -16,7 +16,8 @@
 
 package co.anitrend.support.crunchyroll.data.series.mapper
 
-import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
+import co.anitrend.support.crunchyroll.data.arch.mapper.DefaultMapper
+import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.series.converters.SeriesModelConverter
 import co.anitrend.support.crunchyroll.data.series.datasource.local.CrunchySeriesDao
 import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesEntity
@@ -24,27 +25,24 @@ import co.anitrend.support.crunchyroll.data.series.model.CrunchySeriesModel
 
 internal class SeriesResponseMapper(
     private val dao: CrunchySeriesDao
-) : CrunchyMapper<List<CrunchySeriesModel>, List<CrunchySeriesEntity>>() {
+) : DefaultMapper<CrunchyContainer<List<CrunchySeriesModel>>, List<CrunchySeriesEntity>>() {
 
     /**
-     * Creates mapped objects and handles the database operations which may be required to map various objects,
-     * called in [retrofit2.Callback.onResponse] after assuring that the response was a success
-     *
-     * @param source the incoming data source type
-     * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
+     * Save [data] into your desired local source
      */
-    override suspend fun onResponseMapFrom(source: List<CrunchySeriesModel>): List<CrunchySeriesEntity> {
-        return SeriesModelConverter.convertFrom(source)
+    override suspend fun persist(data: List<CrunchySeriesEntity>) {
+        dao.upsert(data)
     }
 
     /**
-     * Inserts the given object into the implemented room database,
-     * called in [retrofit2.Callback.onResponse]
+     * Creates mapped objects and handles the database operations which may be required to map various objects,
      *
-     * @param mappedData mapped object from [onResponseMapFrom] to insert into the database
+     * @param source the incoming data source type
+     * @return mapped object that will be consumed by [onResponseDatabaseInsert]
      */
-    override suspend fun onResponseDatabaseInsert(mappedData: List<CrunchySeriesEntity>) {
-        if (mappedData.isNotEmpty())
-            dao.upsert(mappedData)
+    override suspend fun onResponseMapFrom(
+        source: CrunchyContainer<List<CrunchySeriesModel>>
+    ): List<CrunchySeriesEntity> {
+        return source.data?.map(SeriesModelConverter::convertFrom).orEmpty()
     }
 }

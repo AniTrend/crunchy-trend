@@ -41,7 +41,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             getString(R.string.preference_key_accounts)
         )?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener {
-                when (settings.isAuthenticated) {
+                when (settings.isAuthenticated.value) {
                     true -> {
                         Authentication(activity)
                         activity?.closeScreen()

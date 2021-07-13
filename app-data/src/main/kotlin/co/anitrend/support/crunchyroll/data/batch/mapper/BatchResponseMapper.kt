@@ -16,23 +16,31 @@
 
 package co.anitrend.support.crunchyroll.data.batch.mapper
 
-import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
+import co.anitrend.support.crunchyroll.data.arch.mapper.DefaultMapper
+import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.batch.entity.CrunchyBatchEntity
 import co.anitrend.support.crunchyroll.data.batch.model.CrunchyBatchModel
 import co.anitrend.support.crunchyroll.data.batch.transformer.BatchTransformer
 import co.anitrend.support.crunchyroll.data.series.model.CrunchySeriesModel
 
-internal class BatchResponseMapper : CrunchyMapper<List<CrunchyBatchModel>, List<CrunchyBatchEntity<CrunchySeriesModel>>>() {
-
-    override suspend fun onResponseMapFrom(source: List<CrunchyBatchModel>)=
-        BatchTransformer().transform(source)
+internal class BatchResponseMapper : DefaultMapper<CrunchyContainer<List<CrunchyBatchModel>>, List<CrunchyBatchEntity<CrunchySeriesModel>>?>() {
 
     /**
-     * Inserts the given object into the implemented room database,
-     *
-     * @param mappedData mapped object from [onResponseMapFrom] to insert into the database
+     * Save [data] into your desired local source
      */
-    override suspend fun onResponseDatabaseInsert(mappedData: List<CrunchyBatchEntity<CrunchySeriesModel>>) {
-        // nothing to do here
+    override suspend fun persist(data: List<CrunchyBatchEntity<CrunchySeriesModel>>?) {
+
+    }
+
+    /**
+     * Creates mapped objects and handles the database operations which may be required to map various objects,
+     *
+     * @param source the incoming data source type
+     * @return mapped object that will be consumed by [onResponseDatabaseInsert]
+     */
+    override suspend fun onResponseMapFrom(
+        source: CrunchyContainer<List<CrunchyBatchModel>>
+    ): List<CrunchyBatchEntity<CrunchySeriesModel>>? {
+        return source.data?.let(BatchTransformer()::transform)
     }
 }

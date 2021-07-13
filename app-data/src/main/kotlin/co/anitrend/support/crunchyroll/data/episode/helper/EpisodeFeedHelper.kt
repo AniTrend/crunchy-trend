@@ -16,14 +16,13 @@
 
 package co.anitrend.support.crunchyroll.data.episode.helper
 
-import co.anitrend.support.crunchyroll.data.episode.model.CrunchyEpisodeRestrictionModel
-import co.anitrend.support.crunchyroll.data.episode.model.EpisodeThumbnailModel
+import co.anitrend.support.crunchyroll.data.episode.model.CrunchyEpisodeModel
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 internal object EpisodeFeedHelper {
 
-    fun highestQuality(thumbnails: List<EpisodeThumbnailModel>?) = thumbnails?.maxByOrNull { it.width }
+    fun highestQuality(thumbnails: List<CrunchyEpisodeModel.ThumbnailModel>?) = thumbnails?.maxByOrNull { it.width }
 
     fun durationFormatted(duration: Int?) : String {
         return duration?.let {
@@ -54,7 +53,7 @@ internal object EpisodeFeedHelper {
         return Collections.emptyList()
     }
 
-    fun isAllowed(restriction: CrunchyEpisodeRestrictionModel?, locale: Locale): Boolean {
+    fun isAllowed(restriction: CrunchyEpisodeModel.RestrictionModel?, locale: Locale): Boolean {
         if (restriction != null) {
             val country = locale.country
 

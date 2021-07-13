@@ -32,8 +32,5 @@ internal class SeriesBrowseRepository(
 
     override fun browseSeries(
         browseQuery: CrunchySeriesBrowseQuery
-    ) =
-        source.create(
-            model = source(browseQuery)
-        )
+    ) = source create source.seriesBrowse(browseQuery)
 }

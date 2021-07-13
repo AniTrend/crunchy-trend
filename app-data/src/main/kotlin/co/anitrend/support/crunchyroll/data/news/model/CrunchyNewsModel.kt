@@ -16,72 +16,23 @@
 
 package co.anitrend.support.crunchyroll.data.news.model
 
+import co.anitrend.arch.extension.ext.empty
 import co.anitrend.support.crunchyroll.data.arch.RCF822Date
-import co.anitrend.support.crunchyroll.data.rss.contract.IRssCopyright
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.Root
 
 @Root(name = "item", strict = false)
-internal data class CrunchyNewsModel(
+internal data class CrunchyNewsModel @JvmOverloads constructor(
     @field:Element(name = "title")
-    var title: String,
-    @field:Element(name = "author")
-    var author: String,
+    var title: String = String.empty(),
+    @field:Element(name = "author", required = false)
+    var author: String = String.empty(),
     @field:Element(name = "description")
-    var description: String,
+    var description: String = String.empty(),
     @field:Element(name = "encoded")
-    var encoded: String,
+    var contentEncoded: String = String.empty(),
     @field:Element(name = "pubDate")
-    var publishedOn: RCF822Date,
+    var publishedOn: RCF822Date = String.empty(),
     @field:Element(name = "link")
-    var referenceLink: String,
-    @field:Element(name = "guid")
-    var guid: String,
-    override var copyright: String,
-    var publishedTime: Long
-) : IRssCopyright {
-
-    constructor():
-            this(
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                0
-            )
-
-    /**
-     * Indicates whether some other object is "equal to" this one. Implementations must fulfil the following
-     * requirements:
-     *
-     * * Reflexive: for any non-null varue `x`, `x.equals(x)` should return true.
-     * * Symmetric: for any non-null varues `x` and `y`, `x.equals(y)` should return true if and only if `y.equals(x)` returns true.
-     * * Transitive:  for any non-null varues `x`, `y`, and `z`, if `x.equals(y)` returns true and `y.equals(z)` returns true, then `x.equals(z)` should return true.
-     * * Consistent:  for any non-null varues `x` and `y`, multiple invocations of `x.equals(y)` consistently return true or consistently return false, provided no information used in `equals` comparisons on the objects is modified.
-     * * Never equal to null: for any non-null varue `x`, `x.equals(null)` should return false.
-     *
-     * Read more about [equality](https://kotlinlang.org/docs/reference/equality.html) in Kotlin.
-     */
-    override fun equals(other: Any?): Boolean {
-        return when (other) {
-            is CrunchyNewsModel -> other.guid == guid
-            else -> super.equals(other)
-        }
-    }
-
-    override fun hashCode(): Int {
-        var result = title.hashCode()
-        result = 31 * result + author.hashCode()
-        result = 31 * result + description.hashCode()
-        result = 31 * result + encoded.hashCode()
-        result = 31 * result + publishedOn.hashCode()
-        result = 31 * result + referenceLink.hashCode()
-        result = 31 * result + guid.hashCode()
-        result = 31 * result + copyright.hashCode()
-        return result
-    }
-}
+    var referenceLink: String = String.empty()
+)

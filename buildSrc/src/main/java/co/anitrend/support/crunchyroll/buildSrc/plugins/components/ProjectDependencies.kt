@@ -48,7 +48,6 @@ private fun Project.applyFeatureModuleDependencies() {
 
     dependencies.implementation(Libraries.Google.Material.material)
 
-    dependencies.implementation(Libraries.Glide.glide)
     dependencies.implementation(Libraries.Coil.coil)
 
     dependencies.implementation(project(":$core"))
@@ -92,6 +91,7 @@ private fun Project.applyBaseModuleDependencies() {
     println("Applying base module dependencies for module -> $path")
     when (name) {
         core -> {
+            dependencies.implementation(project(":$androidCore"))
             dependencies.implementation(project(":$navigation"))
             dependencies.implementation(project(":$domain"))
             dependencies.implementation(project(":$data"))
@@ -114,8 +114,6 @@ private fun Project.applyBaseModuleDependencies() {
             dependencies.implementation(Libraries.Coil.gif)
             dependencies.implementation(Libraries.Coil.svg)
             dependencies.implementation(Libraries.Coil.video)
-            dependencies.implementation(Libraries.Glide.glide)
-            dependencies.add("kapt", Libraries.Glide.compiler)
         }
         data -> {
             dependencies.implementation(project(":$domain"))
@@ -172,7 +170,6 @@ private fun Project.applyAndroidCoreModuleDependencies() {
 
     dependencies.implementation(Libraries.Coil.coil)
 
-    dependencies.implementation(project(":$core"))
     dependencies.implementation(project(":$data"))
     dependencies.implementation(project(":$domain"))
     dependencies.implementation(project(":$navigation"))
@@ -204,7 +201,6 @@ private fun Project.applyCommonModuleDependencies() {
     dependencies.implementation(Libraries.Google.Material.material)
 
     dependencies.implementation(Libraries.Coil.coil)
-    dependencies.implementation(Libraries.Glide.glide)
 
     dependencies.implementation(project(":$androidCore"))
     dependencies.implementation(project(":$core"))

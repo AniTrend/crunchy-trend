@@ -16,47 +16,45 @@
 
 package co.anitrend.support.crunchyroll.data.episode.source
 
-import androidx.lifecycle.liveData
-import androidx.paging.toLiveData
+import androidx.paging.PagedList
+import co.anitrend.arch.data.paging.FlowPagedListBuilder
 import co.anitrend.arch.data.request.callback.RequestCallback
 import co.anitrend.arch.data.util.PAGING_CONFIGURATION
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.arch.extension.network.SupportConnectivity
-import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
 import co.anitrend.support.crunchyroll.data.arch.database.settings.IRefreshBehaviourSettings
-import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.arch.helper.CrunchyClearDataHelper
+import co.anitrend.support.crunchyroll.data.episode.EpisodePagedController
 import co.anitrend.support.crunchyroll.data.episode.datasource.local.CrunchyRssEpisodeDao
 import co.anitrend.support.crunchyroll.data.episode.datasource.remote.CrunchyEpisodeFeedEndpoint
-import co.anitrend.support.crunchyroll.data.episode.mapper.EpisodeFeedResponseMapper
 import co.anitrend.support.crunchyroll.data.episode.source.contract.EpisodeFeedSource
 import co.anitrend.support.crunchyroll.data.episode.transformer.EpisodeFeedTransformer
+import co.anitrend.support.crunchyroll.domain.common.RssQuery
+import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 internal class EpisodeFeedSourceImpl(
-    private val mapper: EpisodeFeedResponseMapper,
+    private val controller: EpisodePagedController,
     private val endpoint: CrunchyEpisodeFeedEndpoint,
     private val dao: CrunchyRssEpisodeDao,
     private val supportConnectivity: SupportConnectivity,
     private val settings: IRefreshBehaviourSettings,
-    supportDispatchers: SupportDispatchers
-) : EpisodeFeedSource(supportDispatchers) {
+    override val dispatcher: ISupportDispatcher
+) : EpisodeFeedSource() {
 
-    override val observable = liveData {
-        val localSource = dao.findByAllFactory()
+    override fun observable(query: RssQuery): Flow<PagedList<CrunchyEpisodeFeed>> {
+        val factory = dao.findByAllFactory()
+            .map { EpisodeFeedTransformer.transform(it) }
 
-        val result = localSource.map {
-            EpisodeFeedTransformer.transform(it)
-        }
-
-        emitSource(
-            result.toLiveData(
-                config = PAGING_CONFIGURATION,
-                boundaryCallback = this@EpisodeFeedSourceImpl
-            )
-        )
+        return FlowPagedListBuilder(
+            dataSourceFactory = factory,
+            config = PAGING_CONFIGURATION,
+            initialLoadKey = null,
+            boundaryCallback = this
+        ).buildFlow()
     }
 
     override suspend fun getMediaListingsCatalogue(callback: RequestCallback) {
@@ -64,15 +62,7 @@ internal class EpisodeFeedSourceImpl(
             endpoint.getLatestMediaFeed(query.language)
         }
 
-        val controller =
-            mapper.controller(
-                dispatchers,
-                OnlineControllerPolicy.create(
-                    supportConnectivity
-                )
-            )
-
-        controller.episode(deferred, callback)
+        controller(deferred, callback)
     }
 
     /**

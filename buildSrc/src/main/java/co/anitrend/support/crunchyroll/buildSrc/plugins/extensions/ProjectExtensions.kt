@@ -29,10 +29,9 @@ import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.reporting.ReportingExtension
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.kotlin.dsl.getByType
+import com.diffplug.gradle.spotless.SpotlessExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
-import org.jetbrains.kotlin.gradle.internal.AndroidExtensionsExtension
 import org.jetbrains.kotlin.gradle.testing.internal.KotlinTestsRegistry
-
 
 internal fun Project.baseExtension() =
     extensions.getByType<BaseExtension>()
@@ -70,11 +69,11 @@ internal fun Project.kotlinAndroidProjectExtension() =
 internal fun Project.kotlinTestsRegistry() =
     extensions.getByType<KotlinTestsRegistry>()
 
-internal fun Project.androidExtensionsExtension() =
-    extensions.getByType<AndroidExtensionsExtension>()
-
 internal fun Project.publishingExtension() =
     extensions.getByType<PublishingExtension>()
+
+internal fun Project.spotlessExtension() =
+    extensions.getByType<SpotlessExtension>()
 
 internal fun Project.containsAndroidPlugin(): Boolean {
     return project.plugins.toList().any { plugin ->

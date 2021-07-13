@@ -25,8 +25,6 @@ import timber.log.Timber
  */
 internal object CrunchyClearDataHelper {
 
-    private val moduleTag = javaClass.simpleName
-
     /**
      * Perform checks and invoke [action]
      *
@@ -39,18 +37,16 @@ internal object CrunchyClearDataHelper {
         connectivity: SupportConnectivity,
         crossinline action: suspend () -> Unit
     ) {
-        if (settings.clearDataOnSwipeRefresh) {
+        if (settings.clearDataOnSwipeRefresh.value) {
             if (connectivity.isConnected)
                 runCatching {
                     action()
                 }.exceptionOrNull()?.also {
-                    Timber.tag(moduleTag).e(it)
+                    Timber.e(it)
                 }
             return
         }
 
-        Timber.tag(moduleTag).v(
-            "Database table will not be cleared, setting prohibiting this"
-        )
+        Timber.v("Database table will not be cleared, setting prohibiting this")
     }
 }

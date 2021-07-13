@@ -16,35 +16,29 @@
 
 package co.anitrend.support.crunchyroll.core.ui.activity
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Window
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.viewbinding.ViewBinding
+import co.anitrend.arch.core.model.ISupportViewModelState
 import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.ui.activity.SupportActivity
-import co.anitrend.support.crunchyroll.core.R
-import co.anitrend.support.crunchyroll.core.extensions.createDialog
+import co.anitrend.support.crunchyroll.core.android.binding.IBindingView
 import co.anitrend.support.crunchyroll.core.util.config.ConfigurationUtil
-import com.afollestad.materialdialogs.LayoutMode
-import com.afollestad.materialdialogs.bottomsheets.BottomSheet
-import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.scope.activityScope
-import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.KoinScopeComponent
-import org.koin.core.scope.Scope
-import org.koin.core.scope.ScopeID
 import timber.log.Timber
 
-abstract class CrunchyActivity : SupportActivity(), KoinScopeComponent {
+abstract class CrunchyActivity<B : ViewBinding> : SupportActivity(), KoinScopeComponent,
+    IBindingView<B> {
 
     protected val configurationUtil by inject<ConfigurationUtil>()
 
     override val scope by lazy(UNSAFE) { activityScope() }
+
+    override var binding: B? = null
 
     /**
      * Can be used to configure custom theme styling as desired
@@ -62,7 +56,7 @@ abstract class CrunchyActivity : SupportActivity(), KoinScopeComponent {
                 setupKoinFragmentFactory(scope)
             }.onFailure {
                 setupKoinFragmentFactory()
-                Timber.tag(moduleTag).w(it, "Defaulting to scope-less based fragment factory")
+                Timber.w(it, "Defaulting to scope-less based fragment factory")
             }
         }
     }
@@ -78,62 +72,12 @@ abstract class CrunchyActivity : SupportActivity(), KoinScopeComponent {
     }
 
     /**
-     * Callback for the result from requesting permissions. This method
-     * is invoked for every call on [requestPermissions].
-     *
-     * **Note:** It is possible that the permissions request interaction
-     * with the user is interrupted. In this case you will receive empty permissions
-     * and results arrays which should be treated as a cancellation.
-     *
-     * @param requestCode The request code passed in [requestPermissions].
-     * @param permissions The requested permissions. Never null.
-     * @param grantResults The grant results for the corresponding permissions
-     * which is either [android.content.pm.PackageManager.PERMISSION_GRANTED]
-     * or [android.content.pm.PackageManager.PERMISSION_DENIED]. Never null.
-     *
-     * @see .requestPermissions
+     * Proxy for a view model state if one exists
      */
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == compatViewPermissionValue) {
-            val denied = grantResults.filter {
-                it != PackageManager.PERMISSION_GRANTED
-            }
-            if (denied.isNotEmpty())
-                checkStoragePermission()
-        }
-    }
+    override fun viewModelState(): ISupportViewModelState<*>? = null
 
-    protected fun checkStoragePermission() {
-        if (!requestPermissionIfMissing(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-            ) createDialog(BottomSheet(LayoutMode.WRAP_CONTENT))
-                ?.title(
-                    res = R.string.dialog_title_permission_reason_text
-                )?.message(
-                    res = R.string.dialog_message_permission_reason_text
-                )?.positiveButton(
-                    res = R.string.dialog_button_text_got_it,
-                    click = {
-                        ActivityCompat.requestPermissions(
-                            this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                            compatViewPermissionValue
-                        )
-                    }
-                )?.show()
-            else {
-                ActivityCompat.requestPermissions(
-                    this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                    compatViewPermissionValue
-                )
-            }
-        }
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
     }
 }

@@ -16,61 +16,55 @@
 
 package co.anitrend.support.crunchyroll.data.media.source
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
 import androidx.paging.PagedList
-import androidx.paging.toLiveData
+import co.anitrend.arch.data.paging.FlowPagedListBuilder
 import co.anitrend.arch.data.request.callback.RequestCallback
-import co.anitrend.arch.data.request.contract.IRequestHelper
+import co.anitrend.arch.data.request.model.Request
 import co.anitrend.arch.data.util.PAGING_CONFIGURATION
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.arch.extension.network.SupportConnectivity
-import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
 import co.anitrend.support.crunchyroll.data.arch.database.settings.IRefreshBehaviourSettings
-import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.arch.helper.CrunchyClearDataHelper
 import co.anitrend.support.crunchyroll.data.arch.helper.CrunchyPagingConfigHelper
+import co.anitrend.support.crunchyroll.data.media.MediaController
 import co.anitrend.support.crunchyroll.data.media.datasource.local.CrunchyMediaDao
 import co.anitrend.support.crunchyroll.data.media.datasource.remote.CrunchyMediaEndpoint
-import co.anitrend.support.crunchyroll.data.media.mapper.MediaResponseMapper
 import co.anitrend.support.crunchyroll.data.media.source.contract.MediaSource
 import co.anitrend.support.crunchyroll.data.media.transformer.MediaTransformer
 import co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia
+import co.anitrend.support.crunchyroll.domain.media.models.CrunchyMediaQuery
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 internal class MediaSourceImpl(
-    private val mapper: MediaResponseMapper,
+    private val controller: MediaController,
     private val mediaDao: CrunchyMediaDao,
     private val endpoint: CrunchyMediaEndpoint,
     private val supportConnectivity: SupportConnectivity,
     private val settings: IRefreshBehaviourSettings,
-    supportDispatchers: SupportDispatchers
-) : MediaSource(supportDispatchers) {
+    override val dispatcher: ISupportDispatcher
+) : MediaSource() {
 
-    override val observable = liveData {
-        val localSource =
-            mediaDao.findByCollectionIdFactory(query.collectionId)
+    override fun observable(mediaQuery: CrunchyMediaQuery): Flow<PagedList<CrunchyMedia>> {
+        val factory = mediaDao.findByCollectionIdFactory(mediaQuery.collectionId)
+            .map { MediaTransformer.transform(it) }
 
-        val result = localSource.map {
-            MediaTransformer.transform(it)
-        }
-
-        emitSource(
-            result.toLiveData(
-                config = PAGING_CONFIGURATION,
-                boundaryCallback = this@MediaSourceImpl
-            )
-        )
+        return FlowPagedListBuilder(
+            dataSourceFactory = factory,
+            config = PAGING_CONFIGURATION,
+            initialLoadKey = null,
+            boundaryCallback = this
+        ).buildFlow()
     }
 
     override suspend fun invoke(
         callback: RequestCallback,
-        requestType: IRequestHelper.RequestType,
+        request: Request,
         model: CrunchyMedia?
     ) {
-        CrunchyPagingConfigHelper(requestType, supportPagingHelper) {
+        CrunchyPagingConfigHelper(request, supportPagingHelper) {
             mediaDao.countByCollectionId(query.collectionId)
         }
 
@@ -81,14 +75,6 @@ internal class MediaSourceImpl(
                 collectionId = query.collectionId
             )
         }
-
-        val controller =
-            mapper.controller(
-                dispatchers,
-                OnlineControllerPolicy.create(
-                    supportConnectivity
-                )
-            )
 
         controller(deferred, callback)
     }

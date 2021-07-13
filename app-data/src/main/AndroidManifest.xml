@@ -14,7 +14,5 @@
   ~    limitations under the License.
   -->
 
-<manifest package="co.anitrend.support.crunchyroll.data"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+<manifest package="co.anitrend.support.crunchyroll.data">
 </manifest>

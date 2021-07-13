@@ -20,19 +20,17 @@ import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 
 interface IConfigurationUtil {
 
-    val moduleTag: String
-
     /**
      * Applies configuration upon the create state of the current activity
      *
      * @param activity
      */
-    fun onCreate(activity: CrunchyActivity)
+    fun onCreate(activity: CrunchyActivity<*>)
 
     /**
      * Applies configuration upon the resume state of the current activity
      *
      * @param activity
      */
-    fun onResume(activity: CrunchyActivity)
+    fun onResume(activity: CrunchyActivity<*>)
 }

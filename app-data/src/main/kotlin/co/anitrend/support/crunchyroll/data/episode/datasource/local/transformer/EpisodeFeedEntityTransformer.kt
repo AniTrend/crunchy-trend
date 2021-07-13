@@ -36,15 +36,14 @@ internal object EpisodeFeedEntityTransformer : ISupportTransformer<CrunchyEpisod
             freeAvailableTime = source.freeAvailableDate.rcf822ToUnixTime(),
             premiumAvailableTime = source.premiumAvailableDate.rcf822ToUnixTime(),
             episodeThumbnail = EpisodeFeedHelper.highestQuality(
-                source.thumbnail
+                source.thumbnails
             )?.url,
             episodeDuration = EpisodeFeedHelper.durationFormatted(
                 source.duration
             ),
-            episodeTitle = source.episodeTitle,
+            episodeTitle = source.episodeTitle.orEmpty(),
             episodeNumber = source.episodeNumber,
             seriesTitle = source.seriesTitle,
-            copyright = source.copyright,
             isCountryWhiteListed = false,
             isPremiumEnabled = false,
             subtitles = Collections.emptyList()

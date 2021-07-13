@@ -16,11 +16,12 @@
 
 package co.anitrend.support.crunchyroll.data.catalog.mapper
 
-import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
+import co.anitrend.support.crunchyroll.data.arch.mapper.DefaultMapper
 import co.anitrend.support.crunchyroll.data.batch.entity.CrunchyBatchEntity
 import co.anitrend.support.crunchyroll.data.catalog.datasource.local.CrunchyCatalogDao
 import co.anitrend.support.crunchyroll.data.catalog.entity.CrunchyCatalogEntity
 import co.anitrend.support.crunchyroll.data.catalog.extension.generateHashCode
+import co.anitrend.support.crunchyroll.data.series.converters.SeriesModelConverter
 import co.anitrend.support.crunchyroll.data.series.entity.CrunchySeriesEntity
 import co.anitrend.support.crunchyroll.data.series.mapper.SeriesResponseMapper
 import co.anitrend.support.crunchyroll.data.series.model.CrunchySeriesModel
@@ -29,10 +30,17 @@ import co.anitrend.support.crunchyroll.domain.catalog.enums.CrunchySeriesCatalog
 internal class CatalogResponseMapper(
     private val dao: CrunchyCatalogDao,
     private val seriesResponseMapper: SeriesResponseMapper
-) : CrunchyMapper<List<CrunchyBatchEntity<CrunchySeriesModel>>, List<CrunchyCatalogEntity>>() {
+) : DefaultMapper<List<CrunchyBatchEntity<CrunchySeriesModel>>, List<CrunchyCatalogEntity>>() {
 
-    private suspend fun onResponseMapFromForSeries(source: List<CrunchySeriesModel>): List<CrunchySeriesEntity> {
-        val seriesEntities = seriesResponseMapper.onResponseMapFrom(source)
+    /**
+     * Save [data] into your desired local source
+     */
+    override suspend fun persist(data: List<CrunchyCatalogEntity>) {
+        dao.upsert(data)
+    }
+
+    private suspend fun onResponseMapFromForSeries(source: CrunchyBatchEntity<CrunchySeriesModel>): List<CrunchySeriesEntity> {
+        val seriesEntities = source.data.let(SeriesModelConverter::convertFrom)
         if (seriesEntities.isNotEmpty())
             seriesResponseMapper.onResponseDatabaseInsert(seriesEntities)
         return seriesEntities
@@ -48,7 +56,7 @@ internal class CatalogResponseMapper(
     override suspend fun onResponseMapFrom(source: List<CrunchyBatchEntity<CrunchySeriesModel>>): List<CrunchyCatalogEntity> {
         val catalogs = CrunchySeriesCatalogFilter.values()
         source.mapIndexed { index, entity ->
-            val seriesEntities = onResponseMapFromForSeries(entity.data)
+            val seriesEntities = onResponseMapFromForSeries(entity)
             val catalogFilter = catalogs[index]
 
             val catalogItems = seriesEntities.mapIndexed { seriesIndex, series ->
@@ -63,16 +71,5 @@ internal class CatalogResponseMapper(
             onResponseDatabaseInsert(catalogItems)
         }
         return emptyList()
-    }
-
-    /**
-     * Inserts the given object into the implemented room database,
-     * called in [retrofit2.Callback.onResponse]
-     *
-     * @param mappedData mapped object from [onResponseMapFrom] to insert into the database
-     */
-    override suspend fun onResponseDatabaseInsert(mappedData: List<CrunchyCatalogEntity>) {
-        if (mappedData.isNotEmpty())
-            dao.upsert(mappedData)
     }
 }

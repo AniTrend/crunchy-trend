@@ -32,7 +32,6 @@ internal data class EpisodeFeedEntity(
     val episodeTitle: String,
     val episodeNumber: String?,
     val seriesTitle: String,
-    val copyright: String,
     val isPremiumEnabled: Boolean,
     val subtitles: List<String>,
     val isCountryWhiteListed: Boolean

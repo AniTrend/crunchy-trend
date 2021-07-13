@@ -29,6 +29,6 @@ class FeatureInitializer : AbstractFeatureInitializer<Unit>() {
      * @param context The application context.
      */
     override fun create(context: Context) {
-        launch { moduleHelper.loadModules() }
+        moduleHelper.loadModules()
     }
 }

@@ -16,8 +16,8 @@
 
 package co.anitrend.support.crunchyroll.data.api.interceptor
 
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.arch.extension.ext.SYNCHRONIZED
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
 import co.anitrend.support.crunchyroll.data.api.helper.ResponseHelper
@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger
 internal class CrunchyResponseInterceptor(
     private val connectivity: SupportConnectivity,
     private val authentication: CrunchyAuthenticationHelper,
-    private val dispatchers: SupportDispatchers
+    private val dispatcher: ISupportDispatcher
 ) : Interceptor {
 
     private val responseHelper by lazy(SYNCHRONIZED) {
@@ -46,8 +46,6 @@ internal class CrunchyResponseInterceptor(
             CrunchyConverterFactory.GSON
         )
     }
-
-    private val moduleTag = CrunchyResponseInterceptor::class.java.simpleName
 
     private val retryCount = AtomicInteger(0)
 
@@ -64,7 +62,7 @@ internal class CrunchyResponseInterceptor(
                 if (request != null)
                     return chain.proceed(request)
             } else
-                Timber.tag(moduleTag).v(
+                Timber.v(
                     "Cached network response detected, re-authentication has been skipped"
                 )
         }
@@ -82,7 +80,7 @@ internal class CrunchyResponseInterceptor(
                 retryCount.set(0)
             }
         } else {
-            Timber.tag(moduleTag).v(
+            Timber.v(
                 "Resetting retry count as prior response was successful"
             )
             retryCount.set(0)
@@ -100,15 +98,15 @@ internal class CrunchyResponseInterceptor(
     private fun authenticate(response: Response): Request? {
         val origin = response.request
         if (connectivity.isConnected) {
-            Timber.tag(moduleTag).v(
+            Timber.v(
                 "Attempting to authenticate request on for host: ${origin.url.host}"
             )
-            return runBlocking(dispatchers.confined) {
+            return runBlocking(dispatcher.io) {
                 updateRetryCount(response.priorResponse)
                 authentication.refreshSession(origin).build()
             }
         } else {
-            Timber.tag(moduleTag).v(
+            Timber.v(
                 "Device is currently offline, skipping authentication process"
             )
         }

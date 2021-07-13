@@ -17,23 +17,21 @@
 package co.anitrend.support.crunchyroll.data.authentication.source.contract
 
 import co.anitrend.arch.data.request.callback.RequestCallback
-import co.anitrend.arch.data.request.contract.IRequestHelper
+import co.anitrend.arch.data.request.model.Request
 import co.anitrend.arch.data.source.core.SupportCoreDataSource
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import kotlinx.coroutines.flow.flow
 
-internal abstract class LogoutSource(
-    supportDispatchers: SupportDispatchers
-) : SupportCoreDataSource(supportDispatchers) {
+internal abstract class LogoutSource : SupportCoreDataSource() {
 
     protected abstract suspend fun logoutUser(callback: RequestCallback): Boolean
 
     operator fun invoke() = flow {
         requestHelper.runIfNotRunning(
-            IRequestHelper.RequestType.INITIAL
-        ) {
-            val result = logoutUser(it)
-            emit(result)
-        }
+            Request.Default(
+                "logout_source_initial",
+                Request.Type.INITIAL
+            )
+        ) { emit(logoutUser(it)) }
     }
 }

@@ -29,7 +29,7 @@ internal object StreamModelConverter : SupportConverter<CrunchyStreamInfoModel, 
             it.quality == CrunchyStreamQuality.adaptive
         }
         CrunchyStreamEntity(
-            mediaId = 0,
+            mediaId = source.mediaId,
             playHead = source.playhead,
             subtitleLanguage = source.stream_data.hardsub_lang,
             audioLanguage = source.stream_data.audio_lang,
@@ -41,7 +41,7 @@ internal object StreamModelConverter : SupportConverter<CrunchyStreamInfoModel, 
     }
 
     override val toType: (CrunchyStreamEntity) -> CrunchyStreamInfoModel = {
-        TODO()
+        throw NotImplementedError()
     }
 }
 
@@ -59,6 +59,6 @@ internal object StreamEntityConverter : SupportConverter<CrunchyStreamEntity, Me
     }
 
     override val toType: (MediaStream) -> CrunchyStreamEntity = {
-        TODO()
+        throw NotImplementedError()
     }
 }

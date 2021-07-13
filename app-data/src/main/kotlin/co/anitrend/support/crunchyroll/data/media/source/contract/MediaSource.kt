@@ -16,24 +16,22 @@
 
 package co.anitrend.support.crunchyroll.data.media.source.contract
 
-import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.support.crunchyroll.data.arch.common.CrunchyPagedSource
 import co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia
 import co.anitrend.support.crunchyroll.domain.media.models.CrunchyMediaQuery
+import kotlinx.coroutines.flow.Flow
 
-internal abstract class MediaSource(
-    supportDispatchers: SupportDispatchers
-) : CrunchyPagedSource<CrunchyMedia>(supportDispatchers) {
+internal abstract class MediaSource : CrunchyPagedSource<CrunchyMedia>() {
 
     protected lateinit var query: CrunchyMediaQuery
         private set
 
-    protected abstract val observable: LiveData<PagedList<CrunchyMedia>>
+    protected abstract fun observable(mediaQuery: CrunchyMediaQuery): Flow<PagedList<CrunchyMedia>>
 
-    operator fun invoke(mediaQuery: CrunchyMediaQuery): LiveData<PagedList<CrunchyMedia>> {
-        query = mediaQuery
-        return observable
+    fun media(query: CrunchyMediaQuery): Flow<PagedList<CrunchyMedia>> {
+        this.query = query
+        return observable(query)
     }
 }

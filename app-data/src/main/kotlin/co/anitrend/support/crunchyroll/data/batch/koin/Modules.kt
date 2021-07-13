@@ -18,6 +18,7 @@ package co.anitrend.support.crunchyroll.data.batch.koin
 
 import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
 import co.anitrend.support.crunchyroll.data.arch.extension.api
+import co.anitrend.support.crunchyroll.data.arch.extension.defaultController
 import co.anitrend.support.crunchyroll.data.batch.mapper.BatchResponseMapper
 import co.anitrend.support.crunchyroll.data.batch.source.BatchSourceImpl
 import co.anitrend.support.crunchyroll.data.batch.source.contract.BatchSource
@@ -28,13 +29,20 @@ private val dataSourceModule = module {
     factory {
         BatchSourceImpl(
             endpoint = api(EndpointType.JSON),
-            supportConnectivity = get(),
-            mapper = BatchResponseMapper(),
-            supportDispatchers = get()
+            controller = defaultController(
+                mapper = get<BatchResponseMapper>()
+            ),
+            dispatcher = get()
         )
     } bind BatchSource::class
 }
 
+private val mapperModule = module {
+    factory {
+        BatchResponseMapper()
+    }
+}
+
 val batchModules = listOf(
-    dataSourceModule
+    dataSourceModule, mapperModule
 )

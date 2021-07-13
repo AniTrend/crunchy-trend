@@ -23,4 +23,6 @@ interface ICrunchySessionLocale {
      * provides current application locale
      */
     val sessionLocale: Locale
+
+    fun toCrunchyLocale(): String
 }

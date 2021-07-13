@@ -21,9 +21,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.arch.domain.entities.LoadState
+import co.anitrend.arch.domain.entities.RequestError
 import co.anitrend.arch.extension.ext.UNSAFE
-import co.anitrend.arch.recycler.common.DefaultClickableItem
+import co.anitrend.arch.recycler.common.ClickableItem
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.model.Emote
@@ -64,7 +65,7 @@ class SearchContentScreen(
         )
         viewModel.searchQueryLiveData.observe(
             viewLifecycleOwner,
-            Observer {
+            {
                 onFetchDataInitialize()
             }
         )
@@ -83,10 +84,12 @@ class SearchContentScreen(
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        supportStateLayout?.networkMutableStateFlow?.value =
-            NetworkState.Error(
-                heading = "Looking for something?",
-                message = "Tap the ${Emote.Search} to get started"
+        listPresenter.stateLayout.loadStateFlow.value =
+            LoadState.Error(
+                RequestError(
+                    topic = "Looking for something?",
+                    description = "Tap the ${Emote.Search} to get started"
+                )
             )
 
     }
@@ -100,14 +103,14 @@ class SearchContentScreen(
     override fun initializeComponents(savedInstanceState: Bundle?) {
         super.initializeComponents(savedInstanceState)
         lifecycleScope.launchWhenResumed {
-            supportViewAdapter.clickableStateFlow.debounce(DEBOUNCE_DURATION)
-                .filterIsInstance<DefaultClickableItem<CrunchySeries>>()
+            supportViewAdapter.clickableFlow.debounce(DEBOUNCE_DURATION)
+                .filterIsInstance<ClickableItem.Data<CrunchySeries>>()
                 .collect {
                     val data = it.data
                     val view = it.view
 
                     val payload = Series.Payload(
-                        seriesId = data?.seriesId ?: 0
+                        seriesId = data.seriesId
                     )
 
                     Series(view.context, payload)

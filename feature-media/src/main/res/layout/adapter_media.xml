@@ -19,7 +19,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/container"
-        android:background="?cardColor"
+        android:background="?colorPrimary"
         android:orientation="vertical"
         tools:padding="@dimen/xl_margin"
         android:layout_width="match_parent"

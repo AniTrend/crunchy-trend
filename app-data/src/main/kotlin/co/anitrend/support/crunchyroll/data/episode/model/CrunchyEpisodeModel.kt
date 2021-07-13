@@ -18,118 +18,66 @@ package co.anitrend.support.crunchyroll.data.episode.model
 
 import co.anitrend.arch.extension.ext.empty
 import co.anitrend.support.crunchyroll.data.arch.RCF822Date
-import co.anitrend.support.crunchyroll.data.rss.contract.IRssCopyright
+import org.simpleframework.xml.Attribute
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.ElementList
 import org.simpleframework.xml.Root
 
 @Root(name = "item", strict = false)
-internal data class CrunchyEpisodeModel(
-    @field:Element(
-        name = "title",
-        required = false
-    )
-    var title: String,
-    @field:Element(
-        name = "description",
-        required = false
-    )
+internal data class CrunchyEpisodeModel @JvmOverloads constructor(
+    @field:Element(name = "title")
+    var title: String = String.empty(),
+    @field:Element(name = "guid")
+    var guid: String = String.empty(),
+    @field:Element(name = "description", required = false)
     var description: String? = null,
-    @field:Element(
-        name = "mediaId",
-        required = false
-    )
-    var mediaId: Int,
-    @field:Element(
-        name = "premiumPubDate",
-        required = false
-    )
-    var premiumAvailableDate: RCF822Date,
-    @field:Element(
-        name = "freePubDate",
-        required = false
-    )
-    var freeAvailableDate: RCF822Date,
-    @field:Element(
-        required = false
-    )
-    var seriesTitle: String,
-    @field:Element(
-        required = false
-    )
-    var episodeTitle: String,
-    @field:Element(
-        required = false
-    )
+    @field:Element(name = "mediaId")
+    var mediaId: Int = 0,
+    @field:Element(name = "premiumPubDate")
+    var premiumAvailableDate: RCF822Date = String.empty(),
+    @field:Element(name = "freePubDate")
+    var freeAvailableDate: RCF822Date = String.empty(),
+    @field:Element(name = "seriesTitle", required = false)
+    var seriesTitle: String = String.empty(),
+    @field:Element(name = "episodeTitle", required = false)
+    var episodeTitle: String? = null,
+    @field:Element(name = "episodeNumber", required = false)
     var episodeNumber: String? = null,
-    @field:Element(
-        required = false
-    )
-    var duration: Int? = null,
-    @field:Element(
-        required = false
-    )
+    @field:Element(name = "publisher", required = false)
     var publisher: String? = null,
-    @field:Element(
-        required = false
-    )
+    @field:Element(name = "season", required = false)
+    var season: String? = null,
+    @field:Element(name = "duration", required = false)
+    var duration: Int? = null,
+    @field:Element(name = "subtitleLanguages", required = false)
     var subtitleLanguages: String? = null,
-    @field:Element(
-        required = false
-    )
-    var restriction: CrunchyEpisodeRestrictionModel? = null,
-    @field:ElementList(
-        inline = true,
-        required = false
-    )
-    var thumbnail : List<EpisodeThumbnailModel>?,
-    override var copyright: String = String.empty()
-) : IRssCopyright {
+    @field:Element(name = "restriction", required = false)
+    var restriction: RestrictionModel? = null,
+    @field:Element(name = "keywords", required = false)
+    var keywords: String? = null,
+    @field:Element(name = "rating", required = false)
+    var rating: String? = null,
+    @field:ElementList(name = "thumbnail", inline = true, required = false)
+    var thumbnails : List<ThumbnailModel>? = null,
+) {
 
-    constructor() : this(
-        title = String.empty(),
-        mediaId = 0,
-        premiumAvailableDate = String.empty(),
-        freeAvailableDate = String.empty(),
-        seriesTitle = String.empty(),
-        episodeTitle = String.empty(),
-        thumbnail = null
+    @Root(name = "thumbnail", strict = false)
+    data class ThumbnailModel @JvmOverloads constructor(
+        @field:Attribute(name = "url")
+        var url: String = String.empty(),
+        @field:Attribute(name = "width")
+        var width: Int = 0,
+        @field:Attribute(name = "height")
+        var height: Int = 0
     )
 
-    /**
-     * Indicates whether some other object is "equal to" this one. Implementations must fulfil the following
-     * requirements:
-     *
-     * * Reflexive: for any non-null varue `x`, `x.equals(x)` should return true.
-     * * Symmetric: for any non-null varues `x` and `y`, `x.equals(y)` should return true if and only if `y.equals(x)` returns true.
-     * * Transitive:  for any non-null varues `x`, `y`, and `z`, if `x.equals(y)` returns true and `y.equals(z)` returns true, then `x.equals(z)` should return true.
-     * * Consistent:  for any non-null varues `x` and `y`, multiple invocations of `x.equals(y)` consistently return true or consistently return false, provided no information used in `equals` comparisons on the objects is modified.
-     * * Never equal to null: for any non-null varue `x`, `x.equals(null)` should return false.
-     *
-     * Read more about [equality](https://kotlinlang.org/docs/reference/equality.html) in Kotlin.
-     */
-    override fun equals(other: Any?): Boolean {
-        return when (other) {
-            is CrunchyEpisodeModel -> other.mediaId == mediaId
-            else -> super.equals(other)
-        }
-    }
-
-    override fun hashCode(): Int {
-        var result = title.hashCode()
-        result = 31 * result + (description?.hashCode() ?: 0)
-        result = 31 * result + mediaId
-        result = 31 * result + premiumAvailableDate.hashCode()
-        result = 31 * result + freeAvailableDate.hashCode()
-        result = 31 * result + seriesTitle.hashCode()
-        result = 31 * result + episodeTitle.hashCode()
-        result = 31 * result + (episodeNumber?.hashCode() ?: 0)
-        result = 31 * result + (duration?.hashCode() ?: 0)
-        result = 31 * result + (publisher?.hashCode() ?: 0)
-        result = 31 * result + (subtitleLanguages?.hashCode() ?: 0)
-        result = 31 * result + (restriction?.hashCode() ?: 0)
-        result = 31 * result + (thumbnail?.hashCode() ?: 0)
-        result = 31 * result + copyright.hashCode()
-        return result
-    }
+    @Root(name = "restriction", strict = false)
+    data class RestrictionModel @JvmOverloads constructor(
+        @field:Attribute(name = "relationship")
+        var relationship: String = String.empty(),
+        @field:Attribute(name = "type")
+        var type: String = String.empty(),
+        @field:Element(name = "elements", required = false)
+        var elements: String = String.empty()
+    )
 }

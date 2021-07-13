@@ -22,19 +22,17 @@ import android.view.View
 import android.view.ViewGroup
 import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
 import co.anitrend.arch.recycler.common.ClickableItem
-import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.recycler.holder.SupportViewHolder
-import co.anitrend.arch.recycler.model.RecyclerItem
 import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
+import co.anitrend.support.crunchyroll.core.android.recycler.model.RecyclerItemBinding
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.shared.series.databinding.AdapterSeriesGridBinding
 import coil.request.Disposable
-import kotlinx.android.synthetic.main.adapter_series_grid.view.*
 import kotlinx.coroutines.flow.MutableStateFlow
 
 data class SeriesGridItem(
     val entity: CrunchySeries?
-) : RecyclerItem(entity?.seriesId) {
+) : RecyclerItemBinding<AdapterSeriesGridBinding>(entity?.seriesId ?: 0) {
 
     private var disposable: Disposable? = null
 
@@ -51,15 +49,15 @@ data class SeriesGridItem(
         view: View,
         position: Int,
         payloads: List<Any>,
-        stateFlow: MutableStateFlow<ClickableItem?>,
+        stateFlow: MutableStateFlow<ClickableItem>,
         selectionMode: ISupportSelectionMode<Long>?
     ) {
-        val binding = AdapterSeriesGridBinding.bind(view)
-        disposable = binding.seriesImage.setImageUrl(entity?.portraitImage)
-        binding.seriesTitle.text = entity?.name
-        binding.container.setOnClickListener {
+        binding = AdapterSeriesGridBinding.bind(view)
+        disposable = requireBinding().seriesImage.setImageUrl(entity?.portraitImage)
+        requireBinding().seriesTitle.text = entity?.name
+        requireBinding().container.setOnClickListener {
             stateFlow.value =
-                DefaultClickableItem(
+                ClickableItem.Data(
                     data = entity,
                     view = view
                 )
@@ -67,25 +65,24 @@ data class SeriesGridItem(
     }
 
     /**
-     * Called when the view needs to be recycled for reuse, clear any held references
-     * to objects, stop any asynchronous work, e.t.c
-     */
-    override fun unbind(view: View) {
-        view.container.setOnClickListener(null)
-        disposable?.dispose()
-        disposable = null
-    }
-
-    /**
-     * Provides a preferred span size for the item
+     * Provides a preferred span size for the item, defaulted to [R.integer.single_list_size]
      *
      * @param spanCount current span count which may also be [INVALID_SPAN_COUNT]
      * @param position position of the current item
      * @param resources optionally useful for dynamic size check with different configurations
      */
-    override fun getSpanSize(spanCount: Int, position: Int, resources: Resources) =
-        spanCount
+    override fun getSpanSize(spanCount: Int, position: Int, resources: Resources) = spanCount
 
+    /**
+     * Called when the view needs to be recycled for reuse, clear any held references
+     * to objects, stop any asynchronous work, e.t.c
+     */
+    override fun unbind(view: View) {
+        binding?.container?.setOnClickListener(null)
+        disposable?.dispose()
+        disposable = null
+        super.unbind(view)
+    }
 
     companion object {
         internal fun createViewHolder(
@@ -93,6 +90,6 @@ data class SeriesGridItem(
             layoutInflater: LayoutInflater
         ) = AdapterSeriesGridBinding.inflate(
             layoutInflater, viewGroup, false
-        ).let { SupportViewHolder(it.root) }
+        ).let { SupportViewHolder(it) }
     }
 }

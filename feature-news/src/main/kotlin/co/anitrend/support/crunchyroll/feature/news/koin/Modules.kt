@@ -19,7 +19,6 @@ package co.anitrend.support.crunchyroll.feature.news.koin
 import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.feature.news.FeatureProvider
 import co.anitrend.support.crunchyroll.feature.news.plugin.CrunchyTagPlugin
-import co.anitrend.support.crunchyroll.feature.news.plugin.store.CrunchyGlideStore
 import co.anitrend.support.crunchyroll.feature.news.presenter.NewsPresenter
 import co.anitrend.support.crunchyroll.feature.news.ui.fragment.NewsFeedContent
 import co.anitrend.support.crunchyroll.feature.news.viewmodel.NewsViewModel
@@ -29,7 +28,6 @@ import io.noties.markwon.Markwon
 import io.noties.markwon.MarkwonVisitor
 import io.noties.markwon.SoftBreakAddsNewLinePlugin
 import io.noties.markwon.html.HtmlPlugin
-import io.noties.markwon.image.glide.GlideImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import org.commonmark.node.Paragraph
 import org.koin.android.ext.koin.androidApplication
@@ -56,11 +54,6 @@ private val coreModule = module {
                     }
                 }
             )
-            .usePlugin(
-                GlideImagesPlugin.create(
-                    CrunchyGlideStore.create(androidContext())
-                )
-            )
             .usePlugin(SoftBreakAddsNewLinePlugin.create())
             .build()
     }
@@ -77,7 +70,7 @@ private val presenterModule = module {
         NewsPresenter(
             context = androidContext(),
             settings = get(),
-            dispatchers = get()
+            dispatcher = get()
         )
     }
 }

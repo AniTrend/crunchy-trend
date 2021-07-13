@@ -18,5 +18,6 @@ package co.anitrend.support.crunchyroll.data.stream.model
 
 internal data class CrunchyStreamInfoModel(
     val playhead: Int,
-    val stream_data: CrunchyStreamDataModel
+    val stream_data: CrunchyStreamDataModel,
+    val mediaId: Long = 0L,
 )

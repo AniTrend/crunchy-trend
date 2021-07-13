@@ -16,24 +16,25 @@
 
 package co.anitrend.support.crunchyroll.data.collection.source.contract
 
-import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.support.crunchyroll.data.arch.common.CrunchyPagedSource
 import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
 import co.anitrend.support.crunchyroll.domain.collection.models.CrunchyCollectionQuery
+import kotlinx.coroutines.flow.Flow
 
-internal abstract class CollectionSource(
-    supportDispatchers: SupportDispatchers
-) : CrunchyPagedSource<CrunchyCollection>(supportDispatchers) {
+internal abstract class CollectionSource : CrunchyPagedSource<CrunchyCollection>() {
 
     protected lateinit var query: CrunchyCollectionQuery
-        private set
 
-    protected abstract val observable: LiveData<PagedList<CrunchyCollection>>
+    protected abstract fun observable(
+        query: CrunchyCollectionQuery
+    ): Flow<PagedList<CrunchyCollection>>
 
-    internal operator fun invoke(param: CrunchyCollectionQuery): LiveData<PagedList<CrunchyCollection>> {
-        query = param
-        return observable
+    internal fun collection(
+        query: CrunchyCollectionQuery
+    ): Flow<PagedList<CrunchyCollection>> {
+        this.query = query
+        return observable(query)
     }
 }

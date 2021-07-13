@@ -26,7 +26,6 @@ data class CrunchyEpisodeFeed(
     val episodeDuration: String?,
     val episodeTitle: String,
     val episodeNumber: String?,
-    val copyright: String,
     val isPremiumEnabled: Boolean,
     val subtitles: List<String>?,
     val isCountryWhiteListed: Boolean

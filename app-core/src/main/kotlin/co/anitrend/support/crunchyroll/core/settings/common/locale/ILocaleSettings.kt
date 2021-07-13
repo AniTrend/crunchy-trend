@@ -16,9 +16,10 @@
 
 package co.anitrend.support.crunchyroll.core.settings.common.locale
 
+import co.anitrend.arch.extension.settings.contract.AbstractSetting
 import co.anitrend.support.crunchyroll.core.util.locale.AniTrendLocale
 
 interface ILocaleSettings {
 
-    var locale: AniTrendLocale
+    val locale: AbstractSetting<AniTrendLocale>
 }

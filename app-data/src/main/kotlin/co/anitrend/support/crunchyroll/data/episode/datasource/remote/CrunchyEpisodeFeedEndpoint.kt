@@ -17,7 +17,7 @@
 package co.anitrend.support.crunchyroll.data.episode.datasource.remote
 
 import co.anitrend.support.crunchyroll.data.arch.XML
-import co.anitrend.support.crunchyroll.data.rss.core.CrunchyRssEpisodeContainer
+import co.anitrend.support.crunchyroll.data.episode.model.page.CrunchyEpisodePageModel
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -28,11 +28,11 @@ internal interface CrunchyEpisodeFeedEndpoint {
     @GET("/crunchyroll/rss/anime/popular")
     suspend fun getPopularMediaFeed(
         @Query("locale") crunchyLocale: String
-    ): Response<CrunchyRssEpisodeContainer>
+    ): Response<CrunchyEpisodePageModel>
 
     @XML
     @GET("/crunchyroll/rss/anime")
     suspend fun getLatestMediaFeed(
         @Query("locale") crunchyLocale: String
-    ): Response<CrunchyRssEpisodeContainer>
+    ): Response<CrunchyEpisodePageModel>
 }

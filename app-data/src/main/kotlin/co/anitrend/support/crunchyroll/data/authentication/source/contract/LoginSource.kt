@@ -16,37 +16,36 @@
 
 package co.anitrend.support.crunchyroll.data.authentication.source.contract
 
-import androidx.lifecycle.LiveData
 import co.anitrend.arch.data.request.callback.RequestCallback
-import co.anitrend.arch.data.request.contract.IRequestHelper
+import co.anitrend.arch.data.request.model.Request
 import co.anitrend.arch.data.source.core.SupportCoreDataSource
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.support.crunchyroll.domain.authentication.models.CrunchyLoginQuery
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-internal abstract class LoginSource(
-    supportDispatchers: SupportDispatchers
-) : SupportCoreDataSource(supportDispatchers) {
+internal abstract class LoginSource : SupportCoreDataSource() {
 
-    protected lateinit var query: CrunchyLoginQuery
-        private set
+    protected abstract fun observable(
+        query: CrunchyLoginQuery
+    ): Flow<CrunchyUser?>
 
-    protected abstract val observable: LiveData<CrunchyUser?>
-
-    protected abstract suspend fun loginUser(callback: RequestCallback)
+    protected abstract suspend fun loginUser(
+        query: CrunchyLoginQuery,
+        callback: RequestCallback
+    )
     abstract fun loggedInUser(): Flow<CrunchyUser?>
 
-    operator fun invoke(param: CrunchyLoginQuery): LiveData<CrunchyUser?> {
-        query = param
+    fun login(query: CrunchyLoginQuery): Flow<CrunchyUser?> {
         launch(coroutineContext) {
             requestHelper.runIfNotRunning(
-                IRequestHelper.RequestType.INITIAL
-            ) {
-                loginUser(it)
-            }
+                Request.Default(
+                    "login_source_initial",
+                    Request.Type.INITIAL
+                )
+            ) { loginUser(query, it) }
         }
-        return observable
+        return observable(query)
     }
 }

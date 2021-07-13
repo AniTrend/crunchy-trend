@@ -16,52 +16,33 @@
 
 package co.anitrend.support.crunchyroll.data.episode.mapper
 
-import co.anitrend.arch.data.mapper.SupportResponseMapper
-import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyRssMapper
-import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
+import co.anitrend.support.crunchyroll.data.arch.mapper.DefaultMapper
 import co.anitrend.support.crunchyroll.data.episode.datasource.local.CrunchyRssEpisodeDao
 import co.anitrend.support.crunchyroll.data.episode.datasource.local.transformer.EpisodeFeedEntityTransformer
 import co.anitrend.support.crunchyroll.data.episode.entity.EpisodeFeedEntity
-import co.anitrend.support.crunchyroll.data.episode.model.CrunchyEpisodeModel
-import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
-import co.anitrend.support.crunchyroll.data.rss.contract.ICrunchyRssChannel
+import co.anitrend.support.crunchyroll.data.episode.model.page.CrunchyEpisodePageModel
 
 internal class EpisodeFeedResponseMapper(
-    private val dao: CrunchyRssEpisodeDao,
-    private val localeHelper: ICrunchySessionLocale,
-    private val settings: IAuthenticationSettings
-) : CrunchyRssMapper<CrunchyEpisodeModel, EpisodeFeedEntity>() {
-
+    private val dao: CrunchyRssEpisodeDao
+) : DefaultMapper<CrunchyEpisodePageModel, List<EpisodeFeedEntity>>() {
     /**
-     * Creates mapped objects and handles the database operations which may be required to map various objects,
-     * called in [retrofit2.Callback.onResponse] after assuring that the response was a success
-     *
-     * @param source the incoming data source type
-     * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
-     * @see [SupportResponseMapper]
+     * Save [data] into your desired local source
      */
-    override suspend fun onResponseMapFrom(source: ICrunchyRssChannel<CrunchyEpisodeModel>): List<EpisodeFeedEntity> {
-        // EpisodeFeedEntityTransformer
-        return source.item?.map {
-            EpisodeFeedEntityTransformer.transform(
-                source = it.copy(
-                    copyright = source.copyright
-                ),
-                locale = localeHelper.sessionLocale,
-                hasPremiumAccess = settings.hasAccessToPremium
-            )
-        } ?: emptyList()
+    override suspend fun persist(data: List<EpisodeFeedEntity>) {
+        dao.upsert(data)
     }
 
     /**
-     * Inserts the given object into the implemented room database,
-     * called in [retrofit2.Callback.onResponse]
+     * Creates mapped objects and handles the database operations which may be required to map various objects,
      *
-     * @param mappedData mapped object from [onResponseMapFrom] to insert into the database
-     * @see [SupportResponseMapper]
+     * @param source the incoming data source type
+     * @return mapped object that will be consumed by [onResponseDatabaseInsert]
      */
-    override suspend fun onResponseDatabaseInsert(mappedData: List<EpisodeFeedEntity>) {
-        if (mappedData.isNotEmpty())
-            dao.upsert(mappedData)
+    override suspend fun onResponseMapFrom(
+        source: CrunchyEpisodePageModel
+    ): List<EpisodeFeedEntity> {
+        return source.channel?.items?.map {
+            EpisodeFeedEntityTransformer.transform(it)
+        }.orEmpty()
     }
 }

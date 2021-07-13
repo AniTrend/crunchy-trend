@@ -18,29 +18,33 @@ package co.anitrend.support.crunchyroll.feature.player.ui.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageButton
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.arch.domain.entities.LoadState
+import co.anitrend.arch.domain.entities.RequestError
 import co.anitrend.arch.extension.ext.*
+import co.anitrend.support.crunchyroll.core.android.binding.IBindingView
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.extensions.createDialog
 import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.core.model.UserAgent
-import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.core.ui.fragment.CrunchyFragment
 import co.anitrend.support.crunchyroll.core.ui.get
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
 import co.anitrend.support.crunchyroll.feature.player.R
 import co.anitrend.support.crunchyroll.feature.player.component.SourceFactoryProvider
+import co.anitrend.support.crunchyroll.feature.player.databinding.FragmentMediaPlayerBinding
 import co.anitrend.support.crunchyroll.feature.player.model.track.contract.IMediaTrack
 import co.anitrend.support.crunchyroll.feature.player.plugin.MediaPluginImpl
 import co.anitrend.support.crunchyroll.feature.player.plugin.PlaylistManagerPluginImpl
 import co.anitrend.support.crunchyroll.feature.player.presenter.StreamPresenter
 import co.anitrend.support.crunchyroll.feature.player.viewmodel.MediaStreamViewModel
+import co.anitrend.support.crunchyroll.navigation.*
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.devbrackets.android.exomedia.listener.VideoControlsSeekListener
@@ -49,7 +53,6 @@ import com.devbrackets.android.exomedia.ui.widget.VideoControls
 import com.devbrackets.android.exomedia.ui.widget.VideoView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.fragment_media_player.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterNotNull
@@ -62,7 +65,9 @@ class MediaStreamContent(
     private val playlistManager: PlaylistManagerPluginImpl,
     private val presenter: StreamPresenter,
     userAgent: UserAgent
-) : CrunchyFragment() {
+) : CrunchyFragment(), IBindingView<FragmentMediaPlayerBinding> {
+
+    override var binding: FragmentMediaPlayerBinding? = null
 
     private val qualityButton by lazy(UNSAFE) {
         AppCompatImageButton(requireContext()).apply {
@@ -115,7 +120,7 @@ class MediaStreamContent(
     private val mediaPlugin by lazy(UNSAFE) {
         MediaPluginImpl(
             lifecycleScope,
-            exoMediaVideoView,
+            requireBinding().exoMediaVideoView,
             userAgent.identifier,
             DefaultBandwidthMeter.Builder(requireContext()).build(),
             sourceFactoryProvider
@@ -133,7 +138,7 @@ class MediaStreamContent(
 
     private fun showDialogUsing(message: Int, mediaTracks: List<IMediaTrack>?) {
         if (mediaTracks.isNullOrEmpty()) {
-            Snackbar.make(exoMediaVideoView, message, Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(requireBinding().root, message, Snackbar.LENGTH_SHORT).show()
             return
         }
 
@@ -169,14 +174,14 @@ class MediaStreamContent(
     }
 
         override fun setUpViewModelObserver() {
-        viewModelState().model.observe(viewLifecycleOwner, Observer {
+        viewModelState().model.observe(viewLifecycleOwner, {
             lifecycleScope.launch { prepareResults(it) }
         })
-        viewModelState().networkState.observe(viewLifecycleOwner, Observer {
-            supportStateLayout.networkMutableStateFlow.value = it
+        viewModelState().loadState.observe(viewLifecycleOwner, {
+            requireBinding().supportStateLayout.loadStateFlow.value = it
         })
-        viewModelState().refreshState.observe(viewLifecycleOwner, Observer {
-            supportStateLayout.networkMutableStateFlow.value = it
+        viewModelState().refreshState.observe(viewLifecycleOwner, {
+            requireBinding().supportStateLayout.loadStateFlow.value = it
         })
     }
 
@@ -192,7 +197,7 @@ class MediaStreamContent(
                 onFetchDataInitialize()
         }
         lifecycleScope.launchWhenResumed {
-            supportStateLayout.interactionStateFlow
+            requireBinding().supportStateLayout.interactionFlow
                 .filterNotNull()
                 .debounce(DEBOUNCE_DURATION)
                 .collect {
@@ -201,18 +206,51 @@ class MediaStreamContent(
         }
     }
 
+    /**
+     * Called to have the fragment instantiate its user interface view. This is optional, and
+     * non-graphical fragments can return null. This will be called between
+     * [onCreate] & [onActivityCreated].
+     *
+     * A default View can be returned by calling [Fragment] in your
+     * constructor. Otherwise, this method returns null.
+     *
+     * It is recommended to __only__ inflate the layout in this method and move
+     * logic that operates on the returned View to [onViewCreated].
+     *
+     * If you return a View from here, you will later be called in [onDestroyView]
+     * when the view is being released.
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate any views in the fragment
+     * @param container If non-null, this is the parent view that the fragment's UI should be
+     * attached to. The fragment should not add the view itself, but this can be used to generate
+     * the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return Return the View for the fragment's UI, or null.
+     */
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = super.onCreateView(inflater, container, savedInstanceState)
+        binding = view?.let(FragmentMediaPlayerBinding::bind)
+        return view
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lifecycleScope.launch { onUpdateUserInterface() }
     }
 
     private fun onUpdateUserInterface() {
-        supportStateLayout.stateConfigFlow.value = get()
+        requireBinding().supportStateLayout.stateConfigFlow.value = get()
         mediaPlugin.onInitializing()
         mediaPlugin.setVisibilityListener(
             controlsVisibilityListener
         )
-        (exoMediaVideoView.videoControls as? VideoControls)?.also {
+        (requireBinding().exoMediaVideoView.videoControls as? VideoControls)?.also {
             it.seekListener = object: VideoControlsSeekListener {
                 override fun onSeekStarted(): Boolean {
                     playlistManager.invokeSeekStarted()
@@ -224,7 +262,7 @@ class MediaStreamContent(
                     return true
                 }
             }
-            if (exoMediaVideoView.trackSelectionAvailable()) {
+            if (requireBinding().exoMediaVideoView.trackSelectionAvailable()) {
                 it.addExtraView(qualityButton)
                 it.addExtraView(audioButton)
                 it.addExtraView(captionButton)
@@ -249,10 +287,12 @@ class MediaStreamContent(
                 )
             )
         } else {
-            supportStateLayout.networkMutableStateFlow.value =
-                NetworkState.Error(
-                    heading = "Invalid fragment parameters ${Emote.Cry}",
-                    message = "Invalid or missing payload, request cannot be processed"
+            requireBinding().supportStateLayout.loadStateFlow.value =
+                LoadState.Error(
+                    RequestError(
+                        topic = "Invalid fragment parameters ${Emote.Cry}",
+                        description = "Invalid or missing payload, request cannot be processed"
+                    )
                 )
         }
     }
@@ -320,7 +360,7 @@ class MediaStreamContent(
             // the visibility off for use in the ControlsVisibilityListener for verification
             lastVisibility = visibility
             if (visibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0) {
-                exoMediaVideoView.showControls()
+                requireBinding().exoMediaVideoView.showControls()
             }
         }
     }

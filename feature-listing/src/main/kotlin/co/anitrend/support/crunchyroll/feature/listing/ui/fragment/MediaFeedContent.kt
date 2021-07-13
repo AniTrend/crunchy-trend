@@ -22,7 +22,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.extension.ext.gone
-import co.anitrend.arch.recycler.common.DefaultClickableItem
+import co.anitrend.arch.recycler.common.ClickableItem
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
@@ -30,7 +30,6 @@ import co.anitrend.support.crunchyroll.core.extensions.createDialog
 import co.anitrend.support.crunchyroll.core.model.Emote
 import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.core.ui.fragment.list.CrunchyFragmentList
-import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
@@ -83,62 +82,60 @@ class MediaFeedContent(
     override fun initializeComponents(savedInstanceState: Bundle?) {
         super.initializeComponents(savedInstanceState)
         lifecycleScope.launchWhenResumed {
-            supportViewAdapter.clickableStateFlow.debounce(DEBOUNCE_DURATION)
-                .filterIsInstance<DefaultClickableItem<CrunchyEpisodeFeed>>()
+            supportViewAdapter.clickableFlow.debounce(DEBOUNCE_DURATION)
+                .filterIsInstance<ClickableItem.Data<CrunchyEpisodeFeed>>()
                 .collect {
                     val episodeFeed = it.data
-                    if (episodeFeed != null) {
-                        activity?.createDialog(BottomSheet(LayoutMode.WRAP_CONTENT))
-                            ?.setPeekHeight(res = R.dimen.app_bar_height)
-                            ?.cornerRadius(res = R.dimen.xl_margin)
-                            ?.customView(
-                                viewRes = R.layout.dialog_media,
-                                horizontalPadding = false,
-                                noVerticalPadding = true,
-                                dialogWrapContent = true
-                            )
-                            ?.show {
-                                val binding = DialogMediaBinding.bind(getCustomView())
+                    activity?.createDialog(BottomSheet(LayoutMode.WRAP_CONTENT))
+                        ?.setPeekHeight(res = R.dimen.design_nav_header_height)
+                        ?.cornerRadius(res = R.dimen.xl_margin)
+                        ?.customView(
+                            viewRes = R.layout.dialog_media,
+                            horizontalPadding = false,
+                            noVerticalPadding = true,
+                            dialogWrapContent = true
+                        )
+                        ?.show {
+                            val binding = DialogMediaBinding.bind(getCustomView())
 
-                                binding.dialogMediaDuration.text = episodeFeed.episodeDuration
-                                binding.dialogMediaTitle.text = episodeFeed.episodeTitle
-                                binding.dialogMediaDescription.gone()
-                                /*view.dialog_media_description.text = episodeFeed.description?.parseAsHtml(
-                                    flags = HtmlCompat.FROM_HTML_MODE_COMPACT
-                                )*/
-                                binding.dialogMediaImage.setImageUrl(episodeFeed.episodeThumbnail)
-                                binding.dialogMediaImageContainer.setOnClickListener { _ ->
-                                    val mediaPlayerPayload = MediaPlayer.Payload(
-                                        mediaId = episodeFeed.id,
-                                        collectionName = episodeFeed.title,
-                                        collectionThumbnail = null,
-                                        episodeTitle = "Episode ${episodeFeed.episodeNumber}: ${episodeFeed.episodeTitle}",
-                                        episodeThumbnail = episodeFeed.episodeThumbnail
-                                    )
-                                    MediaPlayer(
-                                        binding.root.context, mediaPlayerPayload
-                                    )
-                                }
-                                binding.dialogMediaDownload.setOnClickListener { _ ->
-                                    // TODO: Move download to the player screen?
-                                    Toast.makeText(
-                                        binding.root.context,
-                                        "Not yet implemented.. ${Emote.Heart}",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                                // possible regression https://github.com/afollestad/material-dialogs/issues/1925
-                                /*cancelable(false)
-                            cancelOnTouchOutside(false)
-                            noAutoDismiss()*/
+                            binding.dialogMediaDuration.text = episodeFeed.episodeDuration
+                            binding.dialogMediaTitle.text = episodeFeed.episodeTitle
+                            binding.dialogMediaDescription.gone()
+                            /*view.dialog_media_description.text = episodeFeed.description?.parseAsHtml(
+                                flags = HtmlCompat.FROM_HTML_MODE_COMPACT
+                            )*/
+                            binding.dialogMediaImage.setImageUrl(episodeFeed.episodeThumbnail)
+                            binding.dialogMediaImageContainer.setOnClickListener { _ ->
+                                val mediaPlayerPayload = MediaPlayer.Payload(
+                                    mediaId = episodeFeed.id,
+                                    collectionName = episodeFeed.title,
+                                    collectionThumbnail = null,
+                                    episodeTitle = "Episode ${episodeFeed.episodeNumber}: ${episodeFeed.episodeTitle}",
+                                    episodeThumbnail = episodeFeed.episodeThumbnail
+                                )
+                                MediaPlayer(
+                                    binding.root.context, mediaPlayerPayload
+                                )
                             }
-                    }
+                            binding.dialogMediaDownload.setOnClickListener { _ ->
+                                // TODO: Move download to the player screen?
+                                Toast.makeText(
+                                    binding.root.context,
+                                    "Not yet implemented.. ${Emote.Heart}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                            // possible regression https://github.com/afollestad/material-dialogs/issues/1925
+                            /*cancelable(false)
+                        cancelOnTouchOutside(false)
+                        noAutoDismiss()*/
+                        }
                 }
         }
     }
 
     override fun onFetchDataInitialize() {
-        val currentLocale = get<ICrunchySessionLocale>().sessionLocale
+        val currentLocale = get<ICrunchySessionLocale>()
         viewModel.state(
             RssQuery(
                 language = currentLocale.toCrunchyLocale()

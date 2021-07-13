@@ -25,7 +25,7 @@
         android:clickable="true"
         android:focusable="true"
         android:foreground="?selectableItemBackground"
-        app:cardBackgroundColor="?cardColor"
+        app:cardBackgroundColor="?colorPrimary"
         app:cardElevation="0dp"
         app:contentPadding="@dimen/xl_margin"
         tools:padding="@dimen/xl_margin">

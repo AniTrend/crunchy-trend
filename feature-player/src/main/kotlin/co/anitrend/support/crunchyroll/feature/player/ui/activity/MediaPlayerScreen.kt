@@ -29,11 +29,12 @@ import co.anitrend.support.crunchyroll.core.ui.model.FragmentItem
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.commit
 import co.anitrend.support.crunchyroll.feature.player.R
+import co.anitrend.support.crunchyroll.feature.player.databinding.ActivityStreamingBinding
 import co.anitrend.support.crunchyroll.feature.player.ui.fragment.MediaStreamContent
 import com.devbrackets.android.exomedia.listener.VideoControlsVisibilityListener
 import kotlinx.coroutines.launch
 
-class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener,
+class MediaPlayerScreen : CrunchyActivity<ActivityStreamingBinding>(), VideoControlsVisibilityListener,
     FragmentOnAttachListener {
 
     internal var fullScreenListener: MediaStreamContent.FullScreenListener? = null
@@ -75,7 +76,8 @@ class MediaPlayerScreen : CrunchyActivity(), VideoControlsVisibilityListener,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_streaming)
+        binding = ActivityStreamingBinding.inflate(layoutInflater)
+        setContentView(requireBinding().root)
     }
 
     override fun initializeComponents(savedInstanceState: Bundle?) {

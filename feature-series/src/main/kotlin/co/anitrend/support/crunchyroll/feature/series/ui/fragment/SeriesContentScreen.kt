@@ -21,17 +21,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.*
-import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.arch.domain.entities.LoadState
+import co.anitrend.arch.domain.entities.RequestError
 import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.extension.ext.argument
 import co.anitrend.arch.extension.ext.attachComponent
 import co.anitrend.arch.extension.ext.detachComponent
-import co.anitrend.arch.recycler.common.DefaultClickableItem
+import co.anitrend.arch.recycler.common.ClickableItem
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
-import co.anitrend.support.crunchyroll.navigation.Season
-import co.anitrend.support.crunchyroll.navigation.Series
-import co.anitrend.support.crunchyroll.navigation.Discover
 import co.anitrend.support.crunchyroll.core.ui.fragment.CrunchyFragment
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesDetailQuery
@@ -39,6 +37,9 @@ import co.anitrend.support.crunchyroll.feature.series.databinding.SeriesContentB
 import co.anitrend.support.crunchyroll.feature.series.presenter.SeriesDetailPresenter
 import co.anitrend.support.crunchyroll.feature.series.ui.adpter.SeriesGenreAdapter
 import co.anitrend.support.crunchyroll.feature.series.viewmodel.SeriesDetailViewModel
+import co.anitrend.support.crunchyroll.navigation.Discover
+import co.anitrend.support.crunchyroll.navigation.Season
+import co.anitrend.support.crunchyroll.navigation.Series
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterIsInstance
@@ -69,17 +70,17 @@ class SeriesContentScreen : CrunchyFragment() {
             viewLifecycleOwner,
             Observer {
                 if (it != null) {
-                    binding.supportStateLayout.networkMutableStateFlow.value = NetworkState.Success
+                    binding.supportStateLayout.loadStateFlow.value = LoadState.Success()
                     seriesGenreAdapter.submitList(it.genres)
                     presenter.setUp(it, binding)
                 }
             }
         )
-        viewModelState().networkState.observe(
+        viewModelState().loadState.observe(
             viewLifecycleOwner,
             Observer {
                 if (!binding.supportStateLayout.isContent)
-                    binding.supportStateLayout.networkMutableStateFlow.value = it
+                    binding.supportStateLayout.loadStateFlow.value = it
             }
         )
     }
@@ -100,7 +101,7 @@ class SeriesContentScreen : CrunchyFragment() {
                 onFetchDataInitialize()
         }
         lifecycleScope.launchWhenResumed {
-            binding.supportStateLayout.interactionStateFlow
+            binding.supportStateLayout.interactionFlow
                 .filterNotNull()
                 .debounce(DEBOUNCE_DURATION)
                 .collect {
@@ -108,11 +109,11 @@ class SeriesContentScreen : CrunchyFragment() {
                 }
         }
         lifecycleScope.launchWhenResumed {
-            seriesGenreAdapter.clickableStateFlow.debounce(DEBOUNCE_DURATION)
-                .filterIsInstance<DefaultClickableItem<String>>()
+            seriesGenreAdapter.clickableFlow.debounce(DEBOUNCE_DURATION)
+                .filterIsInstance<ClickableItem.Data<String>>()
                 .collect {
                     val genre = it.data
-                    if (!genre.isNullOrEmpty()) {
+                    if (genre.isNotEmpty()) {
                         val payload = Discover.Payload(
                             browseFilter = CrunchySeriesBrowseFilter.TAG,
                             filterOption = genre
@@ -208,10 +209,12 @@ class SeriesContentScreen : CrunchyFragment() {
                 )
             )
         } else {
-            binding.supportStateLayout.networkMutableStateFlow.value =
-                NetworkState.Error(
-                    heading = "Invalid Parameter/s State",
-                    message = "Invalid or missing payload"
+            binding.supportStateLayout.loadStateFlow.value =
+                LoadState.Error(
+                    RequestError(
+                        topic = "Invalid Parameter/s State",
+                        description = "Invalid or missing payload"
+                    )
                 )
         }
     }

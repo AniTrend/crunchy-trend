@@ -18,16 +18,16 @@ package co.anitrend.support.crunchyroll.core.koin
 
 import android.webkit.WebView
 import co.anitrend.arch.core.model.IStateLayoutConfig
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.SupportDispatcher
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.arch.extension.ext.isLowRamDevice
-import co.anitrend.arch.extension.util.contract.ISupportDateHelper
+import co.anitrend.arch.extension.util.date.contract.AbstractSupportDateHelper
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.R
 import co.anitrend.support.crunchyroll.core.helper.StorageHelper
 import co.anitrend.support.crunchyroll.core.model.UserAgent
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
-import co.anitrend.support.crunchyroll.core.settings.common.cache.ICacheSettings
 import co.anitrend.support.crunchyroll.core.util.config.ConfigurationUtil
 import co.anitrend.support.crunchyroll.core.util.locale.LocaleUtil
 import co.anitrend.support.crunchyroll.core.util.locale.SessionLocaleProviderHelper
@@ -44,9 +44,9 @@ import org.koin.dsl.binds
 import org.koin.dsl.module
 
 private val coreModule = module {
-    single<ISupportDateHelper> {
+    single {
         CrunchyDateUtil()
-    }
+    } bind AbstractSupportDateHelper::class
     single {
         StateLayoutConfig(
             loadingDrawable = R.drawable.ic_launcher_foreground,
@@ -67,8 +67,8 @@ private val coreModule = module {
             themeUtil = get()
         )
     }
-    single {
-        SupportDispatchers()
+    single<ISupportDispatcher> {
+        SupportDispatcher()
     }
     single {
         UserAgent(
@@ -98,11 +98,11 @@ private val configurationModule = module {
     factory {
         val isLowRamDevice = androidContext().isLowRamDevice()
         val memoryLimit = if (isLowRamDevice) 0.15 else 0.35
-        val dispatchers = get<SupportDispatchers>()
+        val dispatcher = get<ISupportDispatcher>()
         val loader = ImageLoader.Builder(androidContext())
             .availableMemoryPercentage(memoryLimit)
             .bitmapPoolPercentage(memoryLimit)
-            .dispatcher(dispatchers.io)
+            .dispatcher(dispatcher.io)
             .okHttpClient {
                 OkHttpClient.Builder().cache(
                     Cache(
@@ -111,9 +111,7 @@ private val configurationModule = module {
                         ),
                         StorageHelper.getStorageUsageLimit(
                             context = androidContext(),
-                            settings = object : ICacheSettings {
-                                override var usageRatio = 0.15f
-                            }
+                            settings = get()
                         )
                     )
                 ).build()

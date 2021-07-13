@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.arch.helper
 
-import co.anitrend.arch.data.request.contract.IRequestHelper
+import co.anitrend.arch.data.request.model.Request
 import co.anitrend.arch.extension.util.pagination.SupportPagingHelper
 import timber.log.Timber
 
@@ -43,19 +43,19 @@ internal object CrunchyPagingConfigHelper {
      * configure [pagingHelper] with the records count/paging limit to start load
      * from the last page of results in our backend.
      *
-     * @param requestType Current request
+     * @param request Current request
      * @param pagingHelper paging helper
      * @param action what need to be run to return the number of available records
      */
     suspend inline operator fun invoke(
-        requestType: IRequestHelper.RequestType,
+        request: Request,
         pagingHelper: SupportPagingHelper,
         crossinline action: suspend () -> Int
     ) {
-        when (requestType) {
-            IRequestHelper.RequestType.AFTER -> {
+        when (request.type) {
+            Request.Type.AFTER -> {
                 Timber.tag(moduleTag).v(
-                    "Triggered request: $requestType on paging helper configuration"
+                    "Triggered request: $request on paging helper configuration"
                 )
                 if (pagingHelper.isInitialAfterFirstLoad()) {
                     runCatching {
@@ -69,7 +69,7 @@ internal object CrunchyPagingConfigHelper {
             else -> {
                 // We won't be support paging before a first item
                 Timber.tag(moduleTag).v(
-                    "Ignoring request: $requestType on paging helper configuration"
+                    "Ignoring request: $request on paging helper configuration"
                 )
             }
         }

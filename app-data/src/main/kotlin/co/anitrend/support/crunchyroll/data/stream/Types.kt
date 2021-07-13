@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2021 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,8 +14,11 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.rss.contract
+package co.anitrend.support.crunchyroll.data.stream
 
-internal interface IRssCopyright {
-    val copyright: String?
-}
+import co.anitrend.support.crunchyroll.data.arch.controller.core.DefaultController
+import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
+import co.anitrend.support.crunchyroll.data.stream.entity.CrunchyStreamEntity
+import co.anitrend.support.crunchyroll.data.stream.model.CrunchyStreamInfoModel
+
+internal typealias StreamController = DefaultController<CrunchyContainer<CrunchyStreamInfoModel>, CrunchyStreamEntity?>

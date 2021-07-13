@@ -16,9 +16,18 @@
 
 package co.anitrend.support.crunchyroll.data.authentication.mapper
 
-import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
+import co.anitrend.support.crunchyroll.data.arch.mapper.DefaultMapper
+import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
+import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEntity
 
-internal class LogoutResponseMapper : CrunchyMapper<Any?, Any?>() {
+internal class LogoutResponseMapper : DefaultMapper<CrunchyContainer<Any>, Any>() {
+
+    /**
+     * Save [data] into your desired local source
+     */
+    override suspend fun persist(data: Any) {
+
+    }
 
     /**
      * Creates mapped objects and handles the database operations which may be required to map various objects,
@@ -27,15 +36,5 @@ internal class LogoutResponseMapper : CrunchyMapper<Any?, Any?>() {
      * @param source the incoming data source type
      * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
      */
-    override suspend fun onResponseMapFrom(source: Any?): Any? = source
-
-    /**
-     * Inserts the given object into the implemented room database,
-     * called in [retrofit2.Callback.onResponse]
-     *
-     * @param mappedData mapped object from [onResponseMapFrom] to insert into the database
-     */
-    override suspend fun onResponseDatabaseInsert(mappedData: Any?) {
-
-    }
+    override suspend fun onResponseMapFrom(source: CrunchyContainer<Any>): Any = source
 }

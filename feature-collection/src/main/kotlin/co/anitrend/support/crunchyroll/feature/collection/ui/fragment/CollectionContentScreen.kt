@@ -19,11 +19,13 @@ package co.anitrend.support.crunchyroll.feature.collection.ui.fragment
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import co.anitrend.arch.domain.entities.LoadState
 import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.arch.domain.entities.RequestError
 import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.extension.ext.argument
 import co.anitrend.arch.extension.ext.empty
-import co.anitrend.arch.recycler.common.DefaultClickableItem
+import co.anitrend.arch.recycler.common.ClickableItem
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.model.Emote
@@ -63,7 +65,7 @@ class CollectionContentScreen(
     override fun setUpViewModelObserver() {
         viewModelState().model.observe(
             viewLifecycleOwner,
-            Observer {
+            {
                 onPostModelChange(it)
             }
         )
@@ -80,14 +82,14 @@ class CollectionContentScreen(
     override fun initializeComponents(savedInstanceState: Bundle?) {
         super.initializeComponents(savedInstanceState)
         lifecycleScope.launchWhenResumed {
-            supportViewAdapter.clickableStateFlow.debounce(DEBOUNCE_DURATION)
-                .filterIsInstance<DefaultClickableItem<CrunchyCollection>>()
+            supportViewAdapter.clickableFlow.debounce(DEBOUNCE_DURATION)
+                .filterIsInstance<ClickableItem.Data<CrunchyCollection>>()
                 .collect {
                     val data = it.data
                     val payload = Media.Payload(
-                        collectionThumbnail = data?.portraitImage,
-                        collectionName = data?.name ?: String.empty(),
-                        collectionId = data?.collectionId ?: 0
+                        collectionThumbnail = data.portraitImage,
+                        collectionName = data.name,
+                        collectionId = data.collectionId
                     )
                     Media.invoke(it.view.context, payload)
                 }
@@ -103,11 +105,12 @@ class CollectionContentScreen(
                 )
             )
         } else {
-            supportStateLayout?.networkMutableStateFlow?.value =
-                NetworkState.Error(
-                    heading = "Invalid fragment parameters ${Emote.Cry}",
-                    message = "Invalid or missing payload, request cannot be processed"
-
+            listPresenter.stateLayout.loadStateFlow.value =
+                LoadState.Error(
+                    RequestError(
+                        topic = "Invalid fragment parameters ${Emote.Cry}",
+                        description = "Invalid or missing payload, request cannot be processed"
+                    )
                 )
         }
     }

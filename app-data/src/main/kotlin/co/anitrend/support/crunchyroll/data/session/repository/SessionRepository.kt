@@ -20,6 +20,7 @@ import co.anitrend.arch.data.repository.SupportRepository
 import co.anitrend.support.crunchyroll.data.session.source.contract.SessionSource
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
 import co.anitrend.support.crunchyroll.domain.session.repositories.ISessionRepository
+import kotlinx.coroutines.flow.Flow
 
 internal class SessionRepository(
     private val coreSource: SessionSource,
@@ -31,21 +32,21 @@ internal class SessionRepository(
     /**
      * Returns a session that can be used when the user is not authenticated
      */
-    override fun getCoreSession(): Session? {
+    override fun getCoreSession(): Flow<Session?> {
         return coreSource()
     }
 
     /**
      * Returns a session that behaves as a fallback when the unblock session fails
      */
-    override fun getNormalSession(): Session? {
+    override fun getNormalSession(): Flow<Session?> {
         return normalSource()
     }
 
     /**
      * Returns a session for the authenticated user
      */
-    override fun getUnblockedSession(): Session? {
+    override fun getUnblockedSession(): Flow<Session?> {
         return unblockedSource()
     }
 

@@ -83,7 +83,7 @@ object StorageHelper {
 
     fun getStorageUsageLimit(context: Context, settings: ICacheSettings): Long {
         val freeSpace = getFreeSpace(context)
-        val ratio = settings.usageRatio
+        val ratio = settings.usageRatio.value
         val limit = (freeSpace * ratio).toLong()
         Timber.tag(moduleTag).v(
             "Storage usage limit -> ratio: $ratio | limit: ${limit.toHumanReadableByteValue()}"

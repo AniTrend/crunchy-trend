@@ -17,11 +17,9 @@
 package co.anitrend.support.crunchyroll.data.batch.source
 
 import co.anitrend.arch.data.request.callback.RequestCallback
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.arch.extension.network.SupportConnectivity
-import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OfflineControllerPolicy
-import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
-import co.anitrend.support.crunchyroll.data.arch.extension.controller
+import co.anitrend.support.crunchyroll.data.batch.BatchController
 import co.anitrend.support.crunchyroll.data.batch.datasource.remote.CrunchyBatchEndpoint
 import co.anitrend.support.crunchyroll.data.batch.mapper.BatchResponseMapper
 import co.anitrend.support.crunchyroll.data.batch.source.contract.BatchSource
@@ -31,10 +29,9 @@ import kotlinx.coroutines.flow.flow
 
 internal class BatchSourceImpl(
     private val endpoint: CrunchyBatchEndpoint,
-    private val supportConnectivity: SupportConnectivity,
-    private val mapper: BatchResponseMapper,
-    supportDispatchers: SupportDispatchers
-) : BatchSource(supportDispatchers) {
+    private val controller: BatchController,
+    override val dispatcher: ISupportDispatcher
+) : BatchSource() {
 
     override fun getBatchOfSeries(
         queries: List<CrunchyBatchQuery>,
@@ -45,8 +42,6 @@ internal class BatchSourceImpl(
                 request = CrunchyBatchQuery.toJson(queries)
             )
         }
-        val controller =
-            mapper.controller(dispatchers, OfflineControllerPolicy.create())
 
         emit(controller(deferred, callback))
     }

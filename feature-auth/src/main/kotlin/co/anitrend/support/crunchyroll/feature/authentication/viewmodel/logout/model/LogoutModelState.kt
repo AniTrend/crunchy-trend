@@ -30,10 +30,10 @@ data class LogoutModelState(
     private val useCaseResult = MutableLiveData<DataState<Boolean>>()
 
     override val model =
-        Transformations.switchMap(useCaseResult) { it.model }
+        Transformations.switchMap(useCaseResult) { it.model.asLiveData() }
 
-    override val networkState =
-        Transformations.switchMap(useCaseResult) { it.networkState.asLiveData() }
+    override val loadState =
+        Transformations.switchMap(useCaseResult) { it.loadState.asLiveData() }
 
     override val refreshState =
         Transformations.switchMap(useCaseResult) { it.refreshState.asLiveData() }

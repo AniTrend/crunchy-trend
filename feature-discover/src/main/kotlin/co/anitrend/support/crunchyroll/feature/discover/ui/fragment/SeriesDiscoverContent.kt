@@ -21,7 +21,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.extension.ext.argument
-import co.anitrend.arch.recycler.common.DefaultClickableItem
+import co.anitrend.arch.recycler.common.ClickableItem
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.navigation.*
@@ -64,7 +64,7 @@ class SeriesDiscoverContent(
     override fun setUpViewModelObserver() {
         viewModelState().model.observe(
             viewLifecycleOwner,
-            Observer {
+            {
                 onPostModelChange(it)
             }
         )
@@ -79,14 +79,14 @@ class SeriesDiscoverContent(
     override fun initializeComponents(savedInstanceState: Bundle?) {
         super.initializeComponents(savedInstanceState)
         lifecycleScope.launchWhenResumed {
-            supportViewAdapter.clickableStateFlow.debounce(DEBOUNCE_DURATION)
-                .filterIsInstance<DefaultClickableItem<CrunchySeries>>()
+            supportViewAdapter.clickableFlow.debounce(DEBOUNCE_DURATION)
+                .filterIsInstance<ClickableItem.Data<CrunchySeries>>()
                 .collect {
                     val data = it.data
                     val view = it.view
 
                     val payload = Series.Payload(
-                        seriesId = data?.seriesId ?: 0
+                        seriesId = data.seriesId
                     )
 
                     Series(view.context, payload)

@@ -32,16 +32,16 @@ class ThemeUtil(private val settings: IThemeSettings) {
     val theme: Int
         get() {
             if (
-                settings.theme == AniTrendTheme.SYSTEM ||
-                settings.theme == AniTrendTheme.AMOLED ||
-                settings.theme == AniTrendTheme.LIGHT
+                settings.theme.value == AniTrendTheme.SYSTEM ||
+                settings.theme.value == AniTrendTheme.AMOLED ||
+                settings.theme.value == AniTrendTheme.LIGHT
             ) return R.style.AppTheme
 
             return getPersonalizedTheme()
         }
 
 
-    private fun CrunchyActivity.applyWindowStyle() {
+    private fun CrunchyActivity<*>.applyWindowStyle() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val systemUiOptions = window.decorView.systemUiVisibility
             when (AppCompatDelegate.getDefaultNightMode()) {
@@ -65,12 +65,12 @@ class ThemeUtil(private val settings: IThemeSettings) {
 
     internal fun applyNightMode() {
         val theme = settings.theme
-        if (theme == AniTrendTheme.SYSTEM)
+        if (theme.value == AniTrendTheme.SYSTEM)
             AppCompatDelegate.setDefaultNightMode(
                 AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
             )
         else
-            when (isThemeLight(settings.theme)) {
+            when (isThemeLight(settings.theme.value)) {
                 true -> AppCompatDelegate.setDefaultNightMode(
                     AppCompatDelegate.MODE_NIGHT_NO
                 )
@@ -80,7 +80,7 @@ class ThemeUtil(private val settings: IThemeSettings) {
             }
     }
 
-    internal fun applyApplicationTheme(context: CrunchyActivity) {
+    internal fun applyApplicationTheme(context: CrunchyActivity<*>) {
         context.applyWindowStyle()
         context.setTheme(theme)
     }
@@ -95,7 +95,7 @@ class ThemeUtil(private val settings: IThemeSettings) {
 
     @StyleRes
     private fun getPersonalizedTheme(): Int {
-        if (settings.theme == AniTrendTheme.DARK)
+        if (settings.theme.value == AniTrendTheme.DARK)
             TODO("Set up other custom themes")
 
         return 0

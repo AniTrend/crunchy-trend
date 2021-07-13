@@ -20,22 +20,17 @@ import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.extension.ext.UNSAFE
-import co.anitrend.arch.extension.ext.startNewActivity
-import co.anitrend.arch.recycler.common.DefaultClickableItem
+import co.anitrend.arch.recycler.common.ClickableItem
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
-import co.anitrend.support.crunchyroll.core.extensions.toBundle
-import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.core.ui.fragment.list.CrunchyFragmentList
-import co.anitrend.support.crunchyroll.data.arch.extension.toCrunchyLocale
 import co.anitrend.support.crunchyroll.data.locale.helper.ICrunchySessionLocale
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import co.anitrend.support.crunchyroll.feature.news.R
-import co.anitrend.support.crunchyroll.feature.news.koin.moduleHelper
-import co.anitrend.support.crunchyroll.feature.news.ui.activity.NewsScreen
 import co.anitrend.support.crunchyroll.feature.news.ui.adapter.RssNewsAdapter
 import co.anitrend.support.crunchyroll.feature.news.viewmodel.NewsViewModel
+import co.anitrend.support.crunchyroll.navigation.News
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterIsInstance
@@ -80,29 +75,27 @@ class NewsFeedContent(
     override fun initializeComponents(savedInstanceState: Bundle?) {
         super.initializeComponents(savedInstanceState)
         lifecycleScope.launchWhenResumed {
-            supportViewAdapter.clickableStateFlow.debounce(DEBOUNCE_DURATION)
-                .filterIsInstance<DefaultClickableItem<CrunchyNews>>()
+            supportViewAdapter.clickableFlow.debounce(DEBOUNCE_DURATION)
+                .filterIsInstance<ClickableItem.Data<CrunchyNews>>()
                 .collect {
                     val model = it.data
-                    if (model != null) {
-                        val payload = News.Payload(
-                            model.guid,
-                            model.title,
-                            model.subTitle,
-                            model.description,
-                            model.content,
-                            model.publishedOn
-                        )
+                    val payload = News.Payload(
+                        model.guid,
+                        model.title,
+                        model.subTitle,
+                        model.description,
+                        model.content,
+                        model.publishedOn
+                    )
 
-                        News(it.view.context, payload)
-                    }
+                    News(it.view.context, payload)
                 }
         }
     }
 
 
     override fun onFetchDataInitialize() {
-        val currentLocale = get<ICrunchySessionLocale>().sessionLocale
+        val currentLocale = get<ICrunchySessionLocale>()
         viewModel.state(
             RssQuery(
                 language = currentLocale.toCrunchyLocale()

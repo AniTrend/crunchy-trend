@@ -17,29 +17,28 @@
 package co.anitrend.support.crunchyroll.data.catalog.source.contract
 
 import co.anitrend.arch.data.request.callback.RequestCallback
-import co.anitrend.arch.data.request.contract.IRequestHelper
+import co.anitrend.arch.data.request.model.Request
 import co.anitrend.arch.data.source.core.SupportCoreDataSource
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-internal abstract class CatalogSource(
-    supportDispatchers: SupportDispatchers
-) : SupportCoreDataSource(supportDispatchers) {
+internal abstract class CatalogSource : SupportCoreDataSource() {
 
-    protected abstract val observable: Flow<List<CrunchyCatalogWithSeries>>
+    protected abstract fun observable(): Flow<List<CrunchyCatalogWithSeries>>
 
     protected abstract suspend fun getCatalog(callback: RequestCallback)
 
-    operator fun invoke(): Flow<List<CrunchyCatalogWithSeries>> {
+    fun catalogSeries(): Flow<List<CrunchyCatalogWithSeries>> {
         launch {
             requestHelper.runIfNotRunning(
-                IRequestHelper.RequestType.INITIAL
-            ) {
-                getCatalog(it)
-            }
+                Request.Default(
+                    "catalog_source_initial",
+                    Request.Type.INITIAL
+                )
+            ) { getCatalog(it) }
         }
-        return observable
+        return observable()
     }
 }

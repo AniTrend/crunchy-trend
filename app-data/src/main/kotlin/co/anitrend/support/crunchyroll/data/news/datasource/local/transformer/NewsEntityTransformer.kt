@@ -31,7 +31,9 @@ internal object NewsEntityTransformer : ISupportTransformer<CrunchyNewsModel, Ne
         val content = NewsHelper.getContentWithoutImage(source.description)
 
         return NewsEntity(
-            guid = source.guid,
+            guid = NewsHelper.generateId(
+                source.referenceLink
+            ),
             title = source.title,
             image = NewsHelper.getImageSrc(
                 source.description
@@ -39,7 +41,7 @@ internal object NewsEntityTransformer : ISupportTransformer<CrunchyNewsModel, Ne
             author = source.author,
             subTitle = NewsHelper.getSubTitle(content),
             description = NewsHelper.getShortDescription(content),
-            content = source.encoded,
+            content = source.contentEncoded,
             publishedOn = source.publishedOn.rcf822ToUnixTime()
         )
     }

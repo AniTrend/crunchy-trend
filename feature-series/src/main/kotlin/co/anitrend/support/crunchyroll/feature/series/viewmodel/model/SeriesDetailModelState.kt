@@ -35,15 +35,15 @@ data class SeriesDetailModelState(
 
     override val model =
         Transformations.switchMap(useCaseResult) {
-            Transformations.map(it.model) { cs ->
+            Transformations.map(it.model.asLiveData()) { cs ->
                 cs?.let { c ->
                     SeriesModel.fromCrunchySeries(c)
                 }
             }
         }
 
-    override val networkState =
-        Transformations.switchMap(useCaseResult) { it.networkState.asLiveData() }
+    override val loadState =
+        Transformations.switchMap(useCaseResult) { it.loadState.asLiveData() }
 
     override val refreshState =
         Transformations.switchMap(useCaseResult) { it.refreshState.asLiveData() }

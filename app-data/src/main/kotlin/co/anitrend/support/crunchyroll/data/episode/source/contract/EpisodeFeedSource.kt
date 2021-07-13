@@ -16,32 +16,30 @@
 
 package co.anitrend.support.crunchyroll.data.episode.source.contract
 
-import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import co.anitrend.arch.data.request.callback.RequestCallback
-import co.anitrend.arch.data.request.contract.IRequestHelper
+import co.anitrend.arch.data.request.model.Request
 import co.anitrend.arch.data.source.paging.SupportPagingDataSource
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-internal abstract class EpisodeFeedSource(
-    supportDispatchers: SupportDispatchers
-) : SupportPagingDataSource<CrunchyEpisodeFeed>(supportDispatchers) {
+internal abstract class EpisodeFeedSource : SupportPagingDataSource<CrunchyEpisodeFeed>() {
 
     protected lateinit var query: RssQuery
         private set
 
-    protected abstract val observable: LiveData<PagedList<CrunchyEpisodeFeed>>
+    protected abstract fun observable(query: RssQuery): Flow<PagedList<CrunchyEpisodeFeed>>
 
     protected abstract suspend fun getMediaListingsCatalogue(
         callback: RequestCallback
     )
 
-    operator fun invoke(rssQuery: RssQuery): LiveData<PagedList<CrunchyEpisodeFeed>> {
+    fun episodeFeed(rssQuery: RssQuery): Flow<PagedList<CrunchyEpisodeFeed>> {
         query = rssQuery
-        return observable
+        return observable(query)
     }
 
     /**
@@ -50,7 +48,10 @@ internal abstract class EpisodeFeedSource(
     override fun onZeroItemsLoaded() {
         launch {
             requestHelper.runIfNotRunning(
-                IRequestHelper.RequestType.INITIAL
+                Request.Default(
+                    "episode_feed_source_initial",
+                    Request.Type.INITIAL
+                )
             ) {
                 if (supportPagingHelper.isFirstPage()) {
                     getMediaListingsCatalogue(it)
@@ -73,7 +74,10 @@ internal abstract class EpisodeFeedSource(
     override fun onItemAtFrontLoaded(itemAtFront: CrunchyEpisodeFeed) {
         launch {
             requestHelper.runIfNotRunning(
-                IRequestHelper.RequestType.BEFORE
+                Request.Default(
+                    "episode_feed_source_initial",
+                    Request.Type.BEFORE
+                )
             ) {
                 if (supportPagingHelper.isFirstPage()) {
                     getMediaListingsCatalogue(it)

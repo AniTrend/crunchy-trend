@@ -16,7 +16,8 @@
 
 package co.anitrend.support.crunchyroll.data.authentication.mapper
 
-import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyMapper
+import co.anitrend.support.crunchyroll.data.arch.mapper.DefaultMapper
+import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.transformer.LoginEntityTransformer
 import co.anitrend.support.crunchyroll.data.authentication.entity.CrunchyLoginEntity
@@ -24,7 +25,17 @@ import co.anitrend.support.crunchyroll.data.authentication.model.CrunchyLoginMod
 
 internal class LoginResponseMapper(
     private val dao: CrunchyLoginDao
-) : CrunchyMapper<CrunchyLoginModel, CrunchyLoginEntity>() {
+) : DefaultMapper<CrunchyContainer<CrunchyLoginModel>, CrunchyLoginEntity?>() {
+
+    /**
+     * Save [data] into your desired local source
+     */
+    override suspend fun persist(data: CrunchyLoginEntity?) {
+        if (data != null) {
+            dao.clearTable()
+            dao.upsert(data)
+        }
+    }
 
     /**
      * Creates mapped objects and handles the database operations which may be required to map various objects,
@@ -34,19 +45,9 @@ internal class LoginResponseMapper(
      * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
      * @see [ISupportResponseHelper.invoke]
      */
-    override suspend fun onResponseMapFrom(source: CrunchyLoginModel): CrunchyLoginEntity {
-        return LoginEntityTransformer.transform(source)
-    }
-
-    /**
-     * Inserts the given object into the implemented room database,
-     * called in [retrofit2.Callback.onResponse]
-     *
-     * @param mappedData mapped object from [onResponseMapFrom] to insert into the database
-     * @see [ISupportResponseHelper.invoke]
-     */
-    override suspend fun onResponseDatabaseInsert(mappedData: CrunchyLoginEntity) {
-        dao.clearTable()
-        dao.upsert(mappedData)
+    override suspend fun onResponseMapFrom(
+        source: CrunchyContainer<CrunchyLoginModel>
+    ): CrunchyLoginEntity? {
+        return source.data?.let(LoginEntityTransformer::transform)
     }
 }

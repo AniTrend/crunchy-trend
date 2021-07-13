@@ -22,6 +22,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.asLiveData
 import co.anitrend.arch.core.model.ISupportViewModelState
 import co.anitrend.arch.data.state.DataState
+import co.anitrend.arch.domain.entities.LoadState
 import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.support.crunchyroll.data.catalog.usecase.CatalogUseCaseType
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
@@ -33,12 +34,12 @@ data class CatalogModelState(
     private val useCaseResult = MutableLiveData<DataState<List<CrunchyCatalogWithSeries>>>()
 
     override val model =
-        Transformations.switchMap(useCaseResult) { it.model }
+        Transformations.switchMap(useCaseResult) { it.model.asLiveData() }
 
-    override val networkState: LiveData<NetworkState>? =
-        Transformations.switchMap(useCaseResult) { it.networkState.asLiveData() }
+    override val loadState =
+        Transformations.switchMap(useCaseResult) { it.loadState.asLiveData() }
 
-    override val refreshState: LiveData<NetworkState>? =
+    override val refreshState: LiveData<LoadState> =
         Transformations.switchMap(useCaseResult) { it.refreshState.asLiveData() }
 
     operator fun invoke() {

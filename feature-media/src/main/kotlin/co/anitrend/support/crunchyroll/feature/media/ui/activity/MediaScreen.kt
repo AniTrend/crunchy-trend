@@ -21,15 +21,16 @@ import co.anitrend.support.crunchyroll.core.ui.model.FragmentItem
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.commit
 import co.anitrend.support.crunchyroll.feature.media.R
+import co.anitrend.support.crunchyroll.feature.media.databinding.MediaScreenBinding
 import co.anitrend.support.crunchyroll.feature.media.ui.fragment.MediaContent
-import kotlinx.android.synthetic.main.media_screen.*
 
-class MediaScreen : CrunchyActivity() {
+class MediaScreen : CrunchyActivity<MediaScreenBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.media_screen)
-        setSupportActionBar(bottomAppBar)
+        binding = MediaScreenBinding.inflate(layoutInflater)
+        setContentView(requireBinding().root)
+        setSupportActionBar(requireBinding().bottomAppBar)
     }
 
     /**

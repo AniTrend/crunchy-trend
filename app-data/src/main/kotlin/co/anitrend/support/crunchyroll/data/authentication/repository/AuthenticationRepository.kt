@@ -16,7 +16,6 @@
 
 package co.anitrend.support.crunchyroll.data.authentication.repository
 
-import androidx.lifecycle.asLiveData
 import co.anitrend.arch.data.repository.SupportRepository
 import co.anitrend.arch.data.state.DataState
 import co.anitrend.arch.data.state.DataState.Companion.create
@@ -35,25 +34,19 @@ internal class AuthenticationRepository(
     ILogoutRepository<DataState<Boolean>> {
 
     override fun loggedInUser() =
-        loginSource.create(
-            model = loginSource.loggedInUser().asLiveData()
-        )
+        loginSource create loginSource.loggedInUser()
 
     /**
      * Authenticates a user
      */
     override fun loginUser(query: CrunchyLoginQuery) =
-        loginSource.create(
-            model = loginSource(query)
-        )
+        loginSource create loginSource.login(query)
 
     /**
      * Un-authenticates a user
      */
     override fun logoutUser() =
-        logoutSource.create(
-            model = logoutSource().asLiveData()
-        )
+        logoutSource create logoutSource()
 
     /**
      * Deals with cancellation of any pending or on going operations that the repository

@@ -17,42 +17,41 @@
 package co.anitrend.support.crunchyroll.data.series.source.detail
 
 import co.anitrend.arch.data.request.callback.RequestCallback
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.arch.extension.network.SupportConnectivity
-import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
 import co.anitrend.support.crunchyroll.data.arch.database.settings.IRefreshBehaviourSettings
-import co.anitrend.support.crunchyroll.data.arch.extension.controller
 import co.anitrend.support.crunchyroll.data.arch.helper.CrunchyClearDataHelper
+import co.anitrend.support.crunchyroll.data.series.SeriesDetailController
 import co.anitrend.support.crunchyroll.data.series.converters.SeriesEntityConverter
 import co.anitrend.support.crunchyroll.data.series.datasource.local.CrunchySeriesDao
 import co.anitrend.support.crunchyroll.data.series.datasource.remote.CrunchySeriesEndpoint
 import co.anitrend.support.crunchyroll.data.series.helper.SeriesCacheHelper
-import co.anitrend.support.crunchyroll.data.series.mapper.SeriesDetailResponseMapper
 import co.anitrend.support.crunchyroll.data.series.source.detail.contract.SeriesDetailSource
+import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesDetailQuery
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 internal class SeriesDetailSourceImpl(
-    private val mapper: SeriesDetailResponseMapper,
+    private val controller: SeriesDetailController,
     private val seriesDao: CrunchySeriesDao,
     private val endpoint: CrunchySeriesEndpoint,
     private val supportConnectivity: SupportConnectivity,
     private val settings: IRefreshBehaviourSettings,
     private val cache: SeriesCacheHelper,
-    supportDispatchers: SupportDispatchers
-) : SeriesDetailSource(supportDispatchers) {
+    override val dispatcher: ISupportDispatcher
+) : SeriesDetailSource() {
 
-    override val observable = flow {
-        val localSource = seriesDao.findBySeriesIdFlow(query.seriesId)
-        val result = localSource.filterNotNull().map {
-            SeriesEntityConverter.convertFrom(it)
-        }
-        emitAll(result)
-    }
+    override fun observable(query: CrunchySeriesDetailQuery) =
+        seriesDao.findBySeriesIdFlow(query.seriesId)
+            .flowOn(dispatcher.io)
+            .filterNotNull()
+            .map { SeriesEntityConverter.convertFrom(it) }
 
-    override suspend fun browseSeries(callback: RequestCallback) {
+    override suspend fun browseSeries(query: CrunchySeriesDetailQuery, callback: RequestCallback) {
         if (cache.shouldRefreshSeries(query.seriesId)) {
             val differed = async {
                 endpoint.getSeriesInfo(
@@ -60,15 +59,7 @@ internal class SeriesDetailSourceImpl(
                 )
             }
 
-            val controller =
-                mapper.controller(
-                    dispatchers,
-                    OnlineControllerPolicy.create(
-                        supportConnectivity
-                    )
-                )
-
-            val result = controller.invoke(differed, callback)
+            val result = controller(differed, callback)
             if (result != null)
                 cache.updateLastRequest(result.id)
         }

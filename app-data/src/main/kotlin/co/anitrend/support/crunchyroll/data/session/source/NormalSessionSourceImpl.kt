@@ -17,26 +17,24 @@
 package co.anitrend.support.crunchyroll.data.session.source
 
 import co.anitrend.arch.data.request.callback.RequestCallback
-import co.anitrend.arch.data.request.contract.IRequestHelper
-import co.anitrend.arch.data.request.error.RequestError
-import co.anitrend.arch.domain.entities.NetworkState
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
-import co.anitrend.arch.extension.network.SupportConnectivity
-import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
-import co.anitrend.support.crunchyroll.data.arch.extension.controller
+import co.anitrend.arch.data.request.model.Request
+import co.anitrend.arch.domain.entities.RequestError
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthenticationEndpoint
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
+import co.anitrend.support.crunchyroll.data.session.SessionController
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionDao
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
-import co.anitrend.support.crunchyroll.data.session.mapper.SessionResponseMapper
 import co.anitrend.support.crunchyroll.data.session.source.contract.SessionSource
 import co.anitrend.support.crunchyroll.data.session.transformer.SessionTransformer
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
 import co.anitrend.support.crunchyroll.domain.session.models.CrunchyNormalSessionQuery
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -47,19 +45,16 @@ internal class NormalSessionSourceImpl(
     private val loginDao: CrunchyLoginDao,
     private val endpoint: CrunchyAuthenticationEndpoint,
     private val coreSessionDao: CrunchySessionCoreDao,
-    private val mapper: SessionResponseMapper,
-    private val supportConnectivity: SupportConnectivity,
-    supportDispatchers: SupportDispatchers
-) : SessionSource(supportDispatchers) {
+    private val controller: SessionController,
+    override val dispatcher: ISupportDispatcher
+) : SessionSource() {
 
-    private suspend fun buildQuery(
-        callback: RequestCallback
-    ): CrunchyNormalSessionQuery? {
+    private suspend fun buildQuery(callback: RequestCallback): CrunchyNormalSessionQuery? {
         val coreSession = coreSessionDao.findBySessionId(
-            settings.sessionId
+            settings.sessionId.value
         )
         val loginSession = loginDao.findByUserId(
-            settings.authenticatedUserId
+            settings.authenticatedUserId.value
         )
 
         if (coreSession != null && loginSession != null) {
@@ -70,9 +65,7 @@ internal class NormalSessionSourceImpl(
             )
         }
 
-        Timber.tag(moduleTag).e(
-            "All sessions seem to be invalid, proceeding requests may fail"
-        )
+        Timber.e("All sessions seem to be invalid, proceeding requests may fail")
 
         callback.recordFailure(
             RequestError(
@@ -89,8 +82,8 @@ internal class NormalSessionSourceImpl(
         query: CrunchyNormalSessionQuery,
         callback: RequestCallback
     ): CrunchySessionEntity? {
-        val invalidSession = withContext(dispatchers.io) {
-            val sessionId = settings.sessionId
+        val invalidSession = withContext(dispatcher.io) {
+            val sessionId = settings.sessionId.value
             dao.findBySessionId(sessionId)
         }
 
@@ -102,25 +95,17 @@ internal class NormalSessionSourceImpl(
             )
         }
 
-        val controller =
-            mapper.controller(
-                dispatchers,
-                OnlineControllerPolicy.create(
-                    supportConnectivity
-                )
-            )
-
         val session = controller(deferred, callback)
 
-        withContext(dispatchers.io) {
+        withContext(dispatcher.io) {
             if (session != null) {
-                settings.sessionId = session.sessionId
-                Timber.tag(moduleTag).d(
+                settings.sessionId.value = session.sessionId
+                Timber.d(
                     "Persisting normal session into private store -> $session"
                 )
             } else if (invalidSession != null) {
                 dao.delete(invalidSession)
-                Timber.tag(moduleTag).d(
+                Timber.d(
                     "Removing previous invalid normal session -> $invalidSession"
                 )
             }
@@ -133,20 +118,22 @@ internal class NormalSessionSourceImpl(
      * Handles the requesting data from a the network source and returns
      * [NetworkState] to the caller after execution
      */
-    override fun invoke(): Session? {
-        return runBlocking {
-            var entity: CrunchySessionEntity? = null
-            requestHelper.runIfNotRunning(IRequestHelper.RequestType.INITIAL) { callback ->
-                val normalSessionQuery =
-                    withContext(dispatchers.io) {
-                        buildQuery(callback)
-                    }
-                entity = normalSessionQuery?.let { sessionQuery ->
-                    createNewNormalSession(sessionQuery, callback)
-                }
+    override fun invoke() = flow {
+        requestHelper.runIfNotRunning(
+            Request.Default(
+                "normal_session_source_initial",
+                Request.Type.INITIAL
+            )
+        ) { callback ->
+            val normalSessionQuery = withContext(dispatcher.io) {
+                buildQuery(callback)
             }
 
-            SessionTransformer.transform(entity)
+            val result = normalSessionQuery?.let { sessionQuery ->
+                createNewNormalSession(sessionQuery, callback)
+            }
+
+            emit(SessionTransformer.transform(result))
         }
     }
 

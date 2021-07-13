@@ -20,21 +20,17 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
 import co.anitrend.arch.recycler.common.ClickableItem
-import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.recycler.holder.SupportViewHolder
-import co.anitrend.arch.recycler.model.RecyclerItem
-import co.anitrend.support.crunchyroll.feature.series.R
-import kotlinx.android.synthetic.main.adapter_genre.view.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import co.anitrend.support.crunchyroll.core.android.recycler.model.RecyclerItemBinding
+import co.anitrend.support.crunchyroll.feature.series.databinding.AdapterGenreBinding
 import kotlinx.coroutines.flow.MutableStateFlow
 
 data class GenreItem(
     val entity: String?
-) : RecyclerItem(entity?.hashCode()?.toLong()) {
+) : RecyclerItemBinding<AdapterGenreBinding>(entity?.hashCode()?.toLong() ?: 0) {
 
     /**
      * Called when the [view] needs to be setup, this could be to set click listeners,
@@ -49,13 +45,14 @@ data class GenreItem(
         view: View,
         position: Int,
         payloads: List<Any>,
-        stateFlow: MutableStateFlow<ClickableItem?>,
+        stateFlow: MutableStateFlow<ClickableItem>,
         selectionMode: ISupportSelectionMode<Long>?
     ) {
-        view.seriesGenre.text = entity
-        view.seriesGenre.setOnClickListener {
+        binding = AdapterGenreBinding.bind(view)
+        requireBinding().seriesGenre.text = entity
+        requireBinding().seriesGenre.setOnClickListener {
             stateFlow.value =
-                DefaultClickableItem(
+                ClickableItem.Data(
                     data = entity,
                     view = view
                 )
@@ -67,7 +64,8 @@ data class GenreItem(
      * to objects, stop any asynchronous work, e.t.c
      */
     override fun unbind(view: View) {
-        view.seriesGenre.setOnClickListener(null)
+        binding?.seriesGenre?.setOnClickListener(null)
+        super.unbind(view)
     }
 
     /**
@@ -83,10 +81,8 @@ data class GenreItem(
         internal fun createViewHolder(
             viewGroup: ViewGroup,
             layoutInflater: LayoutInflater
-        ) = layoutInflater.inflate(
-            R.layout.adapter_genre,
-            viewGroup,
-            false
+        ) = AdapterGenreBinding.inflate(
+        layoutInflater, viewGroup, false
         ).let { SupportViewHolder(it) }
 
         internal val DIFFER =

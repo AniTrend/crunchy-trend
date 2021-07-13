@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2021 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,8 +14,11 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.arch.mapper
+package co.anitrend.support.crunchyroll.data.media
 
-import co.anitrend.arch.data.mapper.SupportResponseMapper
+import co.anitrend.support.crunchyroll.data.arch.controller.core.DefaultController
+import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
+import co.anitrend.support.crunchyroll.data.media.entity.CrunchyMediaEntity
+import co.anitrend.support.crunchyroll.data.media.model.CrunchyMediaModel
 
-abstract class CrunchyMapper<S, D> : SupportResponseMapper<S, D>()
+internal typealias MediaController = DefaultController<CrunchyContainer<List<CrunchyMediaModel>>, List<CrunchyMediaEntity>>

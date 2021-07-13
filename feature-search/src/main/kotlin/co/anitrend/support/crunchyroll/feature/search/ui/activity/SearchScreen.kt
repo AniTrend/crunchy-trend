@@ -24,22 +24,23 @@ import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.commit
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesSearchQuery
 import co.anitrend.support.crunchyroll.feature.search.R
+import co.anitrend.support.crunchyroll.feature.search.databinding.SearchActivityBinding
 import co.anitrend.support.crunchyroll.feature.search.ui.fragment.SearchContentScreen
 import co.anitrend.support.crunchyroll.feature.search.viewmodel.SeriesSearchViewModel
-import kotlinx.android.synthetic.main.search_activity.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchScreen : CrunchyActivity() {
+class SearchScreen : CrunchyActivity<SearchActivityBinding>() {
 
     private val viewModel by viewModel<SeriesSearchViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.search_activity)
-        setSupportActionBar(bottomAppBar)
+        binding = SearchActivityBinding.inflate(layoutInflater)
+        setContentView(requireBinding().root)
+        setSupportActionBar(requireBinding().bottomAppBar)
     }
 
     /**
@@ -52,7 +53,7 @@ class SearchScreen : CrunchyActivity() {
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
         lifecycleScope.launchWhenResumed {
-            multiSearch.searchChangeFlow()
+            requireBinding().multiSearch.searchChangeFlow()
                 .filterNotNull()
                 .onEach { search ->
                     when (search) {
@@ -71,6 +72,7 @@ class SearchScreen : CrunchyActivity() {
                                 )
                             )
                         }
+                        is Search.Removed -> {}
                     }
                 }.collect()
         }
@@ -80,6 +82,6 @@ class SearchScreen : CrunchyActivity() {
     private fun onUpdateUserInterface() {
         currentFragmentTag = FragmentItem(
             fragment = SearchContentScreen::class.java
-        ).commit(R.id.search_content, this) {}
+        ).commit(requireBinding().searchContent, this) {}
     }
 }

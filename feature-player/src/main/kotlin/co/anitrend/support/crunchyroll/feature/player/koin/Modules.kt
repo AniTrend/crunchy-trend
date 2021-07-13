@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.feature.player.koin
 
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.support.crunchyroll.core.helper.StorageHelper
 import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.core.model.UserAgent
@@ -95,7 +95,7 @@ private val coreModule = module {
             get<ExoDatabaseProvider>(),
             downloadCache,
             dataSourceFactory,
-            get<SupportDispatchers>().io.asExecutor()
+            get<ISupportDispatcher>().io.asExecutor()
         )
     }
 }

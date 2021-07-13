@@ -16,31 +16,26 @@
 
 package co.anitrend.support.crunchyroll.feature.catalog.controller.model
 
-import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import co.anitrend.arch.extension.ext.gone
 import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
 import co.anitrend.arch.recycler.common.ClickableItem
-import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.recycler.holder.SupportViewHolder
-import co.anitrend.arch.recycler.model.RecyclerItem
 import co.anitrend.arch.ui.extension.setUpWith
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
+import co.anitrend.support.crunchyroll.core.android.recycler.model.RecyclerItemBinding
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
-import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.feature.catalog.R
 import co.anitrend.support.crunchyroll.feature.catalog.databinding.AdapterCatalogBinding
+import co.anitrend.support.crunchyroll.navigation.Series
 import co.anitrend.support.crunchyroll.shared.series.adapter.SeriesGridViewAdapter
-import kotlinx.android.synthetic.main.adapter_catalog.view.*
-import kotlinx.android.synthetic.main.item_carousel.view.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
@@ -49,7 +44,9 @@ import kotlinx.coroutines.flow.filterIsInstance
 
 data class CatalogItem(
     val entity: CrunchyCatalogWithSeries?
-) : RecyclerItem(entity?.qualifier?.ordinal?.toLong()), CoroutineScope by MainScope() {
+) : RecyclerItemBinding<AdapterCatalogBinding>(
+    entity?.qualifier?.ordinal?.toLong() ?: 0
+), CoroutineScope by MainScope() {
 
     private fun setUpCatalogItems(view: View) {
         val catalogSeriesAdapter = SeriesGridViewAdapter(
@@ -58,13 +55,13 @@ data class CatalogItem(
                 retryAction = R.string.label_text_action_retry
             )
         )
-        val catalogSeriesRecycler = view.carouselRecycler
+        val catalogSeriesRecycler = requireBinding().catalogItems.carouselRecycler
         val animator = object : DefaultItemAnimator() {
             override fun getSupportsChangeAnimations() = false
         }
         animator.supportsChangeAnimations = false
         catalogSeriesRecycler.itemAnimator = animator
-        catalogSeriesRecycler?.setUpWith(
+        catalogSeriesRecycler.setUpWith(
             supportAdapter = catalogSeriesAdapter,
             recyclerLayoutManager = LinearLayoutManager(
                 view.context, LinearLayoutManager.HORIZONTAL, false
@@ -72,13 +69,13 @@ data class CatalogItem(
         )
         catalogSeriesAdapter.submitList(entity?.series as List)
         launch(Dispatchers.Default) {
-            catalogSeriesAdapter.clickableStateFlow.debounce(DEBOUNCE_DURATION)
-                .filterIsInstance<DefaultClickableItem<CrunchySeries>>()
+            catalogSeriesAdapter.clickableFlow.debounce(DEBOUNCE_DURATION)
+                .filterIsInstance<ClickableItem.Data<CrunchySeries>>()
                 .collect {
                     val data = it.data
 
                     val payload = Series.Payload(
-                        seriesId = data?.seriesId ?: 0
+                        seriesId = data.seriesId
                     )
 
                     Series(it.view.context, payload)
@@ -99,12 +96,12 @@ data class CatalogItem(
         view: View,
         position: Int,
         payloads: List<Any>,
-        stateFlow: MutableStateFlow<ClickableItem?>,
+        stateFlow: MutableStateFlow<ClickableItem>,
         selectionMode: ISupportSelectionMode<Long>?
     ) {
-        val binding = AdapterCatalogBinding.bind(view)
-        binding.catalogHeadingTitle.text = entity?.qualifier?.attribute?.capitalize()
-        binding.catalogActionSeeAll.gone()
+        binding = AdapterCatalogBinding.bind(view)
+        requireBinding().catalogHeadingTitle.text = entity?.qualifier?.attribute?.capitalize()
+        requireBinding().catalogActionSeeAll.gone()
         // too much effort to implement so leaving this out for now
         /*binding.catalogActionSeeAll.setOnClickListener {
             Toast.makeText(view.context, "Not yet supported.. :smirk", Toast.LENGTH_SHORT).show()
@@ -117,22 +114,12 @@ data class CatalogItem(
      * to objects, stop any asynchronous work, e.t.c
      */
     override fun unbind(view: View) {
-        view.catalogActionSeeAll.setOnClickListener(null)
+        binding?.catalogActionSeeAll?.setOnClickListener(null)
         //catalogSeriesRecycler?.adapter = null
         //catalogSeriesRecycler = null
         cancel()
+        super.unbind(view)
     }
-
-    /**
-     * Provides a preferred span size for the item
-     *
-     * @param spanCount current span count which may also be [INVALID_SPAN_COUNT]
-     * @param position position of the current item
-     * @param resources optionally useful for dynamic size check with different configurations
-     */
-    override fun getSpanSize(spanCount: Int, position: Int, resources: Resources) =
-        resources.getInteger(R.integer.single_list_size)
-
 
     companion object {
         internal fun createViewHolder(
@@ -140,7 +127,7 @@ data class CatalogItem(
             layoutInflater: LayoutInflater
         ) = AdapterCatalogBinding.inflate(
         layoutInflater, viewGroup, false
-        ).let { SupportViewHolder(it.root) }
+        ).let { SupportViewHolder(it) }
 
         internal val DIFFER =
             object : DiffUtil.ItemCallback<CrunchyCatalogWithSeries>() {
@@ -156,8 +143,15 @@ data class CatalogItem(
                     oldItem: CrunchyCatalogWithSeries,
                     newItem: CrunchyCatalogWithSeries
                 ): Boolean {
-                    return oldItem.qualifier.hashCode() == newItem.qualifier.hashCode() &&
-                            oldItem.series.hashCode() == newItem.series.hashCode()
+                    return oldItem.qualifier == newItem.qualifier &&
+                            oldItem.series.size == newItem.series.size
+                }
+
+                override fun getChangePayload(
+                    oldItem: CrunchyCatalogWithSeries,
+                    newItem: CrunchyCatalogWithSeries
+                ): Any? {
+                    return super.getChangePayload(oldItem, newItem)
                 }
             }
     }

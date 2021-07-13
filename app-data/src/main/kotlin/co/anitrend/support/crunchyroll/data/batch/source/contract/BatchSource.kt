@@ -18,16 +18,14 @@ package co.anitrend.support.crunchyroll.data.batch.source.contract
 
 import co.anitrend.arch.data.request.callback.RequestCallback
 import co.anitrend.arch.data.source.core.SupportCoreDataSource
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.support.crunchyroll.data.batch.entity.CrunchyBatchEntity
 import co.anitrend.support.crunchyroll.data.batch.usecase.model.CrunchyBatchQuery
 import co.anitrend.support.crunchyroll.data.series.model.CrunchySeriesModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 
-internal abstract class BatchSource(
-    supportDispatchers: SupportDispatchers
-) : SupportCoreDataSource(supportDispatchers) {
+internal abstract class BatchSource : SupportCoreDataSource() {
 
     abstract fun getBatchOfSeries(
         queries: List<CrunchyBatchQuery>,

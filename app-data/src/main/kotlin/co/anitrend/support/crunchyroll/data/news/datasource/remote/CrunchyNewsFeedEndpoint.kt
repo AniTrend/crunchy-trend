@@ -17,7 +17,7 @@
 package co.anitrend.support.crunchyroll.data.news.datasource.remote
 
 import co.anitrend.support.crunchyroll.data.arch.XML
-import co.anitrend.support.crunchyroll.data.rss.core.CrunchyRssNewsContainer
+import co.anitrend.support.crunchyroll.data.news.model.page.CrunchyNewsPageModel
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -28,5 +28,5 @@ internal interface CrunchyNewsFeedEndpoint {
     @GET("crunchyroll/animenews")
     suspend fun getMediaNews(
         @Query("locale") crunchyLocale: String
-    ): Response<CrunchyRssNewsContainer>
+    ): Response<CrunchyNewsPageModel>
 }

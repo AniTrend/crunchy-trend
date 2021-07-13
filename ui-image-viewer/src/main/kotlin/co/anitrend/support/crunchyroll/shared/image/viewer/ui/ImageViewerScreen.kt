@@ -18,7 +18,6 @@ package co.anitrend.support.crunchyroll.shared.image.viewer.ui
 
 import android.Manifest
 import android.app.DownloadManager
-import android.content.Context
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
@@ -28,51 +27,64 @@ import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
-import co.anitrend.arch.extension.ext.UNSAFE
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.graphics.drawable.toBitmap
 import co.anitrend.arch.extension.ext.extra
 import co.anitrend.arch.extension.ext.systemServiceOf
+import co.anitrend.support.crunchyroll.core.android.extensions.using
 import co.anitrend.support.crunchyroll.core.common.DEFAULT_ANIMATION_DURATION
-import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
+import co.anitrend.support.crunchyroll.navigation.ImageViewer
 import co.anitrend.support.crunchyroll.shared.image.viewer.databinding.ImageViewScreenBinding
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.request.target.CustomViewTarget
-import com.bumptech.glide.request.transition.Transition
+import coil.request.Disposable
+import coil.target.Target
 import com.davemorrissey.labs.subscaleview.ImageSource
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import java.io.File
 
-class ImageViewerScreen : CrunchyActivity() {
+class ImageViewerScreen : CrunchyActivity<ImageViewScreenBinding>() {
 
     private val payload: ImageViewer.Payload?
             by extra(ImageViewer.extraKey)
 
-    private val binding by lazy(UNSAFE) {
-        ImageViewScreenBinding.inflate(layoutInflater)
-    }
+    private var disposable: Disposable? = null
 
-    private val subSamplingTarget by lazy {
-        object : CustomViewTarget<SubsamplingScaleImageView, File>(binding.subSamplingImageView) {
-            override fun onLoadFailed(errorDrawable: Drawable?) {
 
-            }
-
-            override fun onResourceCleared(placeholder: Drawable?) {
-
-            }
-
-            override fun onResourceReady(resource: File, transition: Transition<in File>?) {
-                view.setImage(ImageSource.uri(Uri.fromFile(resource)))
-            }
+    private val permissionResult = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isAllowed: Boolean ->
+        if (isAllowed)
+            downloadImage()
+        else {
+            TODO("Show material dialog for permission requirement")
         }
     }
 
-    private fun loadImage(context: Context) {
-        Glide.with(context)
-            .download(GlideUrl(payload?.imageSrc))
-            .into(subSamplingTarget)
+
+    private fun setUpImagePreview() {
+        disposable = object : Target {
+            /**
+             * Called when the request starts.
+             */
+            override fun onStart(placeholder: Drawable?) {
+
+            }
+
+            /**
+             * Called if an error occurs while executing the request.
+             */
+            override fun onError(error: Drawable?) {
+
+            }
+
+            /**
+             * Called if the request completes successfully.
+             */
+            override fun onSuccess(result: Drawable) {
+                val source = ImageSource.bitmap(result.toBitmap())
+                requireBinding().subSamplingImageView.setImage(source)
+            }
+        }.using(payload?.imageSrc, this)
     }
+
 
     /**
      * Can be used to configure custom theme styling as desired
@@ -95,8 +107,9 @@ class ImageViewerScreen : CrunchyActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
-        loadImage(context = this)
+        binding = ImageViewScreenBinding.inflate(layoutInflater)
+        setContentView(requireBinding().root)
+        setUpImagePreview()
     }
 
     /**
@@ -106,19 +119,19 @@ class ImageViewerScreen : CrunchyActivity() {
      * @param savedInstanceState
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        binding.subSamplingImageView.setOnClickListener {
-            val transparency = binding.subSamplingDownloadAction.alpha
-            binding.subSamplingDownloadAction.animate()
+        requireBinding().subSamplingImageView.setOnClickListener {
+            val transparency = requireBinding().subSamplingDownloadAction.alpha
+            requireBinding().subSamplingDownloadAction.animate()
                 .alpha(if (transparency == VISIBLE) HIDDEN else VISIBLE)
                 .setDuration(DEFAULT_ANIMATION_DURATION).apply {
                     interpolator = DecelerateInterpolator()
                 }
         }
-        binding.subSamplingDownloadAction.setOnClickListener {
-            val transparency = binding.subSamplingDownloadAction.alpha
+        requireBinding().subSamplingDownloadAction.setOnClickListener {
+            val transparency = requireBinding().subSamplingDownloadAction.alpha
             val permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
-            if (transparency == VISIBLE && requestPermissionIfMissing(permission))
-                downloadImage()
+            if (transparency == VISIBLE)
+                permissionResult.launch(permission)
         }
     }
 

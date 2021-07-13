@@ -53,7 +53,7 @@
 
     <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/app_bar_height"
+            android:layout_height="125dp"
             android:background="@drawable/splash_background"
             app:layout_constraintTop_toTopOf="parent" />
 

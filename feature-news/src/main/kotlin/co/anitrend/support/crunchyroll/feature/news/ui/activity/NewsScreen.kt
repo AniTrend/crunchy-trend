@@ -24,27 +24,20 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
-import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.extension.ext.extra
 import co.anitrend.support.crunchyroll.core.extensions.stackTrace
-import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.news.R
 import co.anitrend.support.crunchyroll.feature.news.databinding.NewsScreenBinding
-import co.anitrend.support.crunchyroll.feature.news.koin.moduleHelper
 import co.anitrend.support.crunchyroll.feature.news.presenter.NewsPresenter
+import co.anitrend.support.crunchyroll.navigation.News
 import io.noties.markwon.Markwon
-import kotlinx.android.synthetic.main.news_screen_content.*
 import kotlinx.coroutines.launch
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
-class NewsScreen : CrunchyActivity() {
-
-    private val binding by lazy(UNSAFE) {
-        NewsScreenBinding.inflate(layoutInflater)
-    }
+class NewsScreen : CrunchyActivity<NewsScreenBinding>() {
 
     private val payload by extra<News.Payload>(News.extraKey)
 
@@ -52,8 +45,9 @@ class NewsScreen : CrunchyActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
-        setSupportActionBar(binding.bottomAppBar)
+        binding = NewsScreenBinding.inflate(layoutInflater)
+        setContentView(requireBinding().root)
+        setSupportActionBar(requireBinding().bottomAppBar)
         onUpdateUserInterface()
     }
 
@@ -62,17 +56,17 @@ class NewsScreen : CrunchyActivity() {
             .setOnLinkClickListener { view, url ->
                 runCatching {
                     presenter.handleViewIntent(view, url, this)
-                }.stackTrace(moduleTag)
+                }.stackTrace()
                 true
             }
-        binding.floatingShortcutButton
+        requireBinding().floatingShortcutButton
             .setOnClickListener {
                 val shareCompat = payload?.let {
                     presenter.createShareContent(it, this)
                 }?.createChooserIntent()
                 runCatching {
                     startActivity(shareCompat)
-                }.stackTrace(moduleTag)
+                }.stackTrace()
             }
     }
 
@@ -88,7 +82,7 @@ class NewsScreen : CrunchyActivity() {
                      val intent = Intent(Intent.ACTION_VIEW)
                      intent.data = payload?.guid?.toUri()
                      startActivity(intent)
-                 }.stackTrace(moduleTag)
+                 }.stackTrace()
                  true
              }
              R.id.action_open_gallery -> {
@@ -102,7 +96,7 @@ class NewsScreen : CrunchyActivity() {
     private fun onUpdateUserInterface() {
         lifecycleScope.launch {
             val html = presenter.createCustomHtml(payload)
-            get<Markwon>().setMarkdown(mediaNewsContent, html)
+            get<Markwon>().setMarkdown(requireBinding().newsContent.mediaNewsContent, html)
         }
     }
 }

@@ -21,7 +21,9 @@ import co.anitrend.support.crunchyroll.data.arch.JSON
 import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
 import co.anitrend.support.crunchyroll.data.batch.model.CrunchyBatchModel
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.POST
 
 internal interface CrunchyBatchEndpoint {
 

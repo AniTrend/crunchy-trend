@@ -16,10 +16,8 @@
 
 package co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy
 
-import androidx.lifecycle.MutableLiveData
 import co.anitrend.arch.data.request.callback.RequestCallback
-import co.anitrend.arch.data.request.error.RequestError
-import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.arch.domain.entities.RequestError
 import co.anitrend.support.crunchyroll.data.arch.controller.strategy.contract.ControllerStrategy
 import timber.log.Timber
 import java.net.UnknownHostException
@@ -29,40 +27,35 @@ import java.net.UnknownHostException
  * that may have caching on the network level through interception or cache-control from
  * the origin server.
  */
-internal class OfflineControllerPolicy<D> private constructor() : ControllerStrategy<D>() {
+internal class OfflineStrategy<D> private constructor() : ControllerStrategy<D>() {
 
     /**
-     * Execute a paging task under an implementation strategy
+     * Execute a task under an implementation strategy
      *
-     * @param requestCallback event emitter
+     * @param callback event emitter
      * @param block what will be executed
      */
     override suspend fun invoke(
-        requestCallback: RequestCallback,
+        callback: RequestCallback,
         block: suspend () -> D?
-    ) = runCatching {
-        val result = block()
-        requestCallback.recordSuccess()
-        result
-    }.onFailure { e->
-        Timber.tag(moduleTag).e(e)
-        when (e) {
-            is RequestError -> requestCallback.recordFailure(e)
-            is UnknownHostException -> requestCallback.recordFailure(
-                RequestError(
-                    "Unable to connect to host" ,
-                    "Cannot connect to hostname, please check your internet connection",
-                    e.cause
-                )
-            )
-            else -> requestCallback.recordFailure(
-                RequestError("Unexpected error" , e.message, e.cause)
-            )
+    ): D? {
+        runCatching {
+            block()
+        }.onSuccess {result ->
+            callback.recordSuccess()
+            return result
+        }.onFailure { exception ->
+            Timber.e(exception)
+            when (exception) {
+                is RequestError -> callback.recordFailure(exception)
+                else -> callback.recordFailure(exception.generateForError())
+            }
         }
-    }.getOrNull()
+
+        return null
+    }
 
     companion object {
-        fun <T> create() =
-            OfflineControllerPolicy<T>()
+        internal fun <T> create() = OfflineStrategy<T>()
     }
 }

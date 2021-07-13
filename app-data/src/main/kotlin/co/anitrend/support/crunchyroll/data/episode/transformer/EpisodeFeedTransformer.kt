@@ -36,7 +36,6 @@ internal object EpisodeFeedTransformer: ISupportTransformer<EpisodeFeedEntity, C
             episodeDuration = source.episodeDuration,
             episodeTitle = source.episodeTitle,
             episodeNumber = source.episodeNumber,
-            copyright = source.copyright,
             subtitles = source.subtitles,
             isCountryWhiteListed = source.isCountryWhiteListed,
             isPremiumEnabled = source.isPremiumEnabled

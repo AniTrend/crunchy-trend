@@ -20,6 +20,7 @@ package co.anitrend.support.crunchyroll.data.news.koin
 import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
 import co.anitrend.support.crunchyroll.data.arch.extension.api
 import co.anitrend.support.crunchyroll.data.arch.extension.db
+import co.anitrend.support.crunchyroll.data.arch.extension.defaultController
 import co.anitrend.support.crunchyroll.data.news.mapper.NewsResponseMapper
 import co.anitrend.support.crunchyroll.data.news.repository.NewsRepository
 import co.anitrend.support.crunchyroll.data.news.source.NewsSourceImpl
@@ -32,10 +33,12 @@ import org.koin.dsl.module
 private val dataSourceModule = module {
     factory {
         NewsSourceImpl(
-            mapper = get(),
+            controller = defaultController(
+                mapper = get<NewsResponseMapper>()
+            ),
             endpoint = api(EndpointType.XML),
             dao = db().crunchyRssNewsDao(),
-            supportDispatchers = get(),
+            dispatcher = get(),
             settings = get(),
             supportConnectivity = get()
         )

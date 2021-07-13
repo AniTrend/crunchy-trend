@@ -20,7 +20,7 @@ package co.anitrend.support.crunchyroll.data.stream.koin
 import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
 import co.anitrend.support.crunchyroll.data.arch.extension.api
 import co.anitrend.support.crunchyroll.data.arch.extension.db
-import co.anitrend.support.crunchyroll.data.series.helper.SeriesCacheHelper
+import co.anitrend.support.crunchyroll.data.arch.extension.defaultController
 import co.anitrend.support.crunchyroll.data.stream.helper.StreamCacheHelper
 import co.anitrend.support.crunchyroll.data.stream.mapper.CrunchyStreamResponseMapper
 import co.anitrend.support.crunchyroll.data.stream.repository.CrunchyStreamRepository
@@ -36,8 +36,10 @@ private val dataSourceModule = module {
         CrunchyStreamSourceImpl(
             streamDao = db().crunchyStreamDao(),
             endpoint = api(EndpointType.JSON),
-            mapper = get(),
-            supportDispatchers = get(),
+            controller = defaultController(
+                mapper = get<CrunchyStreamResponseMapper>()
+            ),
+            dispatcher = get(),
             supportConnectivity = get(),
             settings = get(),
             cache = get()

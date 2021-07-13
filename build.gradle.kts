@@ -1,7 +1,7 @@
-import java.net.URI
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 
 plugins {
-    id("com.github.ben-manes.versions") version "0.29.0"
+    id("com.github.ben-manes.versions")
 }
 
 buildscript {
@@ -13,6 +13,7 @@ buildscript {
     dependencies {
         classpath(co.anitrend.support.crunchyroll.buildSrc.Libraries.Android.Tools.buildGradle)
         classpath(co.anitrend.support.crunchyroll.buildSrc.Libraries.JetBrains.Kotlin.Gradle.plugin)
+        classpath(co.anitrend.support.crunchyroll.buildSrc.Libraries.JetBrains.Kotlin.Serialization.serialization)
 
         classpath(co.anitrend.support.crunchyroll.buildSrc.Libraries.Koin.Gradle.plugin)
 
@@ -26,24 +27,41 @@ allprojects {
         google()
         jcenter()
         mavenCentral()
-        maven { url = URI("https://jitpack.io") }
-    }
-}
-
-tasks {
-    val clean by registering(Delete::class) {
-        delete(rootProject.buildDir)
+        maven {
+            setUrl(co.anitrend.support.crunchyroll.buildSrc.Libraries.Repositories.jitPack)
+        }
+        maven {
+            setUrl(co.anitrend.support.crunchyroll.buildSrc.Libraries.Repositories.dependencyUpdates)
+        }
     }
 }
 
 plugins.apply("koin")
 
+tasks.create("clean", Delete::class) {
+    delete(rootProject.buildDir)
+}
+
 tasks.named(
     "dependencyUpdates",
-    com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask::class.java
+    DependencyUpdatesTask::class.java
 ).configure {
     checkForGradleUpdate = false
     outputFormatter = "json"
     outputDir = "build/dependencyUpdates"
     reportfileName = "report"
+    resolutionStrategy {
+        componentSelection {
+            all {
+                val reject = listOf("preview", "m")
+                    .map { qualifier ->
+                        val pattern = "(?i).*[.-]$qualifier[.\\d-]*"
+                        Regex(pattern, RegexOption.IGNORE_CASE)
+                    }
+                    .any { it.matches(candidate.version) }
+                if (reject)
+                    reject("Preview releases not wanted")
+            }
+        }
+    }
 }

@@ -18,14 +18,38 @@ package co.anitrend.support.crunchyroll.buildSrc.plugins.components
 
 import co.anitrend.support.crunchyroll.buildSrc.common.isDataModule
 import co.anitrend.support.crunchyroll.buildSrc.common.isFeatureModule
-import co.anitrend.support.crunchyroll.buildSrc.plugins.extensions.androidExtensionsExtension
 import co.anitrend.support.crunchyroll.buildSrc.plugins.extensions.libraryExtension
 import com.android.build.gradle.internal.dsl.BuildType
 import com.android.build.gradle.internal.dsl.DefaultConfig
+import com.android.build.gradle.BaseExtension
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import java.util.*
 
+
+internal fun Project.createSigningConfiguration(extension: BaseExtension) {
+    var properties: Properties? = null
+    val keyStoreFile = project.file(".config/keystore.properties")
+    if (keyStoreFile.exists())
+        keyStoreFile.inputStream().use { fis ->
+            Properties().run {
+                load(fis);
+                properties = this
+            }
+        }
+    else println("${keyStoreFile.absolutePath} could not be found, automated releases may not be singed")
+    properties?.also {
+        extension.signingConfigs {
+            create("release") {
+                storeFile(file(it["STORE_FILE"] as String))
+                storePassword(it["STORE_PASSWORD"] as String)
+                keyAlias(it["STORE_KEY_ALIAS"] as String)
+                keyPassword(it["STORE_KEY_PASSWORD"] as String)
+                isV2SigningEnabled = true
+            }
+        }
+    }
+}
 
 private fun Properties.applyToBuildConfigForBuild(buildType: BuildType) {
     forEach { propEntry ->
@@ -85,9 +109,4 @@ internal fun Project.configureOptions() {
             }
         }
     }
-
-    if (!isFeatureModule()) return
-
-    println("Applying extension options for feature module -> ${project.path}")
-    androidExtensionsExtension().isExperimental = true
 }

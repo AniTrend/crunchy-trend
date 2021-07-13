@@ -17,21 +17,22 @@
 package co.anitrend.support.crunchyroll.domain.session.repositories
 
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
+import kotlinx.coroutines.flow.Flow
 
 interface ISessionRepository {
 
     /**
      * Returns a session that can be used when the user is not authenticated
      */
-    fun getCoreSession(): Session?
+    fun getCoreSession(): Flow<Session?>
 
     /**
      * Returns a session that behaves as a fallback when the unblock session fails
      */
-    fun getNormalSession(): Session?
+    fun getNormalSession(): Flow<Session?>
 
     /**
      * Returns a session for the authenticated user
      */
-    fun getUnblockedSession(): Session?
+    fun getUnblockedSession(): Flow<Session?>
 }

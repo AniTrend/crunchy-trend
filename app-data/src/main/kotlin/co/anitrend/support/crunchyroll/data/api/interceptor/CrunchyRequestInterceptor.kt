@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.data.api.interceptor
 
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.api.helper.CacheHelper
 import co.anitrend.support.crunchyroll.data.arch.model.TimeSpecification
@@ -37,14 +37,12 @@ import java.util.concurrent.TimeUnit
 internal class CrunchyRequestInterceptor(
     private val authentication: CrunchyAuthenticationHelper,
     private val connectivity: SupportConnectivity,
-    private val dispatcher: SupportDispatchers
+    private val dispatcher: ISupportDispatcher
 ) : Interceptor {
 
-    private val moduleTag =  CrunchyRequestInterceptor::class.java.simpleName
-
     private fun addDynamicParameters(request: Request): Request.Builder {
-        Timber.tag(moduleTag).d("Injecting query parameters on host: ${request.url.host}")
-        return runBlocking(dispatcher.confined) {
+        Timber.d("Injecting query parameters on host: ${request.url.host}")
+        return runBlocking(dispatcher.io) {
             authentication.injectQueryParameters(request)
         }
     }

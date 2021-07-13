@@ -17,24 +17,24 @@
 package co.anitrend.support.crunchyroll.feature.authentication.ui.activity
 
 import android.os.Bundle
-import co.anitrend.support.crunchyroll.core.ui.model.FragmentItem
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.commit
 import co.anitrend.support.crunchyroll.core.ui.inject
-import co.anitrend.support.crunchyroll.feature.authentication.R
+import co.anitrend.support.crunchyroll.core.ui.model.FragmentItem
 import co.anitrend.support.crunchyroll.feature.authentication.authenticator.view.AuthenticatorScreen
+import co.anitrend.support.crunchyroll.feature.authentication.databinding.ActivityAuthBinding
 import co.anitrend.support.crunchyroll.feature.authentication.ui.fragment.FragmentLogin
 import co.anitrend.support.crunchyroll.feature.authentication.ui.fragment.FragmentLogout
-import kotlinx.android.synthetic.main.activity_auth.*
 
-class AuthenticationScreen : AuthenticatorScreen() {
+class AuthenticationScreen : AuthenticatorScreen<ActivityAuthBinding>() {
 
     private val presenter by inject<CrunchyCorePresenter>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_auth)
-        setSupportActionBar(bottomAppBar)
+        binding = ActivityAuthBinding.inflate(layoutInflater)
+        setContentView(requireBinding().root)
+        setSupportActionBar(requireBinding().bottomAppBar)
     }
 
     /**
@@ -56,7 +56,7 @@ class AuthenticationScreen : AuthenticatorScreen() {
      * Check implementation for more details
      */
     private fun onUpdateUserInterface() {
-        val target = when (presenter.settings.isAuthenticated) {
+        val target = when (presenter.settings.isAuthenticated.value) {
             true -> {
                 FragmentItem(
                     parameter = intent.extras,
@@ -71,6 +71,9 @@ class AuthenticationScreen : AuthenticatorScreen() {
             }
         }
 
-        currentFragmentTag = target.commit(R.id.contentFrame, this) {}
+        currentFragmentTag = target.commit(
+            requireBinding().contentFrame,
+            this
+        ) {}
     }
 }

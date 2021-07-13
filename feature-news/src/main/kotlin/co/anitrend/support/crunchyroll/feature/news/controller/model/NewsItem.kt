@@ -23,11 +23,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
 import co.anitrend.arch.recycler.common.ClickableItem
-import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.recycler.holder.SupportViewHolder
-import co.anitrend.arch.recycler.model.RecyclerItem
-import co.anitrend.support.crunchyroll.core.android.extensions.longDate
 import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
+import co.anitrend.support.crunchyroll.core.android.recycler.model.RecyclerItemBinding
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
 import co.anitrend.support.crunchyroll.feature.news.R
 import co.anitrend.support.crunchyroll.feature.news.databinding.AdapterNewsFeedBinding
@@ -35,13 +33,12 @@ import coil.request.Disposable
 import com.perfomer.blitz.cancelTimeAgoUpdates
 import com.perfomer.blitz.setTimeAgo
 import io.noties.markwon.Markwon
-import kotlinx.android.synthetic.main.adapter_news_feed.view.*
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class NewsItem(
     private val entity: CrunchyNews?,
     private val markwon: Markwon
-) : RecyclerItem(entity?.id) {
+) : RecyclerItemBinding<AdapterNewsFeedBinding>(entity?.id ?: 0) {
 
     private var disposable: Disposable? = null
 
@@ -58,7 +55,7 @@ class NewsItem(
         view: View,
         position: Int,
         payloads: List<Any>,
-        stateFlow: MutableStateFlow<ClickableItem?>,
+        stateFlow: MutableStateFlow<ClickableItem>,
         selectionMode: ISupportSelectionMode<Long>?
     ) {
         val binding = AdapterNewsFeedBinding.bind(view)
@@ -74,7 +71,7 @@ class NewsItem(
         )
         binding.container.setOnClickListener {
             stateFlow.value =
-                DefaultClickableItem(
+                ClickableItem.Data(
                     data = entity,
                     view = view
                 )
@@ -86,10 +83,11 @@ class NewsItem(
      * to objects, stop any asynchronous work, e.t.c
      */
     override fun unbind(view: View) {
-        view.container.setOnClickListener(null)
-        view.newsPublishedOn.cancelTimeAgoUpdates()
+        binding?.container?.setOnClickListener(null)
+        binding?.newsPublishedOn?.cancelTimeAgoUpdates()
         disposable?.dispose()
         disposable = null
+        super.unbind(view)
     }
 
     /**
@@ -108,7 +106,7 @@ class NewsItem(
             layoutInflater: LayoutInflater
         ) = AdapterNewsFeedBinding.inflate(
         layoutInflater, viewGroup, false
-        ).let { SupportViewHolder(it.root) }
+        ).let { SupportViewHolder(it) }
 
         internal val DIFFER =
             object : DiffUtil.ItemCallback<CrunchyNews>() {
@@ -123,7 +121,9 @@ class NewsItem(
                     oldItem: CrunchyNews,
                     newItem: CrunchyNews
                 ): Boolean {
-                    return oldItem.hashCode() == newItem.hashCode()
+                    return oldItem.guid == newItem.guid &&
+                            oldItem.id == newItem.id &&
+                            oldItem.publishedOn == newItem.publishedOn
                 }
             }
     }

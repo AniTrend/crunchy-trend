@@ -16,48 +16,45 @@
 
 package co.anitrend.support.crunchyroll.data.news.source.contract
 
-import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import co.anitrend.arch.data.request.callback.RequestCallback
-import co.anitrend.arch.data.request.contract.IRequestHelper
+import co.anitrend.arch.data.request.model.Request
 import co.anitrend.arch.data.source.paging.SupportPagingDataSource
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.support.crunchyroll.domain.common.RssQuery
 import co.anitrend.support.crunchyroll.domain.news.entities.CrunchyNews
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-internal abstract class NewsSource(
-    supportDispatchers: SupportDispatchers
-) : SupportPagingDataSource<CrunchyNews>(supportDispatchers) {
+internal abstract class NewsSource : SupportPagingDataSource<CrunchyNews>() {
 
     protected lateinit var query: RssQuery
-        private set
 
-    protected abstract val observable: LiveData<PagedList<CrunchyNews>>
+    protected abstract fun observable(query: RssQuery): Flow<PagedList<CrunchyNews>>
 
     protected abstract suspend fun getNewsCatalogue(
         callback: RequestCallback
     )
 
-    operator fun invoke(rssQuery: RssQuery): LiveData<PagedList<CrunchyNews>> {
-        query = rssQuery
-        return observable
+    fun newsCatalogue(query: RssQuery): Flow<PagedList<CrunchyNews>> {
+        this.query = query
+        return observable(query)
     }
 
     /**
      * Called when zero items are returned from an initial load of the PagedList's data source.
      */
     override fun onZeroItemsLoaded() {
-        launch {
-            requestHelper.runIfNotRunning(
-                IRequestHelper.RequestType.INITIAL
-            ) {
-                if (supportPagingHelper.isFirstPage()) {
-                    getNewsCatalogue(it)
-                    supportPagingHelper.onPageNext()
-                }
-                else it.recordSuccess()
+        if (supportPagingHelper.isFirstPage()) {
+            launch {
+                requestHelper.runIfNotRunning(
+                    Request.Default(
+                        "news_source_initial",
+                        Request.Type.INITIAL
+                    )
+                ) { getNewsCatalogue(it) }
             }
+            supportPagingHelper.onPageNext()
         }
     }
 
@@ -71,16 +68,16 @@ internal abstract class NewsSource(
      * @param itemAtFront The first item of PagedList
      */
     override fun onItemAtFrontLoaded(itemAtFront: CrunchyNews) {
-        launch {
-            requestHelper.runIfNotRunning(
-                IRequestHelper.RequestType.BEFORE
-            ) {
-                if (supportPagingHelper.isFirstPage()) {
-                    getNewsCatalogue(it)
-                    supportPagingHelper.onPageNext()
-                }
-                else it.recordSuccess()
+        if (supportPagingHelper.isFirstPage()) {
+            launch {
+                requestHelper.runIfNotRunning(
+                    Request.Default(
+                        "news_source_before",
+                        Request.Type.BEFORE
+                    )
+                ) { getNewsCatalogue(it) }
             }
+            supportPagingHelper.onPageNext()
         }
     }
 }

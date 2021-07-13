@@ -22,7 +22,6 @@ import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyCacheIntercep
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyRequestInterceptor
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchyResponseInterceptor
 import co.anitrend.support.crunchyroll.data.api.interceptor.CrunchySessionInterceptor
-import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.parameter.parametersOf
@@ -31,24 +30,18 @@ import retrofit2.Retrofit
 import timber.log.Timber
 
 internal object EndpointProvider {
-
-    private val moduleTag = javaClass.simpleName
     private val retrofitCache = LruCache<EndpointType, Retrofit>(3)
 
     private fun provideOkHttpClient(endpointType: EndpointType, scope: Scope) : OkHttpClient {
         val builder = scope.get<OkHttpClient.Builder> {
             parametersOf(
-                when (endpointType) {
-                    EndpointType.XML,
-                    EndpointType.SLUG-> HttpLoggingInterceptor.Level.HEADERS
-                    else -> HttpLoggingInterceptor.Level.BODY
-                }
+                HttpLoggingInterceptor.Level.HEADERS
             )
         }
 
         when (endpointType) {
             EndpointType.JSON -> {
-                Timber.tag(moduleTag).d("""
+                Timber.d("""
                     Adding request and response interceptors for request: ${endpointType.name}
                     """.trimIndent()
                 )
@@ -64,12 +57,12 @@ internal object EndpointProvider {
                         CrunchyResponseInterceptor(
                             authentication = scope.get(),
                             connectivity = scope.get(),
-                            dispatchers = scope.get()
+                            dispatcher = scope.get()
                         )
                     )
             }
             EndpointType.XML -> {
-                Timber.tag(moduleTag).d(
+                Timber.d(
                     "Adding dedicated cache interceptor for request: ${endpointType.name}"
                 )
                 builder.addInterceptor(
@@ -81,7 +74,7 @@ internal object EndpointProvider {
             EndpointType.SESSION_PROXY,
             EndpointType.SESSION_CORE,
             EndpointType.SESSION_JSON -> {
-                Timber.tag(moduleTag).d(
+                Timber.d(
                     "Adding response converter interceptor for: ${endpointType.name}"
                 )
                 builder.addInterceptor(
@@ -89,7 +82,7 @@ internal object EndpointProvider {
                 )
             }
             else -> {
-                Timber.tag(moduleTag).d("No interceptors to add for: ${endpointType.name}")
+                Timber.d("No interceptors to add for: ${endpointType.name}")
             }
         }
 
@@ -111,13 +104,13 @@ internal object EndpointProvider {
     fun provideRetrofit(endpointType: EndpointType, scope: Scope): Retrofit {
         val reference = retrofitCache.get(endpointType)
         return if (reference != null) {
-            Timber.tag(moduleTag).d(
+            Timber.d(
                 "Using cached retrofit instance for endpoint: ${endpointType.name}"
             )
             reference
         }
         else {
-            Timber.tag(moduleTag).d(
+            Timber.d(
                 "Creating new retrofit instance for endpoint: ${endpointType.name}"
             )
             val retrofit =

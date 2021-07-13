@@ -61,7 +61,7 @@
                 app:itemTextAppearance="@style/SupportTheme.FontFamily"
                 app:itemBackground="@drawable/nav_item_background"
                 app:headerLayout="@layout/nav_header_main"
-                app:itemTextColor="?contentColor"
+                app:itemTextColor="@color/primaryTextColor"
                 app:insetForeground="@android:color/transparent"
                 app:menu="@menu/main_drawer"/>
 

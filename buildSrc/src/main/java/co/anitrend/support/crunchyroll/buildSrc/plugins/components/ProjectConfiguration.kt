@@ -21,6 +21,7 @@ import co.anitrend.support.crunchyroll.buildSrc.common.isDomainModule
 import co.anitrend.support.crunchyroll.buildSrc.plugins.extensions.baseAppExtension
 import co.anitrend.support.crunchyroll.buildSrc.plugins.extensions.baseExtension
 import co.anitrend.support.crunchyroll.buildSrc.plugins.extensions.libraryExtension
+import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import com.android.build.gradle.internal.dsl.DefaultConfig
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
@@ -28,6 +29,24 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile
 import java.io.File
 
+
+private fun Project.configureBuildFlavours() {
+    baseAppExtension().run {
+        flavorDimensions.add("default")
+        productFlavors {
+            create("google") {
+                dimension = "default"
+                isDefault = true
+            }
+        }
+        applicationVariants.all {
+            outputs.map { it as BaseVariantOutputImpl }.forEach { output ->
+                val original = output.outputFileName
+                output.outputFileName = original
+            }
+        }
+    }
+}
 
 @Suppress("UnstableApiUsage")
 private fun DefaultConfig.applyAdditionalConfiguration(project: Project) {
@@ -67,6 +86,12 @@ internal fun Project.configureAndroid(): Unit = baseExtension().run {
         applyAdditionalConfiguration(project)
     }
 
+
+    if (isAppModule()) {
+        project.configureBuildFlavours()
+        project.createSigningConfiguration(this)
+    }
+
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
@@ -75,19 +100,38 @@ internal fun Project.configureAndroid(): Unit = baseExtension().run {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            if (project.file(".config/keystore.properties").exists())
+                signingConfig = signingConfigs.getByName("release")
         }
 
         getByName("debug") {
+            isDebuggable = true
             isMinifyEnabled = false
+            isShrinkResources = false
             isTestCoverageEnabled = true
+            proguardFiles(
+                getDefaultProguardFile(
+                    "proguard-android-optimize.txt"
+                ),
+                "proguard-rules.pro"
+            )
         }
     }
 
     packagingOptions {
-        exclude("META-INF/NOTICE.txt")
-        exclude("META-INF/LICENSE")
-        exclude("META-INF/LICENSE.txt")
-        exclude("META-INF/*kotlin_module")
+        excludes.add("META-INF/NOTICE.txt")
+        excludes.add("META-INF/LICENSE")
+        excludes.add("META-INF/LICENSE.txt")
+        // Exclude potential duplicate kotlin_module files
+        excludes.add("META-INF/*kotlin_module")
+        // Exclude consumer proguard files
+        excludes.add("META-INF/proguard/*")
+        // Exclude AndroidX version files
+        excludes.add("META-INF/*.version")
+        // Exclude the Firebase/Fabric/other random properties files
+        excludes.add("META-INF/*.properties")
+        excludes.add("/*.properties")
+        excludes.add("fabric/*.properties")
     }
 
     sourceSets {
@@ -113,6 +157,12 @@ internal fun Project.configureAndroid(): Unit = baseExtension().run {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
+    tasks.withType(KotlinJvmCompile::class.java) {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
+
     tasks.withType(KotlinCompile::class.java) {
         val compilerArgumentOptions = mutableListOf(
             "-Xuse-experimental=kotlin.Experimental",
@@ -123,13 +173,9 @@ internal fun Project.configureAndroid(): Unit = baseExtension().run {
         if (hasCoroutineSupport()) {
             compilerArgumentOptions.add("-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")
             compilerArgumentOptions.add("-Xopt-in=kotlinx.coroutines.FlowPreview")
-            if (!isBaseModule())
-                compilerArgumentOptions.add("-Xopt-in=coil.annotation.ExperimentalCoilApi")
-            if (isDataModule())
-                compilerArgumentOptions.add("-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi")
         }
 
-        if (!isDomainModule())
+        if (isAppModule() || isCoreModule() || isNavigationModule())
             compilerArgumentOptions.apply {
                 add("-Xopt-in=org.koin.core.component.KoinExperimentalAPI")
                 add("-Xopt-in=org.koin.core.component.KoinApiExtension")
@@ -140,12 +186,6 @@ internal fun Project.configureAndroid(): Unit = baseExtension().run {
             allWarningsAsErrors = false
             // Filter out modules that won't be using coroutines
             freeCompilerArgs = compilerArgumentOptions
-        }
-    }
-
-    tasks.withType(KotlinJvmCompile::class.java) {
-        kotlinOptions {
-            jvmTarget = "1.8"
         }
     }
 }

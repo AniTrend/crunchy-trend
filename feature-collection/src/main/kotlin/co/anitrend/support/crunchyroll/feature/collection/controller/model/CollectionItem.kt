@@ -20,24 +20,20 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
 import co.anitrend.arch.recycler.common.ClickableItem
-import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.recycler.holder.SupportViewHolder
-import co.anitrend.arch.recycler.model.RecyclerItem
+import co.anitrend.support.crunchyroll.core.android.recycler.model.RecyclerItemBinding
 import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
 import co.anitrend.support.crunchyroll.feature.collection.R
 import co.anitrend.support.crunchyroll.feature.collection.databinding.AdapterCollectionBinding
 import co.anitrend.support.crunchyroll.feature.collection.presenter.CollectionPresenter.Companion.titleWithSeason
-import kotlinx.android.synthetic.main.adapter_collection.view.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 
 data class CollectionItem(
     val entity: CrunchyCollection?
-) : RecyclerItem(entity?.collectionId) {
+) : RecyclerItemBinding<AdapterCollectionBinding>(entity?.collectionId ?: 0) {
 
     /**
      * Called when the [view] needs to be setup, this could be to set click listeners,
@@ -52,15 +48,15 @@ data class CollectionItem(
         view: View,
         position: Int,
         payloads: List<Any>,
-        stateFlow: MutableStateFlow<ClickableItem?>,
+        stateFlow: MutableStateFlow<ClickableItem>,
         selectionMode: ISupportSelectionMode<Long>?
     ) {
-        val binding = AdapterCollectionBinding.bind(view)
-        binding.collectionTitle.text = entity?.titleWithSeason()
-        binding.collectionDescription.text = entity?.description
-        binding.container.setOnClickListener {
+        binding = AdapterCollectionBinding.bind(view)
+        requireBinding().collectionTitle.text = entity?.titleWithSeason()
+        requireBinding().collectionDescription.text = entity?.description
+        requireBinding().container.setOnClickListener {
             stateFlow.value =
-                DefaultClickableItem(
+                ClickableItem.Data(
                     data = entity,
                     view = view
                 )
@@ -72,7 +68,8 @@ data class CollectionItem(
      * to objects, stop any asynchronous work, e.t.c
      */
     override fun unbind(view: View) {
-        view.container.setOnClickListener(null)
+        binding?.container?.setOnClickListener(null)
+        super.unbind(view)
     }
 
     /**
@@ -91,7 +88,7 @@ data class CollectionItem(
             layoutInflater: LayoutInflater
         ) = AdapterCollectionBinding.inflate(
             layoutInflater, viewGroup, false
-        ).let { SupportViewHolder(it.root) }
+        ).let { SupportViewHolder(it) }
 
         internal val DIFFER =
             object : DiffUtil.ItemCallback<CrunchyCollection>() {

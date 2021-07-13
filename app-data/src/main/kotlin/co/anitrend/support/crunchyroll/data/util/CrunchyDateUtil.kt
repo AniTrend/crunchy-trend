@@ -16,10 +16,62 @@
 
 package co.anitrend.support.crunchyroll.data.util
 
-import co.anitrend.arch.extension.util.contract.ISupportDateHelper
+import androidx.annotation.IntRange
+import co.anitrend.arch.extension.util.attribute.SeasonType
+import co.anitrend.arch.extension.util.date.contract.AbstractSupportDateHelper
 import org.threeten.bp.format.DateTimeFormatter
+import java.util.*
 
-class CrunchyDateUtil : ISupportDateHelper {
+class CrunchyDateUtil : AbstractSupportDateHelper() {
+
+    /**
+     * Returns the current month in the form of an [Int].
+     *
+     * @return [IntRange] between 0 - 11
+     */
+    val month: Int
+        @IntRange(from = 0, to = 11) get() =
+            Calendar.getInstance().get(Calendar.MONTH)
+
+    /**
+     * Returns the current day in the form of an [Int].
+     *
+     * @return [IntRange] between 1 - 31
+     */
+    val day: Int
+        @IntRange(from = 0, to = 30) get() =
+            Calendar.getInstance().get(Calendar.DATE)
+
+    /**
+     * Returns the current year
+     */
+    val year: Int
+        get() = Calendar.getInstance().get(Calendar.YEAR)
+
+    /**
+     * @return current seasons name
+     */
+    override val currentSeason: SeasonType
+        get() {
+            return when (month) {
+                in 2..4 -> SeasonType.SPRING
+                in 5..7 -> SeasonType.SUMMER
+                in 8..10 -> SeasonType.FALL
+                else -> SeasonType.WINTER
+            }
+        }
+
+    /**
+     * Gets the current year + delta, if the season for the year is winter later in the year
+     * then the result would be the current year plus the delta
+     *
+     * @return current year with a given delta
+     */
+    override fun getCurrentYear(delta: Int): Int {
+        return if (month >= 11 && currentSeason == SeasonType.WINTER)
+            year + delta
+        else year
+    }
 
     companion object {
         internal const val ISO8601_PATTERN = "yyyy-MM-dd'T'HH:mm:ssXXX"

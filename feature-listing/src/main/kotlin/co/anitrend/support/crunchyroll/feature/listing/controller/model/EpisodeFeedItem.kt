@@ -16,27 +16,23 @@
 
 package co.anitrend.support.crunchyroll.feature.listing.controller.model
 
-import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
 import co.anitrend.arch.recycler.common.ClickableItem
-import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.recycler.holder.SupportViewHolder
-import co.anitrend.arch.recycler.model.RecyclerItem
 import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
+import co.anitrend.support.crunchyroll.core.android.recycler.model.RecyclerItemBinding
 import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 import co.anitrend.support.crunchyroll.feature.listing.databinding.AdapterMediaFeedBinding
-import co.anitrend.support.crunchyroll.feature.listing.R
 import coil.request.Disposable
-import kotlinx.android.synthetic.main.adapter_media_feed.view.*
 import kotlinx.coroutines.flow.MutableStateFlow
 
 data class EpisodeFeedItem(
     val entity: CrunchyEpisodeFeed?
-) : RecyclerItem(entity?.id) {
+) : RecyclerItemBinding<AdapterMediaFeedBinding>(entity?.id ?: 0) {
 
     private var disposable: Disposable? = null
 
@@ -53,16 +49,16 @@ data class EpisodeFeedItem(
         view: View,
         position: Int,
         payloads: List<Any>,
-        stateFlow: MutableStateFlow<ClickableItem?>,
+        stateFlow: MutableStateFlow<ClickableItem>,
         selectionMode: ISupportSelectionMode<Long>?
     ) {
-        val binding = AdapterMediaFeedBinding.bind(view)
-        disposable = binding.mediaThumbnail.setImageUrl(entity)
-        binding.mediaTitle.text = entity?.title
-        binding.mediaDuration.text = entity?.episodeDuration
-        binding.mediaThumbnail.setOnClickListener {
+        binding = AdapterMediaFeedBinding.bind(view)
+        disposable = requireBinding().mediaThumbnail.setImageUrl(entity)
+        requireBinding().mediaTitle.text = entity?.title
+        requireBinding().mediaDuration.text = entity?.episodeDuration
+        requireBinding().mediaThumbnail.setOnClickListener {
             stateFlow.value =
-                DefaultClickableItem(
+                ClickableItem.Data(
                     data = entity,
                     view = view
                 )
@@ -74,20 +70,11 @@ data class EpisodeFeedItem(
      * to objects, stop any asynchronous work, e.t.c
      */
     override fun unbind(view: View) {
-        view.mediaThumbnail.setOnClickListener(null)
+        binding?.mediaThumbnail?.setOnClickListener(null)
         disposable?.dispose()
         disposable = null
+        super.unbind(view)
     }
-
-    /**
-     * Provides a preferred span size for the item
-     *
-     * @param spanCount current span count which may also be [INVALID_SPAN_COUNT]
-     * @param position position of the current item
-     * @param resources optionally useful for dynamic size check with different configurations
-     */
-    override fun getSpanSize(spanCount: Int, position: Int, resources: Resources) =
-        resources.getInteger(R.integer.single_list_size)
 
     companion object {
         internal fun createViewHolder(
@@ -95,7 +82,7 @@ data class EpisodeFeedItem(
             layoutInflater: LayoutInflater
         ) = AdapterMediaFeedBinding.inflate(
         layoutInflater, viewGroup, false
-        ).let { SupportViewHolder(it.root) }
+        ).let { SupportViewHolder(it) }
 
         internal val DIFFER =
             object : DiffUtil.ItemCallback<CrunchyEpisodeFeed>() {
@@ -110,7 +97,17 @@ data class EpisodeFeedItem(
                     oldItem: CrunchyEpisodeFeed,
                     newItem: CrunchyEpisodeFeed
                 ): Boolean {
-                    return oldItem.hashCode() == newItem.hashCode()
+                    return oldItem.id == newItem.id &&
+                            oldItem.title == newItem.title &&
+                            oldItem.description == newItem.description &&
+                            oldItem.isCountryWhiteListed == newItem.isCountryWhiteListed
+                }
+
+                override fun getChangePayload(
+                    oldItem: CrunchyEpisodeFeed,
+                    newItem: CrunchyEpisodeFeed
+                ): Any? {
+                    return super.getChangePayload(oldItem, newItem)
                 }
             }
     }

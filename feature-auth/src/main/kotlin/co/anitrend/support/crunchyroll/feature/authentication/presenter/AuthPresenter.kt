@@ -16,13 +16,11 @@
 
 package co.anitrend.support.crunchyroll.feature.authentication.presenter
 
-import android.accounts.AbstractAccountAuthenticator
 import android.accounts.Account
 import android.accounts.AccountManager
 import android.content.Context
 import android.os.Bundle
-import co.anitrend.arch.domain.entities.NetworkState
-import co.anitrend.arch.extension.ext.capitalizeWords
+import co.anitrend.arch.domain.entities.LoadState
 import co.anitrend.arch.extension.ext.empty
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
@@ -45,9 +43,9 @@ class AuthPresenter(
         isNewAccount: Boolean,
         userPassword: String
     ) {
-        settings.authenticatedUserId = crunchyUser.userId
-        settings.hasAccessToPremium = !crunchyUser.premium.isNullOrBlank()
-        settings.isAuthenticated = true
+        settings.authenticatedUserId.value = crunchyUser.userId
+        settings.hasAccessToPremium.value = !crunchyUser.premium.isNullOrBlank()
+        settings.isAuthenticated.value = true
         val account = Account(crunchyUser.username, AccountType.UNIVERSAL.id)
         if (isNewAccount) {
             accountManager.addAccountExplicitly(account, userPassword, Bundle.EMPTY)
@@ -61,11 +59,11 @@ class AuthPresenter(
     fun onAnonymousRequest(
         accountManager: AccountManager
     ) = flow {
-        emit(NetworkState.Loading)
+        emit(LoadState.Loading())
         val account = Account(TokenType.ANONYMOUS.alias, AccountType.UNIVERSAL.id)
         accountManager.addAccountExplicitly(account, BuildConfig.clientToken, Bundle.EMPTY)
         accountManager.setAuthToken(account, TokenType.ANONYMOUS.name, String.empty())
-        emit(NetworkState.Success)
+        emit(LoadState.Success())
     }
 
     /**

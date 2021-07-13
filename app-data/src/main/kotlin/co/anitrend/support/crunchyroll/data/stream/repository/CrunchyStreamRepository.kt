@@ -16,7 +16,6 @@
 
 package co.anitrend.support.crunchyroll.data.stream.repository
 
-import androidx.lifecycle.asLiveData
 import co.anitrend.arch.data.repository.SupportRepository
 import co.anitrend.arch.data.state.DataState
 import co.anitrend.arch.data.state.DataState.Companion.create
@@ -31,7 +30,6 @@ internal class CrunchyStreamRepository(
     IStreamRepository<DataState<MediaStream>> {
 
     override fun getStream(query: CrunchyMediaStreamQuery) =
-        source.create(
-            model = source(query).asLiveData()
-        )
+        source create source(query)
+
 }

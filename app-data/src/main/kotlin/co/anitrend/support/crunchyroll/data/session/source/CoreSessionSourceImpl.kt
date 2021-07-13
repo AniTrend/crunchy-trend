@@ -17,25 +17,19 @@
 package co.anitrend.support.crunchyroll.data.session.source
 
 import co.anitrend.arch.data.request.callback.RequestCallback
-import co.anitrend.arch.data.request.contract.IRequestHelper
-import co.anitrend.arch.domain.entities.NetworkState
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
-import co.anitrend.arch.extension.network.SupportConnectivity
-import co.anitrend.support.crunchyroll.data.arch.controller.strategy.policy.OnlineControllerPolicy
-import co.anitrend.support.crunchyroll.data.arch.extension.controller
-import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
+import co.anitrend.arch.data.request.model.Request
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
+import co.anitrend.support.crunchyroll.data.session.CoreSessionController
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
 import co.anitrend.support.crunchyroll.data.session.datasource.remote.CrunchyProxySessionEndpoint
 import co.anitrend.support.crunchyroll.data.session.datasource.remote.CrunchySessionEndpoint
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionCoreEntity
-import co.anitrend.support.crunchyroll.data.session.mapper.CoreSessionResponseMapper
-import co.anitrend.support.crunchyroll.data.session.model.CrunchySessionCoreModel
 import co.anitrend.support.crunchyroll.data.session.source.contract.SessionSource
 import co.anitrend.support.crunchyroll.data.session.transformer.CoreSessionTransformer
-import co.anitrend.support.crunchyroll.domain.session.entities.Session
 import kotlinx.coroutines.*
-import retrofit2.Response
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import timber.log.Timber
 
 internal class CoreSessionSourceImpl(
@@ -43,47 +37,35 @@ internal class CoreSessionSourceImpl(
     private val dao: CrunchySessionCoreDao,
     private val endpoint: CrunchySessionEndpoint,
     private val proxyEndpoint: CrunchyProxySessionEndpoint,
-    private val mapper: CoreSessionResponseMapper,
-    private val supportConnectivity: SupportConnectivity,
-    supportDispatchers: SupportDispatchers
-) : SessionSource(supportDispatchers) {
-
-    private suspend fun requestCoreSession(
-        deferred: Deferred<Response<CrunchyContainer<CrunchySessionCoreModel>>>,
-        callback: RequestCallback
-    ): CrunchySessionCoreEntity? {
-        val controller =
-            mapper.controller(
-                dispatchers,
-                OnlineControllerPolicy.create(
-                    supportConnectivity
-                )
-            )
-
-        return controller(deferred, callback)
-    }
+    private val controller: CoreSessionController,
+    override val dispatcher: ISupportDispatcher
+) : SessionSource() {
 
     private suspend fun createNewCoreSession(callback: RequestCallback): CrunchySessionCoreEntity? {
-        val invalidSession = withContext(dispatchers.io) {
+        val invalidSession = withContext(dispatcher.io) {
             val sessionId = settings.sessionId
-            dao.findBySessionId(sessionId)
+            dao.findBySessionId(sessionId.value)
         }
 
-        val session = requestCoreSession(
-            async { proxyEndpoint.startCoreSession() }, callback
-        ) ?: requestCoreSession(
-            async { endpoint.startCoreSessionJson() }, callback
-        )
+        val proxySession = async {
+            proxyEndpoint.startCoreSession()
+        }
 
-        withContext(dispatchers.io) {
+        val coreSession = async {
+            endpoint.startCoreSessionJson()
+        }
+
+        val session = controller(proxySession, callback) ?: controller(coreSession, callback)
+
+        withContext(dispatcher.io) {
             if (session != null) {
-                settings.sessionId = session.sessionId
-                Timber.tag(moduleTag).d(
+                settings.sessionId.value = session.sessionId
+                Timber.d(
                     "Persisting core session into private storage space -> $session"
                 )
             } else if (invalidSession != null) {
                 dao.delete(invalidSession)
-                Timber.tag(moduleTag).d(
+                Timber.d(
                     "Removing previous invalid core session -> $invalidSession"
                 )
             }
@@ -98,17 +80,16 @@ internal class CoreSessionSourceImpl(
      *
      * In this context the super.invoke() method will allow a retry action to be set
      */
-    override fun invoke(): Session? {
-        var entity: CrunchySessionCoreEntity? = null
-        runBlocking {
-            requestHelper.runIfNotRunning(
-                IRequestHelper.RequestType.INITIAL
-            ) { callback ->
-                entity = createNewCoreSession(callback)
-            }
+    override fun invoke() = flow {
+        requestHelper.runIfNotRunning(
+            Request.Default(
+                "core_session_source_initial",
+                Request.Type.INITIAL
+            )
+        ) {
+            val result = createNewCoreSession(it)
+            emit(CoreSessionTransformer.transform(result))
         }
-
-        return CoreSessionTransformer.transform(entity)
     }
 
     /**

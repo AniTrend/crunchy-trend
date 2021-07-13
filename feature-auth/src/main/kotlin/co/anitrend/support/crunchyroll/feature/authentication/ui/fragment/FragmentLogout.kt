@@ -20,16 +20,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
-import co.anitrend.arch.domain.entities.NetworkState
-import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
+import co.anitrend.arch.domain.entities.LoadState
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
-import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.core.ui.fragment.CrunchyFragment
 import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLogoutBinding
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login.LoginViewModel
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.logout.LogoutViewModel
+import co.anitrend.support.crunchyroll.navigation.*
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -45,6 +44,17 @@ class FragmentLogout : CrunchyFragment() {
     private val viewModel by viewModel<LogoutViewModel>()
     private val viewModelUser by viewModel<LoginViewModel>()
 
+
+    private val restNetworkStateOnBackPress =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (binding.supportStateLayout.isError) {
+                    binding.supportStateLayout.loadStateFlow.value = LoadState.Success()
+                    return
+                }
+            }
+        }
+
     /**
      * Invoke view model observer to watch for changes
      */
@@ -58,15 +68,18 @@ class FragmentLogout : CrunchyFragment() {
                 activity?.closeScreen()
             }
         })
-        viewModelState().networkState.observe(viewLifecycleOwner, Observer {
-            binding.supportStateLayout.networkMutableStateFlow.value = it
+        viewModelState().loadState.observe(viewLifecycleOwner, {
+            binding.supportStateLayout.loadStateFlow.value = it
         })
-        viewModelState().refreshState.observe(viewLifecycleOwner, Observer {
-            binding.supportStateLayout.networkMutableStateFlow.value = it
+        viewModelState().refreshState.observe(viewLifecycleOwner, {
+            binding.supportStateLayout.loadStateFlow.value = it
         })
     }
 
     override fun initializeComponents(savedInstanceState: Bundle?) {
+        requireActivity().onBackPressedDispatcher.addCallback(
+        this, restNetworkStateOnBackPress
+        )
         /*lifecycleScope.launchWhenResumed {
             binding.supportStateLayout.interactionStateFlow
                 .filterNotNull()
@@ -91,7 +104,7 @@ class FragmentLogout : CrunchyFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.supportStateLayout.stateConfigFlow.value = get()
-        binding.supportStateLayout.networkMutableStateFlow.value = NetworkState.Success
+        binding.supportStateLayout.loadStateFlow.value = LoadState.Success()
         binding.userLogoutButton.setOnClickListener {
             viewModelState().invoke()
         }
@@ -105,13 +118,5 @@ class FragmentLogout : CrunchyFragment() {
 
     private fun onFetchDataInitialize() {
         viewModelUser.state.invoke()
-    }
-
-        override fun hasBackPressableAction(): Boolean {
-        if (binding.supportStateLayout.isError) {
-            binding.supportStateLayout.networkMutableStateFlow.value = NetworkState.Success
-            return true
-        }
-        return super.hasBackPressableAction()
     }
 }

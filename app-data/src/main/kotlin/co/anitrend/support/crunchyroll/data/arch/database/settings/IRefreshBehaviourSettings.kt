@@ -16,7 +16,9 @@
 
 package co.anitrend.support.crunchyroll.data.arch.database.settings
 
+import co.anitrend.arch.extension.settings.contract.AbstractSetting
+
 interface IRefreshBehaviourSettings {
 
-    var clearDataOnSwipeRefresh: Boolean
+    val clearDataOnSwipeRefresh: AbstractSetting<Boolean>
 }

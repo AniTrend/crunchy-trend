@@ -32,8 +32,6 @@ internal class CollectionRepository(
 
     override fun getCollection(
         seriesQuery: CrunchyCollectionQuery
-    ) =
-        source.create(
-            model = source(seriesQuery)
-        )
+    ) = source create source.collection(seriesQuery)
+
 }

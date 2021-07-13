@@ -17,10 +17,22 @@
 package co.anitrend.support.crunchyroll.data.news.helper
 
 import co.anitrend.arch.extension.ext.empty
+import okhttp3.HttpUrl.Companion.toHttpUrl
 
 internal object NewsHelper {
     private val imageRegex = Regex("<img src\\s*=\\s*\\\\*\"(.+?)\\\\*\"\\s*/>")
     private val breakLineRegex = Regex("<br.*?>")
+
+    fun generateId(referenceLink: String): String {
+        val url = referenceLink.toHttpUrl()
+        val segments = url.pathSegments
+        if (segments.size >= 4)
+            return url.pathSegments[4]
+        throw UnsupportedOperationException(
+            "Path segments are less than 4",
+            Throwable(referenceLink)
+        )
+    }
 
     fun getImageSrc(content: String): String? {
         val matchResult = imageRegex.find(content)

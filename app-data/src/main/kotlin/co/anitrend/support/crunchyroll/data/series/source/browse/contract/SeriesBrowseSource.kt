@@ -16,30 +16,26 @@
 
 package co.anitrend.support.crunchyroll.data.series.source.browse.contract
 
-import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.support.crunchyroll.data.arch.common.CrunchyPagedSource
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.domain.series.models.CrunchySeriesBrowseQuery
+import kotlinx.coroutines.flow.Flow
 
-internal abstract class SeriesBrowseSource(
-    supportDispatchers: SupportDispatchers
-) : CrunchyPagedSource<CrunchySeries>(supportDispatchers) {
+internal abstract class SeriesBrowseSource : CrunchyPagedSource<CrunchySeries>() {
 
     protected lateinit var query: CrunchySeriesBrowseQuery
         private set
 
-    protected abstract val observable: LiveData<PagedList<CrunchySeries>>
+    protected abstract fun observable(query: CrunchySeriesBrowseQuery): Flow<PagedList<CrunchySeries>>
 
-    internal operator fun invoke(browseQuery: CrunchySeriesBrowseQuery): LiveData<PagedList<CrunchySeries>> {
-        runCatching {
-            // We're going to reset paging if we happen to change the query with the same instance
-            // not likely to happen but better safe than sorry...
-            if (query.filter != browseQuery.filter)
-                supportPagingHelper.onPageRefresh()
-        }
-        query = browseQuery
-        return observable
+    internal fun seriesBrowse(query: CrunchySeriesBrowseQuery): Flow<PagedList<CrunchySeries>> {
+        this.query = query
+        // We're going to reset paging if we happen to change the query with the same instance
+        // not likely to happen but better safe than sorry...
+        if (query.filter != query.filter) supportPagingHelper.onPageRefresh()
+
+        return observable(query)
     }
 }

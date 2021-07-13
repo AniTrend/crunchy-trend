@@ -22,7 +22,7 @@
         android:layout_height="match_parent"
         tools:context=".ui.activity.NewsScreen">
 
-    <include layout="@layout/news_screen_content" />
+    <include android:id="@+id/newsContent" layout="@layout/news_screen_content" />
 
     <com.google.android.material.bottomappbar.BottomAppBar
                 android:id="@+id/bottomAppBar"

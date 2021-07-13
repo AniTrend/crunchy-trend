@@ -16,9 +16,10 @@
 
 package co.anitrend.support.crunchyroll.core.settings.common.theme
 
+import co.anitrend.arch.extension.settings.contract.AbstractSetting
 import co.anitrend.support.crunchyroll.core.util.theme.AniTrendTheme
 
 interface IThemeSettings {
 
-    var theme: AniTrendTheme
+    val theme: AbstractSetting<AniTrendTheme>
 }

@@ -16,6 +16,6 @@
 
 package co.anitrend.support.crunchyroll.data.arch.enums.contract
 
-interface ICrunchyEnumAttribute {
+internal interface ICrunchyEnumAttribute {
     val attribute: String
 }

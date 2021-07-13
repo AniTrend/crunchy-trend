@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2021 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,11 +14,11 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.arch.mapper
+package co.anitrend.support.crunchyroll.data.collection
 
-import co.anitrend.arch.data.mapper.SupportResponseMapper
-import co.anitrend.support.crunchyroll.data.rss.contract.ICrunchyRssChannel
-import co.anitrend.support.crunchyroll.data.rss.contract.IRssCopyright
+import co.anitrend.support.crunchyroll.data.arch.controller.core.DefaultController
+import co.anitrend.support.crunchyroll.data.arch.model.CrunchyContainer
+import co.anitrend.support.crunchyroll.data.collection.entity.CrunchyCollectionEntity
+import co.anitrend.support.crunchyroll.data.collection.model.CrunchyCollectionModel
 
-internal abstract class CrunchyRssMapper<S : IRssCopyright, D> :
-    SupportResponseMapper<ICrunchyRssChannel<S>, List<D>>()
+internal typealias CollectionController = DefaultController<CrunchyContainer<List<CrunchyCollectionModel>>, List<CrunchyCollectionEntity>>

@@ -14,8 +14,6 @@
  *    limitations under the License.
  */
 
-@file:Suppress("DEPRECATION")
-
 package co.anitrend.support.crunchyroll.data.api.converter
 
 import co.anitrend.arch.extension.ext.SYNCHRONIZED
@@ -42,6 +40,7 @@ internal class CrunchyConverterFactory private constructor(): Converter.Factory(
         for (annotation in annotations) {
             when (annotation) {
                 is XML -> {
+                    @Suppress("DEPRECATION")
                     return SimpleXmlConverterFactory.createNonStrict(
                         Persister(AnnotationStrategy())
                     ).responseBodyConverter(type, annotations, retrofit)

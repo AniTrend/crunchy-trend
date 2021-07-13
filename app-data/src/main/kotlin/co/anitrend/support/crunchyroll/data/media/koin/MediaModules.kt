@@ -20,6 +20,7 @@ package co.anitrend.support.crunchyroll.data.media.koin
 import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
 import co.anitrend.support.crunchyroll.data.arch.extension.api
 import co.anitrend.support.crunchyroll.data.arch.extension.db
+import co.anitrend.support.crunchyroll.data.arch.extension.defaultController
 import co.anitrend.support.crunchyroll.data.media.mapper.MediaResponseMapper
 import co.anitrend.support.crunchyroll.data.media.repository.MediaRepository
 import co.anitrend.support.crunchyroll.data.media.source.MediaSourceImpl
@@ -33,8 +34,10 @@ private val dataSourceModule = module {
     factory {
         MediaSourceImpl(
             supportConnectivity = get(),
-            supportDispatchers = get(),
-            mapper = get(),
+            dispatcher = get(),
+            controller = defaultController(
+                mapper = get<MediaResponseMapper>()
+            ),
             mediaDao = db().crunchyMediaDao(),
             endpoint = api(EndpointType.JSON),
             settings = get()

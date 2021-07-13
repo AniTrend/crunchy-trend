@@ -16,7 +16,6 @@
 
 package co.anitrend.support.crunchyroll.data.series.repository.detail
 
-import androidx.lifecycle.asLiveData
 import co.anitrend.arch.data.repository.SupportRepository
 import co.anitrend.arch.data.state.DataState
 import co.anitrend.arch.data.state.DataState.Companion.create
@@ -31,8 +30,5 @@ internal class SeriesDetailRepository(
 
     override fun getSeries(
         seriesDetailQuery: CrunchySeriesDetailQuery
-    ) =
-        source.create(
-            model = source(seriesDetailQuery).asLiveData()
-        )
+    ) = source create source(seriesDetailQuery)
 }

@@ -18,21 +18,18 @@ package co.anitrend.support.crunchyroll.data.arch.common
 
 import androidx.paging.PagedList
 import co.anitrend.arch.data.request.callback.RequestCallback
-import co.anitrend.arch.data.request.contract.IRequestHelper
+import co.anitrend.arch.data.request.model.Request
 import co.anitrend.arch.data.source.paging.SupportPagingDataSource
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
 import kotlinx.coroutines.launch
 
 /**
  * Helper for prototyping quick sources
  */
-internal abstract class CrunchyPagedSource<T>(
-    supportDispatchers: SupportDispatchers
-) : SupportPagingDataSource<T>(supportDispatchers) {
+internal abstract class CrunchyPagedSource<T> : SupportPagingDataSource<T>() {
 
     abstract suspend operator fun invoke(
         callback: RequestCallback,
-        requestType: IRequestHelper.RequestType,
+        request: Request,
         model: T? = null
     )
 
@@ -40,15 +37,31 @@ internal abstract class CrunchyPagedSource<T>(
      * Called when zero items are returned from an initial load of the PagedList's data source.
      */
     override fun onZeroItemsLoaded() {
+        val request = Request.Default("${moduleTag}_initial", Request.Type.INITIAL)
         launch {
-            requestHelper.runIfNotRunning(
-                IRequestHelper.RequestType.INITIAL
-            ) { pagingRequestCallback ->
-                invoke(
-                    pagingRequestCallback,
-                    IRequestHelper.RequestType.INITIAL
-                )
+            requestHelper.runIfNotRunning(request) { callback ->
+                invoke(callback, request)
             }
+        }
+    }
+
+    /**
+     * Called when the item at the front of the PagedList has been loaded, and access has
+     * occurred within [Config.prefetchDistance] of it.
+     *
+     * No more data will be prepended to the PagedList before this item.
+     *
+     * @param itemAtFront The first item of PagedList
+     */
+    override fun onItemAtFrontLoaded(itemAtFront: T) {
+        if (!supportPagingHelper.isFirstPage()) {
+            val request = Request.Default("${moduleTag}_before", Request.Type.BEFORE)
+            /*supportPagingHelper.onPagePrevious()
+            launch {
+                requestHelper.runIfNotRunning(request) { callback ->
+                    invoke(callback, request, itemAtFront)
+                }
+            }*/
         }
     }
 
@@ -61,16 +74,11 @@ internal abstract class CrunchyPagedSource<T>(
      * @param itemAtEnd The first item of PagedList
      */
     override fun onItemAtEndLoaded(itemAtEnd: T) {
+        val request = Request.Default("${moduleTag}_after", Request.Type.AFTER)
+        supportPagingHelper.onPageNext()
         launch {
-            requestHelper.runIfNotRunning(
-                IRequestHelper.RequestType.AFTER
-            ) { pagingRequestCallback ->
-                supportPagingHelper.onPageNext()
-                invoke(
-                    pagingRequestCallback,
-                    IRequestHelper.RequestType.AFTER,
-                    itemAtEnd
-                )
+            requestHelper.runIfNotRunning(request) { callback ->
+                invoke(callback, request, itemAtEnd)
             }
         }
     }

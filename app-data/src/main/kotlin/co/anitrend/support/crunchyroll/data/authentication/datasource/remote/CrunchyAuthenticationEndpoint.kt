@@ -37,7 +37,7 @@ internal interface CrunchyAuthenticationEndpoint {
     @JSON
     @FormUrlEncoded
     @POST("/logout.${BuildConfig.apiExtension}.json")
-    suspend fun logoutUser(): Response<CrunchyContainer<Any?>>
+    suspend fun logoutUser(): Response<CrunchyContainer<Any>>
 
     @JSON
     @GET("/start_session.${BuildConfig.apiExtension}.json")

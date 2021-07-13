@@ -21,15 +21,16 @@ import co.anitrend.support.crunchyroll.core.ui.model.FragmentItem
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.commit
 import co.anitrend.support.crunchyroll.feature.discover.R
+import co.anitrend.support.crunchyroll.feature.discover.databinding.DiscoverActivityBinding
 import co.anitrend.support.crunchyroll.feature.discover.ui.fragment.SeriesDiscoverContent
-import kotlinx.android.synthetic.main.discover_activity.*
 
-class SeriesDiscoverScreen : CrunchyActivity() {
+class SeriesDiscoverScreen : CrunchyActivity<DiscoverActivityBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.discover_activity)
-        setSupportActionBar(bottomAppBar)
+        binding = DiscoverActivityBinding.inflate(layoutInflater)
+        setContentView(requireBinding().root)
+        setSupportActionBar(requireBinding().bottomAppBar)
     }
 
     /**
@@ -52,6 +53,6 @@ class SeriesDiscoverScreen : CrunchyActivity() {
         currentFragmentTag = FragmentItem(
             parameter = intent.extras,
             fragment = SeriesDiscoverContent::class.java
-        ).commit(R.id.discover_content, this) {}
+        ).commit(requireBinding().discoverContent, this) {}
     }
 }

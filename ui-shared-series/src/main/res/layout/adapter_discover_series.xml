@@ -29,7 +29,7 @@
 
     <co.anitrend.arch.ui.view.image.SupportImageView
             android:id="@+id/seriesImage"
-            android:layout_width="@dimen/avatar_size_xl"
+            android:layout_width="@dimen/size_65dp"
             android:layout_height="0dp"
             android:scaleType="centerCrop"
             app:aspectRatio="1.35"

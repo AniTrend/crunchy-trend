@@ -31,7 +31,5 @@ internal class NewsRepository(
     INewsRepository<DataState<PagedList<CrunchyNews>>> {
 
     override fun getNewsListings(query: RssQuery) =
-        source.create(
-            model = source(query)
-        )
+        source create source.newsCatalogue(query)
 }

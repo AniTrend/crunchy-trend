@@ -17,10 +17,9 @@
 package co.anitrend.support.crunchyroll.data.arch.di
 
 import android.accounts.AccountManager
-import android.content.Context
 import android.net.ConnectivityManager
-import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.arch.extension.ext.systemServiceOf
+import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.support.crunchyroll.data.BuildConfig
 import co.anitrend.support.crunchyroll.data.api.converter.CrunchyConverterFactory
 import co.anitrend.support.crunchyroll.data.api.helper.CacheHelper
@@ -84,26 +83,30 @@ private val networkModule = module {
             BuildConfig.DEBUG -> {
                 val httpLoggingInterceptor = HttpLoggingInterceptor()
                 httpLoggingInterceptor.level = interceptorLogLevel
-                okHttpClientBuilder.addInterceptor(httpLoggingInterceptor)
-                if (interceptorLogLevel == HttpLoggingInterceptor.Level.BODY) {
-                    okHttpClientBuilder.addInterceptor(
-                        ChuckerInterceptor(
-                            context = androidContext(),
-                            // The previously created Collector
-                            collector = ChuckerCollector(
-                                context = androidContext(),
-                                // Toggles visibility of the push notification
-                                showNotification = true,
-                                // Allows to customize the retention period of collected data
-                                retentionPeriod = RetentionManager.Period.ONE_HOUR
-                            ),
-                            // The max body content length in bytes, after this responses will be truncated.
-                            maxContentLength = 250000L,
-                            // List of headers to replace with ** in the Chucker UI
-                            headersToRedact = setOf("Auth-Token")
-                        )
+                okHttpClientBuilder
+                    .addInterceptor(httpLoggingInterceptor)
+                    .addInterceptor(
+                        ChuckerInterceptor.Builder(context = androidContext())
+                                .collector(
+                                    collector = ChuckerCollector(
+                                        context = androidContext(),
+                                        // Toggles visibility of the push notification
+                                        showNotification = true,
+                                        // Allows to customize the retention period of collected data
+                                        retentionPeriod = RetentionManager.Period.ONE_WEEK
+                                    )
+                                    // The max body content length in bytes, after this responses will be truncated.
+                                )
+                                .maxContentLength(
+                                    length = 250000L
+                                    // List of headers to replace with ** in the Chucker UI
+                                )
+                                .redactHeaders(
+                                    headerNames = setOf("Auth-Token")
+                                )
+                                .alwaysReadResponseBody(false)
+                                .build()
                     )
-                }
             }
         }
 

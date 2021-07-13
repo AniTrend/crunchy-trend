@@ -23,20 +23,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
 import co.anitrend.arch.recycler.common.ClickableItem
-import co.anitrend.arch.recycler.common.DefaultClickableItem
 import co.anitrend.arch.recycler.holder.SupportViewHolder
-import co.anitrend.arch.recycler.model.RecyclerItem
 import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
+import co.anitrend.support.crunchyroll.core.android.recycler.model.RecyclerItemBinding
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.shared.series.R
 import co.anitrend.support.crunchyroll.shared.series.databinding.AdapterDiscoverSeriesBinding
 import coil.request.Disposable
-import kotlinx.android.synthetic.main.adapter_discover_series.view.*
 import kotlinx.coroutines.flow.MutableStateFlow
 
 data class SeriesItem(
     val entity: CrunchySeries?
-) : RecyclerItem(entity?.seriesId) {
+) : RecyclerItemBinding<AdapterDiscoverSeriesBinding>(entity?.seriesId ?: 0) {
 
     private var disposable: Disposable? = null
 
@@ -54,16 +52,16 @@ data class SeriesItem(
         view: View,
         position: Int,
         payloads: List<Any>,
-        stateFlow: MutableStateFlow<ClickableItem?>,
+        stateFlow: MutableStateFlow<ClickableItem>,
         selectionMode: ISupportSelectionMode<Long>?
     ) {
-        val binding = AdapterDiscoverSeriesBinding.bind(view)
-        disposable = binding.seriesImage.setImageUrl(entity?.portraitImage)
-        binding.seriesName.text = entity?.name
-        binding.seriesDescription.text = entity?.description
-        binding.container.setOnClickListener {
+        binding = AdapterDiscoverSeriesBinding.bind(view)
+        disposable = requireBinding().seriesImage.setImageUrl(entity?.portraitImage)
+        requireBinding().seriesName.text = entity?.name
+        requireBinding().seriesDescription.text = entity?.description
+        requireBinding().container.setOnClickListener {
             stateFlow.value =
-                DefaultClickableItem(
+                ClickableItem.Data(
                     data = entity,
                     view = view
                 )
@@ -75,9 +73,10 @@ data class SeriesItem(
      * to objects, stop any asynchronous work, e.t.c
      */
     override fun unbind(view: View) {
-        view.container.setOnClickListener(null)
+        binding?.container?.setOnClickListener(null)
         disposable?.dispose()
         disposable = null
+        super.unbind(view)
     }
 
     /**
@@ -96,7 +95,7 @@ data class SeriesItem(
             layoutInflater: LayoutInflater
         ) = AdapterDiscoverSeriesBinding.inflate(
             layoutInflater, viewGroup, false
-        ).let { SupportViewHolder(it.root) }
+        ).let { SupportViewHolder(it) }
 
         internal val DIFFER =
             object : DiffUtil.ItemCallback<CrunchySeries>() {
@@ -111,7 +110,15 @@ data class SeriesItem(
                     oldItem: CrunchySeries,
                     newItem: CrunchySeries
                 ): Boolean {
-                    return oldItem.hashCode() == newItem.hashCode()
+                    return oldItem.rating == newItem.rating &&
+                            oldItem.mediaCount == newItem.mediaCount
+                }
+
+                override fun getChangePayload(
+                    oldItem: CrunchySeries,
+                    newItem: CrunchySeries
+                ): Any? {
+                    return super.getChangePayload(oldItem, newItem)
                 }
             }
     }

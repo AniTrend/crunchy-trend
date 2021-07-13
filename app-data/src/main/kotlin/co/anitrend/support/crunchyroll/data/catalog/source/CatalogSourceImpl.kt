@@ -17,7 +17,7 @@
 package co.anitrend.support.crunchyroll.data.catalog.source
 
 import co.anitrend.arch.data.request.callback.RequestCallback
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.arch.extension.network.SupportConnectivity
 import co.anitrend.arch.extension.util.DEFAULT_PAGE_SIZE
 import co.anitrend.support.crunchyroll.data.BuildConfig
@@ -45,21 +45,18 @@ internal class CatalogSourceImpl(
     private val batchSource: BatchSource,
     private val mapper: CatalogResponseMapper,
     private val cache: CatalogCacheHelper,
-    supportDispatchers: SupportDispatchers
-) : CatalogSource(supportDispatchers), KoinComponent {
+    override val dispatcher: ISupportDispatcher
+) : CatalogSource() {
 
     // Static id for catalog id, for persistent
     private val requestId: Long = 100
 
-    override val observable = flow {
-        val catalogFlow = catalogDao.findAllFlow()
-
-        emitAll(
-            catalogFlow.mapNotNull {
-                CrunchyCatalogTransformer.transform(it)
-            }
-        )
-    }
+    override fun observable() =
+        catalogDao.findAllFlow()
+                .flowOn(dispatcher.io)
+                .mapNotNull {
+                    CrunchyCatalogTransformer.transform(it)
+                }
 
     override suspend fun getCatalog(callback: RequestCallback) {
         if (cache.shouldUpdateCatalog(requestId, catalogDao.count())) {

@@ -20,6 +20,7 @@ import co.anitrend.support.crunchyroll.buildSrc.plugins.components.configureAndr
 import co.anitrend.support.crunchyroll.buildSrc.plugins.components.configureDependencies
 import co.anitrend.support.crunchyroll.buildSrc.plugins.components.configureOptions
 import co.anitrend.support.crunchyroll.buildSrc.plugins.components.configurePlugins
+import co.anitrend.support.crunchyroll.buildSrc.plugins.components.configureAdditionalPlugins
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -60,5 +61,8 @@ open class CorePlugin : Plugin<Project> {
         target.configureAndroid()
         target.configureOptions()
         target.configureDependencies()
+        target.configureAdditionalPlugins()
+        target.availableComponents()
+        target.availableExtensions()
     }
 }

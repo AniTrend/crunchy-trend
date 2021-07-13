@@ -29,20 +29,18 @@ import timber.log.Timber
 
 internal class ResponseHelper(private val json: Gson) {
 
-    private val moduleTag = ResponseHelper::class.java.simpleName
-
     private fun convertResponse(body: String?) : CrunchyContainer<Any?>? {
         return try {
-            Timber.tag(moduleTag).v("Converting response body string to CrunchyContainer")
+            Timber.v("Converting response body string to CrunchyContainer")
             json.fromJson(body, typeTokenOf<CrunchyContainer<Any?>?>())
         } catch (e: Exception) {
-            Timber.tag(moduleTag).e(Exception(e.message, Throwable(body)))
+            Timber.e(Exception(e.message, Throwable(body)))
             CrunchyContainer(CrunchyResponseStatus.bad_request,true,null, body)
         }
     }
 
     private fun buildBodyUsing(content: String?, mediaType: MediaType?): ResponseBody? {
-        Timber.tag(moduleTag).v("Building new response body for mimeType: $mediaType")
+        Timber.v("Building new response body for mimeType: $mediaType")
         return content?.toResponseBody(mediaType)
     }
 

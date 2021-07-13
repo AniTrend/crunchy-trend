@@ -21,15 +21,16 @@ import co.anitrend.support.crunchyroll.core.ui.model.FragmentItem
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.commit
 import co.anitrend.support.crunchyroll.feature.collection.R
+import co.anitrend.support.crunchyroll.feature.collection.databinding.CollectionActivityBinding
 import co.anitrend.support.crunchyroll.feature.collection.ui.fragment.CollectionContentScreen
-import kotlinx.android.synthetic.main.collection_activity.*
 
-class CollectionScreen : CrunchyActivity() {
+class CollectionScreen : CrunchyActivity<CollectionActivityBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.collection_activity)
-        setSupportActionBar(bottomAppBar)
+        binding = CollectionActivityBinding.inflate(layoutInflater)
+        setContentView(requireBinding().root)
+        setSupportActionBar(requireBinding().bottomAppBar)
     }
 
     /**

@@ -48,7 +48,8 @@
     </FrameLayout>
 
 
-    <include layout="@layout/item_carousel"
+    <include android:id="@+id/catalogItems"
+            layout="@layout/item_carousel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 </LinearLayout>

@@ -33,20 +33,20 @@ import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.core.ui.commit
+import co.anitrend.support.crunchyroll.databinding.ActivityMainBinding
 import co.anitrend.support.crunchyroll.navigation.*
 import co.anitrend.support.crunchyroll.navigation.extensions.forFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.navigation.NavigationView
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class MainScreen : CrunchyActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainScreen : CrunchyActivity<ActivityMainBinding>(), NavigationView.OnNavigationItemSelectedListener {
 
     private val bottomDrawerBehavior by lazy(UNSAFE) {
-        BottomSheetBehavior.from(bottomNavigationDrawer)
+        BottomSheetBehavior.from(requireBinding().bottomNavigationDrawer)
     }
 
     private val shortcutSelection by extra(keyShortcutRedirect, R.id.nav_show_news)
@@ -61,12 +61,12 @@ class MainScreen : CrunchyActivity(), NavigationView.OnNavigationItemSelectedLis
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(bottomAppBar)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(requireBinding().root)
+        setSupportActionBar(requireBinding().bottomAppBar)
         bottomDrawerBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        shortcutSelection?.also {
-            selectedItem = it
-        }
+        selectedItem = shortcutSelection
+
     }
 
     /**
@@ -78,10 +78,10 @@ class MainScreen : CrunchyActivity(), NavigationView.OnNavigationItemSelectedLis
      * @param
      */
     override fun initializeComponents(savedInstanceState: Bundle?) {
-        floatingShortcutButton.setOnClickListener {
+        requireBinding().floatingShortcutButton.setOnClickListener {
             bottomDrawerBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
-        bottomNavigationView.apply {
+        requireBinding().bottomNavigationView.apply {
             setNavigationItemSelectedListener(this@MainScreen)
             setCheckedItem(selectedItem)
         }
@@ -108,8 +108,6 @@ class MainScreen : CrunchyActivity(), NavigationView.OnNavigationItemSelectedLis
                 return
             }
             else -> {
-                if (currentFragmentInterceptsActionUp())
-                    return
                 /** fixes leak discussed [here](https://issuetracker.google.com/issues/139738913) */
                 finishAfterTransition()
             }
@@ -133,7 +131,7 @@ class MainScreen : CrunchyActivity(), NavigationView.OnNavigationItemSelectedLis
             }
             R.id.action_login -> {
                 Authentication(applicationContext)
-                if (!presenter.settings.isAuthenticated)
+                if (!presenter.settings.isAuthenticated.value)
                     closeScreen()
                 return true
             }
@@ -170,7 +168,7 @@ class MainScreen : CrunchyActivity(), NavigationView.OnNavigationItemSelectedLis
             else -> null
         }
 
-        bottomAppBar.setTitle(selectedTitle)
+        requireBinding().bottomAppBar.setTitle(selectedTitle)
         bottomDrawerBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
         delay(DEBOUNCE_DURATION)
@@ -182,7 +180,7 @@ class MainScreen : CrunchyActivity(), NavigationView.OnNavigationItemSelectedLis
             runCatching {
                 onNavigate(menu)
             }.onFailure {
-                Timber.tag(moduleTag).e(it)
+                Timber.e(it)
             }
         }
     }

@@ -17,39 +17,36 @@
 package co.anitrend.support.crunchyroll.data.stream.source.contract
 
 import co.anitrend.arch.data.request.callback.RequestCallback
-import co.anitrend.arch.data.request.contract.IRequestHelper
+import co.anitrend.arch.data.request.model.Request
 import co.anitrend.arch.data.source.core.SupportCoreDataSource
-import co.anitrend.arch.extension.dispatchers.SupportDispatchers
+import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
 import co.anitrend.support.crunchyroll.domain.stream.entities.MediaStream
 import co.anitrend.support.crunchyroll.domain.stream.models.CrunchyMediaStreamQuery
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
-internal abstract class CrunchyStreamSource(
-    supportDispatchers: SupportDispatchers
-) : SupportCoreDataSource(supportDispatchers) {
+internal abstract class CrunchyStreamSource : SupportCoreDataSource() {
 
     protected lateinit var query: CrunchyMediaStreamQuery
 
-    protected abstract val observable: Flow<MediaStream>
+    protected abstract fun observable(query: CrunchyMediaStreamQuery): Flow<MediaStream>
 
     protected abstract suspend fun getMediaStream(
         query: CrunchyMediaStreamQuery,
         callback: RequestCallback
     )
 
-    operator fun invoke(mediaStreamQuery: CrunchyMediaStreamQuery): Flow<MediaStream> {
-        query = mediaStreamQuery
+    operator fun invoke(query: CrunchyMediaStreamQuery): Flow<MediaStream> {
+        this.query = query
         launch {
             requestHelper.runIfNotRunning(
-                IRequestHelper.RequestType.INITIAL
-            ) { getMediaStream(mediaStreamQuery, it) }
+                Request.Default(
+                    "stream_source_initial",
+                    Request.Type.INITIAL
+                )
+            ) { getMediaStream(query, it) }
         }
 
-        return observable
+        return observable(query)
     }
 }

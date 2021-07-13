@@ -16,44 +16,36 @@
 
 package co.anitrend.support.crunchyroll.data.news.mapper
 
-import co.anitrend.support.crunchyroll.data.arch.mapper.CrunchyRssMapper
+import co.anitrend.support.crunchyroll.data.arch.mapper.DefaultMapper
 import co.anitrend.support.crunchyroll.data.news.datasource.local.CrunchyRssNewsDao
 import co.anitrend.support.crunchyroll.data.news.datasource.local.transformer.NewsEntityTransformer
 import co.anitrend.support.crunchyroll.data.news.entity.NewsEntity
 import co.anitrend.support.crunchyroll.data.news.model.CrunchyNewsModel
+import co.anitrend.support.crunchyroll.data.news.model.page.CrunchyNewsPageModel
 import co.anitrend.support.crunchyroll.data.rss.contract.ICrunchyRssChannel
 
 internal class NewsResponseMapper(
     private val dao: CrunchyRssNewsDao
-) : CrunchyRssMapper<CrunchyNewsModel, NewsEntity>() {
+) : DefaultMapper<CrunchyNewsPageModel, List<NewsEntity>>() {
 
     /**
-     * Creates mapped objects and handles the database operations which may be required to map various objects,
-     * called in [retrofit2.Callback.onResponse] after assuring that the response was a success
-     *
-     * @param source the incoming data source type
-     * @return Mapped object that will be consumed by [onResponseDatabaseInsert]
-     * @see [ISupportResponseHelper.invoke]
+     * Save [data] into your desired local source
      */
-    override suspend fun onResponseMapFrom(source: ICrunchyRssChannel<CrunchyNewsModel>): List<NewsEntity> {
-        return source.item?.map {
-            NewsEntityTransformer.transform(
-                it.copy(
-                    copyright = source.copyright
-                )
-            )
-        } ?: emptyList()
+    override suspend fun persist(data: List<NewsEntity>) {
+        dao.upsert(data)
     }
 
     /**
-     * Inserts the given object into the implemented room database,
-     * called in [retrofit2.Callback.onResponse]
+     * Creates mapped objects and handles the database operations which may be required to map various objects,
      *
-     * @param mappedData mapped object from [onResponseMapFrom] to insert into the database
-     * @see [ISupportResponseHelper.invoke]
+     * @param source the incoming data source type
+     * @return mapped object that will be consumed by [onResponseDatabaseInsert]
      */
-    override suspend fun onResponseDatabaseInsert(mappedData: List<NewsEntity>) {
-        if (mappedData.isNotEmpty())
-            dao.upsert(mappedData)
+    override suspend fun onResponseMapFrom(
+        source: CrunchyNewsPageModel
+    ): List<NewsEntity> {
+        return source.channel?.items?.map {
+            NewsEntityTransformer.transform(it)
+        }.orEmpty()
     }
 }

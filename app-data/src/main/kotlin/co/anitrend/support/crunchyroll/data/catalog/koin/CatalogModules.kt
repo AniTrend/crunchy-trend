@@ -17,7 +17,6 @@
 package co.anitrend.support.crunchyroll.data.catalog.koin
 
 import co.anitrend.support.crunchyroll.data.arch.extension.db
-import co.anitrend.support.crunchyroll.data.cache.repository.CacheLogStore
 import co.anitrend.support.crunchyroll.data.catalog.helper.CatalogCacheHelper
 import co.anitrend.support.crunchyroll.data.catalog.mapper.CatalogResponseMapper
 import co.anitrend.support.crunchyroll.data.catalog.repository.CatalogRepository
@@ -33,7 +32,7 @@ private val dataSourceModule = module {
         CatalogSourceImpl(
             catalogDao = db().crunchyCatalogDao(),
             supportConnectivity = get(),
-            supportDispatchers = get(),
+            dispatcher = get(),
             batchSource = get(),
             settings = get(),
             mapper = get(),

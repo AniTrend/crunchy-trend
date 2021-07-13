@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 AniTrend
+ *    Copyright 2021 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,22 +14,31 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.data.rss.core
+package co.anitrend.support.crunchyroll.data.news.model.page
 
-import co.anitrend.support.crunchyroll.data.rss.channel.CrunchyRssNewsChannel
+import co.anitrend.support.crunchyroll.data.news.model.CrunchyNewsModel
 import co.anitrend.support.crunchyroll.data.rss.contract.ICrunchyContainer
+import co.anitrend.support.crunchyroll.data.rss.contract.ICrunchyRssChannel
 import org.simpleframework.xml.Element
+import org.simpleframework.xml.ElementList
 import org.simpleframework.xml.Root
 
 @Root(name = "rss", strict = false)
-internal data class CrunchyRssNewsContainer(
+internal data class CrunchyNewsPageModel @JvmOverloads constructor(
     @field:Element(
         name = "channel",
-        required = false
+        required = true
     )
-    override var channel: CrunchyRssNewsChannel? = null
-) : ICrunchyContainer<CrunchyRssNewsChannel>{
-    constructor(): this(
-        channel = null
-    )
+    override var channel: ChannelModel? = null
+) : ICrunchyContainer<CrunchyNewsPageModel.ChannelModel> {
+
+    @Root(name = "channel", strict = false)
+    internal data class ChannelModel @JvmOverloads constructor(
+        @field:ElementList(
+            name = "item",
+            required = false,
+            inline = true
+        )
+        override var items: List<CrunchyNewsModel>? = null
+    ) : ICrunchyRssChannel<CrunchyNewsModel>
 }

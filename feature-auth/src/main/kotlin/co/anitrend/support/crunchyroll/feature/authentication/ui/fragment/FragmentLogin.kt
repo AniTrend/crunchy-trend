@@ -23,21 +23,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.lifecycleScope
-import co.anitrend.arch.domain.entities.NetworkState
+import co.anitrend.arch.domain.entities.LoadState
 import co.anitrend.arch.extension.ext.argument
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
+import co.anitrend.support.crunchyroll.core.android.binding.IBindingView
+import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLoginBinding
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.ui.fragment.CrunchyFragment
-import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLoginBinding
 import co.anitrend.support.crunchyroll.feature.authentication.presenter.AuthPresenter
 import co.anitrend.support.crunchyroll.feature.authentication.ui.activity.AuthenticationScreen
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login.LoginViewModel
 import co.anitrend.support.crunchyroll.navigation.Authentication
 import co.anitrend.support.crunchyroll.navigation.Main
-import kotlinx.android.synthetic.main.login_anonymous_controls.view.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterNotNull
@@ -48,9 +49,9 @@ class FragmentLogin(
     private val presenter: AuthPresenter,
     private val accountManager: AccountManager,
     private val stateLayoutConfig: StateLayoutConfig
-) : CrunchyFragment() {
+) : CrunchyFragment(), IBindingView<FragmentLoginBinding> {
 
-    private lateinit var binding: FragmentLoginBinding
+    override var binding: FragmentLoginBinding? = null
 
     private val isNewAccount by argument(
         Authentication.ARG_IS_ADDING_NEW_ACCOUNT,
@@ -58,6 +59,16 @@ class FragmentLogin(
     )
 
     private val viewModel by viewModel<LoginViewModel>()
+
+    private val restNetworkStateOnBackPress =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (requireBinding().supportStateLayout.isError) {
+                    requireBinding().supportStateLayout.loadStateFlow.value = LoadState.Success()
+                    return
+                }
+            }
+        }
 
     /**
      * Invoke view model observer to watch for changes
@@ -69,17 +80,17 @@ class FragmentLogin(
                 presenter.onLoginStateChange(
                     user,
                     accountManager,
-                    requireNotNull(isNewAccount),
-                    binding.txtInputPassword.text.toString()
+                    isNewAccount,
+                    requireBinding().txtInputPassword.text.toString()
                 )
                 onUpdateUserInterface(activity?.intent)
             }
         }
-        viewModelState().networkState.observe(viewLifecycleOwner) {
-            binding.supportStateLayout.networkMutableStateFlow.value = it
+        viewModelState().loadState.observe(viewLifecycleOwner) {
+            requireBinding().supportStateLayout.loadStateFlow.value = it
         }
         viewModelState().refreshState.observe(viewLifecycleOwner) {
-            binding.supportStateLayout.networkMutableStateFlow.value = it
+            requireBinding().supportStateLayout.loadStateFlow.value = it
         }
     }
 
@@ -89,8 +100,11 @@ class FragmentLogin(
     override fun viewModelState() = viewModel.state
 
     override fun initializeComponents(savedInstanceState: Bundle?) {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this, restNetworkStateOnBackPress
+        )
         lifecycleScope.launchWhenResumed {
-            binding.supportStateLayout.interactionStateFlow
+            requireBinding().supportStateLayout.interactionFlow
                 .filterNotNull()
                 .debounce(DEBOUNCE_DURATION)
                 .collect {
@@ -107,29 +121,29 @@ class FragmentLogin(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.loginButton.setOnClickListener {
+        requireBinding().lifecycleOwner = viewLifecycleOwner
+        requireBinding().loginButton.setOnClickListener {
             onFetchDataInitialize()
         }
-        binding.loginAnonymousControls.skipLoginButton.setOnClickListener {
+        requireBinding().loginAnonymousControls.skipLoginButton.setOnClickListener {
             lifecycleScope.launch {
                 presenter.onAnonymousRequest(accountManager).collect {
-                    binding.supportStateLayout.networkMutableStateFlow.value = it
-                    if (it == NetworkState.Success) {
+                    requireBinding().supportStateLayout.loadStateFlow.value = it
+                    if (it is LoadState.Success) {
                         Main(context)
                         activity?.closeScreen()
                     }
                 }
             }
         }
-        binding.supportStateLayout.stateConfigFlow.value = stateLayoutConfig
-        binding.supportStateLayout.networkMutableStateFlow.value = NetworkState.Success
+        requireBinding().supportStateLayout.stateConfigFlow.value = stateLayoutConfig
+        requireBinding().supportStateLayout.loadStateFlow.value = LoadState.Success()
 
-        binding.txtInputEmail.doAfterTextChanged { text ->
+        requireBinding().txtInputEmail.doAfterTextChanged { text ->
             if (!text.isNullOrEmpty())
                 viewModel.loginQuery.account = text.toString()
         }
-        binding.txtInputPassword.doAfterTextChanged { text ->
+        requireBinding().txtInputPassword.doAfterTextChanged { text ->
             if (!text.isNullOrEmpty())
                 viewModel.loginQuery.password = text.toString()
         }
@@ -150,15 +164,7 @@ class FragmentLogin(
     private fun onFetchDataInitialize() {
         presenter.onSubmit(
             viewModel.loginQuery,
-            binding
+            requireBinding()
         ) { viewModel.state(it) }
-    }
-
-    override fun hasBackPressableAction(): Boolean {
-        if (binding.supportStateLayout.isError) {
-            binding.supportStateLayout.networkMutableStateFlow.value = NetworkState.Success
-            return true
-        }
-        return super.hasBackPressableAction()
     }
 }

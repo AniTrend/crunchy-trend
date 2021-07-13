@@ -20,21 +20,19 @@ plugins {
     id("co.anitrend.crunchyroll.plugin")
 }
 
-val jsoup = "1.13.1"
-val betterLinkMovement = "2.2.0"
 
 dependencies {
-    implementation("org.jsoup:jsoup:$jsoup")
+    implementation(Libraries.jsoup)
 
     /** Markwon */
     implementation(Libraries.Markwon.core)
     implementation(Libraries.Markwon.html)
     implementation(Libraries.Markwon.linkify)
-    implementation(Libraries.Markwon.glide)
+    implementation(Libraries.Markwon.coil)
 
     implementation(Libraries.Blitz.blitz)
 
     androidTestImplementation(Libraries.CashApp.Copper.copper)
 
-    implementation("me.saket:better-link-movement-method:$betterLinkMovement")
+    implementation(Libraries.Saket.BetterLinkMovement.betterLinkMovement)
 }

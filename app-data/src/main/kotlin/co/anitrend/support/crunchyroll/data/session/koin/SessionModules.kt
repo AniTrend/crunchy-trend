@@ -20,6 +20,8 @@ package co.anitrend.support.crunchyroll.data.session.koin
 import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
 import co.anitrend.support.crunchyroll.data.arch.extension.api
 import co.anitrend.support.crunchyroll.data.arch.extension.db
+import co.anitrend.support.crunchyroll.data.arch.extension.defaultController
+import co.anitrend.support.crunchyroll.data.session.CoreSessionController
 import co.anitrend.support.crunchyroll.data.session.mapper.CoreSessionResponseMapper
 import co.anitrend.support.crunchyroll.data.session.mapper.SessionResponseMapper
 import co.anitrend.support.crunchyroll.data.session.repository.SessionRepository
@@ -42,10 +44,11 @@ private val dataSourceModule = module {
             endpoint = api(EndpointType.SESSION_JSON),
             proxyEndpoint = api(EndpointType.SESSION_CORE),
             //proxyEndpoint = api(EndpointType.SESSION_PROXY),
-            mapper = get(),
+            controller = defaultController(
+                mapper = get<CoreSessionResponseMapper>()
+            ),
             settings = get(),
-            supportDispatchers = get(),
-            supportConnectivity = get()
+            dispatcher = get(),
         )
     }
     factory {
@@ -54,10 +57,11 @@ private val dataSourceModule = module {
             dao = db().crunchySessionDao(),
             coreSessionDao = db().crunchySessionCoreDao(),
             loginDao = db().crunchyLoginDao(),
-            mapper = get(),
+            controller = defaultController(
+                mapper = get<SessionResponseMapper>()
+            ),
             settings = get(),
-            supportDispatchers = get(),
-            supportConnectivity = get()
+            dispatcher = get(),
         )
     }
     factory {
@@ -66,10 +70,11 @@ private val dataSourceModule = module {
             endpoint = api(EndpointType.SESSION_CORE),
             coreSessionDao = db().crunchySessionCoreDao(),
             loginDao = db().crunchyLoginDao(),
-            mapper = get(),
+            controller = defaultController(
+                mapper = get<SessionResponseMapper>()
+            ),
             settings = get(),
-            supportDispatchers = get(),
-            supportConnectivity = get()
+            dispatcher = get(),
         )
     }
 }

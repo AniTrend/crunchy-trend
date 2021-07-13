@@ -28,8 +28,6 @@ abstract class PlaylistManagerPlugin<T: PlaylistItem>(
     mediaServiceClass: KClass<out Service>
 ) : ListPlaylistManager<T>(application, mediaServiceClass.java), SupportLifecycle {
 
-    override val moduleTag = PlaylistManagerPlugin::class.java.simpleName
-
     /**
      * Note: You can call [mediaPlayers] and add it manually in the activity,
      * however we have this helper method to allow registration of the media controls

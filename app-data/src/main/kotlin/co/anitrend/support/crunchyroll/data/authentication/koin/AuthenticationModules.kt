@@ -19,6 +19,7 @@ package co.anitrend.support.crunchyroll.data.authentication.koin
 import co.anitrend.support.crunchyroll.data.api.contract.EndpointType
 import co.anitrend.support.crunchyroll.data.arch.extension.api
 import co.anitrend.support.crunchyroll.data.arch.extension.db
+import co.anitrend.support.crunchyroll.data.arch.extension.defaultController
 import co.anitrend.support.crunchyroll.data.authentication.helper.CrunchyAuthenticationHelper
 import co.anitrend.support.crunchyroll.data.authentication.mapper.LoginResponseMapper
 import co.anitrend.support.crunchyroll.data.authentication.mapper.LogoutResponseMapper
@@ -31,9 +32,6 @@ import co.anitrend.support.crunchyroll.data.authentication.usecase.LoginUseCaseI
 import co.anitrend.support.crunchyroll.data.authentication.usecase.LoginUseCaseType
 import co.anitrend.support.crunchyroll.data.authentication.usecase.LogoutUseCaseImpl
 import co.anitrend.support.crunchyroll.data.authentication.usecase.LogoutUseCaseType
-import co.anitrend.support.crunchyroll.data.session.usecase.CoreSessionUseCaseImpl
-import co.anitrend.support.crunchyroll.data.session.usecase.NormalSessionUseCaseImpl
-import co.anitrend.support.crunchyroll.data.session.usecase.UnblockSessionUseCaseImpl
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -58,10 +56,11 @@ private val dataSourceModule = module {
         LoginSourceImpl(
             dao = db().crunchyLoginDao(),
             endpoint = api(EndpointType.JSON),
-            mapper = get(),
+            controller = defaultController(
+                mapper = get<LoginResponseMapper>()
+            ),
             settings = get(),
-            supportDispatchers = get(),
-            supportConnectivity = get()
+            dispatcher = get(),
         )
     } bind LoginSource::class
     factory {
@@ -70,10 +69,11 @@ private val dataSourceModule = module {
             sessionDao = db().crunchySessionDao(),
             dao = db().crunchyLoginDao(),
             endpoint = api(EndpointType.JSON),
-            supportConnectivity = get(),
-            mapper = get(),
+            controller = defaultController(
+                mapper = get<LogoutResponseMapper>()
+            ),
             settings = get(),
-            supportDispatchers = get()
+            dispatcher = get()
         )
     } bind LogoutSource::class
 }

@@ -24,15 +24,16 @@ import co.anitrend.support.crunchyroll.core.ui.model.FragmentItem
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.feature.settings.R
 import co.anitrend.support.crunchyroll.feature.settings.ui.fragment.SettingsFragment
-import kotlinx.android.synthetic.main.settings_activity.*
 import co.anitrend.support.crunchyroll.core.ui.commit
+import co.anitrend.support.crunchyroll.feature.settings.databinding.SettingsActivityBinding
 
-class SettingsScreen : CrunchyActivity() {
+class SettingsScreen : CrunchyActivity<SettingsActivityBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.settings_activity)
-        setSupportActionBar(bottomAppBar)
+        binding = SettingsActivityBinding.inflate(layoutInflater)
+        setContentView(requireBinding().root)
+        setSupportActionBar(requireBinding().bottomAppBar)
     }
 
     /**

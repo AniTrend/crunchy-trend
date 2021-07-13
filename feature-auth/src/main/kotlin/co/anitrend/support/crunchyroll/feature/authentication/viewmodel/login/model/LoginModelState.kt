@@ -16,11 +16,13 @@
 
 package co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login.model
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.asLiveData
 import co.anitrend.arch.core.model.ISupportViewModelState
 import co.anitrend.arch.data.state.DataState
+import co.anitrend.arch.domain.entities.LoadState
 import co.anitrend.support.crunchyroll.data.authentication.usecase.LoginUseCaseType
 import co.anitrend.support.crunchyroll.domain.authentication.models.CrunchyLoginQuery
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
@@ -32,10 +34,10 @@ data class LoginModelState(
     private val useCaseResult = MutableLiveData<DataState<CrunchyUser?>>()
 
     override val model =
-        Transformations.switchMap(useCaseResult) { it.model }
+        Transformations.switchMap(useCaseResult) { it.model.asLiveData() }
 
-    override val networkState =
-        Transformations.switchMap(useCaseResult) { it.networkState.asLiveData() }
+    override val loadState =
+        Transformations.switchMap(useCaseResult) { it.loadState.asLiveData() }
 
     override val refreshState =
         Transformations.switchMap(useCaseResult) { it.refreshState.asLiveData() }

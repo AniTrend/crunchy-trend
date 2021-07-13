@@ -32,8 +32,6 @@ internal class SeriesSearchRepository(
 
     override fun searchForSeries(
         searchQuery: CrunchySeriesSearchQuery
-    ) =
-        source.create(
-            model = source(searchQuery)
-        )
+    ) = source create source(searchQuery)
+
 }

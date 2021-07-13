@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.data.arch.model
 
 import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyResponseStatus
 
-data class CrunchyContainer<D>(
+internal data class CrunchyContainer<D>(
     val code: CrunchyResponseStatus,
     val error: Boolean,
     val data: D?,

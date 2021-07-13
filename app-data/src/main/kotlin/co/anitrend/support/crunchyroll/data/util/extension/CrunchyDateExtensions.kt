@@ -17,7 +17,7 @@
 package co.anitrend.support.crunchyroll.data.util.extension
 
 import co.anitrend.arch.extension.ext.PUBLICATION
-import co.anitrend.arch.extension.util.contract.ISupportDateHelper
+import co.anitrend.arch.extension.util.date.contract.AbstractSupportDateHelper
 import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
 import co.anitrend.support.crunchyroll.data.arch.RCF822Date
 import co.anitrend.support.crunchyroll.data.util.CrunchyDateUtil.Companion.ISO8601_PATTERN
@@ -29,7 +29,7 @@ import timber.log.Timber
 internal val koin = object : KoinComponent {}
 
 val supportDateHelper by lazy(PUBLICATION) {
-    koin.get<ISupportDateHelper>()
+    koin.get<AbstractSupportDateHelper>()
 }
 
 internal fun ISO8601Date.iso8601ToUnixTime() =

@@ -19,6 +19,12 @@ plugins {
     id("co.anitrend.crunchyroll.plugin")
 }
 
+android {
+    buildFeatures {
+        viewBinding = true
+    }
+}
+
 dependencies {
 
     /** Material Design */

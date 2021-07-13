@@ -31,8 +31,5 @@ internal class MediaRepository(
 
     override fun getMediaForCollection(
         mediaQuery: CrunchyMediaQuery
-    ) =
-        source.create(
-            model = source(mediaQuery)
-        )
+    ) = source create source.media(mediaQuery)
 }

@@ -16,7 +16,9 @@
 
 package co.anitrend.support.crunchyroll.core.settings.common.privacy
 
+import co.anitrend.arch.extension.settings.contract.AbstractSetting
+
 interface IPrivacySettings {
-    var isAnalyticsEnabled: Boolean
-    var isCrashlyticsEnabled: Boolean
+    val isAnalyticsEnabled: AbstractSetting<Boolean>
+    val isCrashlyticsEnabled: AbstractSetting<Boolean>
 }

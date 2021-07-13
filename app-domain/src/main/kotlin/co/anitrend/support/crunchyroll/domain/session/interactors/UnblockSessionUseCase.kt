@@ -19,11 +19,12 @@ package co.anitrend.support.crunchyroll.domain.session.interactors
 import co.anitrend.arch.domain.common.IUseCase
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
 import co.anitrend.support.crunchyroll.domain.session.repositories.ISessionRepository
+import kotlinx.coroutines.flow.Flow
 
 abstract class UnblockSessionUseCase(
     protected val repository: ISessionRepository
 ) : IUseCase {
-    operator fun invoke(): Session? {
+    operator fun invoke(): Flow<Session?> {
         return repository.getUnblockedSession()
     }
 }
