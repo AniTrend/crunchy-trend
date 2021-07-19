@@ -80,8 +80,8 @@
         </FrameLayout>
 
         <FrameLayout
-                android:layout_height="@dimen/avatar_xl"
-                android:layout_width="@dimen/avatar_xl"
+                android:layout_height="@dimen/size_60dp"
+                android:layout_width="@dimen/size_60dp"
                 android:background="@drawable/ic_circle_background"
                 app:layout_constraintBottom_toBottomOf="@+id/dialog_media_image_container"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -90,8 +90,8 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                     android:layout_gravity="center"
-                    android:layout_width="@dimen/avatar_lg"
-                    android:layout_height="@dimen/avatar_lg"
+                    android:layout_width="@dimen/size_36dp"
+                    android:layout_height="@dimen/size_36dp"
                     app:srcCompat="@drawable/ic_play_circle_filled_white_24dp" />
         </FrameLayout>
 

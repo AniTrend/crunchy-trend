@@ -426,6 +426,11 @@ object Libraries {
             private const val version = "17.4.4"
             const val firebaseCore = "com.google.firebase:firebase-core:$version"
 
+            object Ads {
+                private const val version = "20.2.0"
+                const val ads = "com.google.android.gms:play-services-ads:$version"
+            }
+
             object Analytics {
                 private const val version = "19.0.0"
                 const val analytics = "com.google.firebase:firebase-analytics:$version"

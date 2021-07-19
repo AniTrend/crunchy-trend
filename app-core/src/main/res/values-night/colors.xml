@@ -19,6 +19,7 @@
     <color name="colorItemNavBackgroundSelected">#D9E2E2E2</color>
     <color name="colorWhite">#fafafa</color>
     <color name="colorAccent">#F9A825</color>
+    <color name="colorSecondary">#4BF9A825</color>
 
     <!--<color name="colorAccent">#000</color>-->
 

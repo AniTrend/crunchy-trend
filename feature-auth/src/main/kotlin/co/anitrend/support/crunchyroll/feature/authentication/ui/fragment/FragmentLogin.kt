@@ -63,10 +63,10 @@ class FragmentLogin(
     private val restNetworkStateOnBackPress =
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (requireBinding().supportStateLayout.isError) {
+                if (requireBinding().supportStateLayout.isError)
                     requireBinding().supportStateLayout.loadStateFlow.value = LoadState.Success()
-                    return
-                }
+                else
+                    activity?.closeScreen()
             }
         }
 
@@ -150,7 +150,7 @@ class FragmentLogin(
     }
 
     private fun onUpdateUserInterface(intent: Intent?) {
-        val screen = activity as AuthenticationScreen?
+        val screen = activity as? AuthenticationScreen
         if (intent == null) {
             screen?.setResult(Activity.RESULT_CANCELED)
         } else {

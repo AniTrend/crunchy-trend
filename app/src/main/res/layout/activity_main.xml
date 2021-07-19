@@ -41,7 +41,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_anchor="@id/bottomAppBar"
-            app:backgroundTint="@color/material_300"
             app:srcCompat="@drawable/ic_menu_adaptable_24dp"/>
 
     <FrameLayout

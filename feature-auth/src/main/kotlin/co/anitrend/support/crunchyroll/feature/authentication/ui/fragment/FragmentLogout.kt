@@ -48,10 +48,10 @@ class FragmentLogout : CrunchyFragment() {
     private val restNetworkStateOnBackPress =
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (binding.supportStateLayout.isError) {
+                if (binding.supportStateLayout.isError)
                     binding.supportStateLayout.loadStateFlow.value = LoadState.Success()
-                    return
-                }
+                else
+                    activity?.closeScreen()
             }
         }
 
