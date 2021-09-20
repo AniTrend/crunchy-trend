@@ -18,22 +18,20 @@ package co.anitrend.support.crunchyroll.buildSrc.plugins.strategy
 
 import co.anitrend.support.crunchyroll.buildSrc.Libraries
 import co.anitrend.support.crunchyroll.buildSrc.common.*
-import co.anitrend.support.crunchyroll.buildSrc.common.core
-import co.anitrend.support.crunchyroll.buildSrc.common.data
-import co.anitrend.support.crunchyroll.buildSrc.common.domain
-import co.anitrend.support.crunchyroll.buildSrc.common.navigation
-import co.anitrend.support.crunchyroll.buildSrc.plugins.extensions.implementation
-import co.anitrend.support.crunchyroll.buildSrc.plugins.extensions.androidTest
-import co.anitrend.support.crunchyroll.buildSrc.plugins.extensions.test
-import co.anitrend.support.crunchyroll.buildSrc.plugins.extensions.kapt
+import co.anitrend.support.crunchyroll.buildSrc.module.*
+import co.anitrend.support.crunchyroll.buildSrc.extensions.*
+import co.anitrend.support.crunchyroll.buildSrc.extensions.implementation
+import co.anitrend.support.crunchyroll.buildSrc.extensions.androidTest
+import co.anitrend.support.crunchyroll.buildSrc.extensions.test
+import co.anitrend.support.crunchyroll.buildSrc.extensions.kapt
+import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.DependencyHandler
 
-internal class DependencyStrategy(
-    private val module: String
-) {
+internal class DependencyStrategy(private val project: Project) {
+
     private fun DependencyHandler.applyDefaultDependencies() {
         implementation(Libraries.JetBrains.Kotlin.stdlib)
-        if (module != domain)
+        if (!project.isDomainModule())
             implementation(Libraries.timber)
 
         test(Libraries.junit)
@@ -68,7 +66,7 @@ internal class DependencyStrategy(
         implementation(Libraries.Koin.core)
         implementation(Libraries.Koin.extension)
         test(Libraries.Koin.test)
-        if (module != data || module != core || module != androidCore) {
+        if (project.hasKoinAndroidSupport()) {
             implementation(Libraries.Koin.AndroidX.scope)
             implementation(Libraries.Koin.AndroidX.fragment)
             implementation(Libraries.Koin.AndroidX.viewModel)
@@ -77,8 +75,8 @@ internal class DependencyStrategy(
     }
 
     private fun DependencyHandler.applyOtherDependencies() {
-        when (module) {
-            app -> {
+        when (project.name) {
+            Modules.App.Main.id -> {
                 implementation(Libraries.AniTrend.Arch.recycler)
                 implementation(Libraries.AniTrend.Arch.domain)
                 implementation(Libraries.AniTrend.Arch.theme)
@@ -87,7 +85,7 @@ internal class DependencyStrategy(
                 implementation(Libraries.AniTrend.Arch.ext)
                 implementation(Libraries.AniTrend.Arch.ui)
             }
-            core -> {
+            Modules.App.Core.id -> {
                 implementation(Libraries.AniTrend.Arch.recycler)
                 implementation(Libraries.AniTrend.Arch.domain)
                 implementation(Libraries.AniTrend.Arch.theme)
@@ -96,7 +94,7 @@ internal class DependencyStrategy(
                 implementation(Libraries.AniTrend.Arch.ext)
                 implementation(Libraries.AniTrend.Arch.ui)
             }
-            data -> {
+            Modules.App.Data.id -> {
                 implementation(Libraries.AniTrend.Arch.domain)
                 implementation(Libraries.AniTrend.Arch.data)
                 implementation(Libraries.AniTrend.Arch.ext)
@@ -106,7 +104,7 @@ internal class DependencyStrategy(
 
     fun applyDependenciesOn(handler: DependencyHandler) {
         handler.applyDefaultDependencies()
-        if (module != domain || module != navigation) {
+        if (!project.isDomainModule() || !project.isNavigationModule()) {
             handler.applyLifeCycleDependencies()
             handler.applyAndroidTestDependencies()
             handler.applyCoroutinesDependencies()

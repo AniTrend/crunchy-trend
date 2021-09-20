@@ -17,10 +17,15 @@
 package co.anitrend.support.crunchyroll.buildSrc.plugins.components
 
 import co.anitrend.support.crunchyroll.buildSrc.common.*
-import co.anitrend.support.crunchyroll.buildSrc.common.isDomainModule
-import co.anitrend.support.crunchyroll.buildSrc.plugins.extensions.baseAppExtension
-import co.anitrend.support.crunchyroll.buildSrc.plugins.extensions.baseExtension
-import co.anitrend.support.crunchyroll.buildSrc.plugins.extensions.libraryExtension
+import co.anitrend.support.crunchyroll.buildSrc.extensions.isAppModule
+import co.anitrend.support.crunchyroll.buildSrc.extensions.isCoreModule
+import co.anitrend.support.crunchyroll.buildSrc.extensions.isNavigationModule
+import co.anitrend.support.crunchyroll.buildSrc.extensions.matchesAppModule
+import co.anitrend.support.crunchyroll.buildSrc.extensions.hasDataBindingSupport
+import co.anitrend.support.crunchyroll.buildSrc.extensions.hasCoroutineSupport
+import co.anitrend.support.crunchyroll.buildSrc.extensions.baseAppExtension
+import co.anitrend.support.crunchyroll.buildSrc.extensions.baseExtension
+import co.anitrend.support.crunchyroll.buildSrc.extensions.libraryExtension
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import com.android.build.gradle.internal.dsl.DefaultConfig
 import org.gradle.api.JavaVersion
@@ -69,7 +74,7 @@ private fun DefaultConfig.applyAdditionalConfiguration(project: Project) {
     }
 
 
-    if (!project.isBaseModule()) {
+    if (!project.matchesAppModule()) {
         println("Applying vector drawables configuration for module -> ${project.path}")
         vectorDrawables.useSupportLibrary = true
     }
@@ -78,8 +83,8 @@ private fun DefaultConfig.applyAdditionalConfiguration(project: Project) {
 internal fun Project.configureAndroid(): Unit = baseExtension().run {
     compileSdkVersion(Versions.compileSdk)
     defaultConfig {
-        minSdkVersion(Versions.minSdk)
-        targetSdkVersion(Versions.targetSdk)
+        minSdk = Versions.minSdk
+        targetSdk = Versions.targetSdk
         versionCode = Versions.versionCode
         versionName = Versions.versionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -175,12 +180,12 @@ internal fun Project.configureAndroid(): Unit = baseExtension().run {
             compilerArgumentOptions.add("-Xopt-in=kotlinx.coroutines.FlowPreview")
         }
 
-        if (isAppModule() || isCoreModule() || isNavigationModule())
+        if (isAppModule() || isCoreModule() || isNavigationModule()) {
             compilerArgumentOptions.apply {
-                add("-Xopt-in=org.koin.core.component.KoinExperimentalAPI")
                 add("-Xopt-in=org.koin.core.component.KoinApiExtension")
                 add("-Xopt-in=org.koin.core.KoinExperimentalAPI")
             }
+        }
 
         kotlinOptions {
             allWarningsAsErrors = false

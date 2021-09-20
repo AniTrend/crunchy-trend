@@ -16,11 +16,9 @@
 
 package co.anitrend.support.crunchyroll.buildSrc.plugins.components
 
-import co.anitrend.support.crunchyroll.buildSrc.common.app
-import co.anitrend.support.crunchyroll.buildSrc.common.domain
-import co.anitrend.support.crunchyroll.buildSrc.common.navigation
-import co.anitrend.support.crunchyroll.buildSrc.common.isAppModule
-import co.anitrend.support.crunchyroll.buildSrc.plugins.extensions.baseExtension
+import co.anitrend.support.crunchyroll.buildSrc.module.*
+import co.anitrend.support.crunchyroll.buildSrc.extensions.*
+import co.anitrend.support.crunchyroll.buildSrc.extensions.baseExtension
 import org.gradle.api.Project
 import org.gradle.api.plugins.PluginContainer
 
@@ -36,12 +34,12 @@ private fun addKotlinAndroidPlugin(pluginContainer: PluginContainer) {
 }
 
 private fun addAnnotationProcessor(project: Project, pluginContainer: PluginContainer) {
-    if (project.name != domain || project.name != app || project.name != navigation)
+    if (project.hasKaptSupport())
         pluginContainer.apply("kotlin-kapt")
 }
 
 private fun addKotlinAndroidExtensions(project: Project, pluginContainer: PluginContainer) {
-    if (project.name != domain)
+    if (project.hasKotlinAndroidExtensionSupport())
         pluginContainer.apply("kotlin-parcelize")
 }
 

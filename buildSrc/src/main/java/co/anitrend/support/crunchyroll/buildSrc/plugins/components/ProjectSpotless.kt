@@ -18,7 +18,7 @@ package co.anitrend.support.crunchyroll.buildSrc.plugins.components
 
 import org.gradle.api.Project
 import co.anitrend.support.crunchyroll.buildSrc.common.Versions
-import co.anitrend.support.crunchyroll.buildSrc.plugins.extensions.spotlessExtension
+import co.anitrend.support.crunchyroll.buildSrc.extensions.spotlessExtension
 
 internal fun Project.configureSpotless(): Unit = spotlessExtension().run {
     kotlin {

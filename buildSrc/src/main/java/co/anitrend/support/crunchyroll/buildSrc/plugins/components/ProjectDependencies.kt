@@ -18,8 +18,10 @@ package co.anitrend.support.crunchyroll.buildSrc.plugins.components
 
 import co.anitrend.support.crunchyroll.buildSrc.Libraries
 import co.anitrend.support.crunchyroll.buildSrc.common.*
-import co.anitrend.support.crunchyroll.buildSrc.plugins.extensions.implementation
-import co.anitrend.support.crunchyroll.buildSrc.plugins.extensions.runtime
+import co.anitrend.support.crunchyroll.buildSrc.module.*
+import co.anitrend.support.crunchyroll.buildSrc.extensions.*
+import co.anitrend.support.crunchyroll.buildSrc.extensions.implementation
+import co.anitrend.support.crunchyroll.buildSrc.extensions.runtime
 import co.anitrend.support.crunchyroll.buildSrc.plugins.strategy.DependencyStrategy
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.exclude
@@ -50,29 +52,29 @@ private fun Project.applyFeatureModuleDependencies() {
 
     dependencies.implementation(Libraries.Coil.coil)
 
-    dependencies.implementation(project(":$core"))
-    dependencies.implementation(project(":$data"))
-    dependencies.implementation(project(":$domain"))
-    dependencies.implementation(project(":$navigation"))
-    dependencies.implementation(project(":$androidCore"))
+    dependencies.implementation(project(Modules.App.Core.id))
+    dependencies.implementation(project(Modules.App.Data.id))
+    dependencies.implementation(project(Modules.App.Domain.id))
+    dependencies.implementation(project(Modules.App.Navigation.id))
+    dependencies.implementation(project(Modules.Android.Core.id))
 }
 
 private fun Project.applyAppModuleDependencies() {
-    featureModules.forEach { module ->
+    Modules.Feature.values().forEach { module ->
         println("Adding runtimeOnly dependency :$module -> ${project.path}")
-        dependencies.runtime(project(":$module"))
+        dependencies.runtime(project(":${module.path()}"))
     }
 
-    baseModules.forEach { module ->
-        if (module != app) {
-            println("Adding base module dependency :$module -> ${project.path}")
-            dependencies.implementation(project(":$module"))
+    Modules.App.values().forEach { module ->
+        if (module != Modules.App.Main) {
+            println("Adding base module dependency :${module.path()} -> ${project.path}")
+            dependencies.implementation(project(":${module.path()}"))
         }
     }
 
-    androidModules.forEach { module ->
-        println("Adding android core module dependency :$module -> ${project.path}")
-        dependencies.implementation(project(":$module"))
+    Modules.Android.values().forEach { module ->
+        println("Adding android core module dependency :${module.path()} -> ${project.path}")
+        dependencies.implementation(project(":${module.path()}"))
     }
 
     dependencies.implementation(Libraries.Google.Material.material)
@@ -90,11 +92,11 @@ private fun Project.applyAppModuleDependencies() {
 private fun Project.applyBaseModuleDependencies() {
     println("Applying base module dependencies for module -> $path")
     when (name) {
-        core -> {
-            dependencies.implementation(project(":$androidCore"))
-            dependencies.implementation(project(":$navigation"))
-            dependencies.implementation(project(":$domain"))
-            dependencies.implementation(project(":$data"))
+        Modules.App.Core.id -> {
+            dependencies.implementation(project(Modules.Android.Core.path()))
+            dependencies.implementation(project(Modules.App.Navigation.path()))
+            dependencies.implementation(project(Modules.App.Domain.path()))
+            dependencies.implementation(project(Modules.App.Data.path()))
 
             dependencies.implementation(Libraries.Google.Material.material)
 
@@ -115,8 +117,8 @@ private fun Project.applyBaseModuleDependencies() {
             dependencies.implementation(Libraries.Coil.svg)
             dependencies.implementation(Libraries.Coil.video)
         }
-        data -> {
-            dependencies.implementation(project(":$domain"))
+        Modules.App.Data.id -> {
+            dependencies.implementation(project(Modules.App.Domain.path()))
 
             dependencies.implementation(Libraries.AndroidX.Core.coreKtx)
             dependencies.implementation(Libraries.AndroidX.Paging.common)
@@ -124,7 +126,7 @@ private fun Project.applyBaseModuleDependencies() {
             dependencies.implementation(Libraries.AndroidX.Paging.runtimeKtx)
             dependencies.implementation(Libraries.AndroidX.Room.runtime)
             dependencies.implementation(Libraries.AndroidX.Room.ktx)
-            dependencies.add("kapt", Libraries.AndroidX.Room.compiler)
+            dependencies.kapt(Libraries.AndroidX.Room.compiler)
 
             dependencies.implementation(Libraries.Square.Retrofit.retrofit)
             dependencies.implementation(Libraries.Square.Retrofit.gsonConverter)
@@ -135,10 +137,10 @@ private fun Project.applyBaseModuleDependencies() {
             }
             dependencies.implementation(Libraries.Square.OkHttp.logging)
         }
-        domain -> {
+        Modules.App.Domain.id -> {
             dependencies.implementation(Libraries.AniTrend.Arch.domain)
         }
-        navigation -> {
+        Modules.App.Navigation.id -> {
             dependencies.implementation(Libraries.AndroidX.Core.coreKtx)
             dependencies.implementation(Libraries.AndroidX.Activity.activityKtx)
             dependencies.implementation(Libraries.AndroidX.Collection.collectionKtx)
@@ -170,11 +172,11 @@ private fun Project.applyAndroidCoreModuleDependencies() {
 
     dependencies.implementation(Libraries.Coil.coil)
 
-    dependencies.implementation(project(":$data"))
-    dependencies.implementation(project(":$domain"))
-    dependencies.implementation(project(":$navigation"))
+    dependencies.implementation(project(Modules.App.Data.path()))
+    dependencies.implementation(project(Modules.App.Domain.path()))
+    dependencies.implementation(project(Modules.App.Navigation.path()))
     if (!isAndroidCoreModule()) {
-        dependencies.implementation(project(":$androidCore"))
+        dependencies.implementation(project(Modules.Android.Core.path()))
     }
 }
 
@@ -202,15 +204,15 @@ private fun Project.applyCommonModuleDependencies() {
 
     dependencies.implementation(Libraries.Coil.coil)
 
-    dependencies.implementation(project(":$androidCore"))
-    dependencies.implementation(project(":$core"))
-    dependencies.implementation(project(":$data"))
-    dependencies.implementation(project(":$domain"))
-    dependencies.implementation(project(":$navigation"))
+    dependencies.implementation(project(Modules.Android.Core.path()))
+    dependencies.implementation(project(Modules.App.Core.path()))
+    dependencies.implementation(project(Modules.App.Data.path()))
+    dependencies.implementation(project(Modules.App.Domain.path()))
+    dependencies.implementation(project(Modules.App.Navigation.path()))
 }
 
 internal fun Project.configureDependencies() {
-    val dependencyStrategy = DependencyStrategy(project.name)
+    val dependencyStrategy = DependencyStrategy(project)
     dependencies.implementation(
         fileTree("libs") {
             include("*.jar")
@@ -218,9 +220,9 @@ internal fun Project.configureDependencies() {
     )
     dependencyStrategy.applyDependenciesOn(dependencies)
 
-    if (isFeatureModule()) applyFeatureModuleDependencies()
+    if (matchesFeatureModule()) applyFeatureModuleDependencies()
     if (isAppModule()) applyAppModuleDependencies()
-    if (isBaseModule()) applyBaseModuleDependencies()
-    if (isCoreFeatureModule()) applyAndroidCoreModuleDependencies()
-    if (isCommonFeatureModule()) applyCommonModuleDependencies()
+    if (matchesAppModule()) applyBaseModuleDependencies()
+    if (isCoreModule()) applyAndroidCoreModuleDependencies()
+    if (matchesCommonModule()) applyCommonModuleDependencies()
 }
