@@ -52,11 +52,11 @@ private fun Project.applyFeatureModuleDependencies() {
 
     dependencies.implementation(Libraries.Coil.coil)
 
-    dependencies.implementation(project(Modules.App.Core.id))
-    dependencies.implementation(project(Modules.App.Data.id))
-    dependencies.implementation(project(Modules.App.Domain.id))
-    dependencies.implementation(project(Modules.App.Navigation.id))
-    dependencies.implementation(project(Modules.Android.Core.id))
+    dependencies.implementation(project(Modules.App.Core.path()))
+    dependencies.implementation(project(Modules.App.Data.path()))
+    dependencies.implementation(project(Modules.App.Domain.path()))
+    dependencies.implementation(project(Modules.App.Navigation.path()))
+    dependencies.implementation(project(Modules.Android.Core.path()))
 }
 
 private fun Project.applyAppModuleDependencies() {
@@ -224,5 +224,6 @@ internal fun Project.configureDependencies() {
     if (isAppModule()) applyAppModuleDependencies()
     if (matchesAppModule()) applyBaseModuleDependencies()
     if (isCoreModule()) applyAndroidCoreModuleDependencies()
+    if (isAndroidCoreModule()) applyAndroidCoreModuleDependencies()
     if (matchesCommonModule()) applyCommonModuleDependencies()
 }
