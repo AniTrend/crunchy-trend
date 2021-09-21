@@ -18,17 +18,17 @@ package co.anitrend.support.crunchyroll.core.android.extensions
 
 import android.content.Context
 import androidx.appcompat.widget.AppCompatImageView
-import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 import coil.Coil
 import coil.load
-import coil.request.CachePolicy
-import coil.request.Disposable
-import coil.request.ImageRequest
 import coil.size.Scale
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import coil.target.Target
+import coil.request.Disposable
+import coil.transform.Transformation
 import coil.transform.GrayscaleTransformation
 import coil.transform.RoundedCornersTransformation
-import coil.transform.Transformation
+import co.anitrend.support.crunchyroll.domain.episode.entities.CrunchyEpisodeFeed
 
 fun AppCompatImageView.setImageUrl(url: String?) = url?.let {
     load(url) {
