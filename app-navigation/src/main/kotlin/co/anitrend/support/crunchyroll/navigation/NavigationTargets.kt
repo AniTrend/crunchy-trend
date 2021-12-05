@@ -20,13 +20,18 @@ import android.os.Parcelable
 import co.anitrend.support.crunchyroll.domain.series.enums.CrunchySeriesBrowseFilter
 import co.anitrend.support.crunchyroll.navigation.contract.INavigationProvider
 import co.anitrend.support.crunchyroll.navigation.contract.NavigationRouter
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import org.koin.core.component.inject
 
 object Main : NavigationRouter() {
     override val provider by inject<Provider>()
 
     interface Provider : INavigationProvider
+
+    @Parcelize
+    data class Payload(
+        val redirect: Int
+    ) : Parcelable
 }
 
 object Splash : NavigationRouter() {

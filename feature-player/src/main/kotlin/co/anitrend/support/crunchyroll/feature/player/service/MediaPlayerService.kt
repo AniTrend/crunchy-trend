@@ -66,11 +66,7 @@ class MediaPlayerService : BasePlaylistService<MediaStreamItem, PlaylistManagerP
 
             playlistManager.mediaPlayers.clear()
         }.exceptionOrNull()?.also {
-            Timber.tag(moduleTag).e(it)
+            Timber.e(it)
         }
-    }
-
-    companion object {
-        private val moduleTag = MediaPlayerService::class.java.simpleName
     }
 }

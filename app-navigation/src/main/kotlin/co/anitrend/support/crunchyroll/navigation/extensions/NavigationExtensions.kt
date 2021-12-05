@@ -25,8 +25,6 @@ import timber.log.Timber
 
 internal const val APPLICATION_PACKAGE_NAME = "co.anitrend.support.crunchyroll"
 
-private const val moduleTag = "NavigationExtensions"
-
 private val classMap = object: LruCache<String, Class<*>>(6) {
     /**
      * Called after a cache miss to compute a value for the corresponding key.
@@ -46,7 +44,7 @@ private val classMap = object: LruCache<String, Class<*>>(6) {
      * key.
      */
     override fun create(key: String): Class<*>? {
-        Timber.tag(moduleTag).v("Creating after cache miss for package: $key")
+        Timber.v("Creating after cache miss for package: $key")
         return Class.forName(key)
     }
 }
@@ -64,7 +62,7 @@ internal fun String.loadIntentOrNull(): Intent? =
             forIntent(this@loadIntentOrNull)
         }
     } catch (e: ClassNotFoundException) {
-        Timber.tag("loadIntentOrNull").e(e)
+        Timber.e(e)
         null
     }
 
@@ -76,7 +74,7 @@ internal fun <T : Fragment> String.loadFragmentOrNull(): T? =
     try {
         loadClassOrNull<T>()?.newInstance()
     } catch (e: ClassNotFoundException) {
-        Timber.tag("loadFragmentOrNull").e(e)
+        Timber.e(e)
         null
     }
 
