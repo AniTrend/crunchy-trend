@@ -49,7 +49,7 @@ class MainScreen : CrunchyActivity<ActivityMainBinding>(), NavigationView.OnNavi
         BottomSheetBehavior.from(requireBinding().bottomNavigationDrawer)
     }
 
-    private val shortcutSelection by extra(keyShortcutRedirect, R.id.nav_show_news)
+    private val params: Main.Payload? by extra(Main.extraKey)
 
     @IdRes
     private var selectedItem: Int = R.id.nav_show_latest
@@ -65,7 +65,7 @@ class MainScreen : CrunchyActivity<ActivityMainBinding>(), NavigationView.OnNavi
         setContentView(requireBinding().root)
         setSupportActionBar(requireBinding().bottomAppBar)
         bottomDrawerBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        selectedItem = shortcutSelection
+        selectedItem = params?.redirect ?: R.id.nav_show_news
 
     }
 
@@ -193,10 +193,7 @@ class MainScreen : CrunchyActivity<ActivityMainBinding>(), NavigationView.OnNavi
     }
 
     companion object {
-
         private const val keyNavigationSelected = "keyNavigationSelected"
         private const val keyNavigationTitle = "keyNavigationTitle"
-
-        private const val keyShortcutRedirect = "keyShortcutRedirect"
     }
 }
