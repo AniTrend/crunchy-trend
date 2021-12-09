@@ -34,6 +34,24 @@ allprojects {
             setUrl(co.anitrend.support.crunchyroll.buildSrc.Libraries.Repositories.dependencyUpdates)
         }
     }
+    configurations.all {
+        resolutionStrategy.eachDependency {
+            when (requested.group) {
+                "org.jetbrains.kotlin" -> {
+                    when (requested.name) {
+                        "kotlin-reflect",
+                        "kotlin-stdlib",
+                        "kotlin-stdlib-common",
+                        "kotlin-stdlib-jdk8",
+                        "kotlin-stdlib-jdk7" -> useVersion("1.4.32")
+                    }
+                }
+            }
+            if (requested.group == "com.jakewharton.timber") {
+                useTarget(co.anitrend.support.crunchyroll.buildSrc.Libraries.timber)
+            }
+        }
+    }
 }
 
 plugins.apply("koin")
