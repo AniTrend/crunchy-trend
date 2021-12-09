@@ -2,6 +2,7 @@ rootProject.name = "crunchy-trend"
 include (
         ":app",
         ":feature-auth",
+        ":feature-deeplink",
         ":feature-splash",
         ":feature-player",
         ":feature-news",

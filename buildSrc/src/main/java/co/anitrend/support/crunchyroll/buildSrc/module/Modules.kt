@@ -51,6 +51,7 @@ internal object Modules {
 
     enum class Feature(override val id: String) : Module {
         Auth("feature-auth"),
+        DeepLink("feature-deeplink"),
         Catalog("feature-catalog"),
         Collection("feature-collection"),
         Discover("feature-discover"),
