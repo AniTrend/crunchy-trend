@@ -33,10 +33,10 @@ object Versions {
      * **RR**_X.Y.Z_
      * > **RR** reserved for build flavours and **X.Y.Z** follow the [versionName] convention
      */
-    const val versionCode = major.times(10_000) +
-            minor.times(1000) +
+    const val versionCode = major.times(10_000_000) +
+            minor.times(100_000) +
             patch.times(100) +
-            candidate.times(10)
+            candidate.times(1)
 
     /**
      * Naming schema: X.Y.Z-variant##
@@ -47,10 +47,9 @@ object Versions {
     else
         "$major.$minor.$patch"
 
-    const val mockk = "1.11.0"
     const val junit = "4.13.2"
 
-    const val timber = "4.7.1"
+    const val timber = "5.0.1"
     const val threeTenBp = "1.3.1"
 
     const val debugDB = "1.0.6"
@@ -65,4 +64,6 @@ object Versions {
     const val jsoup = "1.13.1"
 
     const val ktlint = "0.40.0"
+
+    const val deeplink = "0.3.1"
 }

@@ -27,13 +27,14 @@ object Libraries {
     const val debugDb = "com.amitshekhar.android:debug-db:${Versions.debugDB}"
 
     const val junit = "junit:junit:${Versions.junit}"
-    const val mockk = "io.mockk:mockk:${Versions.mockk}"
 
     const val jsoup = "org.jsoup:jsoup:${Versions.jsoup}"
 
     const val scalingImageView = "com.davemorrissey.labs:subsampling-scale-image-view-androidx:${Versions.scalingImageView}"
 
     const val retrofitSerializer = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${Versions.serializationConverter}"
+
+    const val deeplink = "com.hellofresh.android:deeplink:${Versions.deeplink}"
 
     object Repositories {
         const val jitPack = "https://www.jitpack.io"
@@ -311,14 +312,14 @@ object Libraries {
     object AniTrend {
 
         object Arch {
-            private const val version = "1.3.0-rc05"
-            const val ui = "com.github.anitrend.support-arch:support-ui:${version}"
-            const val ext = "com.github.anitrend.support-arch:support-ext:${version}"
-            const val core = "com.github.anitrend.support-arch:support-core:${version}"
-            const val data = "com.github.anitrend.support-arch:support-data:${version}"
-            const val theme = "com.github.anitrend.support-arch:support-theme:${version}"
-            const val domain = "com.github.anitrend.support-arch:support-domain:${version}"
-            const val recycler = "com.github.anitrend.support-arch:support-recycler:${version}"
+            private const val version = "1.3.0"
+            const val ui = "com.github.anitrend.support-arch:ui:${version}"
+            const val core = "com.github.anitrend.support-arch:core:${version}"
+            const val data = "com.github.anitrend.support-arch:data:${version}"
+            const val ext = "com.github.anitrend.support-arch:extension:${version}"
+            const val theme = "com.github.anitrend.support-arch:theme:${version}"
+            const val domain = "com.github.anitrend.support-arch:domain:${version}"
+            const val recycler = "com.github.anitrend.support-arch:recycler:${version}"
         }
 
         object Emojify {
@@ -327,7 +328,7 @@ object Libraries {
         }
 
         object Material {
-            private const val version = "a368f32ed8"
+            private const val version = "0.2.0"
             const val multiSearch = "com.github.anitrend:material-multi-search:${version}"
         }
 

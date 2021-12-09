@@ -35,7 +35,7 @@ internal class DependencyStrategy(private val project: Project) {
             implementation(Libraries.timber)
 
         test(Libraries.junit)
-        test(Libraries.mockk)
+        test(Libraries.Mockk.mockk)
     }
 
     private fun DependencyHandler.applyAndroidTestDependencies() {
@@ -44,7 +44,7 @@ internal class DependencyStrategy(private val project: Project) {
         androidTest(Libraries.AndroidX.Test.runner)
         androidTest(Libraries.AndroidX.Test.Espresso.core)
         androidTest(Libraries.AndroidX.Test.Extension.junitKtx)
-        androidTest(Libraries.mockk)
+        androidTest(Libraries.Mockk.mockkAndroid)
     }
 
     private fun DependencyHandler.applyLifeCycleDependencies() {

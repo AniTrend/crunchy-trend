@@ -26,7 +26,6 @@ import com.android.build.api.dsl.LibraryExtension
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.gradle.api.AndroidBasePlugin
-import com.android.build.gradle.api.BaseVariantOutput
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.api.Project
 import org.gradle.api.internal.plugins.DefaultArtifactPublicationSet
@@ -112,9 +111,6 @@ internal fun Project.sourceSetContainer() =
 
 internal fun Project.javaPluginExtension() =
     extensions.getByType<JavaPluginExtension>()
-
-internal fun Project.variantOutput() =
-    extensions.getByType<BaseVariantOutput>()
 
 internal fun Project.kotlinAndroidProjectExtension() =
     extensions.getByType<KotlinAndroidProjectExtension>()
