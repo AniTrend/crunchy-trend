@@ -24,12 +24,29 @@ import co.anitrend.support.crunchyroll.data.util.CrunchyDateUtil.Companion.ISO86
 import co.anitrend.support.crunchyroll.data.util.CrunchyDateUtil.Companion.RCF822_PATTERN
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import org.koin.core.context.GlobalContext
+import org.koin.core.parameter.ParametersDefinition
+import org.koin.core.qualifier.Qualifier
 import timber.log.Timber
 
-internal val koin = object : KoinComponent {}
+/**
+ * Helper to resolve koin dependencies
+ *
+ * @param qualifier Help qualify a component
+ * @param parameters Help define a DefinitionParameters
+ *
+ * @return [T]
+ */
+inline fun <reified T> koinOf(
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
+): T {
+    val koin = GlobalContext.get()
+    return koin.get(qualifier, parameters)
+}
 
 val supportDateHelper by lazy(PUBLICATION) {
-    koin.get<AbstractSupportDateHelper>()
+    koinOf<AbstractSupportDateHelper>()
 }
 
 internal fun ISO8601Date.iso8601ToUnixTime() =

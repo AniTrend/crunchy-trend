@@ -28,7 +28,7 @@ import co.anitrend.arch.recycler.common.ClickableItem
 import co.anitrend.arch.recycler.holder.SupportViewHolder
 import co.anitrend.arch.ui.extension.setUpWith
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
-import co.anitrend.support.crunchyroll.core.android.recycler.model.RecyclerItemBinding
+import co.anitrend.support.crunchyroll.android.recycler.model.RecyclerItemBinding
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.domain.catalog.entities.CrunchyCatalogWithSeries
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries

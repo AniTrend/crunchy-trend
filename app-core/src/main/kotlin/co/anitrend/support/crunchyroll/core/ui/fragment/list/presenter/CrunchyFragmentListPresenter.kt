@@ -22,7 +22,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import co.anitrend.arch.ui.fragment.list.contract.ISupportFragmentList
 import co.anitrend.arch.ui.fragment.list.presenter.SupportListPresenter
 import co.anitrend.arch.ui.view.widget.contract.ISupportStateLayout
-import co.anitrend.support.crunchyroll.core.android.binding.IBindingView
+import co.anitrend.support.crunchyroll.android.binding.IBindingView
 import co.anitrend.support.crunchyroll.core.databinding.SharedListContentBinding
 
 class CrunchyFragmentListPresenter<M> : SupportListPresenter<M>(),

@@ -23,8 +23,8 @@ import android.view.ViewGroup
 import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
 import co.anitrend.arch.recycler.common.ClickableItem
 import co.anitrend.arch.recycler.holder.SupportViewHolder
-import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
-import co.anitrend.support.crunchyroll.core.android.recycler.model.RecyclerItemBinding
+import co.anitrend.support.crunchyroll.android.extensions.setImageUrl
+import co.anitrend.support.crunchyroll.android.recycler.model.RecyclerItemBinding
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
 import co.anitrend.support.crunchyroll.shared.series.databinding.AdapterSeriesGridBinding
 import coil.request.Disposable

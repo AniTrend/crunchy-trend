@@ -14,15 +14,15 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.core.android.recycler.model
+package co.anitrend.support.crunchyroll.android.recycler.model
 
 import android.content.res.Resources
 import android.view.View
 import androidx.viewbinding.ViewBinding
 import co.anitrend.arch.recycler.action.decorator.ISelectionDecorator
 import co.anitrend.arch.recycler.model.contract.IRecyclerItem
-import co.anitrend.support.crunchyroll.core.android.R
-import co.anitrend.support.crunchyroll.core.android.binding.IBindingView
+import co.anitrend.support.crunchyroll.android.R
+import co.anitrend.support.crunchyroll.android.binding.IBindingView
 
 
 abstract class RecyclerItemBinding<B : ViewBinding>(

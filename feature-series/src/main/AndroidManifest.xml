@@ -19,14 +19,15 @@
         package="co.anitrend.support.crunchyroll.feature.series">
 
     <application>
-        <activity android:name=".ui.activity.SeriesScreen" />
+        <activity android:name=".ui.activity.SeriesScreen"></activity>
 
         <provider
                 android:name="androidx.startup.InitializationProvider"
                 android:authorities="${applicationId}.androidx-startup"
                 android:exported="false"
                 tools:node="merge">
-            <meta-data  android:name="co.anitrend.support.crunchyroll.feature.series.initializer.FeatureInitializer"
+            <meta-data
+                    android:name="co.anitrend.support.crunchyroll.feature.series.initializer.FeatureInitializer"
                     android:value="androidx.startup" />
         </provider>
     </application>

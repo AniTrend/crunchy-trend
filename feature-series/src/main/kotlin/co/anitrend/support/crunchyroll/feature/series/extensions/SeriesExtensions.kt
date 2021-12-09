@@ -17,7 +17,7 @@
 package co.anitrend.support.crunchyroll.feature.series.extensions
 
 import androidx.appcompat.widget.AppCompatImageView
-import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
+import co.anitrend.support.crunchyroll.android.extensions.setImageUrl
 import co.anitrend.support.crunchyroll.core.common.DEFAULT_ANIMATION_DURATION
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay

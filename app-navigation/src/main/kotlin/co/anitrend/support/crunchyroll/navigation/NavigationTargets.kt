@@ -26,12 +26,19 @@ import org.koin.core.component.inject
 object Main : NavigationRouter() {
     override val provider by inject<Provider>()
 
-    interface Provider : INavigationProvider
+    abstract class Provider : INavigationProvider
 
     @Parcelize
     data class Payload(
-        val redirect: Int
-    ) : Parcelable
+        val redirect: Nav
+    ) : Parcelable {
+        enum class Nav {
+            CATALOGUE,
+            DISCOVER,
+            LATEST,
+            NEWS,
+        }
+    }
 }
 
 object Splash : NavigationRouter() {

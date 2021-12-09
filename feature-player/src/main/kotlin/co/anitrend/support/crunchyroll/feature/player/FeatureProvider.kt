@@ -21,7 +21,6 @@ import android.content.Intent
 import co.anitrend.support.crunchyroll.feature.player.ui.activity.MediaPlayerScreen
 import co.anitrend.support.crunchyroll.feature.player.ui.fragment.MediaStreamContent
 import co.anitrend.support.crunchyroll.navigation.MediaPlayer
-import co.anitrend.support.crunchyroll.navigation.contract.INavigationProvider
 
 internal class FeatureProvider : MediaPlayer.Provider {
     override fun activity(context: Context?) =

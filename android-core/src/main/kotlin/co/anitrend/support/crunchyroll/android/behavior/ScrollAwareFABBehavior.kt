@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.core.android.behavior
+package co.anitrend.support.crunchyroll.android.behavior
 
 import android.content.Context
 import android.util.AttributeSet

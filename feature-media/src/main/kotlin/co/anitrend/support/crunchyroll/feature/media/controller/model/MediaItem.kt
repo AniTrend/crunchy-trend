@@ -24,8 +24,8 @@ import androidx.recyclerview.widget.DiffUtil
 import co.anitrend.arch.recycler.action.contract.ISupportSelectionMode
 import co.anitrend.arch.recycler.common.ClickableItem
 import co.anitrend.arch.recycler.holder.SupportViewHolder
-import co.anitrend.support.crunchyroll.core.android.extensions.setImageUrl
-import co.anitrend.support.crunchyroll.core.android.recycler.model.RecyclerItemBinding
+import co.anitrend.support.crunchyroll.android.extensions.setImageUrl
+import co.anitrend.support.crunchyroll.android.recycler.model.RecyclerItemBinding
 import co.anitrend.support.crunchyroll.domain.media.entities.CrunchyMedia
 import co.anitrend.support.crunchyroll.feature.media.R
 import co.anitrend.support.crunchyroll.feature.media.databinding.AdapterMediaBinding

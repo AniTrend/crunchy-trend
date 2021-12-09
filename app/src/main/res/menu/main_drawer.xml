@@ -23,7 +23,7 @@
             <group android:id="@+id/nav_group_navigation"
                 android:checkableBehavior="single">
                 <item
-                    android:id="@+id/nav_series_catalog"
+                    android:id="@+id/nav_series_catalogue"
                     android:icon="@drawable/ic_collections_24dp"
                     android:title="@string/nav_series_catalog"
                     app:showAsAction="ifRoom|withText"/>

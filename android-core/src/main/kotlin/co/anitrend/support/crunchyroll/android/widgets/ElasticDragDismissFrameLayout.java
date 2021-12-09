@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.core.android.widgets;
+package co.anitrend.support.crunchyroll.android.widgets;
 
 import android.app.Activity;
 import android.content.Context;
@@ -28,10 +28,10 @@ import android.widget.FrameLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import co.anitrend.support.crunchyroll.core.android.R;
-import co.anitrend.support.crunchyroll.core.android.util.AnimUtils;
-import co.anitrend.support.crunchyroll.core.android.util.ColorUtils;
-import co.anitrend.support.crunchyroll.core.android.util.ViewUtils;
+import co.anitrend.support.crunchyroll.android.R;
+import co.anitrend.support.crunchyroll.android.util.AnimUtils;
+import co.anitrend.support.crunchyroll.android.util.ColorUtils;
+import co.anitrend.support.crunchyroll.android.util.ViewUtils;
 
 /**
  * A {@link FrameLayout} which responds to nested scrolls to create drag-dismissable layouts.

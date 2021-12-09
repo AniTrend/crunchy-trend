@@ -23,7 +23,7 @@ import androidx.viewbinding.ViewBinding
 import co.anitrend.arch.core.model.ISupportViewModelState
 import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.ui.activity.SupportActivity
-import co.anitrend.support.crunchyroll.core.android.binding.IBindingView
+import co.anitrend.support.crunchyroll.android.binding.IBindingView
 import co.anitrend.support.crunchyroll.core.util.config.ConfigurationUtil
 import org.koin.android.ext.android.inject
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
@@ -52,7 +52,7 @@ abstract class CrunchyActivity<B : ViewBinding> : SupportActivity(), KoinScopeCo
         super.onCreate(savedInstanceState)
         lifecycleScope.launchWhenCreated {
             runCatching {
-                getKoin().logger.debug("Open activity scope: $scope")
+                Timber.d("Open activity scope: $scope")
                 setupKoinFragmentFactory(scope)
             }.onFailure {
                 setupKoinFragmentFactory()

@@ -19,10 +19,9 @@ package co.anitrend.support.crunchyroll
 import android.content.Context
 import android.content.Intent
 import co.anitrend.support.crunchyroll.navigation.Main
-import co.anitrend.support.crunchyroll.navigation.contract.INavigationProvider
 import co.anitrend.support.crunchyroll.ui.MainScreen
 
-class FeatureProvider : Main.Provider {
+class FeatureProvider : Main.Provider() {
     override fun activity(context: Context?) =
         Intent(context, MainScreen::class.java)
 }

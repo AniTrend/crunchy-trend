@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.core.android.util;
+package co.anitrend.support.crunchyroll.android.util;
 
 import android.content.Context;
 import android.content.res.Configuration;

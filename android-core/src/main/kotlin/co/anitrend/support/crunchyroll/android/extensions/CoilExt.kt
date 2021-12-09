@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.core.android.extensions
+package co.anitrend.support.crunchyroll.android.extensions
 
 import android.content.Context
 import androidx.appcompat.widget.AppCompatImageView

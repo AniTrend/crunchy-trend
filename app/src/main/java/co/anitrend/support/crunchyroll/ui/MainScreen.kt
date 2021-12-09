@@ -49,15 +49,15 @@ class MainScreen : CrunchyActivity<ActivityMainBinding>(), NavigationView.OnNavi
         BottomSheetBehavior.from(requireBinding().bottomNavigationDrawer)
     }
 
-    private val params: Main.Payload? by extra(Main.extraKey)
-
     @IdRes
-    private var selectedItem: Int = R.id.nav_show_latest
+    private var selectedItem: Int = R.id.nav_series_catalogue
 
     @StringRes
-    private var selectedTitle: Int = R.string.nav_show_news
+    private var selectedTitle: Int = R.string.nav_series_catalog
 
     private val presenter by inject<CrunchyCorePresenter>()
+
+    private val params: Main.Payload? by extra(Main.extraKey)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +65,13 @@ class MainScreen : CrunchyActivity<ActivityMainBinding>(), NavigationView.OnNavi
         setContentView(requireBinding().root)
         setSupportActionBar(requireBinding().bottomAppBar)
         bottomDrawerBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        selectedItem = params?.redirect ?: R.id.nav_show_news
+        selectedItem = when (params?.redirect) {
+            Main.Payload.Nav.CATALOGUE -> R.id.nav_series_catalogue
+            Main.Payload.Nav.DISCOVER -> R.id.nav_series_discover
+            Main.Payload.Nav.LATEST -> R.id.nav_show_latest
+            Main.Payload.Nav.NEWS -> R.id.nav_show_news
+            else -> R.id.nav_series_catalogue
+        }
 
     }
 
@@ -149,7 +155,7 @@ class MainScreen : CrunchyActivity<ActivityMainBinding>(), NavigationView.OnNavi
 
     private suspend fun onNavigate(@IdRes menu: Int) {
         val fragmentItem = when (menu) {
-            R.id.nav_series_catalog -> {
+            R.id.nav_series_catalogue -> {
                 selectedTitle = R.string.nav_series_catalog
                 FragmentItem(Catalog.forFragment())
             }

@@ -31,7 +31,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.graphics.drawable.toBitmap
 import co.anitrend.arch.extension.ext.extra
 import co.anitrend.arch.extension.ext.systemServiceOf
-import co.anitrend.support.crunchyroll.core.android.extensions.using
+import co.anitrend.support.crunchyroll.android.extensions.using
 import co.anitrend.support.crunchyroll.core.common.DEFAULT_ANIMATION_DURATION
 import co.anitrend.support.crunchyroll.core.ui.activity.CrunchyActivity
 import co.anitrend.support.crunchyroll.navigation.ImageViewer

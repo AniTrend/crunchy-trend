@@ -29,7 +29,7 @@ import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.domain.entities.LoadState
 import co.anitrend.arch.extension.ext.argument
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
-import co.anitrend.support.crunchyroll.core.android.binding.IBindingView
+import co.anitrend.support.crunchyroll.android.binding.IBindingView
 import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLoginBinding
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen

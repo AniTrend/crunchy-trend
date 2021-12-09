@@ -21,7 +21,6 @@ import android.content.Intent
 import co.anitrend.support.crunchyroll.feature.series.ui.activity.SeriesScreen
 import co.anitrend.support.crunchyroll.feature.series.ui.fragment.SeriesContentScreen
 import co.anitrend.support.crunchyroll.navigation.Series
-import co.anitrend.support.crunchyroll.navigation.contract.INavigationProvider
 
 internal class FeatureProvider : Series.Provider {
     override fun activity(context: Context?) =

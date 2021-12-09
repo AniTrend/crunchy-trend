@@ -63,14 +63,12 @@ class MediaPlayerScreen : CrunchyActivity<ActivityStreamingBinding>(), VideoCont
      */
     override fun configureActivity() {
         super.configureActivity()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            with (window) {
-                clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-                clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
-                addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-                statusBarColor = getCompatColor(R.color.colorScrim)
-                navigationBarColor = getCompatColor(R.color.colorScrim)
-            }
+        with (window) {
+            clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
+            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            statusBarColor = getCompatColor(R.color.colorScrim)
+            navigationBarColor = getCompatColor(R.color.colorScrim)
         }
     }
 

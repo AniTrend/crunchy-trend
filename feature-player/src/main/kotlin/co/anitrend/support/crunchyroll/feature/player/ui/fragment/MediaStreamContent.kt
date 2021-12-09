@@ -27,7 +27,7 @@ import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.domain.entities.LoadState
 import co.anitrend.arch.domain.entities.RequestError
 import co.anitrend.arch.extension.ext.*
-import co.anitrend.support.crunchyroll.core.android.binding.IBindingView
+import co.anitrend.support.crunchyroll.android.binding.IBindingView
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.extensions.createDialog
 import co.anitrend.support.crunchyroll.core.model.Emote
@@ -127,10 +127,7 @@ class MediaStreamContent(
         )
     }
 
-    private val payload
-            by argument<MediaPlayer.Payload>(
-                MediaPlayer.extraKey
-            )
+    private val payload by argument<MediaPlayer.Payload>(MediaPlayer.extraKey)
 
     private var controlsVisibilityListener: VideoControlsVisibilityListener? = null
 
@@ -173,7 +170,7 @@ class MediaStreamContent(
         showDialogUsing(R.string.player_text_unavailable_audio_tracks, mediaTracks)
     }
 
-        override fun setUpViewModelObserver() {
+    override fun setUpViewModelObserver() {
         viewModelState().model.observe(viewLifecycleOwner, {
             lifecycleScope.launch { prepareResults(it) }
         })

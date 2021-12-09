@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.core.android.binding
+package co.anitrend.support.crunchyroll.android.binding
 
 import androidx.viewbinding.ViewBinding
 
