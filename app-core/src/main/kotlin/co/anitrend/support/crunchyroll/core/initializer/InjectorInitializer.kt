@@ -38,7 +38,7 @@ class InjectorInitializer : AbstractInitializer<Unit>() {
      * @param context The application context.
      */
     override fun create(context: Context) {
-        val logLevel = if (BuildConfig.DEBUG) Level.DEBUG else Level.ERROR
+        val logLevel = if (BuildConfig.DEBUG) Level.NONE else Level.ERROR
         startKoin {
             fragmentFactory()
             androidContext(context)
