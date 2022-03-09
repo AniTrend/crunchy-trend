@@ -17,15 +17,16 @@
 package co.anitrend.support.crunchyroll.data.api.contract
 
 import co.anitrend.support.crunchyroll.data.BuildConfig
-
+import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyProperty
+import co.anitrend.support.crunchyroll.data.util.extension.requireProperty
 
 internal enum class EndpointType(val url: String) {
     @Deprecated("Seem to be down, rather user use SESSION_LEGACY, SESSION_PROXY or SESSION_JSON")
-    SESSION(BuildConfig.apiSessionV2),
-    SESSION_PROXY(BuildConfig.apiSessionV1),
-    SESSION_CORE(BuildConfig.apiSession),
-    SESSION_JSON(BuildConfig.apiUrl),
-    JSON(BuildConfig.apiUrl),
+    SESSION(requireProperty(CrunchyProperty.API_SESSION_V2)),
+    SESSION_PROXY(requireProperty(CrunchyProperty.API_SESSION_PROXY_V1)),
+    SESSION_CORE(requireProperty(CrunchyProperty.API_SESSION)),
+    SESSION_JSON(requireProperty(CrunchyProperty.API_URL)),
+    JSON(requireProperty(CrunchyProperty.JSON_URL)),
     XML(BuildConfig.apiFeed),
     SLUG(BuildConfig.crunchyUrl)
 }

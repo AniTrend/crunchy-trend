@@ -19,7 +19,8 @@
         package="co.anitrend.support.crunchyroll.feature.collection">
 
     <application>
-        <activity android:name=".ui.activity.CollectionScreen" />
+        <activity android:name=".ui.activity.CollectionScreen"
+                android:exported="true" />
 
         <provider
                 android:name="androidx.startup.InitializationProvider"

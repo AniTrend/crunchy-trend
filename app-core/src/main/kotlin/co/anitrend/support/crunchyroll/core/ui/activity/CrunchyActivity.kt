@@ -20,15 +20,15 @@ import android.os.Bundle
 import android.view.Window
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
+import co.anitrend.arch.core.analytic.contract.ISupportAnalytics
 import co.anitrend.arch.core.model.ISupportViewModelState
-import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.ui.activity.SupportActivity
 import co.anitrend.support.crunchyroll.android.binding.IBindingView
 import co.anitrend.support.crunchyroll.core.util.config.ConfigurationUtil
 import org.koin.android.ext.android.inject
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.scope.activityScope
-import org.koin.core.scope.KoinScopeComponent
+import org.koin.core.component.KoinScopeComponent
 import timber.log.Timber
 
 abstract class CrunchyActivity<B : ViewBinding> : SupportActivity(), KoinScopeComponent,
@@ -36,7 +36,9 @@ abstract class CrunchyActivity<B : ViewBinding> : SupportActivity(), KoinScopeCo
 
     protected val configurationUtil by inject<ConfigurationUtil>()
 
-    override val scope by lazy(UNSAFE) { activityScope() }
+    protected val supportAnalytics by inject<ISupportAnalytics>()
+
+    override val scope by activityScope()
 
     override var binding: B? = null
 
@@ -58,6 +60,7 @@ abstract class CrunchyActivity<B : ViewBinding> : SupportActivity(), KoinScopeCo
                 setupKoinFragmentFactory()
                 Timber.w(it, "Defaulting to scope-less based fragment factory")
             }
+            supportAnalytics.logCurrentState(javaClass.simpleName, intent.extras)
         }
     }
 

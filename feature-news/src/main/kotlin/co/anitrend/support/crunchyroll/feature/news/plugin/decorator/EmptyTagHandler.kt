@@ -19,6 +19,7 @@ package co.anitrend.support.crunchyroll.feature.news.plugin.decorator
 import android.annotation.SuppressLint
 import io.noties.markwon.html.HtmlEmptyTagReplacement
 import io.noties.markwon.html.HtmlTag
+import java.util.*
 
 internal class EmptyTagHandler private constructor() : HtmlEmptyTagReplacement() {
 
@@ -28,7 +29,7 @@ internal class EmptyTagHandler private constructor() : HtmlEmptyTagReplacement()
      */
     @SuppressLint("DefaultLocale")
     override fun replace(tag: HtmlTag): String? {
-        return when (tag.name().toLowerCase()) {
+        return when (tag.name().lowercase(Locale.getDefault())) {
             in handlingTags -> {
                 frameReplacement
             }

@@ -75,12 +75,23 @@ object SeriesRoute : BaseRoute<Intent?>(":series_slug") {
     override fun run(uri: DeepLinkUri, params: Map<String, String>, env: Environment): Intent? {
         val slug = requireNotNull(params["series_slug"])
 
-        val intent = Series.forActivityIntent(env.context)
-        val payload = Series.Payload(
-            seriesId = extractIdFromSlug(slug)
-        )
-        intent?.putExtra(Series.extraKey, payload)
-        return intent
+        return if (slug.startsWith("media")) {
+            val intent = MediaPlayer.forActivityIntent(env.context)
+            val payload = MediaPlayer.Payload(
+                mediaId = extractIdFromSlug(slug),
+                collectionName = String.empty(),
+                collectionThumbnail = String.empty(),
+                episodeTitle = String.empty(),
+                episodeThumbnail = String.empty()
+            )
+            intent?.putExtra(MediaPlayer.extraKey, payload)
+        } else {
+            val intent = Series.forActivityIntent(env.context)
+            val payload = Series.Payload(
+                seriesId = extractIdFromSlug(slug)
+            )
+            intent?.putExtra(Series.extraKey, payload)
+        }
     }
 }
 

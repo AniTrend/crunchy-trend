@@ -21,7 +21,6 @@ import co.anitrend.support.crunchyroll.buildSrc.extensions.isAppModule
 import co.anitrend.support.crunchyroll.buildSrc.extensions.isCoreModule
 import co.anitrend.support.crunchyroll.buildSrc.extensions.isNavigationModule
 import co.anitrend.support.crunchyroll.buildSrc.extensions.matchesAppModule
-import co.anitrend.support.crunchyroll.buildSrc.extensions.hasDataBindingSupport
 import co.anitrend.support.crunchyroll.buildSrc.extensions.hasCoroutineSupport
 import co.anitrend.support.crunchyroll.buildSrc.extensions.baseAppExtension
 import co.anitrend.support.crunchyroll.buildSrc.extensions.baseExtension
@@ -60,18 +59,15 @@ private fun DefaultConfig.applyAdditionalConfiguration(project: Project) {
     else
         consumerProguardFiles.add(File("consumer-rules.pro"))
 
-    if (project.hasDataBindingSupport()) {
-        println("Applying data binding feature for module -> ${project.path}")
-        if (project.isAppModule())
-            project.baseAppExtension().buildFeatures { dataBinding = true }
-        else
-            project.libraryExtension().buildFeatures { dataBinding = true }
-    } else {
-        println("Applying view binding feature for module -> ${project.path}")
-        project.libraryExtension().buildFeatures {
-            viewBinding = true
+        if (project.isAppModule()) {
+            println("Applying view binding feature for module -> ${project.path}")
+            project.baseAppExtension().buildFeatures { viewBinding = true }
+        } else {
+            println("Applying view binding feature for module -> ${project.path}")
+            project.libraryExtension().buildFeatures {
+                viewBinding = true
+            }
         }
-    }
 
 
     if (!project.matchesAppModule()) {
@@ -81,12 +77,12 @@ private fun DefaultConfig.applyAdditionalConfiguration(project: Project) {
 }
 
 internal fun Project.configureAndroid(): Unit = baseExtension().run {
-    compileSdkVersion(Versions.compileSdk)
+    compileSdkVersion(Configuration.compileSdk)
     defaultConfig {
-        minSdk = Versions.minSdk
-        targetSdk = Versions.targetSdk
-        versionCode = Versions.versionCode
-        versionName = Versions.versionName
+        minSdk = Configuration.minSdk
+        targetSdk = Configuration.targetSdk
+        versionCode = Configuration.versionCode
+        versionName = Configuration.versionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         applyAdditionalConfiguration(project)
     }
@@ -124,19 +120,19 @@ internal fun Project.configureAndroid(): Unit = baseExtension().run {
     }
 
     packagingOptions {
-        excludes.add("META-INF/NOTICE.txt")
-        excludes.add("META-INF/LICENSE")
-        excludes.add("META-INF/LICENSE.txt")
+        resources.excludes.add("META-INF/NOTICE.txt")
+        resources.excludes.add("META-INF/LICENSE")
+        resources.excludes.add("META-INF/LICENSE.txt")
         // Exclude potential duplicate kotlin_module files
-        excludes.add("META-INF/*kotlin_module")
+        resources.excludes.add("META-INF/*kotlin_module")
         // Exclude consumer proguard files
-        excludes.add("META-INF/proguard/*")
+        resources.excludes.add("META-INF/proguard/*")
         // Exclude AndroidX version files
-        excludes.add("META-INF/*.version")
+        resources.excludes.add("META-INF/*.version")
         // Exclude the Firebase/Fabric/other random properties files
-        excludes.add("META-INF/*.properties")
-        excludes.add("/*.properties")
-        excludes.add("fabric/*.properties")
+        resources.excludes.add("META-INF/*.properties")
+        resources.excludes.add("/*.properties")
+        resources.excludes.add("fabric/*.properties")
     }
 
     sourceSets {

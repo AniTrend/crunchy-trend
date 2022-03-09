@@ -34,6 +34,7 @@ import co.anitrend.support.crunchyroll.feature.authentication.databinding.Fragme
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.ui.fragment.CrunchyFragment
+import co.anitrend.support.crunchyroll.feature.authentication.R
 import co.anitrend.support.crunchyroll.feature.authentication.presenter.AuthPresenter
 import co.anitrend.support.crunchyroll.feature.authentication.ui.activity.AuthenticationScreen
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login.LoginViewModel
@@ -48,7 +49,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class FragmentLogin(
     private val presenter: AuthPresenter,
     private val accountManager: AccountManager,
-    private val stateLayoutConfig: StateLayoutConfig
+    private val stateLayoutConfig: StateLayoutConfig,
+    override val inflateLayout: Int = R.layout.fragment_login
 ) : CrunchyFragment(), IBindingView<FragmentLoginBinding> {
 
     override var binding: FragmentLoginBinding? = null
@@ -113,15 +115,17 @@ class FragmentLogin(
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
-        FragmentLoginBinding.inflate(inflater, container, false).let {
-            binding = it
-            it.root
-        }
-
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = super.onCreateView(inflater, container, savedInstanceState)
+        binding = view?.let { FragmentLoginBinding.bind(it) }
+        return view
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireBinding().lifecycleOwner = viewLifecycleOwner
         requireBinding().loginButton.setOnClickListener {
             onFetchDataInitialize()
         }

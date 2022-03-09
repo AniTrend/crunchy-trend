@@ -30,8 +30,8 @@ internal interface CrunchySessionEndpoint {
     @JSON
     @POST("/start_session.${BuildConfig.apiExtensionV1}.json")
     suspend fun startCoreSessionJson(
-        @Query("access_token") accessToken: String = BuildConfig.clientToken,
-        @Query("device_type") deviceType: String = BuildConfig.deviceType,
+        @Query("access_token") accessToken: String,
+        @Query("device_type") deviceType: String,
         @Query("device_id") deviceId: String = SessionHelper.createDummyDeviceId()
     ): Response<CrunchyContainer<CrunchySessionCoreModel>>
 }

@@ -42,7 +42,7 @@ internal interface CrunchyAuthenticationEndpoint {
     @JSON
     @GET("/start_session.${BuildConfig.apiExtension}.json")
     suspend fun startNormalSession(
-        @Query("access_token") accessToken: String = BuildConfig.clientToken,
+        @Query("access_token") accessToken: String,
         @Query("device_type") deviceType: String,
         @Query("device_id") deviceId: String,
         @Query("auth") auth: String,

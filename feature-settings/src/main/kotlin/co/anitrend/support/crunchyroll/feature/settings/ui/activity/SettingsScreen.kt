@@ -76,7 +76,7 @@ class SettingsScreen : CrunchyActivity<SettingsActivityBinding>() {
      * @see onPrepareOptionsMenu
      * @see onOptionsItemSelected
      */
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.settings_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }

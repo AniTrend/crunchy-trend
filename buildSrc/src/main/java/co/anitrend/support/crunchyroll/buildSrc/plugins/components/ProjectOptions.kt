@@ -16,7 +16,7 @@
 
 package co.anitrend.support.crunchyroll.buildSrc.plugins.components
 
-import co.anitrend.support.crunchyroll.buildSrc.common.Versions
+import co.anitrend.support.crunchyroll.buildSrc.common.Configuration
 import co.anitrend.support.crunchyroll.buildSrc.extensions.isDataModule
 import co.anitrend.support.crunchyroll.buildSrc.extensions.isCoreModule
 import co.anitrend.support.crunchyroll.buildSrc.extensions.isAndroidCoreModule
@@ -42,8 +42,8 @@ private fun NamedDomainObjectContainer<LibraryBuildType>.applyVersionProperties(
         println("Adding version build configuration fields -> ${buildTypeEntry.key}")
         val buildType = buildTypeEntry.value
 
-        buildType.buildConfigField("String", "versionName", "\"${Versions.versionName}\"")
-        buildType.buildConfigField("int", "versionCode", Versions.versionCode.toString())
+        buildType.buildConfigField("String", "versionName", "\"${Configuration.versionName}\"")
+        buildType.buildConfigField("int", "versionCode", Configuration.versionCode.toString())
     }
 }
 
@@ -52,8 +52,8 @@ private fun NamedDomainObjectContainer<LibraryBuildType>.applyConfigurationPrope
         println("Configuring build type -> ${buildTypeEntry.key}")
         val buildType = buildTypeEntry.value
 
-        buildType.buildConfigField("String", "versionName", "\"${Versions.versionName}\"")
-        buildType.buildConfigField("int", "versionCode", Versions.versionCode.toString())
+        buildType.buildConfigField("String", "versionName", "\"${Configuration.versionName}\"")
+        buildType.buildConfigField("int", "versionCode", Configuration.versionCode.toString())
 
         val secretsFile = project.file(".config/secrets.properties")
         if (secretsFile.exists())

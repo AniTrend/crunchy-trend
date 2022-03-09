@@ -84,8 +84,8 @@ internal class FloatSeekBarPreference @JvmOverloads constructor(
     // Called when a Preference is being inflated and the default value attribute needs to be read. Since different
     // Preference types have different value types, the subclass should get and return the default value which will be
     // its value type.
-    override fun onGetDefaultValue(ta: TypedArray?, i: Int): Any {
-        defaultValue = ta!!.getFloat(i, 0F)
+    override fun onGetDefaultValue(ta: TypedArray, i: Int): Any {
+        defaultValue = ta.getFloat(i, 0F)
         return defaultValue
     }
 
@@ -97,9 +97,9 @@ internal class FloatSeekBarPreference @JvmOverloads constructor(
         )
     }
 
-    override fun onBindViewHolder(holder: PreferenceViewHolder?) {
+    override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-        holder!!.itemView.isClickable = false
+        holder.itemView.isClickable = false
         seekBar = holder.findViewById(R.id.seekbar) as AppCompatSeekBar
         seekBarTextView = holder.findViewById(R.id.seekbar_value) as AppCompatTextView
 

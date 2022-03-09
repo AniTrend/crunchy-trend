@@ -45,7 +45,7 @@ internal object EpisodeFeedHelper {
                     )
                     val country = it.substring(
                         IntRange(lastDelimiter + 1, it.length - 1)
-                    ).toUpperCase(locale)
+                    ).uppercase(locale)
 
                     "$language$country"
                 }
@@ -61,9 +61,9 @@ internal object EpisodeFeedHelper {
             // elements: ua ae gb us
             val restrictions = restriction.elements
                 .split(' ')
-                .map { it.toLowerCase(locale) }
+                .map { it.lowercase(locale) }
             if (restriction.relationship == "allow" && restriction.type == "country")
-                return restrictions.contains(country.toLowerCase(locale))
+                return restrictions.contains(country.lowercase(locale))
         }
         return true
     }

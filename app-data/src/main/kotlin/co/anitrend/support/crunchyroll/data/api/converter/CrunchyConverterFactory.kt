@@ -26,7 +26,7 @@ import org.simpleframework.xml.core.Persister
 import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.simplexml.SimpleXmlConverterFactory
+import retrofit2.converter.simplexml.*
 import java.lang.reflect.Type
 
 

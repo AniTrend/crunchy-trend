@@ -64,12 +64,10 @@ internal class DependencyStrategy(private val project: Project) {
 
     private fun DependencyHandler.applyKoinDependencies() {
         implementation(Libraries.Koin.core)
-        implementation(Libraries.Koin.extension)
-        test(Libraries.Koin.test)
+        test(Libraries.Koin.Test.test)
+        test(Libraries.Koin.Test.testJUnit4)
         if (project.hasKoinAndroidSupport()) {
-            implementation(Libraries.Koin.AndroidX.scope)
-            implementation(Libraries.Koin.AndroidX.fragment)
-            implementation(Libraries.Koin.AndroidX.viewModel)
+            implementation(Libraries.Koin.android)
             implementation(Libraries.Koin.AndroidX.workManager)
         }
     }

@@ -21,10 +21,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.lifecycle.Observer
 import co.anitrend.arch.domain.entities.LoadState
+import co.anitrend.support.crunchyroll.android.binding.IBindingView
 import co.anitrend.support.crunchyroll.core.extensions.closeScreen
 import co.anitrend.support.crunchyroll.core.ui.fragment.CrunchyFragment
+import co.anitrend.support.crunchyroll.feature.authentication.R
 import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLogoutBinding
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login.LoginViewModel
 import co.anitrend.support.crunchyroll.feature.authentication.viewmodel.logout.LogoutViewModel
@@ -32,9 +33,11 @@ import co.anitrend.support.crunchyroll.navigation.*
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FragmentLogout : CrunchyFragment() {
+class FragmentLogout(
+    override val inflateLayout: Int = R.layout.fragment_logout
+) : CrunchyFragment(), IBindingView<FragmentLogoutBinding> {
 
-    private lateinit var binding: FragmentLogoutBinding
+    override var binding: FragmentLogoutBinding? = null
 
     /**
      * Should be created lazily through injection or lazy delegate
@@ -48,8 +51,8 @@ class FragmentLogout : CrunchyFragment() {
     private val restNetworkStateOnBackPress =
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (binding.supportStateLayout.isError)
-                    binding.supportStateLayout.loadStateFlow.value = LoadState.Success()
+                if (requireBinding().supportStateLayout.isError)
+                    requireBinding().supportStateLayout.loadStateFlow.value = LoadState.Success()
                 else
                     activity?.closeScreen()
             }
@@ -59,21 +62,26 @@ class FragmentLogout : CrunchyFragment() {
      * Invoke view model observer to watch for changes
      */
     override fun setUpViewModelObserver() {
-        viewModelUser.state.model.observe(viewLifecycleOwner, Observer {
-            binding.currentUserModel = it
-        })
-        viewModelState().model.observe(viewLifecycleOwner, Observer { loggedOut ->
+        viewModelUser.state.model.observe(viewLifecycleOwner) {
+            with (requireBinding().logoutHeaderFrame) {
+                userName.text = it?.username
+                userEmail.text = it?.email
+                userAccessType.text = it?.accessType?.name
+                userTier.text = it?.premium
+            }
+        }
+        viewModelState().model.observe(viewLifecycleOwner) { loggedOut ->
             if (loggedOut) {
                 Splash(context)
                 activity?.closeScreen()
             }
-        })
-        viewModelState().loadState.observe(viewLifecycleOwner, {
-            binding.supportStateLayout.loadStateFlow.value = it
-        })
-        viewModelState().refreshState.observe(viewLifecycleOwner, {
-            binding.supportStateLayout.loadStateFlow.value = it
-        })
+        }
+        viewModelState().loadState.observe(viewLifecycleOwner) {
+            requireBinding().supportStateLayout.loadStateFlow.value = it
+        }
+        viewModelState().refreshState.observe(viewLifecycleOwner) {
+            requireBinding().supportStateLayout.loadStateFlow.value = it
+        }
     }
 
     override fun initializeComponents(savedInstanceState: Bundle?) {
@@ -81,7 +89,7 @@ class FragmentLogout : CrunchyFragment() {
         this, restNetworkStateOnBackPress
         )
         /*lifecycleScope.launchWhenResumed {
-            binding.supportStateLayout.interactionStateFlow
+            requireBinding().supportStateLayout.interactionStateFlow
                 .filterNotNull()
                 .debounce(DEBOUNCE_DURATION)
                 .collect {
@@ -95,17 +103,16 @@ class FragmentLogout : CrunchyFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return FragmentLogoutBinding.inflate(inflater, container, false).let {
-            binding = it
-            it.root
-        }
+        val view = super.onCreateView(inflater, container, savedInstanceState)
+        binding = view?.let { FragmentLogoutBinding.bind(it) }
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.supportStateLayout.stateConfigFlow.value = get()
-        binding.supportStateLayout.loadStateFlow.value = LoadState.Success()
-        binding.userLogoutButton.setOnClickListener {
+        requireBinding().supportStateLayout.stateConfigFlow.value = get()
+        requireBinding().supportStateLayout.loadStateFlow.value = LoadState.Success()
+        requireBinding().userLogoutButton.setOnClickListener {
             viewModelState().invoke()
         }
         onFetchDataInitialize()

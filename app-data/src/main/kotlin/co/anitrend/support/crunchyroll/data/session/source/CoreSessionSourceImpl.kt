@@ -19,6 +19,8 @@ package co.anitrend.support.crunchyroll.data.session.source
 import co.anitrend.arch.data.request.callback.RequestCallback
 import co.anitrend.arch.data.request.model.Request
 import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
+import co.anitrend.support.crunchyroll.data.BuildConfig
+import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyProperty
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
 import co.anitrend.support.crunchyroll.data.session.CoreSessionController
 import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySessionCoreDao
@@ -27,6 +29,7 @@ import co.anitrend.support.crunchyroll.data.session.datasource.remote.CrunchySes
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionCoreEntity
 import co.anitrend.support.crunchyroll.data.session.source.contract.SessionSource
 import co.anitrend.support.crunchyroll.data.session.transformer.CoreSessionTransformer
+import co.anitrend.support.crunchyroll.data.util.extension.requireProperty
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -52,7 +55,10 @@ internal class CoreSessionSourceImpl(
         }
 
         val coreSession = async {
-            endpoint.startCoreSessionJson()
+            endpoint.startCoreSessionJson(
+                accessToken = requireProperty(CrunchyProperty.CLIENT_TOKEN),
+                deviceType = requireProperty(CrunchyProperty.DEVICE_TYPE)
+            )
         }
 
         val session = controller(proxySession, callback) ?: controller(coreSession, callback)

@@ -22,7 +22,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import co.anitrend.arch.core.model.ISupportViewModelState
-import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.extension.ext.getColorFromAttr
 import co.anitrend.arch.recycler.SupportRecyclerView
 import co.anitrend.arch.recycler.shared.adapter.SupportLoadStateAdapter
@@ -31,14 +30,14 @@ import co.anitrend.arch.ui.fragment.list.presenter.SupportListPresenter
 import co.anitrend.support.crunchyroll.core.R
 import co.anitrend.support.crunchyroll.core.ui.fragment.list.presenter.CrunchyFragmentListPresenter
 import org.koin.androidx.scope.fragmentScope
-import org.koin.core.scope.KoinScopeComponent
+import org.koin.core.component.KoinScopeComponent
 
 abstract class CrunchyFragmentList<M>(
     override val inflateLayout: Int = R.layout.shared_list_content,
     override val listPresenter: SupportListPresenter<M> = CrunchyFragmentListPresenter()
 ) : SupportFragmentList<M>(), KoinScopeComponent {
 
-    override val scope by lazy(UNSAFE) { fragmentScope() }
+    override val scope by fragmentScope()
 
     /**
      * Sets the adapter for the recycler view

@@ -171,15 +171,15 @@ class MediaStreamContent(
     }
 
     override fun setUpViewModelObserver() {
-        viewModelState().model.observe(viewLifecycleOwner, {
+        viewModelState().model.observe(viewLifecycleOwner) {
             lifecycleScope.launch { prepareResults(it) }
-        })
-        viewModelState().loadState.observe(viewLifecycleOwner, {
+        }
+        viewModelState().loadState.observe(viewLifecycleOwner) {
             requireBinding().supportStateLayout.loadStateFlow.value = it
-        })
-        viewModelState().refreshState.observe(viewLifecycleOwner, {
+        }
+        viewModelState().refreshState.observe(viewLifecycleOwner) {
             requireBinding().supportStateLayout.loadStateFlow.value = it
-        })
+        }
     }
 
     /**

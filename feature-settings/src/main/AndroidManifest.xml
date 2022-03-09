@@ -7,7 +7,8 @@
         <activity
                 android:name=".ui.activity.SettingsScreen"
                 android:label="@string/title_activity_settings_screen"
-                android:theme="@style/AppTheme" />
+                android:theme="@style/AppTheme"
+                android:exported="true" />
 
         <provider
                 android:name="androidx.startup.InitializationProvider"

@@ -16,6 +16,7 @@
 
 package co.anitrend.support.crunchyroll.core.koin.helper
 
+import androidx.lifecycle.LifecycleOwner
 import co.anitrend.arch.extension.lifecycle.SupportLifecycle
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
@@ -29,13 +30,17 @@ class DynamicFeatureModuleHelper(
     private val modules: List<Module>
 ) : SupportLifecycle {
 
+
     /**
-     * Triggered when the lifecycleOwner reaches it's onCreate state
+     * Notifies that `ON_CREATE` event occurred.
      *
-     * @see [androidx.lifecycle.LifecycleOwner]
+     * This method will be called after the [LifecycleOwner]'s `onCreate`
+     * method returns.
+     *
+     * @param owner the component, whose state was changed
      */
-    override fun onCreate() {
-        super.onCreate()
+    override fun onCreate(owner: LifecycleOwner) {
+        super.onCreate(owner)
         Timber.v(
             "Loading ${modules.size} feature modules"
         )
@@ -43,12 +48,15 @@ class DynamicFeatureModuleHelper(
     }
 
     /**
-     * Triggered when the lifecycleOwner reaches it's onDestroy state
+     * Notifies that `ON_DESTROY` event occurred.
      *
-     * @see [androidx.lifecycle.LifecycleOwner]
+     * This method will be called before the [LifecycleOwner]'s `onDestroy` method
+     * is called.
+     *
+     * @param owner the component, whose state was changed
      */
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onDestroy(owner)
         Timber.v(
             "Unloading ${modules.size} feature modules"
         )

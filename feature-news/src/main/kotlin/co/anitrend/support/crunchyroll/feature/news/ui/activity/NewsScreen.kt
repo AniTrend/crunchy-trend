@@ -70,7 +70,7 @@ class NewsScreen : CrunchyActivity<NewsScreenBinding>() {
             }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.news_reader_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }

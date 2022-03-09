@@ -30,7 +30,7 @@ internal object SessionHelper {
         val builder = StringBuilder(length)
         repeat(length) {
             val random = Random.nextInt(start, end)
-            builder.append(whiteList[random].toChar())
+            builder.append(whiteList[random].toInt().toChar())
         }
         return builder.toString()
     }

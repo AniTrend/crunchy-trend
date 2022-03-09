@@ -17,26 +17,23 @@
 package co.anitrend.support.crunchyroll.feature.collection.ui.fragment
 
 import android.os.Bundle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import co.anitrend.arch.domain.entities.LoadState
-import co.anitrend.arch.domain.entities.NetworkState
 import co.anitrend.arch.domain.entities.RequestError
 import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.extension.ext.argument
-import co.anitrend.arch.extension.ext.empty
 import co.anitrend.arch.recycler.common.ClickableItem
 import co.anitrend.arch.ui.view.widget.model.StateLayoutConfig
 import co.anitrend.support.crunchyroll.core.common.DEBOUNCE_DURATION
 import co.anitrend.support.crunchyroll.core.model.Emote
-import co.anitrend.support.crunchyroll.navigation.Season
-import co.anitrend.support.crunchyroll.navigation.Media
 import co.anitrend.support.crunchyroll.core.ui.fragment.list.CrunchyFragmentList
 import co.anitrend.support.crunchyroll.domain.collection.entities.CrunchyCollection
 import co.anitrend.support.crunchyroll.domain.collection.models.CrunchyCollectionQuery
 import co.anitrend.support.crunchyroll.feature.collection.R
 import co.anitrend.support.crunchyroll.feature.collection.ui.adapter.CollectionAdapter
 import co.anitrend.support.crunchyroll.feature.collection.viewmodel.CollectionViewModel
+import co.anitrend.support.crunchyroll.navigation.Media
+import co.anitrend.support.crunchyroll.navigation.Season
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterIsInstance
@@ -65,9 +62,7 @@ class CollectionContentScreen(
     override fun setUpViewModelObserver() {
         viewModelState().model.observe(
             viewLifecycleOwner,
-            {
-                onPostModelChange(it)
-            }
+            ::onPostModelChange
         )
     }
 

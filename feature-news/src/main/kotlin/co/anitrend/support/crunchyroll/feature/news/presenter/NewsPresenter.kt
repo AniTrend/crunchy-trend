@@ -57,11 +57,11 @@ class NewsPresenter(
                 val src = tag.attr("src")
 
                 val width = runCatching{
-                    tag.attr("width")?.toShort()
+                    tag.attr("width").toShort()
                 }.stackTrace() ?: 0
 
                 val height = runCatching{
-                    tag.attr("height")?.toShort()
+                    tag.attr("height").toShort()
                 }.stackTrace() ?: 0
 
                 if (height > 100) {

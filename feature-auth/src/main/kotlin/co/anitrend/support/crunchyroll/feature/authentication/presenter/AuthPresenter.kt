@@ -25,8 +25,10 @@ import co.anitrend.arch.extension.ext.empty
 import co.anitrend.support.crunchyroll.core.presenter.CrunchyCorePresenter
 import co.anitrend.support.crunchyroll.core.settings.CrunchySettings
 import co.anitrend.support.crunchyroll.data.BuildConfig
+import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyProperty
 import co.anitrend.support.crunchyroll.data.authentication.contract.AccountType
 import co.anitrend.support.crunchyroll.data.authentication.contract.TokenType
+import co.anitrend.support.crunchyroll.data.util.extension.requireProperty
 import co.anitrend.support.crunchyroll.domain.authentication.models.CrunchyLoginQuery
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser
 import co.anitrend.support.crunchyroll.feature.authentication.databinding.FragmentLoginBinding
@@ -61,7 +63,7 @@ class AuthPresenter(
     ) = flow {
         emit(LoadState.Loading())
         val account = Account(TokenType.ANONYMOUS.alias, AccountType.UNIVERSAL.id)
-        accountManager.addAccountExplicitly(account, BuildConfig.clientToken, Bundle.EMPTY)
+        accountManager.addAccountExplicitly(account, requireProperty(CrunchyProperty.CLIENT_TOKEN), Bundle.EMPTY)
         accountManager.setAuthToken(account, TokenType.ANONYMOUS.name, String.empty())
         emit(LoadState.Success())
     }

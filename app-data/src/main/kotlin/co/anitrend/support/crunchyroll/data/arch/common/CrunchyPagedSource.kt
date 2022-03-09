@@ -37,7 +37,7 @@ internal abstract class CrunchyPagedSource<T> : SupportPagingDataSource<T>() {
      * Called when zero items are returned from an initial load of the PagedList's data source.
      */
     override fun onZeroItemsLoaded() {
-        val request = Request.Default("${moduleTag}_initial", Request.Type.INITIAL)
+        val request = Request.Default("${javaClass.simpleName}_initial", Request.Type.INITIAL)
         launch {
             requestHelper.runIfNotRunning(request) { callback ->
                 invoke(callback, request)
@@ -55,7 +55,7 @@ internal abstract class CrunchyPagedSource<T> : SupportPagingDataSource<T>() {
      */
     override fun onItemAtFrontLoaded(itemAtFront: T) {
         if (!supportPagingHelper.isFirstPage()) {
-            val request = Request.Default("${moduleTag}_before", Request.Type.BEFORE)
+            val request = Request.Default("${javaClass.simpleName}_before", Request.Type.BEFORE)
             /*supportPagingHelper.onPagePrevious()
             launch {
                 requestHelper.runIfNotRunning(request) { callback ->
@@ -74,7 +74,7 @@ internal abstract class CrunchyPagedSource<T> : SupportPagingDataSource<T>() {
      * @param itemAtEnd The first item of PagedList
      */
     override fun onItemAtEndLoaded(itemAtEnd: T) {
-        val request = Request.Default("${moduleTag}_after", Request.Type.AFTER)
+        val request = Request.Default("${javaClass.simpleName}_after", Request.Type.AFTER)
         supportPagingHelper.onPageNext()
         launch {
             requestHelper.runIfNotRunning(request) { callback ->

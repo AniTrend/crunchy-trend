@@ -23,7 +23,6 @@ dependencies {
     implementation(project(":app-domain"))
 
     implementation(Libraries.Koin.core)
-    implementation(Libraries.Koin.extension)
-    implementation(Libraries.Koin.AndroidX.fragment)
-    testImplementation(Libraries.Koin.test)
+    implementation(Libraries.Koin.android)
+    testImplementation(Libraries.Koin.Test.testJUnit4)
 }

@@ -81,13 +81,12 @@ internal class CatalogSourceImpl(
 
                     if (results.isNotEmpty()) {
                         cache.updateLastRequest(requestId)
-                        Timber.tag(moduleTag)
-                            .v("Saving request: $requestId to cache log, upon success")
+                        Timber.v("Saving request: $requestId to cache log, upon success")
                     }
                 }
                 .collect()
         } else
-            Timber.tag(moduleTag).v("Skipping request due to expiry time not satisfied $requestId")
+            Timber.v("Skipping request due to expiry time not satisfied $requestId")
     }
 
     /**

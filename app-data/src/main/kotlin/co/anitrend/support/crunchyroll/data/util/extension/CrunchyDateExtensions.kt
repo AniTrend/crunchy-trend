@@ -20,14 +20,14 @@ import co.anitrend.arch.extension.ext.PUBLICATION
 import co.anitrend.arch.extension.util.date.contract.AbstractSupportDateHelper
 import co.anitrend.support.crunchyroll.data.arch.ISO8601Date
 import co.anitrend.support.crunchyroll.data.arch.RCF822Date
+import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyProperty
 import co.anitrend.support.crunchyroll.data.util.CrunchyDateUtil.Companion.ISO8601_PATTERN
 import co.anitrend.support.crunchyroll.data.util.CrunchyDateUtil.Companion.RCF822_PATTERN
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import org.koin.core.context.GlobalContext
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import timber.log.Timber
+import kotlin.jvm.Throws
 
 /**
  * Helper to resolve koin dependencies
@@ -43,6 +43,18 @@ inline fun <reified T> koinOf(
 ): T {
     val koin = GlobalContext.get()
     return koin.get(qualifier, parameters)
+}
+
+/**
+ * Retrieve a property
+ *
+ * @throws IllegalArgumentException when [property] key cannot be found
+ */
+@Throws(IllegalArgumentException::class)
+fun requireProperty(property: CrunchyProperty): String {
+    val koin = GlobalContext.get()
+    val prop = koin.getProperty<String>(property.key)
+    return requireNotNull(prop)
 }
 
 val supportDateHelper by lazy(PUBLICATION) {

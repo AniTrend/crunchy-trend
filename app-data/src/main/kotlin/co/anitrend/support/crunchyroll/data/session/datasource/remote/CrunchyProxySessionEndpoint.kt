@@ -32,8 +32,8 @@ internal interface CrunchyProxySessionEndpoint {
     @POST("/getsession.php")
     @Deprecated("Please use a vpn or something similar for generating tokens")
     suspend fun startCoreSessionProxy(
-        @Query("access_token") accessToken: String = BuildConfig.clientToken,
-        @Query("device_type") deviceType: String = BuildConfig.deviceType,
+        @Query("access_token") accessToken: String,
+        @Query("device_type") deviceType: String,
         @Query("device_id") deviceId: String = SessionHelper.createDummyDeviceId(),
         @Query("version") version: String = BuildConfig.apiVersion
     ) : Response<CrunchyContainer<CrunchySessionCoreModel>>

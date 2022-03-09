@@ -16,13 +16,11 @@
 
 package co.anitrend.support.crunchyroll.feature.authentication.viewmodel.login.model
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.asLiveData
 import co.anitrend.arch.core.model.ISupportViewModelState
 import co.anitrend.arch.data.state.DataState
-import co.anitrend.arch.domain.entities.LoadState
 import co.anitrend.support.crunchyroll.data.authentication.usecase.LoginUseCaseType
 import co.anitrend.support.crunchyroll.domain.authentication.models.CrunchyLoginQuery
 import co.anitrend.support.crunchyroll.domain.user.entities.CrunchyUser

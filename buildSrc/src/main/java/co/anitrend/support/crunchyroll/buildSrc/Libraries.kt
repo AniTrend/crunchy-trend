@@ -45,7 +45,7 @@ object Libraries {
     object Android {
 
         object Tools {
-            private const val version = "7.0.2"
+            private const val version = "7.1.2"
             const val buildGradle = "com.android.tools.build:gradle:${version}"
         }
     }
@@ -53,7 +53,7 @@ object Libraries {
     object AndroidX {
 
         object Activity {
-            private const val version = "1.3.0-alpha07"
+            private const val version = "1.4.0"
             const val activity = "androidx.activity:activity:$version"
             const val activityKtx = "androidx.activity:activity-ktx:$version"
 
@@ -69,18 +69,18 @@ object Libraries {
         }
 
         object Browser {
-            private const val version = "1.3.0"
+            private const val version = "1.4.0"
             const val browser = "androidx.browser:browser:$version"
         }
 
         object Collection {
-            private const val version = "1.2.0-alpha01"
+            private const val version = "1.2.0"
             const val collection = "androidx.collection:collection:$version"
             const val collectionKtx = "androidx.collection:collection-ktx:$version"
         }
 
         object Compose {
-            internal const val version = "1.0.0-beta06"
+            internal const val version = "1.1.0-beta01"
 
             object Foundation {
                 const val foundation = "androidx.compose.foundation:foundation:$version"
@@ -111,7 +111,7 @@ object Libraries {
         }
 
         object Core {
-            private const val version = "1.5.0-rc01"
+            private const val version = "1.7.0"
             const val core = "androidx.core:core:$version"
             const val coreKtx = "androidx.core:core-ktx:$version"
 
@@ -123,12 +123,12 @@ object Libraries {
         }
 
         object ConstraintLayout {
-            private const val version = "2.1.0-beta02"
+            private const val version = "2.1.3"
             const val constraintLayout = "androidx.constraintlayout:constraintlayout:$version"
             const val constraintLayoutSolver = "androidx.constraintlayout:constraintlayout-solver:$version"
 
             object Compose {
-                private const val version = "1.0.0-alpha06"
+                private const val version = "1.0.0-rc01"
                 const val constraintLayoutCompose = "androidx.constraintlayout:constraintlayout-compose:$version"
             }
         }
@@ -145,14 +145,21 @@ object Libraries {
         }
 
         object Fragment {
-            private const val version = "1.3.3"
+            private const val version = "1.4.1"
             const val fragment = "androidx.fragment:fragment:$version"
             const val fragmentKtx = "androidx.fragment:fragment-ktx:$version"
             const val test = "androidx.fragment:fragment-ktx:fragment-testing$version"
         }
 
+        object Glance {
+            private const val version = "1.0.0-alpha01"
+            const val glance = "androidx.glance:glance:$version"
+            const val widget = "androidx.glance:glance-appwidget:$version"
+            const val proto = "androidx.glance:glance-appwidget-proto:$version"
+        }
+
         object Lifecycle {
-            private const val version = "2.4.0-alpha01"
+            private const val version = "2.4.0"
             const val extensions = "androidx.lifecycle:lifecycle-extensions:2.2.0"
             const val runTimeKtx = "androidx.lifecycle:lifecycle-runtime-ktx:$version"
             const val liveDataKtx = "androidx.lifecycle:lifecycle-livedata-ktx:$version"
@@ -160,7 +167,7 @@ object Libraries {
             const val liveDataCoreKtx = "androidx.lifecycle:lifecycle-livedata-core-ktx:$version"
 
             object Compose {
-                private const val version = "1.0.0-alpha04"
+                private const val version = "2.4.0"
                 const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:$version"
             }
         }
@@ -243,13 +250,13 @@ object Libraries {
         }
 
         object Preference {
-            private const val version = "1.1.1"
+            private const val version = "1.2.0"
             const val preference = "androidx.preference:preference:$version"
             const val preferenceKtx = "androidx.preference:preference-ktx:$version"
         }
 
         object Recycler {
-            private const val version = "1.2.0"
+            private const val version = "1.3.0-alpha01"
             const val recyclerView = "androidx.recyclerview:recyclerview:$version"
 
             object Selection {
@@ -259,7 +266,7 @@ object Libraries {
         }
 
         object Room {
-            private const val version = "2.4.0-alpha02"
+            private const val version = "2.4.0"
             const val compiler = "androidx.room:room-compiler:$version"
             const val runtime = "androidx.room:room-runtime:$version"
             const val test = "androidx.room:room-testing:$version"
@@ -272,7 +279,7 @@ object Libraries {
         }
 
         object StartUp {
-            private const val version = "1.0.0"
+            private const val version = "1.1.0"
             const val startUpRuntime = "androidx.startup:startup-runtime:$version"
         }
 
@@ -301,7 +308,7 @@ object Libraries {
         }
 
         object Work {
-            private const val version = "2.7.0-alpha02"
+            private const val version = "2.7.1"
             const val runtimeKtx = "androidx.work:work-runtime-ktx:$version"
             const val multiProcess = "androidx.work:work-multiprocess:$version"
             const val runtime = "androidx.work:work-runtime:$version"
@@ -312,7 +319,7 @@ object Libraries {
     object AniTrend {
 
         object Arch {
-            private const val version = "1.3.0"
+			private const val version = "1.4.0-alpha03"
             const val ui = "com.github.anitrend.support-arch:ui:${version}"
             const val core = "com.github.anitrend.support-arch:core:${version}"
             const val data = "com.github.anitrend.support-arch:data:${version}"
@@ -333,7 +340,7 @@ object Libraries {
         }
 
         object QueryBuilder {
-            private const val version = "0.1.3-alpha01"
+            private const val version = "0.1.4-alpha01"
             const val core = "com.github.anitrend.support-query-builder:core:$version"
             const val annotation = "com.github.anitrend.support-query-builder:annotations:$version"
             const val processor = "com.github.anitrend.support-query-builder:processor:$version"
@@ -350,7 +357,7 @@ object Libraries {
         }
 
         object Paris {
-            private const val version = "1.7.3"
+            private const val version = "2.0.1"
             const val paris = "com.airbnb.android:paris:$version"
             /** if using annotations */
             const val processor = "com.airbnb.android:paris-processor:$version"
@@ -374,43 +381,60 @@ object Libraries {
         }
 
         object Turbine {
-            private const val version = "0.5.0"
+            private const val version = "0.7.0"
             const val turbine = "app.cash.turbine:turbine:$version"
         }
     }
 
     object Chuncker {
-        private const val version = "3.4.0"
+        private const val version = "3.5.2"
 
         const val debug = "com.github.ChuckerTeam.Chucker:library:$version"
         const val release = "com.github.ChuckerTeam.Chucker:library-no-op:$version"
     }
 
     object Coil {
-        private const val version = "1.2.1"
+        private const val version = "1.4.0"
         const val coil = "io.coil-kt:coil:$version"
         const val base = "io.coil-kt:coil-base:$version"
         const val gif = "io.coil-kt:coil-gif:$version"
         const val svg = "io.coil-kt:coil-svg:$version"
         const val video = "io.coil-kt:coil-video:$version"
+        const val compose = "io.coil-kt:coil-compose:$version"
+    }
+
+    object Devrieze {
+        object XmlUtil {
+            private const val version = "0.84.0"
+
+            object Android {
+                const val core = "io.github.pdvrieze.xmlutil:core-android:$version"
+                const val serialization = "io.github.pdvrieze.xmlutil:serialization-android:$version"
+            }
+        }
     }
 
     object Dropbox {
-        private const val version = "4.0.1"
+        private const val version = "4.0.4-KT15"
         const val store = "com.dropbox.mobile.store:store4:$version"
     }
+
 
     object Google {
 
         object Accompanist {
-            private const val version = "0.9.1"
+            private const val version = "0.23.0"
             const val insets = "com.google.accompanist:accompanist-insets:$version"
-            const val coil = "com.google.accompanist:accompanist-coil:$version"
             const val uiController = "com.google.accompanist:accompanist-systemuicontroller:${version}"
             const val appCompatTheme = "com.google.accompanist:accompanist-appcompat-theme:${version}"
             const val pager = "com.google.accompanist:accompanist-pager:${version}"
             const val pagerIndicators = "com.google.accompanist:accompanist-pager-indicators:${version}"
             const val flowLayout = "com.google.accompanist:accompanist-flowlayout:${version}"
+        }
+
+        object Gson {
+            private const val version = "2.9.0"
+            const val gson = "com.google.code.gson:gson:$version"
         }
 
         object Exo {
@@ -427,23 +451,18 @@ object Libraries {
             private const val version = "17.4.4"
             const val firebaseCore = "com.google.firebase:firebase-core:$version"
 
-            object Ads {
-                private const val version = "20.2.0"
-                const val ads = "com.google.android.gms:play-services-ads:$version"
-            }
-
             object Analytics {
-                private const val version = "19.0.0"
+                private const val version = "20.1.0"
                 const val analytics = "com.google.firebase:firebase-analytics:$version"
                 const val analyticsKtx = "com.google.firebase:firebase-analytics-ktx:$version"
             }
 
             object Crashlytics {
-                private const val version = "18.0.0"
+                private const val version = "18.2.8"
                 const val crashlytics = "com.google.firebase:firebase-crashlytics:$version"
 
                 object Gradle {
-                    private const val version = "2.6.1"
+                    private const val version = "2.8.1"
                     const val plugin = "com.google.firebase:firebase-crashlytics-gradle:$version"
                 }
             }
@@ -455,7 +474,7 @@ object Libraries {
         }
 
         object Material {
-            private const val version = "1.4.0-beta01"
+            private const val version = "1.5.0-rc01"
             const val material = "com.google.android.material:material:$version"
 
             object Compose {
@@ -465,14 +484,14 @@ object Libraries {
         }
 
         object Services {
-            private const val version = "4.3.8"
+            private const val version = "4.3.10"
             const val googleServices = "com.google.gms:google-services:$version"
         }
     }
 
     object JetBrains {
         object Kotlin {
-            internal const val version = "1.4.32"
+            internal const val version = "1.5.31"
             const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
             const val reflect = "org.jetbrains.kotlin:kotlin-reflect:$version"
 
@@ -491,34 +510,37 @@ object Libraries {
 
         object KotlinX {
             object Coroutines {
-                private const val version = "1.4.3"
+                private const val version = "1.5.2"
                 const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
                 const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
                 const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
             }
 
             object Serialization {
-                private const val version = "1.1.0"
+                private const val version = "1.3.1"
                 const val json = "org.jetbrains.kotlinx:kotlinx-serialization-json:$version"
             }
         }
     }
 
     object Koin {
-        private const val version = "2.2.3"
+        private const val version = "3.1.5"
+        const val android = "io.insert-koin:koin-android:$version"
         const val core = "io.insert-koin:koin-core:$version"
-        const val extension = "io.insert-koin:koin-core-ext:$version"
-        const val test = "io.insert-koin:koin-test:$version"
 
         object AndroidX {
-            const val scope = "io.insert-koin:koin-androidx-scope:$version"
-            const val fragment = "io.insert-koin:koin-androidx-fragment:$version"
-            const val viewModel = "io.insert-koin:koin-androidx-viewmodel:$version"
+            const val compose = "io.insert-koin:koin-androidx-compose:$version"
+            const val navigation = "io.insert-koin:koin-androidx-navigation:$version"
             const val workManager = "io.insert-koin:koin-androidx-workmanager:$version"
         }
 
         object Gradle {
             const val plugin = "io.insert-koin:koin-gradle-plugin:$version"
+        }
+
+        object Test {
+            const val test = "io.insert-koin:koin-test:$version"
+            const val testJUnit4 = "io.insert-koin:koin-test-junit4:$version"
         }
     }
 
@@ -550,7 +572,7 @@ object Libraries {
     }
 
     object Mockk {
-        const val version = "1.11.0"
+        const val version = "1.12.2"
         const val mockk = "io.mockk:mockk:$version"
         const val mockkAndroid = "io.mockk:mockk-android:$version"
     }
@@ -595,7 +617,7 @@ object Libraries {
 
     object Square {
         object LeakCanary {
-            private const val version = "2.7"
+            private const val version = "2.8.1"
             const val leakCanary = "com.squareup.leakcanary:leakcanary-android:$version"
         }
 
@@ -607,14 +629,14 @@ object Libraries {
         }
 
         object OkHttp {
-            private const val version = "4.10.0-RC1"
+            private const val version = "4.9.2"
             const val okhttp = "com.squareup.okhttp3:okhttp:$version"
             const val logging = "com.squareup.okhttp3:logging-interceptor:$version"
             const val mockServer = "com.squareup.okhttp3:mockwebserver:$version"
         }
 
         object KotlinPoet {
-            private const val version = "1.7.2"
+            private const val version = "1.10.2"
             const val kotlinPoet = "com.squareup:kotlinpoet:$version"
         }
     }

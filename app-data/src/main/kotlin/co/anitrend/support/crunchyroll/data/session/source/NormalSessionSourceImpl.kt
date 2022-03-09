@@ -20,6 +20,7 @@ import co.anitrend.arch.data.request.callback.RequestCallback
 import co.anitrend.arch.data.request.model.Request
 import co.anitrend.arch.domain.entities.RequestError
 import co.anitrend.arch.extension.dispatchers.contract.ISupportDispatcher
+import co.anitrend.support.crunchyroll.data.arch.enums.CrunchyProperty
 import co.anitrend.support.crunchyroll.data.authentication.datasource.local.CrunchyLoginDao
 import co.anitrend.support.crunchyroll.data.authentication.datasource.remote.CrunchyAuthenticationEndpoint
 import co.anitrend.support.crunchyroll.data.authentication.settings.IAuthenticationSettings
@@ -29,6 +30,7 @@ import co.anitrend.support.crunchyroll.data.session.datasource.local.CrunchySess
 import co.anitrend.support.crunchyroll.data.session.entity.CrunchySessionEntity
 import co.anitrend.support.crunchyroll.data.session.source.contract.SessionSource
 import co.anitrend.support.crunchyroll.data.session.transformer.SessionTransformer
+import co.anitrend.support.crunchyroll.data.util.extension.requireProperty
 import co.anitrend.support.crunchyroll.domain.session.entities.Session
 import co.anitrend.support.crunchyroll.domain.session.models.CrunchyNormalSessionQuery
 import kotlinx.coroutines.CoroutineDispatcher
@@ -89,6 +91,7 @@ internal class NormalSessionSourceImpl(
 
         val deferred = async {
             endpoint.startNormalSession(
+                accessToken = requireProperty(CrunchyProperty.CLIENT_TOKEN),
                 auth = query.auth,
                 deviceId = query.deviceType,
                 deviceType = query.deviceType

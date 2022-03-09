@@ -21,20 +21,14 @@ import co.anitrend.support.crunchyroll.FeatureProvider
 import co.anitrend.support.crunchyroll.analytics.AnalyticsLogger
 import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
 import co.anitrend.support.crunchyroll.navigation.Main
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 private val analyticsModule = module {
     factory<ISupportAnalytics> {
-        //val privacySettings = get<IPrivacySettings>()
-
-        //val analytics = FirebaseAnalytics.getInstance(androidContext())
-        //analytics.setAnalyticsCollectionEnabled(privacySettings.isAnalyticsEnabled)
-//
-        //val crashlytics = FirebaseCrashlytics.getInstance()
-        //crashlytics.setCrashlyticsCollectionEnabled(privacySettings.isCrashlyticsEnabled)
-
         AnalyticsLogger(
-
+            context = androidContext(),
+            settings = get()
         )
     }
 }

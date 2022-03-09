@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.feature.player.plugin
 
 import android.app.Application
+import androidx.lifecycle.LifecycleOwner
 import co.anitrend.support.crunchyroll.feature.player.model.stream.MediaStreamItem
 import co.anitrend.support.crunchyroll.feature.player.plugin.contract.MediaPlugin
 import co.anitrend.support.crunchyroll.feature.player.plugin.contract.PlaylistManagerPlugin
@@ -35,34 +36,42 @@ class PlaylistManagerPluginImpl(
 ) : PlaylistManagerPlugin<MediaStreamItem>(application, MediaPlayerService::class) {
 
     /**
-     * Triggered when the lifecycleOwner reaches it's onResume state
+     * Notifies that `ON_DESTROY` event occurred.
      *
-     * @see [androidx.lifecycle.LifecycleOwner]
+     * This method will be called before the [LifecycleOwner]'s `onDestroy` method
+     * is called.
+     *
+     * @param owner the component, whose state was changed
      */
-    override fun onResume() {
-        super.onResume()
-        invokePlay()
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onDestroy(owner)
+        invokeStop()
     }
 
     /**
-     * Triggered when the lifecycleOwner reaches it's onPause state
+     * Notifies that `ON_PAUSE` event occurred.
      *
-     * @see [androidx.lifecycle.LifecycleOwner]
+     * This method will be called before the [LifecycleOwner]'s `onPause` method
+     * is called.
+     *
+     * @param owner the component, whose state was changed
      */
-    override fun onPause() {
-        super.onPause()
-        // find a way to avoid playing an item on pause that is already paused
+    override fun onPause(owner: LifecycleOwner) {
+        super.onPause(owner)
         invokePause()
     }
 
     /**
-     * Triggered when the lifecycleOwner reaches it's onDestroy state
+     * Notifies that `ON_RESUME` event occurred.
      *
-     * @see [androidx.lifecycle.LifecycleOwner]
+     * This method will be called after the [LifecycleOwner]'s `onResume`
+     * method returns.
+     *
+     * @param owner the component, whose state was changed
      */
-    override fun onDestroy() {
-        super.onDestroy()
-        invokeStop()
+    override fun onResume(owner: LifecycleOwner) {
+        super.onResume(owner)
+        invokePlay()
     }
 
     /**

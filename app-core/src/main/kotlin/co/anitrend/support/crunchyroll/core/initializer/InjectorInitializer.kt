@@ -28,6 +28,7 @@ import org.koin.core.logger.KOIN_TAG
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.logger.MESSAGE
+import org.koin.fileProperties
 import timber.log.Timber
 
 class InjectorInitializer : AbstractInitializer<Unit>() {
@@ -43,6 +44,7 @@ class InjectorInitializer : AbstractInitializer<Unit>() {
             fragmentFactory()
             androidContext(context)
             logger(KoinLogger(logLevel))
+            fileProperties("koin.properties")
             modules(coreModules)
         }
     }

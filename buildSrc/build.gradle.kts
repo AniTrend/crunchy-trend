@@ -1,6 +1,5 @@
 plugins {
     `kotlin-dsl`
-    `maven-publish`
 }
 
 repositories {
@@ -18,9 +17,9 @@ repositories {
     }
 }
 
-val kotlinVersion = "1.4.32"
-val buildToolsVersion = "7.0.2"
-val manesVersion = "0.33.0"
+val kotlinVersion = "1.5.31"
+val buildToolsVersion = "7.1.2"
+val manesVersion = "0.36.0"
 val spotlessVersion = "5.12.1"
 
 dependencies {

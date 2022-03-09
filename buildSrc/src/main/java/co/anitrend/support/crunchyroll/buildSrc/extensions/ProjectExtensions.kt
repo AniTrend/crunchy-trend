@@ -62,11 +62,6 @@ fun Project.hasCoroutineSupport() = name != Modules.App.Navigation.id || name !=
 fun Project.hasComposeSupport() = isAppModule() || matchesFeatureModule() || matchesAndroidModule() || matchesCommonModule()
 
 /**
- * Module that support data binding
- */
-fun Project.hasDataBindingSupport() = name == Modules.App.Main.id || name == Modules.Feature.Auth.id
-
-/**
  * Module that support [Libraries.Koin.AndroidX] dependencies
  */
 fun Project.hasKoinAndroidSupport() =

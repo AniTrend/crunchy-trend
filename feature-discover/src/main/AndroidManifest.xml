@@ -23,7 +23,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application>
-        <activity android:name=".ui.activity.SeriesDiscoverScreen" />
+        <activity android:name=".ui.activity.SeriesDiscoverScreen"
+                android:exported="true" />
 
         <provider
                 android:name="androidx.startup.InitializationProvider"

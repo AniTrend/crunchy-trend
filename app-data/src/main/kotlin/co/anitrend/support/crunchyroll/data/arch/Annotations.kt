@@ -20,7 +20,7 @@ package co.anitrend.support.crunchyroll.data.arch
     message = "Experimental feature, with potentially unstable API",
     level = RequiresOptIn.Level.WARNING
 )
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 internal annotation class CrunchyExperimentalFeature
 

@@ -17,14 +17,13 @@
 package co.anitrend.support.crunchyroll.core.ui.fragment
 
 import co.anitrend.arch.core.model.ISupportViewModelState
-import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.arch.ui.fragment.SupportFragment
 import org.koin.androidx.scope.fragmentScope
-import org.koin.core.scope.KoinScopeComponent
+import org.koin.core.component.KoinScopeComponent
 
 abstract class CrunchyFragment : SupportFragment(), KoinScopeComponent {
 
-    override val scope by lazy(UNSAFE) { fragmentScope() }
+    override val scope by fragmentScope()
 
     /**
      * Proxy for a view model state if one exists

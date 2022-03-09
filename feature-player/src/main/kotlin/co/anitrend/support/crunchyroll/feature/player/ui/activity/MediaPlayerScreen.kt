@@ -16,7 +16,6 @@
 
 package co.anitrend.support.crunchyroll.feature.player.ui.activity
 
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
@@ -34,10 +33,11 @@ import co.anitrend.support.crunchyroll.feature.player.ui.fragment.MediaStreamCon
 import com.devbrackets.android.exomedia.listener.VideoControlsVisibilityListener
 import kotlinx.coroutines.launch
 
+@Suppress("DEPRECATION")
 class MediaPlayerScreen : CrunchyActivity<ActivityStreamingBinding>(), VideoControlsVisibilityListener,
     FragmentOnAttachListener {
 
-    internal var fullScreenListener: MediaStreamContent.FullScreenListener? = null
+    private var fullScreenListener: MediaStreamContent.FullScreenListener? = null
 
     /**
      * Determines the appropriate fullscreen flags based on the

@@ -211,6 +211,40 @@ private fun Project.applyCommonModuleDependencies() {
     dependencies.implementation(project(Modules.App.Navigation.path()))
 }
 
+private fun Project.applyComposeDependencies() {
+    println("Applying compose dependencies for feature module -> $path")
+    dependencies.implementation(Libraries.AndroidX.Compose.Foundation.foundation)
+    dependencies.implementation(Libraries.AndroidX.Compose.Foundation.layout)
+    dependencies.implementation(Libraries.AndroidX.Compose.Material.material)
+    dependencies.implementation(Libraries.AndroidX.Compose.Material.Icons.core)
+    dependencies.implementation(Libraries.AndroidX.Compose.Material.Icons.extended)
+    dependencies.implementation(Libraries.AndroidX.Compose.Runtime.runtime)
+    dependencies.implementation(Libraries.AndroidX.Compose.Runtime.liveData)
+    dependencies.implementation(Libraries.AndroidX.Compose.Ui.tooling)
+    dependencies.implementation(Libraries.AndroidX.Compose.Ui.ui)
+    dependencies.implementation(Libraries.AndroidX.Compose.Ui.viewBinding)
+    dependencies.androidTest(Libraries.AndroidX.Compose.Ui.test)
+
+    dependencies.implementation(Libraries.AndroidX.Activity.Compose.activityCompose)
+    dependencies.implementation(Libraries.AndroidX.Lifecycle.Compose.viewModelCompose)
+    dependencies.implementation(Libraries.AndroidX.ConstraintLayout.Compose.constraintLayoutCompose)
+    // Until I migrate to paging v3.0
+    //dependencies.implementation(Libraries.AndroidX.Paging.Compose.pagingCompose)
+
+    dependencies.implementation(Libraries.Google.Material.Compose.themeAdapter)
+    dependencies.implementation(Libraries.Google.Material.Compose.themeAdapter)
+    dependencies.implementation(Libraries.Koin.AndroidX.compose)
+
+    dependencies.implementation(Libraries.Google.Accompanist.pagerIndicators)
+    dependencies.implementation(Libraries.Google.Accompanist.appCompatTheme)
+    dependencies.implementation(Libraries.Google.Accompanist.uiController)
+    dependencies.implementation(Libraries.Google.Accompanist.flowLayout)
+    dependencies.implementation(Libraries.Google.Accompanist.insets)
+    dependencies.implementation(Libraries.Google.Accompanist.pager)
+
+    dependencies.implementation(Libraries.Coil.compose)
+}
+
 internal fun Project.configureDependencies() {
     val dependencyStrategy = DependencyStrategy(project)
     dependencies.implementation(
@@ -226,4 +260,5 @@ internal fun Project.configureDependencies() {
     if (isCoreModule()) applyAndroidCoreModuleDependencies()
     if (isAndroidCoreModule()) applyAndroidCoreModuleDependencies()
     if (matchesCommonModule()) applyCommonModuleDependencies()
+    if (hasComposeSupport()) applyComposeDependencies()
 }

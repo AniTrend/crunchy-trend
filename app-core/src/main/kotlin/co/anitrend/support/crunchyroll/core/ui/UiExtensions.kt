@@ -6,9 +6,9 @@ import androidx.fragment.app.*
 import co.anitrend.arch.extension.ext.UNSAFE
 import co.anitrend.support.crunchyroll.core.ui.model.FragmentItem
 import co.anitrend.support.crunchyroll.core.R
+import org.koin.core.component.KoinScopeComponent
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.scope.KoinScopeComponent
 
 /**
  * Get given dependency

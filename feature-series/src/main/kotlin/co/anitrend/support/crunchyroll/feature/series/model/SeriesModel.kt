@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.feature.series.model
 
 import co.anitrend.support.crunchyroll.domain.series.entities.CrunchySeries
+import java.util.*
 
 data class SeriesModel(
     val name: String,
@@ -44,8 +45,13 @@ data class SeriesModel(
                 collectionCount = entity.collectionCount,
                 publisher = entity.publisher,
                 year = entity.year,
-                genres = entity.genres.map {
-                    it.capitalize()
+                genres = entity.genres.map { genre ->
+                    genre.replaceFirstChar {
+                        if (it.isLowerCase())
+                            it.titlecase(Locale.ROOT)
+                        else
+                            it.toString()
+                    }
                 }
             )
         }

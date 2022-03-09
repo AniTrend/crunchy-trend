@@ -41,6 +41,7 @@ class ThemeUtil(private val settings: IThemeSettings) {
         }
 
 
+    @Suppress("DEPRECATION")
     private fun CrunchyActivity<*>.applyWindowStyle() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val systemUiOptions = window.decorView.systemUiVisibility

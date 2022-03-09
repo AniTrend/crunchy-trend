@@ -1,5 +1,5 @@
 /*
- *    Copyright 2020 AniTrend
+ *    Copyright 2022 AniTrend
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,14 +14,14 @@
  *    limitations under the License.
  */
 
-package co.anitrend.support.crunchyroll.core.ui.contract
+package co.anitrend.support.crunchyroll.data.arch.enums
 
-import co.anitrend.support.crunchyroll.core.koin.helper.DynamicFeatureModuleHelper
-
-interface IFeatureContract {
-
-    /**
-     * Expects a module helper if one is available for the current scope, otherwise return null
-     */
-    fun featureModuleHelper(): DynamicFeatureModuleHelper? = null
+enum class CrunchyProperty(val key: String) {
+    API_SESSION_V2("apiSessionV2"),
+    API_SESSION_PROXY_V1("apiSessionV1"),
+    API_SESSION("apiSession"),
+    API_URL("apiUrl"),
+    JSON_URL("apiUrl"),
+    CLIENT_TOKEN("clientToken"),
+    DEVICE_TYPE("deviceType"),
 }
