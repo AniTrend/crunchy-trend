@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~    Copyright 2019 AniTrend
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  -->
+
+<resources>
+    <string name="application_name">CrunchyTrend</string>
+
+    <!-- settings keys -->
+    <string name="settings_authentication_id" translatable="false">_authenticationId</string>
+
+    <string name="settings_is_new_installation" translatable="false">_isNewInstallation</string>
+    <string name="settings_version_code" translatable="false">_versionCode</string>
+
+    <string name="settings_authentication_logged_in" translatable="false">_isAuthenticated</string>
+    <string name="settings_authentication_session_id" translatable="false">_sessionId</string>
+    <string name="settings_authentication_premium_access" translatable="false">_premiumAccess</string>
+
+    <string name="settings_configuration_theme" translatable="false">_theme</string>
+    <string name="settings_configuration_locale" translatable="false">_locale</string>
+
+    <string name="settings_privacy_crash_analytics" translatable="false">_crashAnalytics</string>
+    <string name="settings_privacy_usage_analytics" translatable="false">_usageAnalytics</string>
+
+    <string name="settings_cache_maximum_usage_ratio" translatable="false">_cacheUsageRatio</string>
+    <string name="settings_refresh_behaviour" translatable="false">_clearOnRefresh</string>
+
+
+    <!-- other application strings -->
+    <string name="label_text_loading">Loading, please wait..</string>
+
+    <string name="label_text_action_search">Search</string>
+    <string name="label_text_action_login">Login</string>
+    <string name="label_text_action_settings">Settings</string>
+
+    <string name="label_text_action_retry">Reload</string>
+
+    <string name="dialog_title_download">Download</string>
+    <string name="ad_unit_id">ca-app-pub-5731337808539951/8606240724</string>
+</resources>

@@ -140,3 +140,5 @@ secrets.properties
 app/google-services.json
 
 .directory
+
+*.jks

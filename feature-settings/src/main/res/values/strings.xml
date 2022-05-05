@@ -1,0 +1,51 @@
+<!--
+  ~    Copyright 2019 AniTrend
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  -->
+
+<resources>
+
+    <string name="title_activity_settings_screen">Settings</string>
+    <string name="title_settings_action_theme">Change themes</string>
+
+    <!-- Preference Group Titles -->
+    <string name="preference_group_title_application">Application</string>
+    <string name="preference_group_title_configuration">Configuration</string>
+
+    <!-- Preference Titles -->
+    <string name="preference_title_accounts">Accounts</string>
+    <string name="preference_title_locale">Locale</string>
+    <string name="preference_title_privacy">Privacy</string>
+    <string name="preference_title_storage">Storage</string>
+
+    <string name="preference_title_locale_config">Application language</string>
+    <string name="preference_title_privacy_analytics_config">Usage analytics</string>
+    <string name="preference_title_privacy_crash_analytics_config">Crash reporting</string>
+    <string name="preference_title_cache_config">Cache usage limit</string>
+    <string name="preference_title_refresh_behavior_config">Clear database on refresh</string>
+
+    <!-- Preference Summaries -->
+    <string name="preference_summary_accounts">Access information about current accounts</string>
+    <string name="preference_summary_locale">Configure which language to use</string>
+    <string name="preference_summary_privacy">Dial in the right level of privacy for you</string>
+    <string name="preference_summary_storage">Configure how space is utilized on your device</string>
+
+    <string name="preference_summary_privacy_analytics_config">Allows usage statics to be sent to the developer</string>
+    <string name="preference_summary_privacy_crash_analytics_config">Allows crashes to be reported automatically as they happen</string>
+    <string name="preference_summary_cache_config">Maximum amount of the remaining storage space on your device that can be used for caching. The minimum is 10% with a maximum of 50%</string>
+    <string name="preference_summary_refresh_behavior_config">Typically the database is cleared when you pull to refresh</string>
+
+    <!-- Preference Lookup Keys (if we ever need to reference a preference) -->
+    <string name="preference_key_accounts">_accounts</string>
+</resources>

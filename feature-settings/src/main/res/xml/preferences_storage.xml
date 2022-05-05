@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~    Copyright 2020 AniTrend
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  -->
+
+<androidx.preference.PreferenceScreen
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <co.anitrend.support.crunchyroll.feature.settings.ui.preference.FloatSeekBarPreference
+            app:icon="@drawable/ic_disc_full"
+            app:key="@string/settings_cache_maximum_usage_ratio"
+            app:summary="@string/preference_summary_cache_config"
+            app:title="@string/preference_title_cache_config"
+            app:defaultValue="0.15"
+            app:minValue="0.10"
+            app:maxValue=".50"
+            app:valueSpacing="0.02" />
+
+</androidx.preference.PreferenceScreen>

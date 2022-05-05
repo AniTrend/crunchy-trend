@@ -1,0 +1,31 @@
+<!--
+  ~    Copyright 2019 AniTrend
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="32.727272"
+    android:viewportHeight="32.727272">
+  <group android:translateX="4.3636365"
+      android:translateY="4.3636365">
+    <path
+        android:fillColor="#FFB500"
+        android:pathData="M12,2C6.486,2 2,6.486 2,12s4.486,10 10,10s10,-4.486 10,-10S17.514,2 12,2zM12,20c-4.411,0 -8,-3.589 -8,-8s3.589,-8 8,-8s8,3.589 8,8S16.411,20 12,20z"/>
+    <path
+        android:fillColor="#FFB500"
+        android:pathData="M13,6L7,13 11,13 11,18 17,11 13,11z"/>
+  </group>
+</vector>
