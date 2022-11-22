@@ -14,12 +14,13 @@
  *    limitations under the License.
  */
 
-import co.anitrend.support.crunchyroll.buildSrc.Libraries
-
 plugins {
     id("co.anitrend.crunchyroll.plugin")
 }
 
 dependencies {
 
+}
+android {
+    namespace = "co.anitrend.support.crunchyroll.domain"
 }

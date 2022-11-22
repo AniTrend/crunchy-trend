@@ -23,3 +23,6 @@ plugins {
 dependencies {
     implementation(Libraries.Google.FlexBox.flexBox)
 }
+android {
+    namespace = "co.anitrend.support.crunchyroll.feature.series"
+}

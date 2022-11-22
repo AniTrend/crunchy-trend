@@ -20,6 +20,10 @@ plugins {
     id("co.anitrend.crunchyroll.plugin")
 }
 
+android {
+    namespace = "co.anitrend.support.crunchyroll.android"
+}
+
 dependencies {
     implementation(Libraries.AndroidX.Palette.palette)
     implementation(Libraries.AndroidX.Palette.paletteKtx)

@@ -24,3 +24,6 @@ dependencies {
     implementation(project(":ui-shared-series"))
     implementation(Libraries.AniTrend.Material.multiSearch)
 }
+android {
+    namespace = "co.anitrend.support.crunchyroll.feature.search"
+}

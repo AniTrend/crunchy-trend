@@ -23,6 +23,7 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    namespace = "co.anitrend.support.crunchyroll"
 }
 
 dependencies {

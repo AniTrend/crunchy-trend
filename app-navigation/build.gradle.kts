@@ -26,3 +26,6 @@ dependencies {
     implementation(Libraries.Koin.android)
     testImplementation(Libraries.Koin.Test.testJUnit4)
 }
+android {
+    namespace = "co.anitrend.support.crunchyroll.navigation"
+}

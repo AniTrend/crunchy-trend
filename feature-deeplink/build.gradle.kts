@@ -24,3 +24,6 @@ dependencies {
     implementation(Libraries.AndroidX.ConstraintLayout.constraintLayout)
     implementation(Libraries.deeplink)
 }
+android {
+    namespace = "co.anitrend.support.crunchyroll.feature.deeplink"
+}

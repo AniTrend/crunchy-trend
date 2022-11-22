@@ -20,6 +20,10 @@ plugins {
     id("co.anitrend.crunchyroll.plugin")
 }
 
+android {
+    namespace = "co.anitrend.support.crunchyroll.shared.image.viewer"
+}
+
 dependencies {
     implementation(Libraries.scalingImageView)
 }

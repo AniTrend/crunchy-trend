@@ -47,3 +47,6 @@ dependencies {
 
     implementation(Libraries.MaterialDialogs.core)
 }
+android {
+    namespace = "co.anitrend.support.crunchyroll.feature.player"
+}

@@ -24,3 +24,6 @@ dependencies {
     implementation(Libraries.AndroidX.Paging.runtime)
     implementation(Libraries.AndroidX.Recycler.recyclerView)
 }
+android {
+    namespace = "co.anitrend.support.crunchyroll.shared.series"
+}

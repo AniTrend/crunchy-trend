@@ -36,3 +36,6 @@ dependencies {
 
     implementation(Libraries.Saket.BetterLinkMovement.betterLinkMovement)
 }
+android {
+    namespace = "co.anitrend.support.crunchyroll.feature.news"
+}

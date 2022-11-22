@@ -35,7 +35,6 @@
             <option value="$PROJECT_DIR$/ui-shared-series" />
           </set>
         </option>
-        <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>
   </component>

@@ -30,3 +30,6 @@ dependencies {
 
     implementation(Libraries.treessence)
 }
+android {
+    namespace = "co.anitrend.support.crunchyroll.core"
+}

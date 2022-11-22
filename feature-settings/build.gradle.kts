@@ -20,6 +20,10 @@ plugins {
     id("co.anitrend.crunchyroll.plugin")
 }
 
+android {
+    namespace = "co.anitrend.support.crunchyroll.feature.settings"
+}
+
 dependencies {
     implementation(Libraries.AndroidX.Preference.preference)
     implementation(Libraries.AndroidX.Preference.preferenceKtx)

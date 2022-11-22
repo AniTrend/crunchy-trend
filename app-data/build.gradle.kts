@@ -26,3 +26,6 @@ dependencies {
     debugImplementation(Libraries.Chuncker.debug)
     releaseImplementation(Libraries.Chuncker.release)
 }
+android {
+    namespace = "co.anitrend.support.crunchyroll.data"
+}

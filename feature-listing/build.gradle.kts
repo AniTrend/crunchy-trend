@@ -23,3 +23,6 @@ plugins {
 dependencies {
     implementation(Libraries.MaterialDialogs.bottomsheets)
 }
+android {
+    namespace = "co.anitrend.support.crunchyroll.feature.listing"
+}
