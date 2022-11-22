@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile
+
 plugins {
     `kotlin-dsl`
 }
@@ -17,9 +19,20 @@ repositories {
     }
 }
 
-val kotlinVersion = "1.5.31"
-val buildToolsVersion = "7.1.2"
-val manesVersion = "0.36.0"
+tasks.withType(KotlinJvmCompile::class.java) {
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+val buildToolsVersion = "7.3.0"
+val kotlinVersion = "1.7.20"
+val manesVersion = "0.38.0"
 val spotlessVersion = "5.12.1"
 
 dependencies {

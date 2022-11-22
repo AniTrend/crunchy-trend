@@ -20,14 +20,14 @@ package co.anitrend.support.crunchyroll.buildSrc.common
 object Configuration {
 
     private const val major = 0
-    private const val minor = 8
+    private const val minor = 9
     private const val patch = 0
     private const val candidate = 0
 
     private const val channel = "alpha"
 
-    const val compileSdk = 31
-    const val targetSdk = 31
+    const val compileSdk = 33
+    const val targetSdk = 33
     const val minSdk = 21
 
     /**

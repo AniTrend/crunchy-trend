@@ -17,6 +17,7 @@
 package co.anitrend.support.crunchyroll.buildSrc.plugins.components
 
 import co.anitrend.support.crunchyroll.buildSrc.common.*
+import co.anitrend.support.crunchyroll.buildSrc.Libraries
 import co.anitrend.support.crunchyroll.buildSrc.extensions.isAppModule
 import co.anitrend.support.crunchyroll.buildSrc.extensions.isCoreModule
 import co.anitrend.support.crunchyroll.buildSrc.extensions.isNavigationModule
@@ -25,12 +26,13 @@ import co.anitrend.support.crunchyroll.buildSrc.extensions.hasCoroutineSupport
 import co.anitrend.support.crunchyroll.buildSrc.extensions.baseAppExtension
 import co.anitrend.support.crunchyroll.buildSrc.extensions.baseExtension
 import co.anitrend.support.crunchyroll.buildSrc.extensions.libraryExtension
+import co.anitrend.support.crunchyroll.buildSrc.extensions.hasComposeSupport
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import com.android.build.gradle.internal.dsl.DefaultConfig
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import java.io.File
 
 
@@ -76,6 +78,14 @@ private fun DefaultConfig.applyAdditionalConfiguration(project: Project) {
     }
 }
 
+private fun Project.configureLint() = baseAppExtension().run {
+    lint {
+        abortOnError = false
+        ignoreWarnings = false
+        ignoreTestSources = true
+    }
+}
+
 internal fun Project.configureAndroid(): Unit = baseExtension().run {
     compileSdkVersion(Configuration.compileSdk)
     defaultConfig {
@@ -89,6 +99,7 @@ internal fun Project.configureAndroid(): Unit = baseExtension().run {
 
 
     if (isAppModule()) {
+        project.configureLint()
         project.configureBuildFlavours()
         project.createSigningConfiguration(this)
     }
@@ -147,39 +158,38 @@ internal fun Project.configureAndroid(): Unit = baseExtension().run {
         unitTests.isReturnDefaultValues = true
     }
 
-    lintOptions {
-        isAbortOnError = false
-        isIgnoreWarnings = false
-        isIgnoreTestSources = true
-    }
-
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     tasks.withType(KotlinJvmCompile::class.java) {
         kotlinOptions {
-            jvmTarget = "1.8"
+            jvmTarget = "11"
         }
     }
 
     tasks.withType(KotlinCompile::class.java) {
         val compilerArgumentOptions = mutableListOf(
-            "-Xuse-experimental=kotlin.Experimental",
-            "-Xopt-in=kotlin.ExperimentalStdlibApi",
-            "-Xopt-in=kotlin.Experimental"
+            "-opt-in=kotlin.Experimental",
+            "-opt-in=kotlin.ExperimentalStdlibApi",
+            "-opt-in=kotlin.Experimental"
         )
 
         if (hasCoroutineSupport()) {
-            compilerArgumentOptions.add("-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")
-            compilerArgumentOptions.add("-Xopt-in=kotlinx.coroutines.FlowPreview")
+            compilerArgumentOptions.add("-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")
+            compilerArgumentOptions.add("-opt-in=kotlinx.coroutines.FlowPreview")
+        }
+
+        if (hasComposeSupport()) {
+            compilerArgumentOptions.add("-opt-in=androidx.compose.foundation.ExperimentalFoundationApi")
+            compilerArgumentOptions.add("-opt-in=androidx.compose.material.ExperimentalMaterialApi")
         }
 
         if (isAppModule() || isCoreModule() || isNavigationModule()) {
             compilerArgumentOptions.apply {
-                add("-Xopt-in=org.koin.core.component.KoinApiExtension")
-                add("-Xopt-in=org.koin.core.KoinExperimentalAPI")
+                add("-opt-in=org.koin.core.component.KoinApiExtension")
+                add("-opt-in=org.koin.core.KoinExperimentalAPI")
             }
         }
 
@@ -187,6 +197,12 @@ internal fun Project.configureAndroid(): Unit = baseExtension().run {
             allWarningsAsErrors = false
             // Filter out modules that won't be using coroutines
             freeCompilerArgs = compilerArgumentOptions
+        }
+    }
+
+    if (project.hasComposeSupport()) {
+        composeOptions {
+            kotlinCompilerExtensionVersion = Libraries.AndroidX.Compose.Compiler.version
         }
     }
 }
