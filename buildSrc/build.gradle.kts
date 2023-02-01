@@ -30,7 +30,7 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
-val buildToolsVersion = "7.3.0"
+val buildToolsVersion = "7.4.1"
 val kotlinVersion = "1.7.20"
 val manesVersion = "0.38.0"
 val spotlessVersion = "5.12.1"
